@@ -12,8 +12,7 @@ part of 'custom_schedule.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 CustomSchedule _$CustomScheduleFromJson(Map<String, dynamic> json) {
   return _CustomSchedule.fromJson(json);
@@ -28,32 +27,30 @@ mixin _$CustomSchedule {
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
-  /// Serializes this CustomSchedule to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of CustomSchedule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CustomScheduleCopyWith<CustomSchedule> get copyWith => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $CustomScheduleCopyWith<CustomSchedule> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CustomScheduleCopyWith<$Res> {
-  factory $CustomScheduleCopyWith(CustomSchedule value, $Res Function(CustomSchedule) then) =
+  factory $CustomScheduleCopyWith(
+          CustomSchedule value, $Res Function(CustomSchedule) then) =
       _$CustomScheduleCopyWithImpl<$Res, CustomSchedule>;
   @useResult
-  $Res call({
-    String id,
-    String name,
-    List<LessonSchedulePart> lessons,
-    String? description,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  });
+  $Res call(
+      {String id,
+      String name,
+      List<LessonSchedulePart> lessons,
+      String? description,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
-class _$CustomScheduleCopyWithImpl<$Res, $Val extends CustomSchedule> implements $CustomScheduleCopyWith<$Res> {
+class _$CustomScheduleCopyWithImpl<$Res, $Val extends CustomSchedule>
+    implements $CustomScheduleCopyWith<$Res> {
   _$CustomScheduleCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -61,8 +58,6 @@ class _$CustomScheduleCopyWithImpl<$Res, $Val extends CustomSchedule> implements
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CustomSchedule
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -73,68 +68,60 @@ class _$CustomScheduleCopyWithImpl<$Res, $Val extends CustomSchedule> implements
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id:
-                null == id
-                    ? _value.id
-                    : id // ignore: cast_nullable_to_non_nullable
-                        as String,
-            name:
-                null == name
-                    ? _value.name
-                    : name // ignore: cast_nullable_to_non_nullable
-                        as String,
-            lessons:
-                null == lessons
-                    ? _value.lessons
-                    : lessons // ignore: cast_nullable_to_non_nullable
-                        as List<LessonSchedulePart>,
-            description:
-                freezed == description
-                    ? _value.description
-                    : description // ignore: cast_nullable_to_non_nullable
-                        as String?,
-            createdAt:
-                freezed == createdAt
-                    ? _value.createdAt
-                    : createdAt // ignore: cast_nullable_to_non_nullable
-                        as DateTime?,
-            updatedAt:
-                freezed == updatedAt
-                    ? _value.updatedAt
-                    : updatedAt // ignore: cast_nullable_to_non_nullable
-                        as DateTime?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      lessons: null == lessons
+          ? _value.lessons
+          : lessons // ignore: cast_nullable_to_non_nullable
+              as List<LessonSchedulePart>,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$CustomScheduleImplCopyWith<$Res> implements $CustomScheduleCopyWith<$Res> {
-  factory _$$CustomScheduleImplCopyWith(_$CustomScheduleImpl value, $Res Function(_$CustomScheduleImpl) then) =
+abstract class _$$CustomScheduleImplCopyWith<$Res>
+    implements $CustomScheduleCopyWith<$Res> {
+  factory _$$CustomScheduleImplCopyWith(_$CustomScheduleImpl value,
+          $Res Function(_$CustomScheduleImpl) then) =
       __$$CustomScheduleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String id,
-    String name,
-    List<LessonSchedulePart> lessons,
-    String? description,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  });
+  $Res call(
+      {String id,
+      String name,
+      List<LessonSchedulePart> lessons,
+      String? description,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
-class __$$CustomScheduleImplCopyWithImpl<$Res> extends _$CustomScheduleCopyWithImpl<$Res, _$CustomScheduleImpl>
+class __$$CustomScheduleImplCopyWithImpl<$Res>
+    extends _$CustomScheduleCopyWithImpl<$Res, _$CustomScheduleImpl>
     implements _$$CustomScheduleImplCopyWith<$Res> {
-  __$$CustomScheduleImplCopyWithImpl(_$CustomScheduleImpl _value, $Res Function(_$CustomScheduleImpl) _then)
-    : super(_value, _then);
+  __$$CustomScheduleImplCopyWithImpl(
+      _$CustomScheduleImpl _value, $Res Function(_$CustomScheduleImpl) _then)
+      : super(_value, _then);
 
-  /// Create a copy of CustomSchedule
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -145,56 +132,49 @@ class __$$CustomScheduleImplCopyWithImpl<$Res> extends _$CustomScheduleCopyWithI
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
-    return _then(
-      _$CustomScheduleImpl(
-        id:
-            null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as String,
-        name:
-            null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                    as String,
-        lessons:
-            null == lessons
-                ? _value._lessons
-                : lessons // ignore: cast_nullable_to_non_nullable
-                    as List<LessonSchedulePart>,
-        description:
-            freezed == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                    as String?,
-        createdAt:
-            freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                    as DateTime?,
-        updatedAt:
-            freezed == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                    as DateTime?,
-      ),
-    );
+    return _then(_$CustomScheduleImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      lessons: null == lessons
+          ? _value._lessons
+          : lessons // ignore: cast_nullable_to_non_nullable
+              as List<LessonSchedulePart>,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$CustomScheduleImpl implements _CustomSchedule {
-  const _$CustomScheduleImpl({
-    required this.id,
-    required this.name,
-    required final List<LessonSchedulePart> lessons,
-    this.description,
-    this.createdAt,
-    this.updatedAt,
-  }) : _lessons = lessons;
+  const _$CustomScheduleImpl(
+      {required this.id,
+      required this.name,
+      required final List<LessonSchedulePart> lessons,
+      this.description,
+      this.createdAt,
+      this.updatedAt})
+      : _lessons = lessons;
 
-  factory _$CustomScheduleImpl.fromJson(Map<String, dynamic> json) => _$$CustomScheduleImplFromJson(json);
+  factory _$CustomScheduleImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CustomScheduleImplFromJson(json);
 
   @override
   final String id;
@@ -228,48 +208,51 @@ class _$CustomScheduleImpl implements _CustomSchedule {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other._lessons, _lessons) &&
-            (identical(other.description, description) || other.description == description) &&
-            (identical(other.createdAt, createdAt) || other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    const DeepCollectionEquality().hash(_lessons),
-    description,
-    createdAt,
-    updatedAt,
-  );
+      runtimeType,
+      id,
+      name,
+      const DeepCollectionEquality().hash(_lessons),
+      description,
+      createdAt,
+      updatedAt);
 
-  /// Create a copy of CustomSchedule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$CustomScheduleImplCopyWith<_$CustomScheduleImpl> get copyWith =>
-      __$$CustomScheduleImplCopyWithImpl<_$CustomScheduleImpl>(this, _$identity);
+      __$$CustomScheduleImplCopyWithImpl<_$CustomScheduleImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CustomScheduleImplToJson(this);
+    return _$$CustomScheduleImplToJson(
+      this,
+    );
   }
 }
 
 abstract class _CustomSchedule implements CustomSchedule {
-  const factory _CustomSchedule({
-    required final String id,
-    required final String name,
-    required final List<LessonSchedulePart> lessons,
-    final String? description,
-    final DateTime? createdAt,
-    final DateTime? updatedAt,
-  }) = _$CustomScheduleImpl;
+  const factory _CustomSchedule(
+      {required final String id,
+      required final String name,
+      required final List<LessonSchedulePart> lessons,
+      final String? description,
+      final DateTime? createdAt,
+      final DateTime? updatedAt}) = _$CustomScheduleImpl;
 
-  factory _CustomSchedule.fromJson(Map<String, dynamic> json) = _$CustomScheduleImpl.fromJson;
+  factory _CustomSchedule.fromJson(Map<String, dynamic> json) =
+      _$CustomScheduleImpl.fromJson;
 
   @override
   String get id;
@@ -283,10 +266,8 @@ abstract class _CustomSchedule implements CustomSchedule {
   DateTime? get createdAt;
   @override
   DateTime? get updatedAt;
-
-  /// Create a copy of CustomSchedule
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CustomScheduleImplCopyWith<_$CustomScheduleImpl> get copyWith => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  _$$CustomScheduleImplCopyWith<_$CustomScheduleImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

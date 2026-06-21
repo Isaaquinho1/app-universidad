@@ -18,7 +18,7 @@ class ProfileSettingsPage extends StatelessWidget {
             const SizedBox(height: 24),
             ListTile(
               title: Text("Тема", style: AppTextStyle.body),
-              leading: Icon(FontAwesomeIcons.palette, color: Theme.of(context).extension<AppColors>()!.active),
+              leading: FaIcon(FontAwesomeIcons.palette, color: Theme.of(context).extension<AppColors>()!.active),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 showDialog(

@@ -185,7 +185,7 @@ class BottomModalSheet extends StatelessWidget {
       swipeDismissible: isDismissible,
       barrierDismissible: isDismissible,
       swipeDismissSensitivity:
-          const SwipeDismissSensitivity(minDragDistance: 100),
+          const SwipeDismissSensitivity(),
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: barrierColor ?? Colors.black54,
       builder: (context) => BottomModalSheet(

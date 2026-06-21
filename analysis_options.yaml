@@ -29,8 +29,12 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - "packages/enough_platform_widgets/**"               # <-- Excluye tu paquete local de los lints
+    - "**/.pub-cache/hosted/pub.dev/font_awesome_flutter/**" # <-- Excluye la caché global de FontAwesome
   errors:
     invalid_annotation_target: ignore
+    todo: ignore
+    final_class_extended_outside_of_library: ignore
   plugins:
     - custom_lint
 # Additional information about this file can be found at

@@ -162,3 +162,7 @@ env.g.dart
 # Firebase
 **/.firebaserc
 .firebase
+
+# Archivos autogenerados por build_runner y freezed
+*.g.dart
+*.freezed.dart

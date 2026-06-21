@@ -24,8 +24,7 @@ FeedState _$FeedStateFromJson(Map<String, dynamic> json) => FeedState(
 
 Map<String, dynamic> _$FeedStateToJson(FeedState instance) => <String, dynamic>{
       'status': _$FeedStatusEnumMap[instance.status]!,
-      'feed': instance.feed
-          .map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList())),
+      'feed': instance.feed,
       'hasMoreNews': instance.hasMoreNews,
     };
 

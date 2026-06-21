@@ -367,7 +367,7 @@ extension $MapRouteExtension on MapRoute {
 extension $DiscoursePostOverviewRouteExtension on DiscoursePostOverviewRoute {
   static DiscoursePostOverviewRoute _fromState(GoRouterState state) =>
       DiscoursePostOverviewRoute(
-        postId: int.parse(state.pathParameters['postId']!)!,
+        postId: int.parse(state.pathParameters['postId']!),
       );
 
   String get location => GoRouteData.$location(
@@ -567,7 +567,7 @@ extension $InfoRouteExtension on InfoRoute {
 T? _$convertMapValue<T>(
   String key,
   Map<String, String> map,
-  T? Function(String) converter,
+  T Function(String) converter,
 ) {
   final value = map[key];
   return value == null ? null : converter(value);
@@ -585,8 +585,8 @@ bool _$boolConverter(String value) {
 }
 
 extension<T extends Enum> on Map<T, String> {
-  T? _$fromName(String? value) =>
-      entries.where((element) => element.value == value).firstOrNull?.key;
+  T _$fromName(String value) =>
+      entries.singleWhere((element) => element.value == value).key;
 }
 
 RouteBase get $slideshowRoute => GoRouteData.$route(
