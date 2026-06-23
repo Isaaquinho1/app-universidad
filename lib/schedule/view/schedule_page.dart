@@ -359,7 +359,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Widget _buildDesktopHeaderButton(
     BuildContext context, {
-    required IconData icon,
+    required dynamic icon,
     required String tooltip,
     required VoidCallback onPressed,
     bool isActive = false,

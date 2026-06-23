@@ -29,7 +29,7 @@ class CalendarFormatToggle extends StatelessWidget {
     );
   }
 
-  Widget _buildFormatButton(BuildContext context, CalendarFormat format, String label, IconData icon) {
+  Widget _buildFormatButton(BuildContext context, CalendarFormat format, String label, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final isSelected = currentFormat == format;
 

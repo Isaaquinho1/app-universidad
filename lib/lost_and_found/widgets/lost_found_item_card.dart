@@ -211,7 +211,7 @@ class LostFoundItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContactChip(BuildContext context, String label, IconData icon) {
+  Widget _buildContactChip(BuildContext context, String label, dynamic icon) {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(

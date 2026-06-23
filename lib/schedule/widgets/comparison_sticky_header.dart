@@ -48,7 +48,7 @@ class _DayHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Icon(HugeIcons.strokeRoundedCalendar04, size: 17.5),
+          const  HugeIcon(icon: HugeIcons.strokeRoundedCalendar04, size: 17.5, color: Colors.grey),
           const SizedBox(width: 8),
           Text(formattedDate, style: AppTextStyle.bodyBold),
         ],

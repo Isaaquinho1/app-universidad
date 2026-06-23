@@ -472,7 +472,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
 
 class _SectionCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final dynamic icon;
   final List<Widget> children;
   final Widget? trailing;
 

@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 /// A custom chip widget that can be used in various places in the app
 /// with consistent styling.
@@ -30,7 +31,7 @@ class CustomChip extends StatelessWidget {
   final Color? color;
 
   /// Optional trailing icon to display in the chip.
-  final IconData? icon;
+  final dynamic icon;
 
   /// Optional leading icon to display in the chip.
   final IconData? leadingIcon;
@@ -87,11 +88,17 @@ class CustomChip extends StatelessWidget {
             ),
             if (icon != null) ...[
               SizedBox(width: small ? 4 : 6),
-              Icon(
-                icon,
-                size: small ? 14 : 16,
-                color: isSelected ? chipColor : colors.active,
-              ),
+              icon is IconData
+                  ? Icon(
+                      icon as IconData,
+                      size: small ? 14 : 16,
+                      color: isSelected ? chipColor : colors.active,
+                    )
+                  : HugeIcon(
+                      icon: icon as List<List<dynamic>>,
+                      size: small ? 14 : 16,
+                      color: isSelected ? chipColor : colors.active,
+                    ),
             ],
           ],
         ),

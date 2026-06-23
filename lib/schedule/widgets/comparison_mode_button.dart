@@ -20,8 +20,8 @@ class ComparisonModeButton extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         IconButton(
-          icon: Icon(
-            HugeIcons.strokeRoundedAbacus,
+          icon: HugeIcon(
+            icon: HugeIcons.strokeRoundedAbacus,
             size: 24,
             color: isComparisonModeEnabled ? colors.colorful01 : colors.active,
           ),

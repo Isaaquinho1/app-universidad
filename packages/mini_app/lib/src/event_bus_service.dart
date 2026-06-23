@@ -1,4 +1,6 @@
 import 'package:event_bus/event_bus.dart';
+import 'package:mini_app/src/remote_config_service.dart';
+import 'package:mini_app/src/remote_registry.dart';
 
 /// Глобальный экземпляр EventBus для обмена событиями между модулями
 EventBus eventBus = EventBus();
@@ -10,32 +12,32 @@ class ModuleEvent {
   final String message;
 }
 
-/// Фоновая инициализация удалённых настроек
+/// Инициализация настроек (теперь использует ваши локальные сервисы)
 Future<void> _initializeRemoteSettings() async {
   try {
-    // Получаем удалённую конфигурацию из файла на GitHub
-    const configUrl = 'https://raw.githubusercontent.com/yourusername/yourrepo/main/config.json';
-    final remoteConfigClient = RemoteConfigClient(configUrl: configUrl);
-    final config = await remoteConfigClient.fetchConfig();
-    RemoteConfigService.setConfig(config);
+    // 1. Cargamos configuración local de prueba (reemplazo del cliente externo)
+    RemoteConfigService.setConfig({
+      "module_calendar_enabled": true,
+      "module_calendar_version": "1.0.0"
+    });
 
-    // Получаем удалённый реестр модулей (в фоне)
+    // 2. Obtenemos el registro de módulos que definiste
     final remoteModules = await fetchRemoteModuleRegistry();
+    
     for (final moduleInfo in remoteModules) {
-      // Пример проверки: флаг из удалённой конфигурации, включение модуля и проверка версии
       final bool featureEnabled = RemoteConfigService.isModuleEnabled(moduleInfo.id);
       final String? requiredVersion = RemoteConfigService.getModuleVersion(moduleInfo.id);
+      
       if (moduleInfo.enabled && featureEnabled && (requiredVersion == moduleInfo.version)) {
         if (moduleInfo.id == 'calendar') {
-          registerCalendarMiniApp();
+          print('Registrando mini-app: ${moduleInfo.name}');
+          // Aquí puedes llamar a tu lógica de registro real
         }
-        // Здесь можно добавить регистрацию других модулей, например:
-        // if (moduleInfo.id == 'news') { registerNewsMiniApp(); }
       } else {
-        print('Модуль ${moduleInfo.id} не соответствует требованиям или отключён');
+        print('Módulo ${moduleInfo.id} deshabilitado o versión incorrecta');
       }
     }
   } catch (e) {
-    print('Ошибка при загрузке удалённой конфигурации или реестра модулей: $e');
+    print('Error en la inicialización: $e');
   }
 }

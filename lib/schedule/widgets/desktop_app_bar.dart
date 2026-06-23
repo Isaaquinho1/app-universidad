@@ -84,7 +84,7 @@ class DesktopAppBar extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(HugeIcons.strokeRoundedCalendar04, size: 18, color: colors.colorful04),
+                   HugeIcon(icon: HugeIcons.strokeRoundedCalendar04, size: 18, color: colors.colorful04),
                   const SizedBox(width: 8),
                   Text(
                     '$weekNumber неделя',
@@ -149,7 +149,7 @@ class DesktopAppBar extends StatelessWidget {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     Color avatarColor;
-    IconData avatarIcon;
+    dynamic avatarIcon;
 
     if (selectedSchedule is SelectedGroupSchedule) {
       avatarColor = colors.colorful01;
@@ -247,7 +247,7 @@ class DesktopAppBar extends StatelessWidget {
 
   Widget _buildActionIconButton(
     BuildContext context, {
-    required IconData icon,
+    required dynamic icon,
     required String tooltip,
     required VoidCallback? onPressed,
     bool isActive = false,
@@ -290,7 +290,7 @@ class DesktopAppBar extends StatelessWidget {
 
   Widget _buildNavButton(
     BuildContext context, {
-    required IconData icon,
+    required dynamic icon,
     required VoidCallback onPressed,
     required String tooltip,
   }) {

@@ -4,7 +4,7 @@ import 'package:app_ui/app_ui.dart';
 class ShortDescriptionCard extends StatelessWidget {
   const ShortDescriptionCard({super.key, required this.icon, required this.text});
 
-  final IconData icon;
+  final dynamic icon;
   final String text;
 
   @override

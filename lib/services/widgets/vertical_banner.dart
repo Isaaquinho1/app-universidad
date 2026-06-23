@@ -21,7 +21,7 @@ class VerticalBanner extends StatelessWidget {
   final String description;
 
   /// The icon to display
-  final IconData iconData;
+  final dynamic iconData;
 
   /// The background color of the banner
   final Color color;

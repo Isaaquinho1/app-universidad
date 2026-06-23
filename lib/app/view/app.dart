@@ -23,8 +23,7 @@ import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
-import 'package:rtu_mirea_app/app/theme/cubit/theme_cubit.dart';
-import 'package:rtu_mirea_app/app/theme/cubit/theme_state.dart';
+import 'package:app_ui/app_ui.dart';
 
 import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
 
@@ -97,7 +96,7 @@ class App extends StatelessWidget {
           child: MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => HomeCubit()),
-              BlocProvider(create: (_) => ThemeCubit()),
+
               BlocProvider(
                 create:
                     (_) =>
@@ -196,12 +195,10 @@ class _AppViewState extends State<_AppView> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return BlocBuilder<ThemeCubit, ThemeState>(
-          builder: (context, themeState) {
-            final themeCubit = context.read<ThemeCubit>();
-
-            final lightTheme = themeCubit.getLightTheme();
-            final darkTheme = themeCubit.getDarkTheme();
+        return Builder(
+          builder: (context) {
+            final lightTheme = AppTheme.lightTheme;
+            final darkTheme = AppTheme.darkTheme;
 
             return PlatformProvider(
               builder:

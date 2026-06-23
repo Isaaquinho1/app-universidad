@@ -5,7 +5,7 @@ class ServiceIcon extends StatelessWidget {
 
   final Color color;
   final Color iconColor;
-  final IconData icon;
+  final dynamic icon;
 
   @override
   Widget build(BuildContext context) {

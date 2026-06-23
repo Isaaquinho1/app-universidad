@@ -70,7 +70,7 @@ class _SetCommentBottomSheetContentState<T> extends State<SetCommentBottomSheetC
               ),
               child: Row(
                 children: [
-                  Icon(HugeIcons.strokeRoundedCalendar02, color: appColors.active, size: 24),
+                   HugeIcon(icon: HugeIcons.strokeRoundedCalendar02, color: appColors.active, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(scheduleName, style: AppTextStyle.titleM, maxLines: 1, overflow: TextOverflow.ellipsis),

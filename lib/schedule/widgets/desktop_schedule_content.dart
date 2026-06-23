@@ -182,8 +182,8 @@ class DesktopScheduleContent extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      HugeIcons.strokeRoundedChart,
+                    HugeIcon(
+                     icon: HugeIcons.strokeRoundedChart,
                       size: 16,
                       color: showAnalytics ? colors.colorful04 : colors.deactive,
                     ),
@@ -328,7 +328,7 @@ class _EventsPageView extends StatelessWidget {
   Widget _buildActionButton(
     BuildContext context, {
     required String text,
-    required IconData icon,
+    required dynamic icon,
     required Color color,
   }) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -456,7 +456,7 @@ class _EventsPageView extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 4.0),
                 child: Row(
                   children: [
-                    Icon(HugeIcons.strokeRoundedHourglass, size: 16, color: colors.deactive),
+                     HugeIcon(icon: HugeIcons.strokeRoundedHourglass, size: 16, color: colors.deactive),
                     const SizedBox(width: 8),
                     Text(
                       context.l10n.windowGap(windowCount),
@@ -487,7 +487,7 @@ class _EventsPageView extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-          Icon(HugeIcons.strokeRoundedBorderNone01, size: 18, color: colors.deactive),
+           HugeIcon(icon: HugeIcons.strokeRoundedBorderNone01, size: 18, color: colors.deactive),
           const SizedBox(width: 8),
           Text(
             context.l10n.noClass,

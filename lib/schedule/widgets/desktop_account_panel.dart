@@ -18,7 +18,7 @@ class DesktopAccountPanel extends StatelessWidget {
 
     String scheduleTitle = 'Выберите расписание';
     String scheduleSubtitle = 'Нажмите, чтобы выбрать';
-    IconData iconData = HugeIcons.strokeRoundedUniversity;
+    dynamic iconData = HugeIcons.strokeRoundedUniversity;
     Color iconColor = colors.deactive;
 
     if (state.selectedSchedule != null) {

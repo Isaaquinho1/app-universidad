@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 /// A card widget that displays a list of quick action tiles.
 ///
@@ -53,7 +54,7 @@ class QuickActionTile extends StatelessWidget {
   });
 
   /// The icon to display on the left side of the tile.
-  final IconData icon;
+  final dynamic icon;
 
   /// The main title text.
   final String title;
@@ -85,7 +86,9 @@ class QuickActionTile extends StatelessWidget {
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: icon is IconData
+    ? Icon(icon as IconData, color: color, size: 24)
+    : HugeIcon(icon: icon as List<List<dynamic>>, color: color, size: 24),
             ),
             const SizedBox(width: AppSpacing.lg),
             Expanded(

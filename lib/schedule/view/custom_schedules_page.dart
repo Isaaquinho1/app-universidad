@@ -59,7 +59,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                             Expanded(
                               child: TextButton.icon(
                                 onPressed: () => _showCreateScheduleDialog(),
-                                icon: const Icon(HugeIcons.strokeRoundedCalendar01, size: 20),
+                                icon: const  HugeIcon(icon: HugeIcons.strokeRoundedCalendar01, size: 20, color: Colors.grey),
                                 label: const Text('Создать расписание'),
                                 style: TextButton.styleFrom(
                                   foregroundColor: colors.primary,
@@ -75,7 +75,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                               Expanded(
                                 child: TextButton.icon(
                                   onPressed: () => _addCustomLesson(state.customSchedules.first.id),
-                                  icon: const Icon(HugeIcons.strokeRoundedNotebook01, size: 20),
+                                  icon: const  HugeIcon(icon: HugeIcons.strokeRoundedNotebook01, size: 20, color: Colors.grey),
                                   label: const Text('Добавить пару'),
                                   style: TextButton.styleFrom(
                                     foregroundColor: colors.colorful07,
@@ -157,7 +157,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(color: colors.primary.withOpacity(0.1), shape: BoxShape.circle),
-                    child: Center(child: Icon(HugeIcons.strokeRoundedCalendar01, size: 24, color: colors.primary)),
+                    child: Center(child:  HugeIcon(icon: HugeIcons.strokeRoundedCalendar01, size: 24, color: colors.primary)),
                   ),
                   const SizedBox(width: AppSpacing.lg),
                   Expanded(
@@ -213,7 +213,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
                     ),
                     onPressed: () => _showScheduleLessons(schedule),
-                    icon: const Icon(HugeIcons.strokeRoundedListView, size: 18),
+                    icon: const  HugeIcon(icon: HugeIcons.strokeRoundedListView, size: 18, color: Colors.grey),
                     label: const Text('Список пар'),
                   ),
                 ),
@@ -226,7 +226,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
                   ),
                   onPressed: () => _addCustomLesson(schedule.id),
-                  icon: const Icon(HugeIcons.strokeRoundedAdd01, size: 18),
+                  icon: const  HugeIcon(icon: HugeIcons.strokeRoundedAdd01, size: 18, color: Colors.grey),
                   label: const Text('Пара'),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -248,7 +248,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
     );
   }
 
-  Widget _buildStatistic(BuildContext context, String value, String label, IconData icon) {
+  Widget _buildStatistic(BuildContext context, String value, String label, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     return Row(
@@ -461,7 +461,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
               Navigator.pop(context);
               _addCustomLesson(schedule.id);
             },
-            icon: const Icon(HugeIcons.strokeRoundedAdd01),
+            icon: const  HugeIcon(icon: HugeIcons.strokeRoundedAdd01, color: Colors.grey),
             label: const Text('Создать новую пару'),
           ),
         ),
@@ -577,7 +577,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
     );
   }
 
-  Widget _buildLessonInfoChip(BuildContext context, String text, Color color, {IconData? icon}) {
+  Widget _buildLessonInfoChip(BuildContext context, String text, Color color, {dynamic icon}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppSpacing.sm)),

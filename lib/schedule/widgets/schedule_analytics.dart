@@ -60,8 +60,8 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
       children: [
         Row(
           children: [
-            Icon(
-              HugeIcons.strokeRoundedChartBarLine,
+            HugeIcon(
+             icon: HugeIcons.strokeRoundedChartBarLine,
               size: 24,
               color: colors.colorful04,
             ),
@@ -107,7 +107,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(HugeIcons.strokeRoundedChartColumn, size: 16),
+                     HugeIcon(icon: HugeIcons.strokeRoundedChartColumn, size: 16, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(context.l10n.loadByDaysChart),
                   ],
@@ -118,7 +118,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(HugeIcons.strokeRoundedChartAverage, size: 16),
+                     HugeIcon(icon: HugeIcons.strokeRoundedChartAverage, size: 16, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(context.l10n.lessonTypesChart),
                   ],
@@ -129,7 +129,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(HugeIcons.strokeRoundedTeacher, size: 16),
+                     HugeIcon(icon: HugeIcons.strokeRoundedTeacher, size: 16, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(context.l10n.teachersChart),
                   ],
@@ -140,7 +140,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(HugeIcons.strokeRoundedUniversity, size: 16),
+                     HugeIcon(icon: HugeIcons.strokeRoundedUniversity, size: 16, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(context.l10n.classroomsChart),
                   ],
@@ -183,8 +183,8 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                HugeIcons.strokeRoundedChart,
+              child: HugeIcon(
+               icon: HugeIcons.strokeRoundedChart,
                 size: 36,
                 color: colors.deactive,
               ),
@@ -271,8 +271,8 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
             ),
             child: Row(
               children: [
-                Icon(
-                  HugeIcons.strokeRoundedDownload01,
+                HugeIcon(
+                 icon: HugeIcons.strokeRoundedDownload01,
                   size: 16,
                   color: colors.deactive,
                 ),
@@ -296,7 +296,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
     BuildContext context, {
     required String title,
     required String subtitle,
-    required IconData icon,
+    required dynamic icon,
     required VoidCallback onTap,
   }) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -776,7 +776,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
     required String name,
     required int count,
     required double percent,
-    IconData icon = HugeIcons.strokeRoundedTeacher,
+    dynamic icon = HugeIcons.strokeRoundedTeacher,
     required Color color,
   }) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -831,7 +831,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
     BuildContext context, {
     required String title,
     required String value,
-    required IconData icon,
+    required dynamic icon,
     required Color color,
     String? subtitle,
   }) {

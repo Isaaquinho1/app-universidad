@@ -20,7 +20,7 @@ class HorizontalServiceCard extends StatelessWidget {
   final String description;
 
   /// The icon to display
-  final IconData iconData;
+  final dynamic iconData;
 
   /// The color of the icon background
   final Color color;

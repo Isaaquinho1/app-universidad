@@ -419,7 +419,7 @@ class _CalendarWeeksHeader extends StatelessWidget {
 
   Widget _buildNavButton(
     BuildContext context,
-    IconData icon,
+    dynamic icon,
     AppColors colors,
     VoidCallback onPressed,
   ) {

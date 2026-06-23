@@ -147,7 +147,7 @@ class _TopicCardState extends State<TopicCard> {
 class _IconStat extends StatelessWidget {
   const _IconStat({required this.icon, required this.count});
 
-  final IconData icon;
+  final dynamic icon;
   final int count;
 
   @override

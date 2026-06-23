@@ -385,7 +385,7 @@ class _LessonCardState extends State<LessonCard> {
     Color color, {
     bool isHighlighted = false,
     bool showBorder = false,
-    IconData? icon,
+    dynamic icon,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: icon != null ? 8 : 10, vertical: 5),
@@ -462,7 +462,7 @@ class _LessonCardState extends State<LessonCard> {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String text, Color textColor) {
+  Widget _buildInfoRow(BuildContext context, dynamic icon, String text, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(

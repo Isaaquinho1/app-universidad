@@ -50,7 +50,7 @@ class NfcCardInfo extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  final IconData icon;
+  final dynamic icon;
   final String label;
   final String value;
   final Color? valueColor;

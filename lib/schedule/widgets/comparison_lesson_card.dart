@@ -94,7 +94,7 @@ class ComparisonLessonCard extends StatelessWidget {
         .join(', ');
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String text) {
+  Widget _buildInfoRow(BuildContext context, dynamic icon, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(

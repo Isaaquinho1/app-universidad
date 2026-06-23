@@ -125,7 +125,7 @@ class LostFoundDetailPage extends StatelessWidget {
 
   Widget _buildContactButton(
     BuildContext context, {
-    required IconData icon,
+    required dynamic icon,
     required String label,
     required Color color,
     required VoidCallback onTap,
@@ -357,7 +357,7 @@ class _DetailPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildContactItem(BuildContext context, String title, String value, IconData icon, Color color) {
+  Widget _buildContactItem(BuildContext context, String title, String value, dynamic icon, Color color) {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(

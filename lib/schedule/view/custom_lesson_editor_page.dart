@@ -134,7 +134,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
           Tooltip(
             message: 'Сохранить',
             child: IconButton(
-              icon: Icon(HugeIcons.strokeRoundedCheckmarkCircle02, color: colors.primary),
+              icon:  HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle02, color: colors.primary),
               onPressed: _saveLesson,
             ),
           ),
@@ -846,7 +846,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
   Widget _buildLocationOption({
     required String title,
-    required IconData icon,
+    required dynamic icon,
     required bool isSelected,
     required VoidCallback onTap,
   }) {

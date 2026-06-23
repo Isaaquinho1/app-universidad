@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class MultiSelectChip<T> extends StatelessWidget {
   const MultiSelectChip({
@@ -58,7 +59,7 @@ class MultiSelectChip<T> extends StatelessWidget {
   final Axis direction;
 
   /// Иконка для чипов (опционально)
-  final IconData? icon;
+  final dynamic icon;
 
   /// Если true, можно выбрать только один элемент
   final bool isSingleSelect;
@@ -110,11 +111,17 @@ class MultiSelectChip<T> extends StatelessWidget {
                 ),
               ),
               avatar: icon != null
-                  ? Icon(
-                      icon,
-                      size: 16,
-                      color: isSelected ? activeColor : colors.deactive,
-                    )
+                  ? (icon is IconData
+                      ? Icon(
+                          icon as IconData,
+                          size: 16,
+                          color: isSelected ? activeColor : colors.deactive,
+                        )
+                      : HugeIcon(
+                          icon: icon as List<List<dynamic>>,
+                          size: 16,
+                          color: isSelected ? activeColor : colors.deactive,
+                        ))
                   : null,
               selected: isSelected,
               selectedColor: activeColor.withOpacity(0.15),

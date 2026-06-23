@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 abstract class ServiceModel {
   final String title;
   final String? description;
-  final IconData iconData;
+  final dynamic iconData;
   final Color color;
   final String? url;
   final bool isExternal;

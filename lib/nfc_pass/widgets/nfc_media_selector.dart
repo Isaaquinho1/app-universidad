@@ -67,7 +67,7 @@ class NfcMediaSelector extends StatelessWidget {
 }
 
 class _MediaButton extends StatelessWidget {
-  final IconData icon;
+  final dynamic icon;
   final String text;
   final VoidCallback? onPressed;
   final bool isPrimary;

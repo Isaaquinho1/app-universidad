@@ -23,7 +23,7 @@ class StickyHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(HugeIcons.strokeRoundedCalendar04, size: 17.5),
+            HugeIcon(icon: HugeIcons.strokeRoundedCalendar04, size: 17.5, color: Colors.grey),
             const SizedBox(width: 8),
             Text(DateFormat('EEEE, d MMMM', 'ru').format(day), style: AppTextStyle.bodyBold),
           ],

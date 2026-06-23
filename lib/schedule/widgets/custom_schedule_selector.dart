@@ -123,7 +123,7 @@ class _CustomScheduleSelectorState extends State<CustomScheduleSelector> {
   Widget _buildOptionButton(
     BuildContext context, {
     required String title,
-    required IconData icon,
+    required dynamic icon,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
@@ -274,8 +274,8 @@ class _CustomScheduleSelectorState extends State<CustomScheduleSelector> {
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Icon(
-                      HugeIcons.strokeRoundedCalendar02,
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedCalendar02,
                       size: 24,
                       color: isSelected ? colors.primary : colors.deactive,
                     ),
@@ -338,8 +338,8 @@ class _CustomScheduleSelectorState extends State<CustomScheduleSelector> {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                HugeIcons.strokeRoundedCalendar01,
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedCalendar01,
                 size: 40,
                 color: Theme.of(context).extension<AppColors>()!.deactive,
               ),
@@ -359,7 +359,7 @@ class _CustomScheduleSelectorState extends State<CustomScheduleSelector> {
           ),
           const SizedBox(height: 16),
           OutlinedButton.icon(
-            icon: Icon(HugeIcons.strokeRoundedAdd01, size: 16),
+            icon:  HugeIcon(icon: HugeIcons.strokeRoundedAdd01, size: 16, color: Colors.grey),
             label: Text(context.l10n.createSchedule),
             onPressed: () => setState(() => _isCreatingNew = true),
           ),
@@ -368,7 +368,7 @@ class _CustomScheduleSelectorState extends State<CustomScheduleSelector> {
     );
   }
 
-  Widget _buildLessonInfo(BuildContext context, String text, Color color, {IconData? icon}) {
+  Widget _buildLessonInfo(BuildContext context, String text, Color color, {dynamic icon}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),

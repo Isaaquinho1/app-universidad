@@ -242,7 +242,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
     );
   }
 
-  Widget _buildStatusOption(String label, LostFoundItemStatus value, IconData icon, AppColors appColors) {
+  Widget _buildStatusOption(String label, LostFoundItemStatus value, dynamic icon, AppColors appColors) {
     final isSelected = _formState.status == value;
 
     return GestureDetector(

@@ -72,7 +72,7 @@ class LessonTypeSelector extends StatelessWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(color: color.withOpacity(0.15), shape: BoxShape.circle),
-                        child: Center(child: Icon(icon, size: 20, color: color)),
+                        child: Center(child: HugeIcon(icon: icon, size: 20, color: color)),
                       ),
                       const SizedBox(width: 8),
                       Expanded(

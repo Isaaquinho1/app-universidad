@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 /// A customizable back button widget that adapts to different themes.
 class AppBackButton extends StatelessWidget {
@@ -22,7 +23,7 @@ class AppBackButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   /// The icon to display in the button.
-  final IconData icon;
+  final dynamic icon;
 
   /// The color of the icon. If null, uses theme colors.
   final Color? iconColor;
@@ -30,13 +31,19 @@ class AppBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
+    final resolvedColor = iconColor ?? colors.active;
 
     return IconButton(
       onPressed: onPressed,
-      icon: Icon(
-        icon,
-        color: iconColor ?? colors.active,
-      ),
+      icon: icon is IconData
+          ? Icon(
+              icon as IconData,
+              color: resolvedColor,
+            )
+          : HugeIcon(
+              icon: icon as List<List<dynamic>>,
+              color: resolvedColor,
+            ),
       splashRadius: 20,
       tooltip: MaterialLocalizations.of(context).backButtonTooltip,
     );

@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 /// A reusable widget for displaying various empty states or failure scenarios.
 ///
@@ -31,7 +32,7 @@ class FailureScreen extends StatelessWidget {
   final String? description;
 
   /// The icon to display at the top of the screen.
-  final IconData? icon;
+  final dynamic icon;
 
   /// The size of the icon.
   final double iconSize;
@@ -46,7 +47,7 @@ class FailureScreen extends StatelessWidget {
   final String? buttonText;
 
   /// The icon to show in the action button.
-  final IconData? buttonIcon;
+  final dynamic buttonIcon;
 
   /// The callback that is called when the action button is tapped.
   final VoidCallback? onButtonPressed;
@@ -76,8 +77,8 @@ class FailureScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Icon(
-                    icon,
+                  child: HugeIcon(
+                    icon: icon as List<List<dynamic>>,
                     size: iconSize,
                     color: iconColor ?? colors.deactive,
                   ),
@@ -102,7 +103,12 @@ class FailureScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxlg),
               PrimaryButton(
                 onPressed: onButtonPressed,
-                icon: Icon(buttonIcon ?? Icons.add),
+                icon: buttonIcon is IconData 
+                    ? Icon(buttonIcon as IconData) 
+                    : HugeIcon(
+                        icon: buttonIcon as List<List<dynamic>>,
+                        color: Colors.white, // Ajusta al color que requiera tu botón
+                      ),
                 text: buttonText!,
               ),
             ],

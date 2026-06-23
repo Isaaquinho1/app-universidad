@@ -331,7 +331,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
     );
   }
 
-  Widget _buildIconButton(IconData icon, VoidCallback onPressed, Color color) {
+  Widget _buildIconButton(dynamic icon, VoidCallback onPressed, Color color) {
     return IconButton(
       icon: Icon(icon, size: 20),
       color: color,
@@ -344,7 +344,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
     );
   }
 
-  Widget _buildInfoCard(IconData icon, String text) {
+  Widget _buildInfoCard(dynamic icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(

@@ -31,7 +31,7 @@ class DateTimeField extends StatelessWidget {
   final DateTime? lastDate;
   final bool isTime;
   final DateFormat? dateFormat;
-  final IconData? icon;
+  final dynamic icon;
   final Color? iconColor;
   final bool showBorder;
   final double borderRadius;

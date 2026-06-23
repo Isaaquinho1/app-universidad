@@ -143,7 +143,7 @@ class DesktopCalendarPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildNavButton(BuildContext context, {required IconData icon, required VoidCallback onPressed}) {
+  Widget _buildNavButton(BuildContext context, {required dynamic icon, required VoidCallback onPressed}) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     return InkWell(
@@ -239,7 +239,7 @@ class DesktopCalendarPanel extends StatelessWidget {
     BuildContext context, {
     required int count,
     required String label,
-    required IconData icon,
+    required dynamic icon,
     required Color color,
   }) {
     final colors = Theme.of(context).extension<AppColors>()!;

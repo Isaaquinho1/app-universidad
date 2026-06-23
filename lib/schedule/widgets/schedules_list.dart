@@ -31,7 +31,7 @@ class SchedulesList extends StatelessWidget {
     }
   }
 
-  void _showSnackbar(BuildContext context, String message, IconData icon) {
+  void _showSnackbar(BuildContext context, String message, dynamic icon) {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Row(children: [Icon(icon), const SizedBox(width: 8), Text(message)])));

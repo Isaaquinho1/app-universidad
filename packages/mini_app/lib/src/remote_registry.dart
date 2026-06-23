@@ -28,29 +28,33 @@ class ModuleInfo {
   final String? updateUrl;
 }
 
-/// Симуляция запроса к удалённому реестру модулей.
-/// Здесь можно заменить на http-запрос к файлу на GitHub.
+/// Simulación de solicitud al registro remoto de módulos.
+/// Aquí puedes reemplazarlo con una solicitud http real a un archivo en GitHub.
 Future<List<ModuleInfo>> fetchRemoteModuleRegistry() async {
-  await Future.delayed(const Duration(seconds: 1)); // Симуляция задержки
+  await Future.delayed(const Duration(seconds: 1)); 
   const jsonString = '''
   [
     {
       "id": "calendar",
-      "name": "Календарь",
-      "author": "Команда Календаря",
+      "name": "Calendario",
+      "author": "Equipo de Calendario",
       "version": "1.0.0",
       "enabled": true,
       "updateUrl": "https://example.com/modules/calendar/update"
     },
     {
       "id": "news",
-      "name": "Новости",
-      "author": "Команда Новостей",
+      "name": "Noticias",
+      "author": "Equipo de Noticias",
       "version": "1.0.0",
       "enabled": false
     }
   ]
   ''';
-  final List<dynamic> jsonData = json.decode(jsonString);
-  return jsonData.map((json) => ModuleInfo.fromJson(json)).toList();
+  
+  // CORRECCIÓN AQUÍ: Forzamos la conversión a List<dynamic>
+  final List<dynamic> jsonData = json.decode(jsonString) as List<dynamic>;
+  
+  // Y aquí, al mapear, aseguramos que cada elemento es un Map<String, dynamic>
+  return jsonData.map((item) => ModuleInfo.fromJson(item as Map<String, dynamic>)).toList();
 }

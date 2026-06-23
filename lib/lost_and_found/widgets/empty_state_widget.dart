@@ -5,7 +5,7 @@ import 'package:rtu_mirea_app/app/app.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   final String message;
-  final IconData icon;
+  final dynamic icon;
   final String? buttonText;
   final VoidCallback? onButtonPressed;
 

@@ -121,7 +121,7 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
     );
   }
 
-  Widget _buildThemeOption(ThemeOption option, String title, IconData icon) {
+  Widget _buildThemeOption(ThemeOption option, String title, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final isSelected = _selectedTheme == option;
 
