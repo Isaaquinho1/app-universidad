@@ -369,7 +369,7 @@ class InfoRoute extends GoRouteData {
 
 GoRouter createRouter() => GoRouter(
   routes: $appRoutes,
-  initialLocation: '/home',
+  initialLocation: '/profile',
   debugLogDiagnostics: kDebugMode,
   observers: [
     FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
