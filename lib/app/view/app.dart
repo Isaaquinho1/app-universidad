@@ -235,10 +235,13 @@ class _AppViewState extends State<_AppView> {
                             supportedLocales: const [
                               Locale('en'),
                               Locale('ru'),
+                              Locale('es'),
                             ],
-                            locale: const Locale('ru'),
+                            localeResolutionCallback: (deviceLocale, supportedLocales) {
+                            return const Locale('es');
+                            },
                             debugShowCheckedModeBanner: false,
-                            title: 'Приложение РТУ МИРЭА',
+                            title: 'ITTlapan',
                             routerConfig: _router,
                             builder:
                                 (context, child) =>

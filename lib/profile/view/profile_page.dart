@@ -9,6 +9,7 @@ import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
 
 import 'package:rtu_mirea_app/profile/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:rtu_mirea_app/l10n/l10n.dart';
 
 enum ThemeOption { light, dark, system }
 
@@ -18,7 +19,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Профиль")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.profile)),
       body: SafeArea(
         bottom: false,
         child: LayoutBuilder(
