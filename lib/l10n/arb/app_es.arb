@@ -1,1673 +1,1673 @@
 {
   "@@locale": "es",
-  "scheduleAppBarTitle": "Schedule",
+  "scheduleAppBarTitle": "Horario",
   "@scheduleAppBarTitle": {
-    "description": "Title for the schedule page"
+    "description": "Título para la página del horario"
   },
-  "loadingError": "Loading error",
+  "loadingError": "Error de carga",
   "@loadingError": {
-    "description": "Error message when loading fails"
+    "description": "Mensaje de error cuando falla la carga"
   },
-  "imageViewer": "Image viewer",
+  "imageViewer": "Visor de imágenes",
   "@imageViewer": {
-    "description": "Title for image viewer"
+    "description": "Título para el visor de imágenes"
   },
-  "selectDate": "Select date",
+  "selectDate": "Seleccionar fecha",
   "@selectDate": {
-    "description": "Button text to select a date"
+    "description": "Texto del botón para seleccionar una fecha"
   },
-  "selectDates": "Select dates",
+  "selectDates": "Seleccionar fechas",
   "@selectDates": {
-    "description": "Button text to select date range"
+    "description": "Texto del botón para seleccionar un rango de fechas"
   },
-  "enableComparisonMode": "Enable comparison mode",
+ "enableComparisonMode": "Activar modo comparación",
   "@enableComparisonMode": {
-    "description": "Tooltip for enabling comparison mode"
+    "description": "Texto emergente para activar el modo comparación"
   },
-  "disableComparisonMode": "Disable comparison mode",
+  "disableComparisonMode": "Desactivar modo comparación",
   "@disableComparisonMode": {
-    "description": "Tooltip for disabling comparison mode"
+    "description": "Texto emergente para desactivar el modo comparación"
   },
-  "compareSchedules": "Compare schedules",
+  "compareSchedules": "Comparar horarios",
   "@compareSchedules": {
-    "description": "Button text for comparing schedules"
+    "description": "Texto del botón para comparar horarios"
   },
-  "noClassesToday": "No classes today",
+  "noClassesToday": "No hay clases hoy",
   "@noClassesToday": {
-    "description": "Message when there are no classes"
+    "description": "Mensaje cuando no hay clases programadas"
   },
-  "selectTime": "Select time",
+  "selectTime": "Seleccionar hora",
   "@selectTime": {
-    "description": "Placeholder for time selection"
+    "description": "Marcador de posición para la selección de hora"
   },
-  "clear": "Clear",
+  "clear": "Limpiar",
   "@clear": {
-    "description": "Button text to clear selection"
+    "description": "Texto del botón para limpiar la selección"
   },
-  "month": "Month",
+  "month": "Mes",
   "@month": {
-    "description": "Calendar format - month view"
+    "description": "Formato de calendario - vista mensual"
   },
-  "week": "Week",
+  "week": "Semana",
   "@week": {
-    "description": "Calendar format - week view"
+    "description": "Formato de calendario - vista semanal"
   },
-  "apply": "Apply",
+  "apply": "Aplicar",
   "@apply": {
-    "description": "Button text to apply changes"
+    "description": "Texto del botón para aplicar cambios"
   },
-  "previousDay": "Previous day",
+  "previousDay": "Día anterior",
   "@previousDay": {
-    "description": "Tooltip for previous day button"
+    "description": "Texto emergente para el botón de día anterior"
   },
-  "nextDay": "Next day",
+ "nextDay": "Día siguiente",
   "@nextDay": {
-    "description": "Tooltip for next day button"
+    "description": "Texto emergente para el botón de día siguiente"
   },
-  "today": "Today",
+  "today": "Hoy",
   "@today": {
-    "description": "Button text for today"
+    "description": "Texto del botón para ir al día de hoy"
   },
-  "refreshData": "Refresh data",
+  "refreshData": "Actualizar datos",
   "@refreshData": {
-    "description": "Tooltip for refresh button"
+    "description": "Texto emergente para el botón de actualizar"
   },
-  "scheduleComparison": "Schedule comparison",
+  "scheduleComparison": "Comparación de horarios",
   "@scheduleComparison": {
-    "description": "Schedule comparison title"
+    "description": "Título de comparación de horarios"
   },
-  "scheduleAnalytics": "Schedule analytics",
+  "scheduleAnalytics": "Analítica de horarios",
   "@scheduleAnalytics": {
-    "description": "Tooltip for schedule analytics"
+    "description": "Texto emergente para la analítica de horarios"
   },
-  "allClassesList": "All classes list",
+  "allClassesList": "Lista de todas las clases",
   "@allClassesList": {
-    "description": "Tooltip for all classes list"
+    "description": "Texto emergente para la lista de todas las clases"
   },
-  "scheduleNotSelected": "Schedule not selected",
+  "scheduleNotSelected": "Horario no seleccionado",
   "@scheduleNotSelected": {
-    "description": "Message when no schedule is selected"
+    "description": "Mensaje cuando no hay un horario seleccionado"
   },
-  "findSchedule": "Find schedule",
+  "findSchedule": "Buscar horario",
   "@findSchedule": {
-    "description": "Button text to find schedule"
+    "description": "Texto del botón para buscar un horario"
   },
-  "scheduleForSelectedDay": "Schedule for selected day",
+  "scheduleForSelectedDay": "Horario para el día seleccionado",
   "@scheduleForSelectedDay": {
-    "description": "Title for schedule content"
+    "description": "Título para el contenido del horario"
   },
-  "tomorrow": "tomorrow",
+  "tomorrow": "Mañana",
   "@tomorrow": {
-    "description": "Text for tomorrow"
+    "description": "Texto para mañana"
   },
-  "showEmptyClasses": "Show empty classes",
+  "showEmptyClasses": "Mostrar clases vacías",
   "@showEmptyClasses": {
-    "description": "Checkbox label for showing empty classes"
+    "description": "Etiqueta de la casilla de verificación para mostrar clases vacías"
   },
-  "emptyClasses": "Empty classes",
+  "emptyClasses": "Clases vacías",
   "@emptyClasses": {
-    "description": "Label for empty classes section"
+    "description": "Etiqueta para la sección de clases vacías"
   },
-  "analytics": "Analytics",
+  "analytics": "Analítica",
   "@analytics": {
-    "description": "Label for analytics section"
+    "description": "Etiqueta para la sección de analítica"
   },
-  "weekend": "Weekend",
+  "weekend": "Fin de semana",
   "@weekend": {
-    "description": "Title for weekend page"
+    "description": "Título para la página de fin de semana"
   },
-  "noClassesThisDay": "No classes this day",
+  "noClassesThisDay": "No hay clases este día",
   "@noClassesThisDay": {
-    "description": "Message when there are no classes on a specific day"
+    "description": "Mensaje cuando no hay clases en un día específico"
   },
-  "canRestOrStudy": "You can rest or do independent work",
+  "canRestOrStudy": "Puedes descansar o realizar trabajo independiente",
   "@canRestOrStudy": {
-    "description": "Suggestion for free time"
+    "description": "Sugerencia para el tiempo libre"
   },
-  "goToAnotherDay": "Go to another day",
+ "goToAnotherDay": "Ir a otro día",
   "@goToAnotherDay": {
-    "description": "Button text to navigate to another day"
+    "description": "Texto del botón para navegar a otro día"
   },
-  "classesCount": "{count, plural, =1{class} few{classes} other{classes}}",
+  "classesCount": "{count, plural, =0{sin clases} =1{1 clase} other{{count} clases}}",
   "@classesCount": {
-    "description": "Plural form for classes count",
+    "description": "Forma plural para el conteo de clases",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "noClass": "No class",
+  "noClass": "Sin clase",
   "@noClass": {
-    "description": "Text when there's no class"
+    "description": "Texto cuando no hay clase"
   },
-  "displaySettings": "Display settings",
+  "displaySettings": "Ajustes de visualización",
   "@displaySettings": {
-    "description": "Title for display settings"
+    "description": "Título para los ajustes de visualización"
   },
-  "showCommentIndicators": "Show comment indicators",
+  "showCommentIndicators": "Mostrar indicadores de comentarios",
   "@showCommentIndicators": {
-    "description": "Checkbox label for showing comment indicators"
+    "description": "Etiqueta de la casilla de verificación para mostrar indicadores de comentarios"
   },
-  "compactCardMode": "Compact card mode",
+  "compactCardMode": "Modo de tarjeta compacta",
   "@compactCardMode": {
-    "description": "Checkbox label for compact card mode"
+    "description": "Etiqueta de la casilla de verificación para el modo de tarjeta compacta"
   },
-  "lecture": "Lecture",
+  "lecture": "Clase magistral",
   "@lecture": {
-    "description": "Lesson type - lecture"
+    "description": "Tipo de lección - clase magistral"
   },
-  "laboratory": "Laboratory",
+  "laboratory": "Laboratorio",
   "@laboratory": {
-    "description": "Lesson type - laboratory"
+    "description": "Tipo de lección - laboratorio"
   },
-  "practice": "Practice",
+  "practice": "Práctica",
   "@practice": {
-    "description": "Lesson type - practice"
+    "description": "Tipo de lección - práctica"
   },
-  "exam": "Exam",
+  "exam": "Examen",
   "@exam": {
-    "description": "Lesson type - exam"
+    "description": "Tipo de lección - examen"
   },
-  "consultation": "Consultation",
+  "consultation": "Consulta",
   "@consultation": {
-    "description": "Lesson type - consultation"
+    "description": "Tipo de lección - consulta"
   },
-  "credit": "Credit",
+  "credit": "Crédito",
   "@credit": {
-    "description": "Lesson type - credit"
+    "description": "Tipo de lección - crédito"
   },
-  "unknown": "Unknown",
+  "unknown": "Desconocido",
   "@unknown": {
-    "description": "Unknown author label"
+    "description": "Etiqueta para autor desconocido"
   },
-  "lessonType": "Lesson type",
+  "lessonType": "Tipo de clase",
   "@lessonType": {
-    "description": "Label for lesson type selector"
+    "description": "Etiqueta para el selector de tipo de clase"
   },
   "individual": "Individual",
   "@individual": {
-    "description": "Lesson type - individual work"
+    "description": "Tipo de lección - trabajo individual"
   },
-  "physicalEducation": "Physical Education",
+  "physicalEducation": "Educación física",
   "@physicalEducation": {
-    "description": "Lesson type - physical education"
+    "description": "Tipo de lección - educación física"
   },
-  "courseWork": "Course Work",
+  "courseWork": "Trabajo de curso",
   "@courseWork": {
-    "description": "Lesson type - course work"
+    "description": "Tipo de lección - trabajo de curso"
   },
-  "courseProject": "Course Project",
+  "courseProject": "Proyecto de curso",
   "@courseProject": {
-    "description": "Lesson type - course project"
+    "description": "Tipo de lección - proyecto de curso"
   },
-  "mapsOnlyOnMobile": "Maps are only available on mobile devices",
+  "mapsOnlyOnMobile": "Los mapas solo están disponibles en dispositivos móviles",
   "@mapsOnlyOnMobile": {
-    "description": "Message for desktop users about maps"
+    "description": "Mensaje para usuarios de escritorio sobre los mapas"
   },
-  "scheduleAnalyticsTitle": "Schedule Analytics",
+  "scheduleAnalyticsTitle": "Analítica de horarios",
   "@scheduleAnalyticsTitle": {
-    "description": "Title for schedule analytics page"
+    "description": "Título para la página de analítica de horarios"
   },
-  "scheduleAnalyticsDescription": "Statistics and analysis of your academic schedule",
+  "scheduleAnalyticsDescription": "Estadísticas y análisis de tu horario académico",
   "@scheduleAnalyticsDescription": {
-    "description": "Description for schedule analytics"
+    "description": "Descripción para la analítica de horarios"
   },
-  "loadByDays": "Load by days",
+  "loadByDays": "Carga por días",
   "@loadByDays": {
-    "description": "Chart title for daily load"
+    "description": "Título del gráfico para la carga diaria"
   },
-  "lessonTypes": "Lesson types",
+  "lessonTypes": "Tipos de clases",
   "@lessonTypes": {
-    "description": "Chart title for lesson types"
+    "description": "Título del gráfico para los tipos de clases"
   },
-  "teachers": "Teachers",
+  "teachers": "Profesores",
   "@teachers": {
-    "description": "Teachers section title"
+    "description": "Título de la sección de profesores"
   },
-  "classrooms": "Classrooms",
+  "classrooms": "Aulas",
   "@classrooms": {
-    "description": "Classrooms section title"
+    "description": "Título de la sección de aulas"
   },
-  "noDataForAnalytics": "No data for analytics",
+  "noDataForAnalytics": "No hay datos para la analítica",
   "@noDataForAnalytics": {
-    "description": "Message when there's no data for analytics"
+    "description": "Mensaje cuando no hay datos para la analítica"
   },
-  "selectAnotherSchedule": "Select another schedule or check for classes",
+  "selectAnotherSchedule": "Selecciona otro horario o verifica si hay clases",
   "@selectAnotherSchedule": {
-    "description": "Suggestion when no analytics data"
+    "description": "Sugerencia cuando no hay datos de analítica"
   },
-  "exportData": "Export data",
+  "exportData": "Exportar datos",
   "@exportData": {
-    "description": "Button text for data export"
+    "description": "Texto del botón para exportar datos"
   },
-  "fullReportWithCharts": "Full report with all charts",
+  "fullReportWithCharts": "Informe completo con todos los gráficos",
   "@fullReportWithCharts": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "dataInTableFormat": "Data in table format",
+  "dataInTableFormat": "Datos en formato de tabla",
   "@dataInTableFormat": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "shareImage": "Share image",
+  "shareImage": "Compartir imagen",
   "@shareImage": {
-    "description": "Export option title"
+    "description": "Título de la opción de exportación"
   },
-  "currentOrAllCharts": "Current chart or all",
+  "currentOrAllCharts": "Gráfico actual o todos",
   "@currentOrAllCharts": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "export": "Export",
+  "export": "Exportar",
   "@export": {
-    "description": "Button text for export"
+    "description": "Texto del botón para exportar"
   },
-  "monday": "Monday",
+  "monday": "Lunes",
   "@monday": {
-    "description": "Day of week - Monday"
+    "description": "Día de la semana - Lunes"
   },
-  "tuesday": "Tuesday",
+  "tuesday": "Martes",
   "@tuesday": {
-    "description": "Day of week - Tuesday"
+    "description": "Día de la semana - Martes"
   },
-  "wednesday": "Wednesday",
+  "wednesday": "Miércoles",
   "@wednesday": {
-    "description": "Day of week - Wednesday"
+    "description": "Día de la semana - Miércoles"
   },
-  "thursday": "Thursday",
+  "thursday": "Jueves",
   "@thursday": {
-    "description": "Day of week - Thursday"
+    "description": "Día de la semana - Jueves"
   },
-  "friday": "Friday",
+  "friday": "Viernes",
   "@friday": {
-    "description": "Day of week - Friday"
+    "description": "Día de la semana - Viernes"
   },
-  "scheduleChanges": "Schedule changes",
+  "scheduleChanges": "Cambios en el horario",
   "@scheduleChanges": {
-    "description": "Title for schedule changes dialog"
+    "description": "Título para el diálogo de cambios en el horario"
   },
-  "calendar": "Calendar",
+  "calendar": "Calendario",
   "@calendar": {
-    "description": "Title for calendar page"
+    "description": "Título para la página de calendario"
   },
-  "scheduleLoadingError": "Error loading schedule",
+  "scheduleLoadingError": "Error al cargar el horario",
   "@scheduleLoadingError": {
-    "description": "Error message for schedule loading"
+    "description": "Mensaje de error para la carga del horario"
   },
-  "addSchedulesForComparison": "Add schedules for comparison",
+  "addSchedulesForComparison": "Añadir horarios para comparar",
   "@addSchedulesForComparison": {
-    "description": "Message when no schedules for comparison"
+    "description": "Mensaje cuando no hay horarios para comparar"
   },
-  "buildRoute": "Build route",
+  "buildRoute": "Trazar ruta",
   "@buildRoute": {
-    "description": "Button text to build route"
+    "description": "Texto del botón para trazar una ruta"
   },
-  "mySchedules": "My schedules",
+  "mySchedules": "Mis horarios",
   "@mySchedules": {
-    "description": "Title for custom schedules page"
+    "description": "Título para la página de horarios personalizados"
   },
-  "createSchedule": "Create schedule",
+  "createSchedule": "Crear horario",
   "@createSchedule": {
-    "description": "Button text to create schedule"
+    "description": "Texto del botón para crear un horario"
   },
-  "addClass": "Add class",
+  "addClass": "Añadir clase",
   "@addClass": {
-    "description": "Button text to add class"
+    "description": "Texto del botón para añadir una clase"
   },
-  "classesList": "Classes list",
+  "classesList": "Lista de clases",
   "@classesList": {
-    "description": "Button text for classes list"
+    "description": "Texto del botón para la lista de clases"
   },
-  "classLabel": "Class",
+  "classLabel": "Clase",
   "@classLabel": {
-    "description": "Label for single class"
+    "description": "Etiqueta para una sola clase"
   },
-  "open": "Open",
+  "open": "Abrir",
   "@open": {
-    "description": "Button text to open"
+    "description": "Texto del botón para abrir"
   },
-  "edit": "Edit",
+  "edit": "Editar",
   "@edit": {
-    "description": "Menu item to edit"
+    "description": "Elemento de menú para editar"
   },
-  "delete": "Delete",
+  "delete": "Eliminar",
   "@delete": {
-    "description": "Menu item to delete"
+    "description": "Elemento de menú para eliminar"
   },
-  "editSchedule": "Edit schedule",
+  "editSchedule": "Editar horario",
   "@editSchedule": {
-    "description": "Dialog title for editing schedule"
+    "description": "Título del diálogo para editar el horario"
   },
-  "cancel": "Cancel",
+  "cancel": "Cancelar",
   "@cancel": {
-    "description": "Button text to cancel"
+    "description": "Texto del botón para cancelar"
   },
-  "save": "Save",
+  "save": "Guardar",
   "@save": {
-    "description": "Button text to save"
+    "description": "Texto del botón para guardar"
   },
-  "deleteSchedule": "Delete schedule",
+  "deleteSchedule": "Eliminar horario",
   "@deleteSchedule": {
-    "description": "Dialog title for deleting schedule"
+    "description": "Título del diálogo para eliminar el horario"
   },
-  "deleteScheduleConfirmation": "Are you sure you want to delete schedule \"{scheduleName}\"?",
+ "deleteScheduleConfirmation": "¿Estás seguro de que quieres eliminar el horario \"{scheduleName}\"?",
   "@deleteScheduleConfirmation": {
-    "description": "Confirmation message for deleting schedule",
+    "description": "Mensaje de confirmación para eliminar un horario",
     "placeholders": {
       "scheduleName": {
         "type": "String"
       }
     }
   },
-  "createNewClass": "Create new class",
+  "createNewClass": "Crear nueva clase",
   "@createNewClass": {
-    "description": "Button text to create new class"
+    "description": "Texto del botón para crear una nueva clase"
   },
-  "noAddedClasses": "No added classes",
+  "noAddedClasses": "No hay clases añadidas",
   "@noAddedClasses": {
-    "description": "Message when no classes are added"
+    "description": "Mensaje cuando no hay clases añadidas"
   },
-  "deleteClass": "Delete class",
+  "deleteClass": "Eliminar clase",
   "@deleteClass": {
-    "description": "Dialog title for deleting class"
+    "description": "Título del diálogo para eliminar una clase"
   },
-  "deleteClassConfirmation": "Are you sure you want to delete class \"{subject}\" from schedule?",
+  "deleteClassConfirmation": "¿Estás seguro de que quieres eliminar la clase \"{subject}\" del horario?",
   "@deleteClassConfirmation": {
-    "description": "Confirmation message for deleting class",
+    "description": "Mensaje de confirmación para eliminar una clase",
     "placeholders": {
       "subject": {
         "type": "String"
       }
     }
   },
-  "start": "Start",
+  "start": "Inicio",
   "@start": {
-    "description": "Label for start time"
+    "description": "Etiqueta para la hora de inicio"
   },
-  "end": "End",
+  "end": "Fin",
   "@end": {
-    "description": "Label for end time"
+    "description": "Etiqueta para la hora de finalización"
   },
-  "endTimeMustBeAfterStart": "End time must be after start time",
+  "endTimeMustBeAfterStart": "La hora de fin debe ser posterior a la hora de inicio",
   "@endTimeMustBeAfterStart": {
-    "description": "Error message for invalid time range"
+    "description": "Mensaje de error para un rango de tiempo no válido"
   },
-  "classNumber": "Class number",
+  "classNumber": "Número de clase",
   "@classNumber": {
-    "description": "Label for class number"
+    "description": "Etiqueta para el número de clase"
   },
-  "none": "None",
+  "none": "Ninguno",
   "@none": {
-    "description": "Option for no class number"
+    "description": "Opción para sin número de clase"
   },
-  "groups": "Groups",
+  "groups": "Grupos",
   "@groups": {
-    "description": "Groups section title"
+    "description": "Título de la sección de grupos"
   },
-  "noTeachersSelected": "No teachers selected",
+  "noTeachersSelected": "No hay profesores seleccionados",
   "@noTeachersSelected": {
-    "description": "Message when no teachers are selected"
+    "description": "Mensaje cuando no hay profesores seleccionados"
   },
-  "addTeacher": "Add teacher",
+  "addTeacher": "Añadir profesor",
   "@addTeacher": {
-    "description": "Dialog title for adding teacher"
+    "description": "Título del diálogo para añadir un profesor"
   },
-  "add": "Add",
+ "add": "Añadir",
   "@add": {
-    "description": "Button text to add"
+    "description": "Texto del botón para añadir"
   },
-  "selectAtLeastOneDate": "Select at least one date",
+  "selectAtLeastOneDate": "Selecciona al menos una fecha",
   "@selectAtLeastOneDate": {
-    "description": "Validation missing dates"
+    "description": "Validación cuando faltan fechas"
   },
-  "addAtLeastOneClassroom": "Add at least one classroom or make the class online",
+  "addAtLeastOneClassroom": "Añade al menos un aula o marca la clase como online",
   "@addAtLeastOneClassroom": {
-    "description": "Error message for classroom selection"
+    "description": "Mensaje de error para la selección de aula"
   },
-  "noSelectedDates": "No selected dates",
+  "noSelectedDates": "No hay fechas seleccionadas",
   "@noSelectedDates": {
-    "description": "Message when no dates are selected"
+    "description": "Mensaje cuando no hay fechas seleccionadas"
   },
-  "selectDatesButton": "Select dates",
+  "selectDatesButton": "Seleccionar fechas",
   "@selectDatesButton": {
-    "description": "Button text to select dates"
+    "description": "Texto del botón para seleccionar fechas"
   },
-  "noSelectedClassrooms": "No selected classrooms",
+  "noSelectedClassrooms": "No hay aulas seleccionadas",
   "@noSelectedClassrooms": {
-    "description": "Message when no classrooms are selected"
+    "description": "Mensaje cuando no hay aulas seleccionadas"
   },
-  "addClassroom": "Add classroom",
+  "addClassroom": "Añadir aula",
   "@addClassroom": {
-    "description": "Button text to add classroom"
+    "description": "Texto del botón para añadir aula"
   },
-  "noGroupsSelected": "No groups selected",
+  "noGroupsSelected": "No hay grupos seleccionados",
   "@noGroupsSelected": {
-    "description": "Message when no groups are selected"
+    "description": "Mensaje cuando no hay grupos seleccionados"
   },
-  "addGroup": "Add group",
+  "addGroup": "Añadir grupo",
   "@addGroup": {
-    "description": "Dialog title for adding group"
+    "description": "Título del diálogo para añadir un grupo"
   },
-  "exampleClassNames": "Example class names:",
+  "exampleClassNames": "Ejemplos de nombres de clase:",
   "@exampleClassNames": {
-    "description": "Label for example class names"
+    "description": "Etiqueta para ejemplos de nombres de clase"
   },
-  "textCopied": "Text copied!",
+  "textCopied": "¡Texto copiado!",
   "@textCopied": {
-    "description": "Message when text is copied"
+    "description": "Mensaje cuando se copia un texto"
   },
-  "failedToOpenImage": "Failed to open image: {error}",
+  "failedToOpenImage": "No se pudo abrir la imagen: {error}",
   "@failedToOpenImage": {
-    "description": "Error message when image fails to open",
+    "description": "Mensaje de error cuando falla la apertura de una imagen",
     "placeholders": {
       "error": {
         "type": "String"
       }
     }
   },
-  "loginFailed": "Login failed",
+  "loginFailed": "Error de inicio de sesión",
   "@loginFailed": {
-    "description": "Error message for login failure"
+    "description": "Mensaje de error para el fallo de inicio de sesión"
   },
-  "next": "Next",
+  "next": "Siguiente",
   "@next": {
-    "description": "Button text for next"
+    "description": "Texto del botón para siguiente"
   },
-  "errorLoadingSponsors": "Error loading sponsors",
+  "errorLoadingSponsors": "Error al cargar los patrocinadores",
   "@errorLoadingSponsors": {
-    "description": "Error message for sponsors loading"
+    "description": "Mensaje de error para la carga de patrocinadores"
   },
-  "login": "Login",
+  "login": "Iniciar sesión",
   "@login": {
-    "description": "Button text for login"
+    "description": "Texto del botón para iniciar sesión"
   },
-  "loginToContinue": "Login to continue",
+  "loginToContinue": "Inicia sesión para continuar",
   "@loginToContinue": {
-    "description": "Message to prompt login"
+    "description": "Mensaje para solicitar el inicio de sesión"
   },
-  "deleteScheduleTitle": "Delete schedule",
+  "deleteScheduleTitle": "Eliminar horario",
   "@deleteScheduleTitle": {
-    "description": "Title for delete schedule dialog"
+    "description": "Título para el diálogo de eliminar horario"
   },
-  "deleteScheduleMessage": "Are you sure you want to delete this schedule?",
+  "deleteScheduleMessage": "¿Estás seguro de que quieres eliminar este horario?",
   "@deleteScheduleMessage": {
-    "description": "Message for delete schedule confirmation"
+    "description": "Mensaje para la confirmación de eliminar horario"
   },
-  "makeActive": "Make active",
+  "makeActive": "Activar",
   "@makeActive": {
-    "description": "Menu item to make schedule active"
+    "description": "Elemento de menú para activar el horario"
   },
-  "comment": "Comment",
+  "comment": "Comentario",
   "@comment": {
-    "description": "Comment label"
+    "description": "Etiqueta para comentario"
   },
-  "schedules": "Schedules",
+  "schedules": "Horarios",
   "@schedules": {
-    "description": "Title for schedules page"
+    "description": "Título para la página de horarios"
   },
-  "loadingSchedules": "Loading schedules...",
+  "loadingSchedules": "Cargando horarios...",
   "@loadingSchedules": {
-    "description": "Message while loading schedules"
+    "description": "Mensaje mientras se cargan los horarios"
   },
-  "addedClass": "Added class:",
+  "addedClass": "Clase añadida:",
   "@addedClass": {
-    "description": "Label for added class"
+    "description": "Etiqueta para la clase añadida"
   },
-  "createNewSchedule": "Create new schedule",
+  "createNewSchedule": "Crear nuevo horario",
   "@createNewSchedule": {
-    "description": "Button text to create new schedule"
+    "description": "Texto del botón para crear un nuevo horario"
   },
-  "selectSchedule": "Select schedule:",
+  "selectSchedule": "Seleccionar horario:",
   "@selectSchedule": {
-    "description": "Label for schedule selection"
+    "description": "Etiqueta para la selección de horario"
   },
-  "classAddedToSchedule": "Class added to schedule \"{scheduleName}\"",
+  "classAddedToSchedule": "Clase añadida al horario \"{scheduleName}\"",
   "@classAddedToSchedule": {
-    "description": "Success message when class is added",
+    "description": "Mensaje de éxito cuando se añade una clase",
     "placeholders": {
       "scheduleName": {
         "type": "String"
       }
     }
   },
-  "legends": "Legends",
+  "legends": "Leyendas",
   "@legends": {
-    "description": "Label for calendar legends"
+    "description": "Etiqueta para las leyendas del calendario"
   },
-  "maxThreeSchedules": "Maximum 3 schedules for comparison",
+  "maxThreeSchedules": "Máximo 3 horarios para comparar",
   "@maxThreeSchedules": {
-    "description": "Error message for schedule comparison limit"
+    "description": "Mensaje de error para el límite de comparación de horarios"
   },
-  "university": "University",
+  "university": "Universidad",
   "@university": {
-    "description": "Label for university"
+    "description": "Etiqueta para universidad"
   },
-  "search": "Search",
+  "search": "Buscar",
   "@search": {
-    "description": "Search placeholder text"
+    "description": "Texto del marcador de posición de búsqueda"
   },
-  "all": "All",
+  "all": "Todos",
   "@all": {
-    "description": "Search mode - all results"
+    "description": "Modo de búsqueda - todos los resultados"
   },
   "error": "Error",
   "@error": {
-    "description": "Error title"
+    "description": "Título de error"
   },
-  "searchFailed": "Failed to perform search",
+  "searchFailed": "Error al realizar la búsqueda",
   "@searchFailed": {
-    "description": "Search error message"
+    "description": "Mensaje de error de búsqueda"
   },
-  "enterCommentText": "Enter comment text...",
+  "enterCommentText": "Introduce el texto del comentario...",
   "@enterCommentText": {
-    "description": "Comment input placeholder"
+    "description": "Marcador de posición para la entrada de comentario"
   },
-  "remove": "Remove",
+  "remove": "Eliminar",
   "@remove": {
-    "description": "Remove button text"
+    "description": "Texto del botón para eliminar"
   },
-  "noAvailableSchedules": "No available schedules",
+  "noAvailableSchedules": "No hay horarios disponibles",
   "@noAvailableSchedules": {
-    "description": "Message when no schedules available"
+    "description": "Mensaje cuando no hay horarios disponibles"
   },
-  "scheduleDeleted": "Schedule deleted",
+  "scheduleDeleted": "Horario eliminado",
   "@scheduleDeleted": {
-    "description": "Success message when schedule deleted"
+    "description": "Mensaje de éxito cuando se elimina un horario"
   },
-  "deleteScheduleConfirmationDialog": "Are you sure you want to delete this schedule?",
+  "deleteScheduleConfirmationDialog": "¿Estás seguro de que quieres eliminar este horario?",
   "@deleteScheduleConfirmationDialog": {
-    "description": "Delete schedule confirmation message"
+    "description": "Mensaje de confirmación para eliminar un horario"
   },
-  "active": "Active",
+  "active": "Activo",
   "@active": {
-    "description": "Active status"
+    "description": "Estado activo"
   },
-  "comments": "Comments",
+  "comments": "Comentarios",
   "@comments": {
-    "description": "Comments label plural"
+    "description": "Etiqueta de comentarios en plural"
   },
-  "activate": "Activate",
+  "activate": "Activar",
   "@activate": {
-    "description": "Activate button text"
+    "description": "Texto del botón activar"
   },
-  "group": "Group",
+  "group": "Grupo",
   "@group": {
-    "description": "Group label"
+    "description": "Etiqueta de grupo"
   },
-  "teacher": "Teacher",
+  "teacher": "Profesor",
   "@teacher": {
-    "description": "Teacher label"
+    "description": "Etiqueta de profesor"
   },
-  "classroom": "Classroom",
+  "classroom": "Aula",
   "@classroom": {
-    "description": "Classroom label"
+    "description": "Etiqueta de aula"
   },
-  "schedule": "Schedule",
+  "schedule": "Horario",
   "@schedule": {
-    "description": "Schedule label"
+    "description": "Etiqueta para horario"
   },
-  "commentDeleted": "Comment deleted",
+  "commentDeleted": "Comentario eliminado",
   "@commentDeleted": {
-    "description": "Success message when comment deleted"
+    "description": "Mensaje de éxito cuando se elimina un comentario"
   },
-  "commentSaved": "Comment saved",
+  "commentSaved": "Comentario guardado",
   "@commentSaved": {
-    "description": "Success message when comment saved"
+    "description": "Mensaje de éxito cuando se guarda un comentario"
   },
-  "scheduleComment": "Schedule comment",
+  "scheduleComment": "Comentario del horario",
   "@scheduleComment": {
-    "description": "Schedule comment title"
+    "description": "Título para el comentario del horario"
   },
-  "addOrEditNote": "Add or edit a note to the schedule",
+  "addOrEditNote": "Añadir o editar una nota en el horario",
   "@addOrEditNote": {
-    "description": "Schedule comment description"
+    "description": "Descripción para el comentario del horario"
   },
-  "editComment": "Edit comment",
+  "editComment": "Editar comentario",
   "@editComment": {
-    "description": "Edit comment menu item"
+    "description": "Elemento de menú para editar comentario"
   },
-  "addComment": "Add comment",
+  "addComment": "Añadir comentario",
   "@addComment": {
-    "description": "Add comment menu item"
+    "description": "Elemento de menú para añadir comentario"
   },
-  "addSchedule": "Add schedule",
+  "addSchedule": "Añadir horario",
   "@addSchedule": {
-    "description": "Add schedule tooltip"
+    "description": "Texto emergente para añadir horario"
   },
-  "activeSchedule": "Active schedule",
+  "activeSchedule": "Horario activo",
   "@activeSchedule": {
-    "description": "Active schedule label"
+    "description": "Etiqueta para horario activo"
   },
-  "goToView": "Go to view",
+  "goToView": "Ir a la vista",
   "@goToView": {
-    "description": "Go to view tooltip"
+    "description": "Texto emergente para ir a la vista"
   },
-  "noAddedGroups": "No added groups",
+  "noAddedGroups": "No hay grupos añadidos",
   "@noAddedGroups": {
-    "description": "Message when no groups added"
+    "description": "Mensaje cuando no hay grupos añadidos"
   },
-  "addGroupToSeeSchedule": "Add a group to see its schedule",
+  "addGroupToSeeSchedule": "Añade un grupo para ver su horario",
   "@addGroupToSeeSchedule": {
-    "description": "Instruction to add group"
+    "description": "Instrucción para añadir un grupo"
   },
-  "noAddedTeachers": "No added teachers",
+  "noAddedTeachers": "No hay profesores añadidos",
   "@noAddedTeachers": {
-    "description": "Message when no teachers added"
+    "description": "Mensaje cuando no hay profesores añadidos"
   },
-  "addTeacherToSeeSchedule": "Add a teacher to see their schedule",
+  "addTeacherToSeeSchedule": "Añade un profesor para ver su horario",
   "@addTeacherToSeeSchedule": {
-    "description": "Instruction to add teacher"
+    "description": "Instrucción para añadir un profesor"
   },
-  "noAddedClassrooms": "No added classrooms",
+  "noAddedClassrooms": "No hay aulas añadidas",
   "@noAddedClassrooms": {
-    "description": "Message when no classrooms added"
+    "description": "Mensaje cuando no hay aulas añadidas"
   },
-  "addClassroomToSeeSchedule": "Add a classroom to see its schedule",
+  "addClassroomToSeeSchedule": "Añade un aula para ver su horario",
   "@addClassroomToSeeSchedule": {
-    "description": "Instruction to add classroom"
+    "description": "Instrucción para añadir un aula"
   },
-  "failedToLoadSchedules": "Failed to load schedules",
+ "failedToLoadSchedules": "Error al cargar los horarios",
   "@failedToLoadSchedules": {
-    "description": "Error message when schedules fail to load"
+    "description": "Mensaje de error cuando fallan al cargar los horarios"
   },
-  "checkInternetConnection": "Check your internet connection",
+  "checkInternetConnection": "Comprueba tu conexión a internet",
   "@checkInternetConnection": {
-    "description": "Internet connection error description"
+    "description": "Descripción del error de conexión a internet"
   },
-  "enterJsonString": "Please enter JSON string",
+  "enterJsonString": "Por favor, introduce la cadena JSON",
   "@enterJsonString": {
-    "description": "JSON input validation message"
+    "description": "Mensaje de validación de entrada JSON"
   },
-  "enterJsonStringPlaceholder": "Enter JSON string...",
+  "enterJsonStringPlaceholder": "Introduce la cadena JSON...",
   "@enterJsonStringPlaceholder": {
-    "description": "JSON input placeholder"
+    "description": "Marcador de posición de entrada JSON"
   },
-  "tabs": "Tabs",
+  "tabs": "Pestañas",
   "@tabs": {
-    "description": "Tabs label"
+    "description": "Etiqueta para pestañas"
   },
-  "scheduleChangesTitle": "Schedule changes",
+  "scheduleChangesTitle": "Cambios en el horario",
   "@scheduleChangesTitle": {
-    "description": "Schedule changes dialog title"
+    "description": "Título del diálogo de cambios en el horario"
   },
-  "loadByDaysChart": "Load by days",
+  "loadByDaysChart": "Carga por días",
   "@loadByDaysChart": {
-    "description": "Daily load chart title"
+    "description": "Título del gráfico de carga diaria"
   },
-  "lessonTypesChart": "Lesson types",
+  "lessonTypesChart": "Tipos de clases",
   "@lessonTypesChart": {
-    "description": "Lesson types chart title"
+    "description": "Título del gráfico de tipos de clases"
   },
-  "teachersChart": "Teachers",
+  "teachersChart": "Profesores",
   "@teachersChart": {
-    "description": "Teachers chart title"
+    "description": "Título del gráfico de profesores"
   },
-  "classroomsChart": "Classrooms",
+  "classroomsChart": "Aulas",
   "@classroomsChart": {
-    "description": "Classrooms chart title"
+    "description": "Título del gráfico de aulas"
   },
-  "fullReportWithAllCharts": "Full report with all charts",
+  "fullReportWithAllCharts": "Informe completo con todos los gráficos",
   "@fullReportWithAllCharts": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "dataInTableFormatExport": "Data in table format",
+  "dataInTableFormatExport": "Datos en formato de tabla",
   "@dataInTableFormatExport": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "shareImageExport": "Share image",
+  "shareImageExport": "Compartir imagen",
   "@shareImageExport": {
-    "description": "Export option title"
+    "description": "Título de la opción de exportación"
   },
-  "currentOrAllChartsExport": "Current chart or all",
+  "currentOrAllChartsExport": "Gráfico actual o todos",
   "@currentOrAllChartsExport": {
-    "description": "Export option description"
+    "description": "Descripción de la opción de exportación"
   },
-  "totalClasses": "Total classes",
+  "totalClasses": "Total de clases",
   "@totalClasses": {
-    "description": "Total classes statistics label"
+    "description": "Etiqueta de estadística del total de clases"
   },
-  "forEntirePeriod": "For the entire period",
+  "forEntirePeriod": "Para todo el período",
   "@forEntirePeriod": {
-    "description": "Statistics period description"
+    "description": "Descripción del período de estadísticas"
   },
-  "averagePerDay": "Average per day",
+  "averagePerDay": "Promedio por día",
   "@averagePerDay": {
-    "description": "Average per day statistics label"
+    "description": "Etiqueta de estadística de promedio por día"
   },
-  "academicLoad": "Academic load",
+  "academicLoad": "Carga académica",
   "@academicLoad": {
-    "description": "Academic load description"
+    "description": "Descripción de la carga académica"
   },
-  "maximumPerDay": "Maximum per day",
+  "maximumPerDay": "Máximo por día",
   "@maximumPerDay": {
-    "description": "Maximum per day statistics label"
+    "description": "Etiqueta de estadística de máximo por día"
   },
-  "busiestDay": "Busiest day",
+  "busiestDay": "Día con más carga",
   "@busiestDay": {
-    "description": "Busiest day description"
+    "description": "Descripción del día con más carga"
   },
-  "showEmptyClassesSettings": "Show empty classes",
+  "showEmptyClassesSettings": "Mostrar clases vacías",
   "@showEmptyClassesSettings": {
-    "description": "Show empty classes setting"
+    "description": "Ajuste para mostrar clases vacías"
   },
-  "showCommentIndicatorsSettings": "Show comment indicators",
+  "showCommentIndicatorsSettings": "Mostrar indicadores de comentarios",
   "@showCommentIndicatorsSettings": {
-    "description": "Show comment indicators setting"
+    "description": "Ajuste para mostrar indicadores de comentarios"
   },
-  "compactCardModeSettings": "Compact card mode",
+  "compactCardModeSettings": "Modo de tarjeta compacta",
   "@compactCardModeSettings": {
-    "description": "Compact card mode setting"
+    "description": "Ajuste del modo de tarjeta compacta"
   },
-  "holiday": "Holiday",
+  "holiday": "Festivo",
   "@holiday": {
-    "description": "Holiday page title"
+    "description": "Título de la página de festivos"
   },
-  "selectExisting": "Select existing",
+  "selectExisting": "Seleccionar existente",
   "@selectExisting": {
-    "description": "Select existing option"
+    "description": "Opción para seleccionar existente"
   },
-  "createNew": "Create new",
+  "createNew": "Crear nuevo",
   "@createNew": {
-    "description": "Create new option"
+    "description": "Opción para crear nuevo"
   },
-  "scheduleName": "Schedule name",
+  "scheduleName": "Nombre del horario",
   "@scheduleName": {
-    "description": "Schedule name field label"
+    "description": "Etiqueta del campo de nombre del horario"
   },
-  "scheduleNamePlaceholder": "For example: My main schedule",
+  "scheduleNamePlaceholder": "Por ejemplo: Mi horario principal",
   "@scheduleNamePlaceholder": {
-    "description": "Schedule name placeholder"
+    "description": "Marcador de posición del nombre del horario"
   },
-  "descriptionOptional": "Description (optional)",
+  "descriptionOptional": "Descripción (opcional)",
   "@descriptionOptional": {
-    "description": "Description field label"
+    "description": "Etiqueta del campo de descripción"
   },
-  "addScheduleDescription": "Add schedule description",
+  "addScheduleDescription": "Añadir descripción del horario",
   "@addScheduleDescription": {
-    "description": "Description field placeholder"
+    "description": "Marcador de posición del campo de descripción"
   },
-  "openSchedule": "Open",
+  "openSchedule": "Abrir",
   "@openSchedule": {
-    "description": "Open schedule button"
+    "description": "Botón para abrir el horario"
   },
-  "selectWeek": "Select week",
+  "selectWeek": "Seleccionar semana",
   "@selectWeek": {
-    "description": "Week selection title"
+    "description": "Título para la selección de semana"
   },
-  "quickWayToWeek": "Quick way to go to a specific week",
+  "quickWayToWeek": "Manera rápida de ir a una semana específica",
   "@quickWayToWeek": {
-    "description": "Week selection description"
+    "description": "Descripción de la selección de semana"
   },
-  "selectUpToFourSchedules": "Select up to 4 schedules to compare them by days",
+  "selectUpToFourSchedules": "Selecciona hasta 4 horarios para compararlos por días",
   "@selectUpToFourSchedules": {
-    "description": "Schedule comparison description"
+    "description": "Descripción de la comparación de horarios"
   },
-  "addToSchedule": "Add to schedule",
+  "addToSchedule": "Añadir al horario",
   "@addToSchedule": {
-    "description": "Add to schedule title"
+    "description": "Título para añadir al horario"
   },
-  "enterLessonComment": "Enter a comment for the class...",
+  "enterLessonComment": "Introduce un comentario para la clase...",
   "@enterLessonComment": {
-    "description": "Comment hint"
+    "description": "Sugerencia para el comentario"
   },
-  "noOwnSchedules": "You don't have your own schedules yet",
+  "noOwnSchedules": "Aún no tienes tus propios horarios",
   "@noOwnSchedules": {
-    "description": "No custom schedules message"
+    "description": "Mensaje de no hay horarios personalizados"
   },
-  "createCustomSchedule": "Create a custom schedule by adding classes from different available schedules",
+  "createCustomSchedule": "Crea un horario personalizado añadiendo clases de diferentes horarios disponibles",
   "@createCustomSchedule": {
-    "description": "Custom schedule creation description"
+    "description": "Descripción de la creación de horario personalizado"
   },
-  "scheduleCreation": "Schedule creation",
+  "scheduleCreation": "Creación de horario",
   "@scheduleCreation": {
-    "description": "Schedule creation title"
+    "description": "Título para la creación de horario"
   },
-  "enterNameAndDescription": "Enter name and description for the new schedule",
+  "enterNameAndDescription": "Introduce el nombre y la descripción para el nuevo horario",
   "@enterNameAndDescription": {
-    "description": "Schedule creation description"
+    "description": "Descripción para la creación de horario"
   },
-  "scheduleNameLabel": "Schedule name",
+  "scheduleNameLabel": "Nombre del horario",
   "@scheduleNameLabel": {
-    "description": "Schedule name label"
+    "description": "Etiqueta para el nombre del horario"
   },
-  "scheduleNameExample": "For example: My schedule",
+  "scheduleNameExample": "Por ejemplo: Mi horario",
   "@scheduleNameExample": {
-    "description": "Schedule name example"
+    "description": "Ejemplo de nombre de horario"
   },
-  "descriptionOptionalLabel": "Description (optional)",
+  "descriptionOptionalLabel": "Descripción (opcional)",
   "@descriptionOptionalLabel": {
-    "description": "Description optional label"
+    "description": "Etiqueta para descripción opcional"
   },
-  "addScheduleDescriptionPlaceholder": "Add schedule description",
+  "addScheduleDescriptionPlaceholder": "Añadir descripción del horario",
   "@addScheduleDescriptionPlaceholder": {
-    "description": "Description placeholder"
+    "description": "Marcador de posición para descripción"
   },
-  "editScheduleTitle": "Edit schedule",
+  "editScheduleTitle": "Editar horario",
   "@editScheduleTitle": {
-    "description": "Edit schedule title"
+    "description": "Título de editar horario"
   },
-  "classesListTitle": "Classes list",
+  "classesListTitle": "Lista de clases",
   "@classesListTitle": {
-    "description": "Classes list title"
+    "description": "Título de la lista de clases"
   },
-  "addNewClassToSchedule": "You can add a new class to schedule {scheduleName}",
+  "addNewClassToSchedule": "Puedes añadir una nueva clase al horario {scheduleName}",
   "@addNewClassToSchedule": {
-    "description": "Add new class description",
+    "description": "Descripción para añadir nueva clase",
     "placeholders": {
       "scheduleName": {
         "type": "String"
       }
     }
   },
-  "offline": "Offline",
+  "offline": "Sin conexión",
   "@offline": {
-    "description": "Offline mode label"
+    "description": "Etiqueta para modo sin conexión"
   },
-  "online": "Online",
+  "online": "En línea",
   "@online": {
-    "description": "Online mode label"
+    "description": "Etiqueta para modo en línea"
   },
-  "subjectName": "Subject name",
+  "subjectName": "Nombre de la asignatura",
   "@subjectName": {
-    "description": "Subject name field label"
+    "description": "Etiqueta para el campo de nombre de asignatura"
   },
-  "enterSubjectName": "Enter subject name",
+  "enterSubjectName": "Introduce el nombre de la asignatura",
   "@enterSubjectName": {
-    "description": "Subject name placeholder"
+    "description": "Marcador de posición para nombre de asignatura"
   },
-  "teacherFullName": "Teacher full name",
+  "teacherFullName": "Nombre completo del profesor",
   "@teacherFullName": {
-    "description": "Teacher name field label"
+    "description": "Etiqueta para el campo de nombre del profesor"
   },
-  "teacherNameExample": "For example: Ivanov Ivan Ivanovich",
+  "teacherNameExample": "Por ejemplo: Juan Pérez Pérez",
   "@teacherNameExample": {
-    "description": "Teacher name example"
+    "description": "Ejemplo de nombre de profesor"
   },
-  "endTimeMustBeAfterStartTime": "End time must be after start time",
+  "endTimeMustBeAfterStartTime": "La hora de fin debe ser posterior a la hora de inicio",
   "@endTimeMustBeAfterStartTime": {
-    "description": "Time validation error"
+    "description": "Error de validación de tiempo"
   },
-  "selectAtLeastOneDateError": "Select at least one date",
+  "selectAtLeastOneDateError": "Selecciona al menos una fecha",
   "@selectAtLeastOneDateError": {
-    "description": "Date selection error"
+    "description": "Error de selección de fecha"
   },
-  "addAtLeastOneClassroomError": "Add at least one classroom or make the class online",
+ "addAtLeastOneClassroomError": "Añade al menos un aula o marca la clase como online",
   "@addAtLeastOneClassroomError": {
-    "description": "Classroom selection error"
+    "description": "Error de selección de aula"
   },
-  "selectDatesButtonText": "Select dates",
+  "selectDatesButtonText": "Seleccionar fechas",
   "@selectDatesButtonText": {
-    "description": "Select dates button text"
+    "description": "Texto del botón para seleccionar fechas"
   },
-  "onlineClassLink": "Online class link",
+  "onlineClassLink": "Enlace de la clase online",
   "@onlineClassLink": {
-    "description": "Online class link field label"
+    "description": "Etiqueta para el campo de enlace de clase online"
   },
-  "enterConnectionUrl": "Enter connection URL",
+  "enterConnectionUrl": "Introduce la URL de conexión",
   "@enterConnectionUrl": {
-    "description": "Connection URL placeholder"
+    "description": "Marcador de posición para la URL de conexión"
   },
-  "classroomNumber": "Classroom {name}",
+  "classroomNumber": "Aula {name}",
   "@classroomNumber": {
-    "description": "Classroom number title",
+    "description": "Título del número de aula",
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "classroomExample": "For example: A-123",
+  "classroomExample": "Por ejemplo: A-123",
   "@classroomExample": {
-    "description": "Classroom number example"
+    "description": "Ejemplo de número de aula"
   },
-  "campusNameOptional": "Campus name (optional)",
+  "campusNameOptional": "Nombre del campus (opcional)",
   "@campusNameOptional": {
-    "description": "Campus name field label"
+    "description": "Etiqueta para el campo de nombre del campus"
   },
-  "campusExample": "For example: B-78",
+  "campusExample": "Por ejemplo: B-78",
   "@campusExample": {
-    "description": "Campus name example"
+    "description": "Ejemplo de nombre de campus"
   },
-  "addClassroomDialog": "Add classroom",
+  "addClassroomDialog": "Añadir aula",
   "@addClassroomDialog": {
-    "description": "Add classroom dialog title"
+    "description": "Título del diálogo para añadir aula"
   },
-  "groupName": "Group name",
+  "groupName": "Nombre del grupo",
   "@groupName": {
-    "description": "Group name field label"
+    "description": "Etiqueta para el nombre del grupo"
   },
-  "groupNameExample": "For example: IKBO-01-21",
+  "groupNameExample": "Por ejemplo: IKBO-01-21",
   "@groupNameExample": {
-    "description": "Group name example"
+    "description": "Ejemplo de nombre de grupo"
   },
-  "addGroupDialog": "Add group",
+  "addGroupDialog": "Añadir grupo",
   "@addGroupDialog": {
-    "description": "Add group dialog title"
+    "description": "Título del diálogo para añadir grupo"
   },
-  "retry": "Retry",
+  "retry": "Reintentar",
   "@retry": {
-    "description": "Retry button text"
+    "description": "Texto del botón de reintentar"
   },
-  "resetFilter": "Reset filter",
+  "resetFilter": "Restablecer filtro",
   "@resetFilter": {
-    "description": "Reset filter button text"
+    "description": "Texto del botón para restablecer filtro"
   },
-  "supportOurService": "Support our service",
+  "supportOurService": "Apoya nuestro servicio",
   "@supportOurService": {
-    "description": "Support service title"
+    "description": "Título para apoyar el servicio"
   },
-  "leaveAd": "Leave ad",
+  "leaveAd": "Dejar anuncio",
   "@leaveAd": {
-    "description": "Leave ad button text"
+    "description": "Texto del botón para dejar un anuncio"
   },
-  "disable": "Disable",
+  "disable": "Desactivar",
   "@disable": {
-    "description": "Disable button text"
+    "description": "Texto del botón para desactivar"
   },
   "errorWithMessage": "Error: {message}",
   "@errorWithMessage": {
-    "description": "Error message with details",
+    "description": "Mensaje de error con detalles",
     "placeholders": {
       "message": {
         "type": "String"
       }
     }
   },
-  "map": "Map",
+  "map": "Mapa",
   "@map": {
-    "description": "Map page title"
+    "description": "Título de la página del mapa"
   },
-  "tryAgain": "Try again",
+  "tryAgain": "Intentar de nuevo",
   "@tryAgain": {
-    "description": "Try again button text"
+    "description": "Texto del botón para intentar de nuevo"
   },
-  "announcement": "Announcement",
+  "announcement": "Anuncio",
   "@announcement": {
-    "description": "Announcement label"
+    "description": "Etiqueta para anuncio"
   },
-  "contact": "Contact",
+  "contact": "Contacto",
   "@contact": {
-    "description": "Contact button text"
+    "description": "Texto del botón de contacto"
   },
-  "copiedToClipboard": "{title} copied to clipboard",
+  "copiedToClipboard": "{title} copiado al portapapeles",
   "@copiedToClipboard": {
-    "description": "Copied to clipboard message",
+    "description": "Mensaje de copiado al portapapeles",
     "placeholders": {
       "title": {
         "type": "String"
       }
     }
   },
-  "post": "Post",
+  "post": "Publicación",
   "@post": {
-    "description": "Post page title"
+    "description": "Título de la página de publicación"
   },
-  "errorLoadingPost": "Error loading post",
+  "errorLoadingPost": "Error al cargar la publicación",
   "@errorLoadingPost": {
-    "description": "Error loading post message"
+    "description": "Mensaje de error al cargar la publicación"
   },
-  "errorLoadingContributors": "Error loading contributors",
+  "errorLoadingContributors": "Error al cargar los colaboradores",
   "@errorLoadingContributors": {
-    "description": "Error loading contributors message"
+    "description": "Mensaje de error al cargar los colaboradores"
   },
-  "relatedArticles": "Related articles",
+  "relatedArticles": "Artículos relacionados",
   "@relatedArticles": {
-    "description": "Section title for related articles"
+    "description": "Título de la sección de artículos relacionados"
   },
-  "failedToLoadArticle": "Failed to load article",
+  "failedToLoadArticle": "Error al cargar el artículo",
   "@failedToLoadArticle": {
-    "description": "Error description when an article fails to load"
+    "description": "Descripción del error cuando falla la carga de un artículo"
   },
-  "shareFailed": "Failed to share",
+  "shareFailed": "Error al compartir",
   "@shareFailed": {
-    "description": "Error message when share action fails"
+    "description": "Mensaje de error cuando falla la acción de compartir"
   },
-  "trending": "Trending",
+  "trending": "Tendencias",
   "@trending": {
-    "description": "Trending section title"
+    "description": "Título de la sección de tendencias"
   },
-  "slideshow": "Slideshow",
+  "slideshow": "Presentación",
   "@slideshow": {
-    "description": "Slideshow label"
+    "description": "Etiqueta para presentación"
   },
-  "enterSearchQuery": "Enter a search query",
+  "enterSearchQuery": "Introduce una consulta de búsqueda",
   "@enterSearchQuery": {
-    "description": "Search prompt when no query entered"
+    "description": "Aviso de búsqueda cuando no se ha introducido ninguna consulta"
   },
-  "failedToLoadMoreContent": "Failed to load more content",
+  "failedToLoadMoreContent": "Error al cargar más contenido",
   "@failedToLoadMoreContent": {
-    "description": "Error description when loading more content fails"
+    "description": "Descripción del error cuando falla la carga de más contenido"
   },
-  "searchHistory": "History",
+  "searchHistory": "Historial",
   "@searchHistory": {
-    "description": "Search history header"
+    "description": "Encabezado del historial de búsqueda"
   },
-  "enterScheduleName": "Enter name",
+  "enterScheduleName": "Introduce un nombre",
   "@enterScheduleName": {
-    "description": "Validation message for empty schedule name"
+    "description": "Mensaje de validación cuando el nombre del horario está vacío"
   },
-  "nameTooLong": "Name is too long",
+  "nameTooLong": "El nombre es demasiado largo",
   "@nameTooLong": {
-    "description": "Validation message when schedule name is too long"
+    "description": "Mensaje de validación cuando el nombre del horario es demasiado largo"
   },
-  "createAndAddClass": "Create and add class",
+  "createAndAddClass": "Crear y añadir clase",
   "@createAndAddClass": {
-    "description": "Button text to create a schedule and add class"
+    "description": "Texto del botón para crear un horario y añadir una clase"
   },
-  "addToSelectedSchedule": "Add to selected schedule",
+  "addToSelectedSchedule": "Añadir al horario seleccionado",
   "@addToSelectedSchedule": {
-    "description": "Button text to add class to selected schedule"
+    "description": "Texto del botón para añadir clase al horario seleccionado"
   },
-  "mireaMap": "MIREA Map",
+  "mireaMap": "Mapa MIREA",
   "@mireaMap": {
-    "description": "MIREA Map service title"
+    "description": "Título del servicio Mapa MIREA"
   },
-  "findNeededClassroom": "Find the needed classroom",
+  "findNeededClassroom": "Encuentra el aula necesaria",
   "@findNeededClassroom": {
-    "description": "MIREA Map service description"
+    "description": "Descripción del servicio Mapa MIREA"
   },
-  "nfcPass": "NFC Pass",
+  "nfcPass": "Pase NFC",
   "@nfcPass": {
-    "description": "NFC Pass service title"
+    "description": "Título del servicio Pase NFC"
   },
-  "passForUniversityEntry": "Pass for university entry",
+  "passForUniversityEntry": "Pase para la entrada a la universidad",
   "@passForUniversityEntry": {
-    "description": "NFC Pass service description"
+    "description": "Descripción del servicio Pase NFC"
   },
   "cloudMireaNinja": "Cloud Mirea Ninja",
   "@cloudMireaNinja": {
-    "description": "Cloud service title"
+    "description": "Título del servicio en la nube"
   },
   "mireaNinja": "Mirea Ninja",
   "@mireaNinja": {
-    "description": "Mirea Ninja community title"
+    "description": "Título de la comunidad Mirea Ninja"
   },
-  "mostPopularUnofficialChat": "Most popular unofficial chat",
+  "mostPopularUnofficialChat": "El chat no oficial más popular",
   "@mostPopularUnofficialChat": {
-    "description": "Mirea Ninja community description"
+    "description": "Descripción de la comunidad Mirea Ninja"
   },
-  "kisDepartment": "KIS Department",
+  "kisDepartment": "Departamento KIS",
   "@kisDepartment": {
-    "description": "KIS Department title"
+    "description": "Título del Departamento KIS"
   },
-  "corporateInformationSystems": "Corporate Information Systems Department",
+  "corporateInformationSystems": "Departamento de Sistemas de Información Corporativa",
   "@corporateInformationSystems": {
-    "description": "KIS Department description"
+    "description": "Descripción del Departamento KIS"
   },
-  "ippoDepartment": "IPPO Department",
+  "ippoDepartment": "Departamento IPPO",
   "@ippoDepartment": {
-    "description": "IPPO Department title"
+    "description": "Título del Departamento IPPO"
   },
-  "instrumentalAndAppliedSoftware": "Instrumental and Applied Software Department",
+  "instrumentalAndAppliedSoftware": "Departamento de Software Instrumental y Aplicado",
   "@instrumentalAndAppliedSoftware": {
-    "description": "IPPO Department description"
+    "description": "Descripción del Departamento IPPO"
   },
-  "competitiveProgrammingMirea": "Competitive Programming MIREA",
+  "competitiveProgrammingMirea": "Programación Competitiva MIREA",
   "@competitiveProgrammingMirea": {
-    "description": "Competitive programming title"
+    "description": "Título de programación competitiva"
   },
-  "competitiveProgrammingDescription": "Various news and updates on competitive programming at MIREA are published here",
+  "competitiveProgrammingDescription": "Aquí se publican diversas noticias y actualizaciones sobre programación competitiva en MIREA",
   "@competitiveProgrammingDescription": {
-    "description": "Competitive programming description"
+    "description": "Descripción de programación competitiva"
   },
-  "personalAccount": "Personal Account",
+  "personalAccount": "Cuenta Personal",
   "@personalAccount": {
-    "description": "Personal account service title"
+    "description": "Título del servicio de cuenta personal"
   },
-  "accessToGradesAndServices": "Access to grades, applications and other services",
+  "accessToGradesAndServices": "Acceso a calificaciones, solicitudes y otros servicios",
   "@accessToGradesAndServices": {
-    "description": "Personal account description"
+    "description": "Descripción de la cuenta personal"
   },
-  "openAction": "Open",
+  "openAction": "Abrir",
   "@openAction": {
-    "description": "Open action button"
+    "description": "Botón de acción abrir"
   },
-  "educationalPortal": "Educational Portal",
+  "educationalPortal": "Portal Educativo",
   "@educationalPortal": {
-    "description": "Educational portal title"
+    "description": "Título del portal educativo"
   },
-  "accessToCoursesAndMaterials": "Access to courses and materials",
+  "accessToCoursesAndMaterials": "Acceso a cursos y materiales",
   "@accessToCoursesAndMaterials": {
-    "description": "Educational portal description"
+    "description": "Descripción del portal educativo"
   },
-  "goToAction": "Go to",
+  "goToAction": "Ir a",
   "@goToAction": {
-    "description": "Go to action button"
+    "description": "Botón de acción ir a"
   },
-  "electronicJournal": "Electronic Journal",
+  "electronicJournal": "Diario Electrónico",
   "@electronicJournal": {
-    "description": "Electronic journal title"
+    "description": "Título del diario electrónico"
   },
-  "attendanceCheckSchedule": "Attendance check, schedule",
+  "attendanceCheckSchedule": "Control de asistencia, horario",
   "@attendanceCheckSchedule": {
-    "description": "Electronic journal description"
+    "description": "Descripción del diario electrónico"
   },
-  "library": "Library",
+  "library": "Biblioteca",
   "@library": {
-    "description": "Library service title"
+    "description": "Título del servicio de biblioteca"
   },
-  "freeSoftware": "Free Software",
+  "freeSoftware": "Software Libre",
   "@freeSoftware": {
-    "description": "Free software service title"
+    "description": "Título del servicio de software libre"
   },
-  "cyberzone": "Cyberzone",
+  "cyberzone": "Ciberzona",
   "@cyberzone": {
-    "description": "Cyberzone service title"
+    "description": "Título del servicio de Ciberzona"
   },
-  "handbook": "Handbook",
+  "handbook": "Manual",
   "@handbook": {
-    "description": "Handbook service title"
+    "description": "Título del servicio de manual"
   },
-  "scholarships": "Scholarships",
+  "scholarships": "Becas",
   "@scholarships": {
-    "description": "Scholarships service title"
+    "description": "Título del servicio de becas"
   },
-  "militaryRegistration": "Military Registration",
+  "militaryRegistration": "Registro Militar",
   "@militaryRegistration": {
-    "description": "Military registration service title"
+    "description": "Título del servicio de registro militar"
   },
-  "dormitories": "Dormitories",
+  "dormitories": "Residencias",
   "@dormitories": {
-    "description": "Dormitories service title"
+    "description": "Título del servicio de residencias"
   },
-  "studentOffice": "Student Office",
+  "studentOffice": "Oficina de Estudiantes",
   "@studentOffice": {
-    "description": "Student office service title"
+    "description": "Título del servicio de oficina de estudiantes"
   },
-  "certificatesDocumentsQuestions": "Certificates, documents, questions",
+  "certificatesDocumentsQuestions": "Certificados, documentos, preguntas",
   "@certificatesDocumentsQuestions": {
-    "description": "Student office description"
+    "description": "Descripción de la oficina de estudiantes"
   },
-  "careerCenter": "Career Center",
+  "careerCenter": "Centro de Carreras",
   "@careerCenter": {
-    "description": "Career center service title"
+    "description": "Título del servicio de centro de carreras"
   },
-  "vacanciesAndInternships": "Vacancies and internships",
+  "vacanciesAndInternships": "Vacantes y prácticas profesionales",
   "@vacanciesAndInternships": {
-    "description": "Career center description"
+    "description": "Descripción del centro de carreras"
   },
-  "initiativeService": "Initiative Service",
+  "initiativeService": "Servicio de Iniciativas",
   "@initiativeService": {
-    "description": "Initiative service title"
+    "description": "Título del servicio de iniciativas"
   },
-  "ideasAndSuggestions": "Ideas and suggestions",
+  "ideasAndSuggestions": "Ideas y sugerencias",
   "@ideasAndSuggestions": {
-    "description": "Initiative service description"
+    "description": "Descripción del servicio de iniciativas"
   },
-  "virtualTour": "Virtual Tour",
+  "virtualTour": "Recorrido Virtual",
   "@virtualTour": {
-    "description": "Virtual tour service title"
+    "description": "Título del servicio de recorrido virtual"
   },
-  "interactiveUniversityTour": "Interactive tour of university buildings",
+  "interactiveUniversityTour": "Recorrido interactivo por los edificios de la universidad",
   "@interactiveUniversityTour": {
-    "description": "Virtual tour description"
+    "description": "Descripción del recorrido virtual"
   },
-  "startupAccelerator": "Startup Accelerator",
+  "startupAccelerator": "Aceleradora de Startups",
   "@startupAccelerator": {
-    "description": "Startup accelerator service title"
+    "description": "Título del servicio de aceleradora de startups"
   },
-  "startupSupport": "Startup and entrepreneurial ideas support",
+  "startupSupport": "Apoyo a startups e ideas emprendedoras",
   "@startupSupport": {
-    "description": "Startup accelerator description"
+    "description": "Descripción de la aceleradora de startups"
   },
-  "corporatePortal": "Corporate Portal",
+  "corporatePortal": "Portal Corporativo",
   "@corporatePortal": {
-    "description": "Corporate portal service title"
+    "description": "Título del servicio de portal corporativo"
   },
-  "accessForTeachersAndStaff": "Access for teachers and staff",
+  "accessForTeachersAndStaff": "Acceso para profesores y personal",
   "@accessForTeachersAndStaff": {
-    "description": "Corporate portal description"
+    "description": "Descripción del portal corporativo"
   },
-  "mainServices": "Main services",
+  "mainServices": "Servicios principales",
   "@mainServices": {
-    "description": "Main services section title"
+    "description": "Título de la sección de servicios principales"
   },
-  "studentLife": "Student life",
+  "studentLife": "Vida estudiantil",
   "@studentLife": {
-    "description": "Student life section title"
+    "description": "Título de la sección de vida estudiantil"
   },
-  "useful": "Useful",
+  "useful": "Útil",
   "@useful": {
-    "description": "Useful section title"
+    "description": "Título de la sección de utilidad"
   },
-  "createAccount": "Create account",
+  "createAccount": "Crear cuenta",
   "@createAccount": {
-    "description": "Create account button text"
+    "description": "Texto del botón para crear cuenta"
   },
-  "createAccountTitle": "Create an account",
+  "createAccountTitle": "Crear una cuenta",
   "@createAccountTitle": {
-    "description": "Create account dialog title"
+    "description": "Título del diálogo de crear cuenta"
   },
-  "createAccountDescription": "We offer you to create a free account in our cloud storage so you can store your files and documents!",
+  "createAccountDescription": "¡Te ofrecemos crear una cuenta gratuita en nuestro almacenamiento en la nube para que puedas guardar tus archivos y documentos!",
   "@createAccountDescription": {
-    "description": "Create account dialog description"
+    "description": "Descripción del diálogo de crear cuenta"
   },
-  "cloudStorageDescription": "On cloud.mirea.ninja you can store up to 10 GB for free (quota can be expanded in the telegram bot), as well as share files and edit documents online together with classmates.",
+  "cloudStorageDescription": "En cloud.mirea.ninja puedes almacenar hasta 10 GB de forma gratuita (la cuota se puede ampliar en el bot de telegram), así como compartir archivos y editar documentos en línea junto con tus compañeros.",
   "@cloudStorageDescription": {
-    "description": "Cloud storage service description"
+    "description": "Descripción del servicio de almacenamiento en la nube"
   },
-  "searchPlaceholder": "Search",
+  "searchPlaceholder": "Buscar",
   "@searchPlaceholder": {
-    "description": "Search input placeholder"
+    "description": "Marcador de posición de búsqueda"
   },
-  "searchInAnnouncements": "Search in announcements...",
+  "searchInAnnouncements": "Buscar en anuncios...",
   "@searchInAnnouncements": {
-    "description": "Search in announcements placeholder"
+    "description": "Marcador de posición para buscar en anuncios"
   },
-  "itemName": "Item name",
+  "itemName": "Nombre del objeto",
   "@itemName": {
-    "description": "Item name field label"
+    "description": "Etiqueta para el nombre del objeto"
   },
-  "itemNameExample": "For example: Keys with keychain",
+  "itemNameExample": "Por ejemplo: Llaves con llavero",
   "@itemNameExample": {
-    "description": "Item name example"
+    "description": "Ejemplo de nombre del objeto"
   },
-  "description": "Description",
+  "description": "Descripción",
   "@description": {
-    "description": "Description field label"
+    "description": "Etiqueta para el campo de descripción"
   },
-  "itemDescription": "Details about the item, where and when it was found/lost...",
+  "itemDescription": "Detalles sobre el objeto, dónde y cuándo se encontró/perdió...",
   "@itemDescription": {
-    "description": "Item description placeholder"
+    "description": "Marcador de posición para la descripción del objeto"
   },
   "telegram": "Telegram",
   "@telegram": {
-    "description": "Telegram field label"
+    "description": "Etiqueta para el campo de Telegram"
   },
-  "phone": "Phone",
+  "phone": "Teléfono",
   "@phone": {
-    "description": "Phone field label"
+    "description": "Etiqueta para el campo de teléfono"
   },
-  "leaveFeedback": "Leave feedback",
+  "leaveFeedback": "Dejar comentarios",
   "@leaveFeedback": {
-    "description": "Leave feedback title"
+    "description": "Título para dejar comentarios"
   },
-  "yourEmail": "Your email",
+  "yourEmail": "Tu correo electrónico",
   "@yourEmail": {
-    "description": "Email field label"
+    "description": "Etiqueta para el campo de correo electrónico"
   },
-  "enterEmail": "Enter email",
+  "enterEmail": "Introduce tu correo electrónico",
   "@enterEmail": {
-    "description": "Email field placeholder"
+    "description": "Marcador de posición para el correo electrónico"
   },
-  "whatHappened": "What happened?",
+  "whatHappened": "¿Qué ha sucedido?",
   "@whatHappened": {
-    "description": "Feedback question label"
+    "description": "Etiqueta para la pregunta de comentarios"
   },
-  "feedbackPlaceholder": "When I press \"X\" \"Y\" happens",
+  "feedbackPlaceholder": "Cuando pulso \"X\" ocurre \"Y\"",
   "@feedbackPlaceholder": {
-    "description": "Feedback placeholder text"
+    "description": "Texto del marcador de posición para comentarios"
   },
-  "exportToCalendar": "Export to calendar",
+  "exportToCalendar": "Exportar al calendario",
   "@exportToCalendar": {
-    "description": "Export to calendar title"
+    "description": "Título para exportar al calendario"
   },
-  "scheduleExported": "Schedule exported",
+  "scheduleExported": "Horario exportado",
   "@scheduleExported": {
-    "description": "Schedule exported success message"
+    "description": "Mensaje de éxito al exportar el horario"
   },
-  "failedToExportSchedule": "Failed to export schedule",
+  "failedToExportSchedule": "Error al exportar el horario",
   "@failedToExportSchedule": {
-    "description": "Export schedule error message"
+    "description": "Mensaje de error al exportar el horario"
   },
-  "exportSettings": "Export settings",
+  "exportSettings": "Configuración de exportación",
   "@exportSettings": {
-    "description": "Export settings title"
+    "description": "Título de la configuración de exportación"
   },
-  "emojiInLessonTypes": "Emoji in lesson types",
+  "emojiInLessonTypes": "Emoji en los tipos de lección",
   "@emojiInLessonTypes": {
-    "description": "Emoji setting title"
+    "description": "Título del ajuste de emojis"
   },
-  "emojiExample": "Example: \"📚 Lecture\" instead of \"Lecture\"",
+  "emojiExample": "Ejemplo: \"📚 Clase\" en lugar de \"Clase\"",
   "@emojiExample": {
-    "description": "Emoji setting description"
+    "description": "Descripción del ajuste de emojis"
   },
-  "shortLessonTypeNames": "Short lesson type names",
+  "shortLessonTypeNames": "Nombres cortos para tipos de lección",
   "@shortLessonTypeNames": {
-    "description": "Short names setting title"
+    "description": "Título del ajuste de nombres cortos"
   },
-  "shortNamesExample": "Example: \"Lec.\" instead of \"Lecture\"",
+  "shortNamesExample": "Ejemplo: \"Cl.\" en lugar de \"Clase\"",
   "@shortNamesExample": {
-    "description": "Short names setting description"
+    "description": "Descripción del ajuste de nombres cortos"
   },
-  "preview": "Preview",
+  "preview": "Vista previa",
   "@preview": {
-    "description": "Preview section title"
+    "description": "Título de la sección de vista previa"
   },
-  "fullTypeName": "Full type name",
+  "fullTypeName": "Nombre completo del tipo",
   "@fullTypeName": {
-    "description": "Full type name subtitle"
+    "description": "Subtítulo del nombre completo del tipo"
   },
-  "shortTypeName": "Short type name",
+  "shortTypeName": "Nombre corto del tipo",
   "@shortTypeName": {
-    "description": "Short type name subtitle"
+    "description": "Subtítulo del nombre corto del tipo"
   },
-  "subjectSelection": "Subject selection",
+  "subjectSelection": "Selección de asignatura",
   "@subjectSelection": {
-    "description": "Subject selection title"
+    "description": "Título de la selección de asignatura"
   },
-  "standardReminders": "Standard reminders",
+  "standardReminders": "Recordatorios estándar",
   "@standardReminders": {
-    "description": "Standard reminders title"
+    "description": "Título de recordatorios estándar"
   },
-  "cardSettings": "Card settings",
+  "cardSettings": "Configuración de tarjeta",
   "@cardSettings": {
-    "description": "Card settings title"
+    "description": "Título de la configuración de tarjeta"
   },
-  "codeFromEmail": "Code from email",
+  "codeFromEmail": "Código del correo electrónico",
   "@codeFromEmail": {
-    "description": "Code from email title"
+    "description": "Título de código del correo electrónico"
   },
-  "news": "News",
+  "news": "Noticias",
   "@news": {
-    "description": "News navigation item"
+    "description": "Elemento de navegación de noticias"
   },
-  "services": "Services",
+  "services": "Servicios",
   "@services": {
-    "description": "Services navigation item"
+    "description": "Elemento de navegación de servicios"
   },
   "profile": "Perfil",
   "@profile": {
     "description": "Elemento de navegación para el perfil"
   },
-  "aboutApp": "About app",
+  "aboutApp": "Acerca de la aplicación",
   "@aboutApp": {
-    "description": "About app navigation item"
+    "description": "Elemento de navegación acerca de la aplicación"
   },
-  "settings": "Settings",
+  "settings": "Configuración",
   "@settings": {
-    "description": "Settings navigation item"
+    "description": "Elemento de navegación de configuración"
   },
-  "findScheduleForClassroom": "You can quickly find a schedule for this classroom using schedule search.",
+  "findScheduleForClassroom": "Puedes encontrar rápidamente un horario para esta aula usando la búsqueda de horarios.",
   "@findScheduleForClassroom": {
-    "description": "Classroom schedule search description"
+    "description": "Descripción de la búsqueda de horario de aula"
   },
-  "newYearHolidays": "New Year holidays",
+  "newYearHolidays": "Vacaciones de Año Nuevo",
   "@newYearHolidays": {
-    "description": "New Year holidays title"
+    "description": "Título de las vacaciones de Año Nuevo"
   },
-  "winterVacation": "Winter vacation",
+  "winterVacation": "Vacaciones de invierno",
   "@winterVacation": {
-    "description": "Winter vacation title"
+    "description": "Título de las vacaciones de invierno"
   },
-  "defenderOfFatherlandDay": "Defender of the Fatherland Day",
+  "defenderOfFatherlandDay": "Día del Defensor de la Patria",
   "@defenderOfFatherlandDay": {
-    "description": "Defender of the Fatherland Day title"
+    "description": "Título del Día del Defensor de la Patria"
   },
-  "internationalWomensDay": "International Women's Day",
+  "internationalWomensDay": "Día Internacional de la Mujer",
   "@internationalWomensDay": {
-    "description": "International Women's Day title"
+    "description": "Título del Día Internacional de la Mujer"
   },
-  "springAndLaborDay": "Spring and Labor Day",
+  "springAndLaborDay": "Día de la Primavera y del Trabajo",
   "@springAndLaborDay": {
-    "description": "Spring and Labor Day title"
+    "description": "Título del Día de la Primavera y del Trabajo"
   },
-  "victoryDay": "Victory Day",
+  "victoryDay": "Día de la Victoria",
   "@victoryDay": {
-    "description": "Victory Day title"
+    "description": "Título del Día de la Victoria"
   },
-  "russiaDay": "Russia Day",
+  "russiaDay": "Día de Rusia",
   "@russiaDay": {
-    "description": "Russia Day title"
+    "description": "Título del Día de Rusia"
   },
-  "nationalUnityDay": "National Unity Day",
+  "nationalUnityDay": "Día de la Unidad Nacional",
   "@nationalUnityDay": {
-    "description": "National Unity Day title"
+    "description": "Título del Día de la Unidad Nacional"
   },
-  "newYear": "New Year",
+  "newYear": "Año Nuevo",
   "@newYear": {
-    "description": "New Year title"
+    "description": "Título de Año Nuevo"
   },
   "total": "Total",
   "@total": {
-    "description": "Total label"
+    "description": "Etiqueta para el total"
   },
-  "lectures": "Lectures",
+  "lectures": "Clases magistrales",
   "@lectures": {
-    "description": "Lectures label"
+    "description": "Etiqueta para clases magistrales"
   },
-  "practicals": "Practicals",
+  "practicals": "Prácticas",
   "@practicals": {
-    "description": "Practicals label"
+    "description": "Etiqueta para prácticas"
   },
-  "labs": "Labs",
+  "labs": "Laboratorios",
   "@labs": {
-    "description": "Labs label"
+    "description": "Etiqueta para laboratorios"
   },
-  "justNow": "just now",
+  "justNow": "hace un momento",
   "@justNow": {
-    "description": "Just now time label"
+    "description": "Etiqueta de tiempo para hace un momento"
   },
-  "status": "Status",
+  "status": "Estado",
   "@status": {
-    "description": "Status label"
+    "description": "Etiqueta para estado"
   },
-  "phoneContact": "Phone: {phoneNumber}",
+  "phoneContact": "Teléfono: {phoneNumber}",
   "@phoneContact": {
-    "description": "Phone contact label",
+    "description": "Etiqueta para contacto telefónico",
     "placeholders": {
       "phoneNumber": {
         "type": "String"
       }
     }
   },
-  "lessonsOnDay": "Lessons on {day}",
+  "lessonsOnDay": "Clases del {day}",
   "@lessonsOnDay": {
-    "description": "Header for lessons on a specific day",
+    "description": "Encabezado para las clases de un día específico",
     "placeholders": {
       "day": {
         "type": "String"
       }
     }
   },
-  "todayLower": "today",
+  "todayLower": "hoy",
   "@todayLower": {
-    "description": "today, lowercase"
+    "description": "hoy, en minúsculas"
   },
-  "tomorrowLower": "tomorrow",
+  "tomorrowLower": "mañana",
   "@tomorrowLower": {
-    "description": "tomorrow, lowercase"
+    "description": "mañana, en minúsculas"
   },
-  "showEmptyLessonsTooltip": "Show empty classes",
+  "showEmptyLessonsTooltip": "Mostrar clases vacías",
   "@showEmptyLessonsTooltip": {
-    "description": "Tooltip for empty lessons toggle"
+    "description": "Información sobre herramientas para el interruptor de clases vacías"
   },
-  "emptyLessons": "Empty classes",
+  "emptyLessons": "Clases vacías",
   "@emptyLessons": {
-    "description": "Label for empty lessons toggle"
+    "description": "Etiqueta para el interruptor de clases vacías"
   },
-  "analyticsShort": "Analytics",
+  "analyticsShort": "Analíticas",
   "@analyticsShort": {
-    "description": "Short label for analytics"
+    "description": "Etiqueta corta para analíticas"
   },
-  "dayOff": "Day off",
+  "dayOff": "Día libre",
   "@dayOff": {
-    "description": "Holiday title for Sunday"
+    "description": "Título de día festivo para el domingo"
   },
-  "noLessonsThatDay": "No classes on this day",
+  "noLessonsThatDay": "No hay clases este día",
   "@noLessonsThatDay": {
-    "description": "Empty day title"
+    "description": "Título para día sin clases"
   },
-  "noLessonsThatDayShort": "No classes this day!",
+  "noLessonsThatDayShort": "¡No hay clases este día!",
   "@noLessonsThatDayShort": {
-    "description": "Short empty day line"
+    "description": "Línea corta para día sin clases"
   },
-  "restSuggestion": "You can rest or do self-study",
+  "restSuggestion": "Puedes descansar o estudiar por tu cuenta",
   "@restSuggestion": {
-    "description": "Suggestion on empty day"
+    "description": "Sugerencia para días sin clases"
   },
-  "windowGap": "Gap: {count, plural, one{{count} class} other{{count} classes}}",
+  "windowGap": "Ventana: {count, plural, one{{count} clase} other{{count} clases}}",
   "@windowGap": {
-    "description": "Window gap between lessons with pluralization",
+    "description": "Ventana (hueco) entre clases con pluralización",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "noScheduleSelected": "No schedule selected",
+  "noScheduleSelected": "No hay horario seleccionado",
   "@noScheduleSelected": {
-    "description": "Desktop empty schedule title"
+    "description": "Título para horario vacío en escritorio"
   },
-  "selectEntityToSeeSchedule": "Select a group, teacher or classroom to view schedule",
+  "selectEntityToSeeSchedule": "Selecciona un grupo, profesor o aula para ver el horario",
   "@selectEntityToSeeSchedule": {
-    "description": "Desktop empty schedule subtitle"
+    "description": "Subtítulo para horario vacío en escritorio"
   },
-  "errorLoadingSchedule": "Error loading schedule",
+  "errorLoadingSchedule": "Error al cargar el horario",
   "@errorLoadingSchedule": {
-    "description": "Snack error loading schedule"
+    "description": "Error al cargar el horario (snack)"
   },
-  "manageComparisons": "Manage comparisons",
+  "manageComparisons": "Gestionar comparaciones",
   "@manageComparisons": {
-    "description": "Tooltip for manage comparisons"
+    "description": "Información sobre herramientas para gestionar comparaciones"
   },
-  "selectUpTo4Schedules": "Select up to 4 schedules to compare by days",
+  "selectUpTo4Schedules": "Selecciona hasta 4 horarios para comparar por días",
   "@selectUpTo4Schedules": {
-    "description": "Description for compare modal"
+    "description": "Descripción para el modal de comparación"
   },
-  "noUpcomingLessons": "No upcoming classes",
+  "noUpcomingLessons": "No hay clases próximas",
   "@noUpcomingLessons": {
-    "description": "Title for no upcoming lessons state"
+    "description": "Título para el estado de no hay clases próximas"
   },
-  "noUpcomingLessonsDescription": "No classes are scheduled in the near future. Switch to the calendar to view other days.",
+  "noUpcomingLessonsDescription": "No hay clases programadas en un futuro cercano. Cambia al calendario para ver otros días.",
   "@noUpcomingLessonsDescription": {
-    "description": "Description for no upcoming lessons state"
+    "description": "Descripción para el estado de no hay clases próximas"
   },
-  "switchToCalendar": "Switch to calendar",
+  "switchToCalendar": "Cambiar al calendario",
   "@switchToCalendar": {
-    "description": "Button to switch to calendar"
+    "description": "Botón para cambiar al calendario"
   },
-  "lecturesShort": "Lect.",
+  "lecturesShort": "Mag.",
   "@lecturesShort": {
-    "description": "Lectures short label"
+    "description": "Etiqueta corta para clases magistrales"
   },
-  "practiceShort": "Pract.",
+  "practiceShort": "Práct.",
   "@practiceShort": {
-    "description": "Practice short label"
+    "description": "Etiqueta corta para prácticas"
   },
   "labsShort": "Lab.",
   "@labsShort": {
-    "description": "Labs short label"
+    "description": "Etiqueta corta para laboratorios"
   },
-  "legend": "Legend",
+  "legend": "Leyenda",
   "@legend": {
-    "description": "Legend title"
+    "description": "Título de la leyenda"
   },
-  "laboratoryWork": "Laboratory",
+  "laboratoryWork": "Laboratorio",
   "@laboratoryWork": {
-    "description": "Laboratory work label"
+    "description": "Etiqueta para trabajo de laboratorio"
   },
-  "scheduleLoadError": "An error occurred while fetching the schedule. Please try again.",
+  "scheduleLoadError": "Ocurrió un error al obtener el horario. Por favor, intenta de nuevo.",
   "@scheduleLoadError": {
-    "description": "Schedule load error description"
+    "description": "Descripción del error al cargar el horario"
   },
-  "selectSchedulesForComparison": "Select schedules for comparison (up to 3)",
+  "selectSchedulesForComparison": "Seleccionar horarios para comparar (hasta 3)",
   "@selectSchedulesForComparison": {
-    "description": "Comparison manager title"
+    "description": "Título del gestor de comparaciones"
   },
-  "deleteScheduleConfirm": "Are you sure you want to delete \"{name}\"?",
+  "deleteScheduleConfirm": "¿Estás seguro de que quieres eliminar \"{name}\"?",
   "@deleteScheduleConfirm": {
-    "description": "Confirm delete schedule",
+    "description": "Confirmar eliminación de horario",
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "deleteClassConfirm": "Are you sure you want to delete \"{subject}\" from the schedule?",
+  "deleteClassConfirm": "¿Estás seguro de que quieres eliminar \"{subject}\" del horario?",
   "@deleteClassConfirm": {
-    "description": "Confirm delete class",
+    "description": "Confirmar eliminación de clase",
     "placeholders": {
       "subject": {
         "type": "String"
       }
     }
   },
-  "commentTooLong": "Comment is too long",
+  "commentTooLong": "El comentario es demasiado largo",
   "@commentTooLong": {
-    "description": "Comment length validation"
+    "description": "Validación de longitud del comentario"
   },
-  "addOneClassroomOrOnline": "Add at least one classroom or make the class online",
+  "addOneClassroomOrOnline": "Añade al menos una aula o marca la clase como en línea",
   "@addOneClassroomOrOnline": {
-    "description": "Validation missing classroom"
+    "description": "Validación de aula faltante"
   },
-  "createClass": "Create class",
+  "createClass": "Crear clase",
   "@createClass": {
-    "description": "Create class title"
+    "description": "Título de crear clase"
   },
-  "editClass": "Edit class",
+  "editClass": "Editar clase",
   "@editClass": {
-    "description": "Edit class title"
+    "description": "Título de editar clase"
   },
-  "startTime": "Start",
+  "startTime": "Inicio",
   "@startTime": {
-    "description": "Start time label"
+    "description": "Etiqueta para hora de inicio"
   },
-  "endTime": "End",
+  "endTime": "Fin",
   "@endTime": {
-    "description": "End time label"
+    "description": "Etiqueta para hora de fin"
   },
-  "lessonNumber": "Lesson number",
+  "lessonNumber": "Número de lección",
   "@lessonNumber": {
-    "description": "Lesson number label"
+    "description": "Etiqueta para número de lección"
   },
-  "teacherFullNameHint": "e.g. Ivanov Ivan Ivanovich",
+  "teacherFullNameHint": "ej. Ivanov Iván Ivánovich",
   "@teacherFullNameHint": {
-    "description": "Teacher full name hint"
+    "description": "Sugerencia para nombre completo del profesor"
   },
-  "enterTeacherFullName": "Enter teacher full name",
+  "enterTeacherFullName": "Introduce el nombre completo del profesor",
   "@enterTeacherFullName": {
-    "description": "Teacher full name validation"
+    "description": "Validación para nombre completo del profesor"
   },
-  "onlineLessonUrl": "Online lesson URL",
+  "onlineLessonUrl": "URL de la clase en línea",
   "@onlineLessonUrl": {
-    "description": "Online URL label"
+    "description": "Etiqueta para URL en línea"
   },
-  "enterUrl": "Enter URL",
+  "enterUrl": "Introduce una URL",
   "@enterUrl": {
-    "description": "URL hint"
+    "description": "Sugerencia de URL"
   },
-  "classroomNumberHint": "e.g. A-123",
+  "classroomNumberHint": "ej. A-123",
   "@classroomNumberHint": {
-    "description": "Classroom number hint"
+    "description": "Sugerencia de número de aula"
   },
-  "enterClassroomNumber": "Enter classroom number",
+  "enterClassroomNumber": "Introduce el número de aula",
   "@enterClassroomNumber": {
-    "description": "Classroom number validation"
+    "description": "Validación de número de aula"
   },
-  "enterGroupName": "Enter group name",
+  "enterGroupName": "Introduce el nombre del grupo",
   "@enterGroupName": {
-    "description": "Group name validation"
+    "description": "Validación de nombre de grupo"
   },
-  "basic": "Basic",
+  "basic": "Básico",
   "@basic": {
-    "description": "Basic tab"
+    "description": "Pestaña básica"
   },
-  "dates": "Dates",
+  "dates": "Fechas",
   "@dates": {
-    "description": "Dates tab"
+    "description": "Pestaña de fechas"
   },
-  "place": "Place",
+  "place": "Lugar",
   "@place": {
-    "description": "Place tab"
+    "description": "Pestaña de lugar"
   },
-  "create": "Create",
+  "create": "Crear",
   "@create": {
-    "description": "Create button"
+    "description": "Botón de crear"
   },
-  "addDate": "Add date",
+  "addDate": "Añadir fecha",
   "@addDate": {
-    "description": "Tooltip to add date"
+    "description": "Información sobre herramientas para añadir fecha"
   },
-  "lessonDeliveryType": "Lesson delivery type",
+  "lessonDeliveryType": "Tipo de impartición de la clase",
   "@lessonDeliveryType": {
-    "description": "Header for lesson delivery type"
+    "description": "Encabezado para el tipo de impartición de la clase"
   },
-  "noClassroomsSelected": "No classrooms selected",
+  "noClassroomsSelected": "No hay aulas seleccionadas",
   "@noClassroomsSelected": {
-    "description": "Empty state for classrooms"
+    "description": "Estado vacío para aulas"
   },
-  "back": "Back",
+  "back": "Atrás",
   "@back": {
-    "description": "Back button"
+    "description": "Botón de atrás"
   }
 }

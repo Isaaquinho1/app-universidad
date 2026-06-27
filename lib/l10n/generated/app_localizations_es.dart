@@ -9,730 +9,737 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get scheduleAppBarTitle => 'Schedule';
+  String get scheduleAppBarTitle => 'Horario';
 
   @override
-  String get loadingError => 'Loading error';
+  String get loadingError => 'Error de carga';
 
   @override
-  String get imageViewer => 'Image viewer';
+  String get imageViewer => 'Visor de imágenes';
 
   @override
-  String get selectDate => 'Select date';
+  String get selectDate => 'Seleccionar fecha';
 
   @override
-  String get selectDates => 'Select dates';
+  String get selectDates => 'Seleccionar fechas';
 
   @override
-  String get enableComparisonMode => 'Enable comparison mode';
+  String get enableComparisonMode => 'Activar modo comparación';
 
   @override
-  String get disableComparisonMode => 'Disable comparison mode';
+  String get disableComparisonMode => 'Desactivar modo comparación';
 
   @override
-  String get compareSchedules => 'Compare schedules';
+  String get compareSchedules => 'Comparar horarios';
 
   @override
-  String get noClassesToday => 'No classes today';
+  String get noClassesToday => 'No hay clases hoy';
 
   @override
-  String get selectTime => 'Select time';
+  String get selectTime => 'Seleccionar hora';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Limpiar';
 
   @override
-  String get month => 'Month';
+  String get month => 'Mes';
 
   @override
-  String get week => 'Week';
+  String get week => 'Semana';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'Aplicar';
 
   @override
-  String get previousDay => 'Previous day';
+  String get previousDay => 'Día anterior';
 
   @override
-  String get nextDay => 'Next day';
+  String get nextDay => 'Día siguiente';
 
   @override
-  String get today => 'Today';
+  String get today => 'Hoy';
 
   @override
-  String get refreshData => 'Refresh data';
+  String get refreshData => 'Actualizar datos';
 
   @override
-  String get scheduleComparison => 'Schedule comparison';
+  String get scheduleComparison => 'Comparación de horarios';
 
   @override
-  String get scheduleAnalytics => 'Schedule analytics';
+  String get scheduleAnalytics => 'Analítica de horarios';
 
   @override
-  String get allClassesList => 'All classes list';
+  String get allClassesList => 'Lista de todas las clases';
 
   @override
-  String get scheduleNotSelected => 'Schedule not selected';
+  String get scheduleNotSelected => 'Horario no seleccionado';
 
   @override
-  String get findSchedule => 'Find schedule';
+  String get findSchedule => 'Buscar horario';
 
   @override
-  String get scheduleForSelectedDay => 'Schedule for selected day';
+  String get scheduleForSelectedDay => 'Horario para el día seleccionado';
 
   @override
-  String get tomorrow => 'tomorrow';
+  String get tomorrow => 'Mañana';
 
   @override
-  String get showEmptyClasses => 'Show empty classes';
+  String get showEmptyClasses => 'Mostrar clases vacías';
 
   @override
-  String get emptyClasses => 'Empty classes';
+  String get emptyClasses => 'Clases vacías';
 
   @override
-  String get analytics => 'Analytics';
+  String get analytics => 'Analítica';
 
   @override
-  String get weekend => 'Weekend';
+  String get weekend => 'Fin de semana';
 
   @override
-  String get noClassesThisDay => 'No classes this day';
+  String get noClassesThisDay => 'No hay clases este día';
 
   @override
-  String get canRestOrStudy => 'You can rest or do independent work';
+  String get canRestOrStudy =>
+      'Puedes descansar o realizar trabajo independiente';
 
   @override
-  String get goToAnotherDay => 'Go to another day';
+  String get goToAnotherDay => 'Ir a otro día';
 
   @override
   String classesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'classes',
-      few: 'classes',
-      one: 'class',
+      other: '$count clases',
+      one: '1 clase',
+      zero: 'sin clases',
     );
     return '$_temp0';
   }
 
   @override
-  String get noClass => 'No class';
+  String get noClass => 'Sin clase';
 
   @override
-  String get displaySettings => 'Display settings';
+  String get displaySettings => 'Ajustes de visualización';
 
   @override
-  String get showCommentIndicators => 'Show comment indicators';
+  String get showCommentIndicators => 'Mostrar indicadores de comentarios';
 
   @override
-  String get compactCardMode => 'Compact card mode';
+  String get compactCardMode => 'Modo de tarjeta compacta';
 
   @override
-  String get lecture => 'Lecture';
+  String get lecture => 'Clase magistral';
 
   @override
-  String get laboratory => 'Laboratory';
+  String get laboratory => 'Laboratorio';
 
   @override
-  String get practice => 'Practice';
+  String get practice => 'Práctica';
 
   @override
-  String get exam => 'Exam';
+  String get exam => 'Examen';
 
   @override
-  String get consultation => 'Consultation';
+  String get consultation => 'Consulta';
 
   @override
-  String get credit => 'Credit';
+  String get credit => 'Crédito';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Desconocido';
 
   @override
-  String get lessonType => 'Lesson type';
+  String get lessonType => 'Tipo de clase';
 
   @override
   String get individual => 'Individual';
 
   @override
-  String get physicalEducation => 'Physical Education';
+  String get physicalEducation => 'Educación física';
 
   @override
-  String get courseWork => 'Course Work';
+  String get courseWork => 'Trabajo de curso';
 
   @override
-  String get courseProject => 'Course Project';
+  String get courseProject => 'Proyecto de curso';
 
   @override
-  String get mapsOnlyOnMobile => 'Maps are only available on mobile devices';
+  String get mapsOnlyOnMobile =>
+      'Los mapas solo están disponibles en dispositivos móviles';
 
   @override
-  String get scheduleAnalyticsTitle => 'Schedule Analytics';
+  String get scheduleAnalyticsTitle => 'Analítica de horarios';
 
   @override
   String get scheduleAnalyticsDescription =>
-      'Statistics and analysis of your academic schedule';
+      'Estadísticas y análisis de tu horario académico';
 
   @override
-  String get loadByDays => 'Load by days';
+  String get loadByDays => 'Carga por días';
 
   @override
-  String get lessonTypes => 'Lesson types';
+  String get lessonTypes => 'Tipos de clases';
 
   @override
-  String get teachers => 'Teachers';
+  String get teachers => 'Profesores';
 
   @override
-  String get classrooms => 'Classrooms';
+  String get classrooms => 'Aulas';
 
   @override
-  String get noDataForAnalytics => 'No data for analytics';
+  String get noDataForAnalytics => 'No hay datos para la analítica';
 
   @override
   String get selectAnotherSchedule =>
-      'Select another schedule or check for classes';
+      'Selecciona otro horario o verifica si hay clases';
 
   @override
-  String get exportData => 'Export data';
+  String get exportData => 'Exportar datos';
 
   @override
-  String get fullReportWithCharts => 'Full report with all charts';
+  String get fullReportWithCharts => 'Informe completo con todos los gráficos';
 
   @override
-  String get dataInTableFormat => 'Data in table format';
+  String get dataInTableFormat => 'Datos en formato de tabla';
 
   @override
-  String get shareImage => 'Share image';
+  String get shareImage => 'Compartir imagen';
 
   @override
-  String get currentOrAllCharts => 'Current chart or all';
+  String get currentOrAllCharts => 'Gráfico actual o todos';
 
   @override
-  String get export => 'Export';
+  String get export => 'Exportar';
 
   @override
-  String get monday => 'Monday';
+  String get monday => 'Lunes';
 
   @override
-  String get tuesday => 'Tuesday';
+  String get tuesday => 'Martes';
 
   @override
-  String get wednesday => 'Wednesday';
+  String get wednesday => 'Miércoles';
 
   @override
-  String get thursday => 'Thursday';
+  String get thursday => 'Jueves';
 
   @override
-  String get friday => 'Friday';
+  String get friday => 'Viernes';
 
   @override
-  String get scheduleChanges => 'Schedule changes';
+  String get scheduleChanges => 'Cambios en el horario';
 
   @override
-  String get calendar => 'Calendar';
+  String get calendar => 'Calendario';
 
   @override
-  String get scheduleLoadingError => 'Error loading schedule';
+  String get scheduleLoadingError => 'Error al cargar el horario';
 
   @override
-  String get addSchedulesForComparison => 'Add schedules for comparison';
+  String get addSchedulesForComparison => 'Añadir horarios para comparar';
 
   @override
-  String get buildRoute => 'Build route';
+  String get buildRoute => 'Trazar ruta';
 
   @override
-  String get mySchedules => 'My schedules';
+  String get mySchedules => 'Mis horarios';
 
   @override
-  String get createSchedule => 'Create schedule';
+  String get createSchedule => 'Crear horario';
 
   @override
-  String get addClass => 'Add class';
+  String get addClass => 'Añadir clase';
 
   @override
-  String get classesList => 'Classes list';
+  String get classesList => 'Lista de clases';
 
   @override
-  String get classLabel => 'Class';
+  String get classLabel => 'Clase';
 
   @override
-  String get open => 'Open';
+  String get open => 'Abrir';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Editar';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Eliminar';
 
   @override
-  String get editSchedule => 'Edit schedule';
+  String get editSchedule => 'Editar horario';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Cancelar';
 
   @override
-  String get save => 'Save';
+  String get save => 'Guardar';
 
   @override
-  String get deleteSchedule => 'Delete schedule';
+  String get deleteSchedule => 'Eliminar horario';
 
   @override
   String deleteScheduleConfirmation(String scheduleName) {
-    return 'Are you sure you want to delete schedule \"$scheduleName\"?';
+    return '¿Estás seguro de que quieres eliminar el horario \"$scheduleName\"?';
   }
 
   @override
-  String get createNewClass => 'Create new class';
+  String get createNewClass => 'Crear nueva clase';
 
   @override
-  String get noAddedClasses => 'No added classes';
+  String get noAddedClasses => 'No hay clases añadidas';
 
   @override
-  String get deleteClass => 'Delete class';
+  String get deleteClass => 'Eliminar clase';
 
   @override
   String deleteClassConfirmation(String subject) {
-    return 'Are you sure you want to delete class \"$subject\" from schedule?';
+    return '¿Estás seguro de que quieres eliminar la clase \"$subject\" del horario?';
   }
 
   @override
-  String get start => 'Start';
+  String get start => 'Inicio';
 
   @override
-  String get end => 'End';
+  String get end => 'Fin';
 
   @override
-  String get endTimeMustBeAfterStart => 'End time must be after start time';
+  String get endTimeMustBeAfterStart =>
+      'La hora de fin debe ser posterior a la hora de inicio';
 
   @override
-  String get classNumber => 'Class number';
+  String get classNumber => 'Número de clase';
 
   @override
-  String get none => 'None';
+  String get none => 'Ninguno';
 
   @override
-  String get groups => 'Groups';
+  String get groups => 'Grupos';
 
   @override
-  String get noTeachersSelected => 'No teachers selected';
+  String get noTeachersSelected => 'No hay profesores seleccionados';
 
   @override
-  String get addTeacher => 'Add teacher';
+  String get addTeacher => 'Añadir profesor';
 
   @override
-  String get add => 'Add';
+  String get add => 'Añadir';
 
   @override
-  String get selectAtLeastOneDate => 'Select at least one date';
+  String get selectAtLeastOneDate => 'Selecciona al menos una fecha';
 
   @override
   String get addAtLeastOneClassroom =>
-      'Add at least one classroom or make the class online';
+      'Añade al menos un aula o marca la clase como online';
 
   @override
-  String get noSelectedDates => 'No selected dates';
+  String get noSelectedDates => 'No hay fechas seleccionadas';
 
   @override
-  String get selectDatesButton => 'Select dates';
+  String get selectDatesButton => 'Seleccionar fechas';
 
   @override
-  String get noSelectedClassrooms => 'No selected classrooms';
+  String get noSelectedClassrooms => 'No hay aulas seleccionadas';
 
   @override
-  String get addClassroom => 'Add classroom';
+  String get addClassroom => 'Añadir aula';
 
   @override
-  String get noGroupsSelected => 'No groups selected';
+  String get noGroupsSelected => 'No hay grupos seleccionados';
 
   @override
-  String get addGroup => 'Add group';
+  String get addGroup => 'Añadir grupo';
 
   @override
-  String get exampleClassNames => 'Example class names:';
+  String get exampleClassNames => 'Ejemplos de nombres de clase:';
 
   @override
-  String get textCopied => 'Text copied!';
+  String get textCopied => '¡Texto copiado!';
 
   @override
   String failedToOpenImage(String error) {
-    return 'Failed to open image: $error';
+    return 'No se pudo abrir la imagen: $error';
   }
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'Error de inicio de sesión';
 
   @override
-  String get next => 'Next';
+  String get next => 'Siguiente';
 
   @override
-  String get errorLoadingSponsors => 'Error loading sponsors';
+  String get errorLoadingSponsors => 'Error al cargar los patrocinadores';
 
   @override
-  String get login => 'Login';
+  String get login => 'Iniciar sesión';
 
   @override
-  String get loginToContinue => 'Login to continue';
+  String get loginToContinue => 'Inicia sesión para continuar';
 
   @override
-  String get deleteScheduleTitle => 'Delete schedule';
+  String get deleteScheduleTitle => 'Eliminar horario';
 
   @override
   String get deleteScheduleMessage =>
-      'Are you sure you want to delete this schedule?';
+      '¿Estás seguro de que quieres eliminar este horario?';
 
   @override
-  String get makeActive => 'Make active';
+  String get makeActive => 'Activar';
 
   @override
-  String get comment => 'Comment';
+  String get comment => 'Comentario';
 
   @override
-  String get schedules => 'Schedules';
+  String get schedules => 'Horarios';
 
   @override
-  String get loadingSchedules => 'Loading schedules...';
+  String get loadingSchedules => 'Cargando horarios...';
 
   @override
-  String get addedClass => 'Added class:';
+  String get addedClass => 'Clase añadida:';
 
   @override
-  String get createNewSchedule => 'Create new schedule';
+  String get createNewSchedule => 'Crear nuevo horario';
 
   @override
-  String get selectSchedule => 'Select schedule:';
+  String get selectSchedule => 'Seleccionar horario:';
 
   @override
   String classAddedToSchedule(String scheduleName) {
-    return 'Class added to schedule \"$scheduleName\"';
+    return 'Clase añadida al horario \"$scheduleName\"';
   }
 
   @override
-  String get legends => 'Legends';
+  String get legends => 'Leyendas';
 
   @override
-  String get maxThreeSchedules => 'Maximum 3 schedules for comparison';
+  String get maxThreeSchedules => 'Máximo 3 horarios para comparar';
 
   @override
-  String get university => 'University';
+  String get university => 'Universidad';
 
   @override
-  String get search => 'Search';
+  String get search => 'Buscar';
 
   @override
-  String get all => 'All';
+  String get all => 'Todos';
 
   @override
   String get error => 'Error';
 
   @override
-  String get searchFailed => 'Failed to perform search';
+  String get searchFailed => 'Error al realizar la búsqueda';
 
   @override
-  String get enterCommentText => 'Enter comment text...';
+  String get enterCommentText => 'Introduce el texto del comentario...';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Eliminar';
 
   @override
-  String get noAvailableSchedules => 'No available schedules';
+  String get noAvailableSchedules => 'No hay horarios disponibles';
 
   @override
-  String get scheduleDeleted => 'Schedule deleted';
+  String get scheduleDeleted => 'Horario eliminado';
 
   @override
   String get deleteScheduleConfirmationDialog =>
-      'Are you sure you want to delete this schedule?';
+      '¿Estás seguro de que quieres eliminar este horario?';
 
   @override
-  String get active => 'Active';
+  String get active => 'Activo';
 
   @override
-  String get comments => 'Comments';
+  String get comments => 'Comentarios';
 
   @override
-  String get activate => 'Activate';
+  String get activate => 'Activar';
 
   @override
-  String get group => 'Group';
+  String get group => 'Grupo';
 
   @override
-  String get teacher => 'Teacher';
+  String get teacher => 'Profesor';
 
   @override
-  String get classroom => 'Classroom';
+  String get classroom => 'Aula';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'Horario';
 
   @override
-  String get commentDeleted => 'Comment deleted';
+  String get commentDeleted => 'Comentario eliminado';
 
   @override
-  String get commentSaved => 'Comment saved';
+  String get commentSaved => 'Comentario guardado';
 
   @override
-  String get scheduleComment => 'Schedule comment';
+  String get scheduleComment => 'Comentario del horario';
 
   @override
-  String get addOrEditNote => 'Add or edit a note to the schedule';
+  String get addOrEditNote => 'Añadir o editar una nota en el horario';
 
   @override
-  String get editComment => 'Edit comment';
+  String get editComment => 'Editar comentario';
 
   @override
-  String get addComment => 'Add comment';
+  String get addComment => 'Añadir comentario';
 
   @override
-  String get addSchedule => 'Add schedule';
+  String get addSchedule => 'Añadir horario';
 
   @override
-  String get activeSchedule => 'Active schedule';
+  String get activeSchedule => 'Horario activo';
 
   @override
-  String get goToView => 'Go to view';
+  String get goToView => 'Ir a la vista';
 
   @override
-  String get noAddedGroups => 'No added groups';
+  String get noAddedGroups => 'No hay grupos añadidos';
 
   @override
-  String get addGroupToSeeSchedule => 'Add a group to see its schedule';
+  String get addGroupToSeeSchedule => 'Añade un grupo para ver su horario';
 
   @override
-  String get noAddedTeachers => 'No added teachers';
+  String get noAddedTeachers => 'No hay profesores añadidos';
 
   @override
-  String get addTeacherToSeeSchedule => 'Add a teacher to see their schedule';
+  String get addTeacherToSeeSchedule => 'Añade un profesor para ver su horario';
 
   @override
-  String get noAddedClassrooms => 'No added classrooms';
+  String get noAddedClassrooms => 'No hay aulas añadidas';
 
   @override
-  String get addClassroomToSeeSchedule => 'Add a classroom to see its schedule';
+  String get addClassroomToSeeSchedule => 'Añade un aula para ver su horario';
 
   @override
-  String get failedToLoadSchedules => 'Failed to load schedules';
+  String get failedToLoadSchedules => 'Error al cargar los horarios';
 
   @override
-  String get checkInternetConnection => 'Check your internet connection';
+  String get checkInternetConnection => 'Comprueba tu conexión a internet';
 
   @override
-  String get enterJsonString => 'Please enter JSON string';
+  String get enterJsonString => 'Por favor, introduce la cadena JSON';
 
   @override
-  String get enterJsonStringPlaceholder => 'Enter JSON string...';
+  String get enterJsonStringPlaceholder => 'Introduce la cadena JSON...';
 
   @override
-  String get tabs => 'Tabs';
+  String get tabs => 'Pestañas';
 
   @override
-  String get scheduleChangesTitle => 'Schedule changes';
+  String get scheduleChangesTitle => 'Cambios en el horario';
 
   @override
-  String get loadByDaysChart => 'Load by days';
+  String get loadByDaysChart => 'Carga por días';
 
   @override
-  String get lessonTypesChart => 'Lesson types';
+  String get lessonTypesChart => 'Tipos de clases';
 
   @override
-  String get teachersChart => 'Teachers';
+  String get teachersChart => 'Profesores';
 
   @override
-  String get classroomsChart => 'Classrooms';
+  String get classroomsChart => 'Aulas';
 
   @override
-  String get fullReportWithAllCharts => 'Full report with all charts';
+  String get fullReportWithAllCharts =>
+      'Informe completo con todos los gráficos';
 
   @override
-  String get dataInTableFormatExport => 'Data in table format';
+  String get dataInTableFormatExport => 'Datos en formato de tabla';
 
   @override
-  String get shareImageExport => 'Share image';
+  String get shareImageExport => 'Compartir imagen';
 
   @override
-  String get currentOrAllChartsExport => 'Current chart or all';
+  String get currentOrAllChartsExport => 'Gráfico actual o todos';
 
   @override
-  String get totalClasses => 'Total classes';
+  String get totalClasses => 'Total de clases';
 
   @override
-  String get forEntirePeriod => 'For the entire period';
+  String get forEntirePeriod => 'Para todo el período';
 
   @override
-  String get averagePerDay => 'Average per day';
+  String get averagePerDay => 'Promedio por día';
 
   @override
-  String get academicLoad => 'Academic load';
+  String get academicLoad => 'Carga académica';
 
   @override
-  String get maximumPerDay => 'Maximum per day';
+  String get maximumPerDay => 'Máximo por día';
 
   @override
-  String get busiestDay => 'Busiest day';
+  String get busiestDay => 'Día con más carga';
 
   @override
-  String get showEmptyClassesSettings => 'Show empty classes';
+  String get showEmptyClassesSettings => 'Mostrar clases vacías';
 
   @override
-  String get showCommentIndicatorsSettings => 'Show comment indicators';
+  String get showCommentIndicatorsSettings =>
+      'Mostrar indicadores de comentarios';
 
   @override
-  String get compactCardModeSettings => 'Compact card mode';
+  String get compactCardModeSettings => 'Modo de tarjeta compacta';
 
   @override
-  String get holiday => 'Holiday';
+  String get holiday => 'Festivo';
 
   @override
-  String get selectExisting => 'Select existing';
+  String get selectExisting => 'Seleccionar existente';
 
   @override
-  String get createNew => 'Create new';
+  String get createNew => 'Crear nuevo';
 
   @override
-  String get scheduleName => 'Schedule name';
+  String get scheduleName => 'Nombre del horario';
 
   @override
-  String get scheduleNamePlaceholder => 'For example: My main schedule';
+  String get scheduleNamePlaceholder => 'Por ejemplo: Mi horario principal';
 
   @override
-  String get descriptionOptional => 'Description (optional)';
+  String get descriptionOptional => 'Descripción (opcional)';
 
   @override
-  String get addScheduleDescription => 'Add schedule description';
+  String get addScheduleDescription => 'Añadir descripción del horario';
 
   @override
-  String get openSchedule => 'Open';
+  String get openSchedule => 'Abrir';
 
   @override
-  String get selectWeek => 'Select week';
+  String get selectWeek => 'Seleccionar semana';
 
   @override
-  String get quickWayToWeek => 'Quick way to go to a specific week';
+  String get quickWayToWeek => 'Manera rápida de ir a una semana específica';
 
   @override
   String get selectUpToFourSchedules =>
-      'Select up to 4 schedules to compare them by days';
+      'Selecciona hasta 4 horarios para compararlos por días';
 
   @override
-  String get addToSchedule => 'Add to schedule';
+  String get addToSchedule => 'Añadir al horario';
 
   @override
-  String get enterLessonComment => 'Enter a comment for the class...';
+  String get enterLessonComment => 'Introduce un comentario para la clase...';
 
   @override
-  String get noOwnSchedules => 'You don\'t have your own schedules yet';
+  String get noOwnSchedules => 'Aún no tienes tus propios horarios';
 
   @override
   String get createCustomSchedule =>
-      'Create a custom schedule by adding classes from different available schedules';
+      'Crea un horario personalizado añadiendo clases de diferentes horarios disponibles';
 
   @override
-  String get scheduleCreation => 'Schedule creation';
+  String get scheduleCreation => 'Creación de horario';
 
   @override
   String get enterNameAndDescription =>
-      'Enter name and description for the new schedule';
+      'Introduce el nombre y la descripción para el nuevo horario';
 
   @override
-  String get scheduleNameLabel => 'Schedule name';
+  String get scheduleNameLabel => 'Nombre del horario';
 
   @override
-  String get scheduleNameExample => 'For example: My schedule';
+  String get scheduleNameExample => 'Por ejemplo: Mi horario';
 
   @override
-  String get descriptionOptionalLabel => 'Description (optional)';
+  String get descriptionOptionalLabel => 'Descripción (opcional)';
 
   @override
-  String get addScheduleDescriptionPlaceholder => 'Add schedule description';
+  String get addScheduleDescriptionPlaceholder =>
+      'Añadir descripción del horario';
 
   @override
-  String get editScheduleTitle => 'Edit schedule';
+  String get editScheduleTitle => 'Editar horario';
 
   @override
-  String get classesListTitle => 'Classes list';
+  String get classesListTitle => 'Lista de clases';
 
   @override
   String addNewClassToSchedule(String scheduleName) {
-    return 'You can add a new class to schedule $scheduleName';
+    return 'Puedes añadir una nueva clase al horario $scheduleName';
   }
 
   @override
-  String get offline => 'Offline';
+  String get offline => 'Sin conexión';
 
   @override
-  String get online => 'Online';
+  String get online => 'En línea';
 
   @override
-  String get subjectName => 'Subject name';
+  String get subjectName => 'Nombre de la asignatura';
 
   @override
-  String get enterSubjectName => 'Enter subject name';
+  String get enterSubjectName => 'Introduce el nombre de la asignatura';
 
   @override
-  String get teacherFullName => 'Teacher full name';
+  String get teacherFullName => 'Nombre completo del profesor';
 
   @override
-  String get teacherNameExample => 'For example: Ivanov Ivan Ivanovich';
+  String get teacherNameExample => 'Por ejemplo: Juan Pérez Pérez';
 
   @override
-  String get endTimeMustBeAfterStartTime => 'End time must be after start time';
+  String get endTimeMustBeAfterStartTime =>
+      'La hora de fin debe ser posterior a la hora de inicio';
 
   @override
-  String get selectAtLeastOneDateError => 'Select at least one date';
+  String get selectAtLeastOneDateError => 'Selecciona al menos una fecha';
 
   @override
   String get addAtLeastOneClassroomError =>
-      'Add at least one classroom or make the class online';
+      'Añade al menos un aula o marca la clase como online';
 
   @override
-  String get selectDatesButtonText => 'Select dates';
+  String get selectDatesButtonText => 'Seleccionar fechas';
 
   @override
-  String get onlineClassLink => 'Online class link';
+  String get onlineClassLink => 'Enlace de la clase online';
 
   @override
-  String get enterConnectionUrl => 'Enter connection URL';
+  String get enterConnectionUrl => 'Introduce la URL de conexión';
 
   @override
   String classroomNumber(String name) {
-    return 'Classroom $name';
+    return 'Aula $name';
   }
 
   @override
-  String get classroomExample => 'For example: A-123';
+  String get classroomExample => 'Por ejemplo: A-123';
 
   @override
-  String get campusNameOptional => 'Campus name (optional)';
+  String get campusNameOptional => 'Nombre del campus (opcional)';
 
   @override
-  String get campusExample => 'For example: B-78';
+  String get campusExample => 'Por ejemplo: B-78';
 
   @override
-  String get addClassroomDialog => 'Add classroom';
+  String get addClassroomDialog => 'Añadir aula';
 
   @override
-  String get groupName => 'Group name';
+  String get groupName => 'Nombre del grupo';
 
   @override
-  String get groupNameExample => 'For example: IKBO-01-21';
+  String get groupNameExample => 'Por ejemplo: IKBO-01-21';
 
   @override
-  String get addGroupDialog => 'Add group';
+  String get addGroupDialog => 'Añadir grupo';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Reintentar';
 
   @override
-  String get resetFilter => 'Reset filter';
+  String get resetFilter => 'Restablecer filtro';
 
   @override
-  String get supportOurService => 'Support our service';
+  String get supportOurService => 'Apoya nuestro servicio';
 
   @override
-  String get leaveAd => 'Leave ad';
+  String get leaveAd => 'Dejar anuncio';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Desactivar';
 
   @override
   String errorWithMessage(String message) {
@@ -740,78 +747,78 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get map => 'Map';
+  String get map => 'Mapa';
 
   @override
-  String get tryAgain => 'Try again';
+  String get tryAgain => 'Intentar de nuevo';
 
   @override
-  String get announcement => 'Announcement';
+  String get announcement => 'Anuncio';
 
   @override
-  String get contact => 'Contact';
+  String get contact => 'Contacto';
 
   @override
   String copiedToClipboard(String title) {
-    return '$title copied to clipboard';
+    return '$title copiado al portapapeles';
   }
 
   @override
-  String get post => 'Post';
+  String get post => 'Publicación';
 
   @override
-  String get errorLoadingPost => 'Error loading post';
+  String get errorLoadingPost => 'Error al cargar la publicación';
 
   @override
-  String get errorLoadingContributors => 'Error loading contributors';
+  String get errorLoadingContributors => 'Error al cargar los colaboradores';
 
   @override
-  String get relatedArticles => 'Related articles';
+  String get relatedArticles => 'Artículos relacionados';
 
   @override
-  String get failedToLoadArticle => 'Failed to load article';
+  String get failedToLoadArticle => 'Error al cargar el artículo';
 
   @override
-  String get shareFailed => 'Failed to share';
+  String get shareFailed => 'Error al compartir';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'Tendencias';
 
   @override
-  String get slideshow => 'Slideshow';
+  String get slideshow => 'Presentación';
 
   @override
-  String get enterSearchQuery => 'Enter a search query';
+  String get enterSearchQuery => 'Introduce una consulta de búsqueda';
 
   @override
-  String get failedToLoadMoreContent => 'Failed to load more content';
+  String get failedToLoadMoreContent => 'Error al cargar más contenido';
 
   @override
-  String get searchHistory => 'History';
+  String get searchHistory => 'Historial';
 
   @override
-  String get enterScheduleName => 'Enter name';
+  String get enterScheduleName => 'Introduce un nombre';
 
   @override
-  String get nameTooLong => 'Name is too long';
+  String get nameTooLong => 'El nombre es demasiado largo';
 
   @override
-  String get createAndAddClass => 'Create and add class';
+  String get createAndAddClass => 'Crear y añadir clase';
 
   @override
-  String get addToSelectedSchedule => 'Add to selected schedule';
+  String get addToSelectedSchedule => 'Añadir al horario seleccionado';
 
   @override
-  String get mireaMap => 'MIREA Map';
+  String get mireaMap => 'Mapa MIREA';
 
   @override
-  String get findNeededClassroom => 'Find the needed classroom';
+  String get findNeededClassroom => 'Encuentra el aula necesaria';
 
   @override
-  String get nfcPass => 'NFC Pass';
+  String get nfcPass => 'Pase NFC';
 
   @override
-  String get passForUniversityEntry => 'Pass for university entry';
+  String get passForUniversityEntry => 'Pase para la entrada a la universidad';
 
   @override
   String get cloudMireaNinja => 'Cloud Mirea Ninja';
@@ -820,457 +827,458 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mireaNinja => 'Mirea Ninja';
 
   @override
-  String get mostPopularUnofficialChat => 'Most popular unofficial chat';
+  String get mostPopularUnofficialChat => 'El chat no oficial más popular';
 
   @override
-  String get kisDepartment => 'KIS Department';
+  String get kisDepartment => 'Departamento KIS';
 
   @override
   String get corporateInformationSystems =>
-      'Corporate Information Systems Department';
+      'Departamento de Sistemas de Información Corporativa';
 
   @override
-  String get ippoDepartment => 'IPPO Department';
+  String get ippoDepartment => 'Departamento IPPO';
 
   @override
   String get instrumentalAndAppliedSoftware =>
-      'Instrumental and Applied Software Department';
+      'Departamento de Software Instrumental y Aplicado';
 
   @override
-  String get competitiveProgrammingMirea => 'Competitive Programming MIREA';
+  String get competitiveProgrammingMirea => 'Programación Competitiva MIREA';
 
   @override
   String get competitiveProgrammingDescription =>
-      'Various news and updates on competitive programming at MIREA are published here';
+      'Aquí se publican diversas noticias y actualizaciones sobre programación competitiva en MIREA';
 
   @override
-  String get personalAccount => 'Personal Account';
+  String get personalAccount => 'Cuenta Personal';
 
   @override
   String get accessToGradesAndServices =>
-      'Access to grades, applications and other services';
+      'Acceso a calificaciones, solicitudes y otros servicios';
 
   @override
-  String get openAction => 'Open';
+  String get openAction => 'Abrir';
 
   @override
-  String get educationalPortal => 'Educational Portal';
+  String get educationalPortal => 'Portal Educativo';
 
   @override
-  String get accessToCoursesAndMaterials => 'Access to courses and materials';
+  String get accessToCoursesAndMaterials => 'Acceso a cursos y materiales';
 
   @override
-  String get goToAction => 'Go to';
+  String get goToAction => 'Ir a';
 
   @override
-  String get electronicJournal => 'Electronic Journal';
+  String get electronicJournal => 'Diario Electrónico';
 
   @override
-  String get attendanceCheckSchedule => 'Attendance check, schedule';
+  String get attendanceCheckSchedule => 'Control de asistencia, horario';
 
   @override
-  String get library => 'Library';
+  String get library => 'Biblioteca';
 
   @override
-  String get freeSoftware => 'Free Software';
+  String get freeSoftware => 'Software Libre';
 
   @override
-  String get cyberzone => 'Cyberzone';
+  String get cyberzone => 'Ciberzona';
 
   @override
-  String get handbook => 'Handbook';
+  String get handbook => 'Manual';
 
   @override
-  String get scholarships => 'Scholarships';
+  String get scholarships => 'Becas';
 
   @override
-  String get militaryRegistration => 'Military Registration';
+  String get militaryRegistration => 'Registro Militar';
 
   @override
-  String get dormitories => 'Dormitories';
+  String get dormitories => 'Residencias';
 
   @override
-  String get studentOffice => 'Student Office';
+  String get studentOffice => 'Oficina de Estudiantes';
 
   @override
   String get certificatesDocumentsQuestions =>
-      'Certificates, documents, questions';
+      'Certificados, documentos, preguntas';
 
   @override
-  String get careerCenter => 'Career Center';
+  String get careerCenter => 'Centro de Carreras';
 
   @override
-  String get vacanciesAndInternships => 'Vacancies and internships';
+  String get vacanciesAndInternships => 'Vacantes y prácticas profesionales';
 
   @override
-  String get initiativeService => 'Initiative Service';
+  String get initiativeService => 'Servicio de Iniciativas';
 
   @override
-  String get ideasAndSuggestions => 'Ideas and suggestions';
+  String get ideasAndSuggestions => 'Ideas y sugerencias';
 
   @override
-  String get virtualTour => 'Virtual Tour';
+  String get virtualTour => 'Recorrido Virtual';
 
   @override
   String get interactiveUniversityTour =>
-      'Interactive tour of university buildings';
+      'Recorrido interactivo por los edificios de la universidad';
 
   @override
-  String get startupAccelerator => 'Startup Accelerator';
+  String get startupAccelerator => 'Aceleradora de Startups';
 
   @override
-  String get startupSupport => 'Startup and entrepreneurial ideas support';
+  String get startupSupport => 'Apoyo a startups e ideas emprendedoras';
 
   @override
-  String get corporatePortal => 'Corporate Portal';
+  String get corporatePortal => 'Portal Corporativo';
 
   @override
-  String get accessForTeachersAndStaff => 'Access for teachers and staff';
+  String get accessForTeachersAndStaff => 'Acceso para profesores y personal';
 
   @override
-  String get mainServices => 'Main services';
+  String get mainServices => 'Servicios principales';
 
   @override
-  String get studentLife => 'Student life';
+  String get studentLife => 'Vida estudiantil';
 
   @override
-  String get useful => 'Useful';
+  String get useful => 'Útil';
 
   @override
-  String get createAccount => 'Create account';
+  String get createAccount => 'Crear cuenta';
 
   @override
-  String get createAccountTitle => 'Create an account';
+  String get createAccountTitle => 'Crear una cuenta';
 
   @override
   String get createAccountDescription =>
-      'We offer you to create a free account in our cloud storage so you can store your files and documents!';
+      '¡Te ofrecemos crear una cuenta gratuita en nuestro almacenamiento en la nube para que puedas guardar tus archivos y documentos!';
 
   @override
   String get cloudStorageDescription =>
-      'On cloud.mirea.ninja you can store up to 10 GB for free (quota can be expanded in the telegram bot), as well as share files and edit documents online together with classmates.';
+      'En cloud.mirea.ninja puedes almacenar hasta 10 GB de forma gratuita (la cuota se puede ampliar en el bot de telegram), así como compartir archivos y editar documentos en línea junto con tus compañeros.';
 
   @override
-  String get searchPlaceholder => 'Search';
+  String get searchPlaceholder => 'Buscar';
 
   @override
-  String get searchInAnnouncements => 'Search in announcements...';
+  String get searchInAnnouncements => 'Buscar en anuncios...';
 
   @override
-  String get itemName => 'Item name';
+  String get itemName => 'Nombre del objeto';
 
   @override
-  String get itemNameExample => 'For example: Keys with keychain';
+  String get itemNameExample => 'Por ejemplo: Llaves con llavero';
 
   @override
-  String get description => 'Description';
+  String get description => 'Descripción';
 
   @override
   String get itemDescription =>
-      'Details about the item, where and when it was found/lost...';
+      'Detalles sobre el objeto, dónde y cuándo se encontró/perdió...';
 
   @override
   String get telegram => 'Telegram';
 
   @override
-  String get phone => 'Phone';
+  String get phone => 'Teléfono';
 
   @override
-  String get leaveFeedback => 'Leave feedback';
+  String get leaveFeedback => 'Dejar comentarios';
 
   @override
-  String get yourEmail => 'Your email';
+  String get yourEmail => 'Tu correo electrónico';
 
   @override
-  String get enterEmail => 'Enter email';
+  String get enterEmail => 'Introduce tu correo electrónico';
 
   @override
-  String get whatHappened => 'What happened?';
+  String get whatHappened => '¿Qué ha sucedido?';
 
   @override
-  String get feedbackPlaceholder => 'When I press \"X\" \"Y\" happens';
+  String get feedbackPlaceholder => 'Cuando pulso \"X\" ocurre \"Y\"';
 
   @override
-  String get exportToCalendar => 'Export to calendar';
+  String get exportToCalendar => 'Exportar al calendario';
 
   @override
-  String get scheduleExported => 'Schedule exported';
+  String get scheduleExported => 'Horario exportado';
 
   @override
-  String get failedToExportSchedule => 'Failed to export schedule';
+  String get failedToExportSchedule => 'Error al exportar el horario';
 
   @override
-  String get exportSettings => 'Export settings';
+  String get exportSettings => 'Configuración de exportación';
 
   @override
-  String get emojiInLessonTypes => 'Emoji in lesson types';
+  String get emojiInLessonTypes => 'Emoji en los tipos de lección';
 
   @override
-  String get emojiExample => 'Example: \"📚 Lecture\" instead of \"Lecture\"';
+  String get emojiExample => 'Ejemplo: \"📚 Clase\" en lugar de \"Clase\"';
 
   @override
-  String get shortLessonTypeNames => 'Short lesson type names';
+  String get shortLessonTypeNames => 'Nombres cortos para tipos de lección';
 
   @override
-  String get shortNamesExample => 'Example: \"Lec.\" instead of \"Lecture\"';
+  String get shortNamesExample => 'Ejemplo: \"Cl.\" en lugar de \"Clase\"';
 
   @override
-  String get preview => 'Preview';
+  String get preview => 'Vista previa';
 
   @override
-  String get fullTypeName => 'Full type name';
+  String get fullTypeName => 'Nombre completo del tipo';
 
   @override
-  String get shortTypeName => 'Short type name';
+  String get shortTypeName => 'Nombre corto del tipo';
 
   @override
-  String get subjectSelection => 'Subject selection';
+  String get subjectSelection => 'Selección de asignatura';
 
   @override
-  String get standardReminders => 'Standard reminders';
+  String get standardReminders => 'Recordatorios estándar';
 
   @override
-  String get cardSettings => 'Card settings';
+  String get cardSettings => 'Configuración de tarjeta';
 
   @override
-  String get codeFromEmail => 'Code from email';
+  String get codeFromEmail => 'Código del correo electrónico';
 
   @override
-  String get news => 'News';
+  String get news => 'Noticias';
 
   @override
-  String get services => 'Services';
+  String get services => 'Servicios';
 
   @override
   String get profile => 'Perfil';
 
   @override
-  String get aboutApp => 'About app';
+  String get aboutApp => 'Acerca de la aplicación';
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Configuración';
 
   @override
   String get findScheduleForClassroom =>
-      'You can quickly find a schedule for this classroom using schedule search.';
+      'Puedes encontrar rápidamente un horario para esta aula usando la búsqueda de horarios.';
 
   @override
-  String get newYearHolidays => 'New Year holidays';
+  String get newYearHolidays => 'Vacaciones de Año Nuevo';
 
   @override
-  String get winterVacation => 'Winter vacation';
+  String get winterVacation => 'Vacaciones de invierno';
 
   @override
-  String get defenderOfFatherlandDay => 'Defender of the Fatherland Day';
+  String get defenderOfFatherlandDay => 'Día del Defensor de la Patria';
 
   @override
-  String get internationalWomensDay => 'International Women\'s Day';
+  String get internationalWomensDay => 'Día Internacional de la Mujer';
 
   @override
-  String get springAndLaborDay => 'Spring and Labor Day';
+  String get springAndLaborDay => 'Día de la Primavera y del Trabajo';
 
   @override
-  String get victoryDay => 'Victory Day';
+  String get victoryDay => 'Día de la Victoria';
 
   @override
-  String get russiaDay => 'Russia Day';
+  String get russiaDay => 'Día de Rusia';
 
   @override
-  String get nationalUnityDay => 'National Unity Day';
+  String get nationalUnityDay => 'Día de la Unidad Nacional';
 
   @override
-  String get newYear => 'New Year';
+  String get newYear => 'Año Nuevo';
 
   @override
   String get total => 'Total';
 
   @override
-  String get lectures => 'Lectures';
+  String get lectures => 'Clases magistrales';
 
   @override
-  String get practicals => 'Practicals';
+  String get practicals => 'Prácticas';
 
   @override
-  String get labs => 'Labs';
+  String get labs => 'Laboratorios';
 
   @override
-  String get justNow => 'just now';
+  String get justNow => 'hace un momento';
 
   @override
-  String get status => 'Status';
+  String get status => 'Estado';
 
   @override
   String phoneContact(String phoneNumber) {
-    return 'Phone: $phoneNumber';
+    return 'Teléfono: $phoneNumber';
   }
 
   @override
   String lessonsOnDay(String day) {
-    return 'Lessons on $day';
+    return 'Clases del $day';
   }
 
   @override
-  String get todayLower => 'today';
+  String get todayLower => 'hoy';
 
   @override
-  String get tomorrowLower => 'tomorrow';
+  String get tomorrowLower => 'mañana';
 
   @override
-  String get showEmptyLessonsTooltip => 'Show empty classes';
+  String get showEmptyLessonsTooltip => 'Mostrar clases vacías';
 
   @override
-  String get emptyLessons => 'Empty classes';
+  String get emptyLessons => 'Clases vacías';
 
   @override
-  String get analyticsShort => 'Analytics';
+  String get analyticsShort => 'Analíticas';
 
   @override
-  String get dayOff => 'Day off';
+  String get dayOff => 'Día libre';
 
   @override
-  String get noLessonsThatDay => 'No classes on this day';
+  String get noLessonsThatDay => 'No hay clases este día';
 
   @override
-  String get noLessonsThatDayShort => 'No classes this day!';
+  String get noLessonsThatDayShort => '¡No hay clases este día!';
 
   @override
-  String get restSuggestion => 'You can rest or do self-study';
+  String get restSuggestion => 'Puedes descansar o estudiar por tu cuenta';
 
   @override
   String windowGap(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count classes',
-      one: '$count class',
+      other: '$count clases',
+      one: '$count clase',
     );
-    return 'Gap: $_temp0';
+    return 'Ventana: $_temp0';
   }
 
   @override
-  String get noScheduleSelected => 'No schedule selected';
+  String get noScheduleSelected => 'No hay horario seleccionado';
 
   @override
   String get selectEntityToSeeSchedule =>
-      'Select a group, teacher or classroom to view schedule';
+      'Selecciona un grupo, profesor o aula para ver el horario';
 
   @override
-  String get errorLoadingSchedule => 'Error loading schedule';
+  String get errorLoadingSchedule => 'Error al cargar el horario';
 
   @override
-  String get manageComparisons => 'Manage comparisons';
+  String get manageComparisons => 'Gestionar comparaciones';
 
   @override
   String get selectUpTo4Schedules =>
-      'Select up to 4 schedules to compare by days';
+      'Selecciona hasta 4 horarios para comparar por días';
 
   @override
-  String get noUpcomingLessons => 'No upcoming classes';
+  String get noUpcomingLessons => 'No hay clases próximas';
 
   @override
   String get noUpcomingLessonsDescription =>
-      'No classes are scheduled in the near future. Switch to the calendar to view other days.';
+      'No hay clases programadas en un futuro cercano. Cambia al calendario para ver otros días.';
 
   @override
-  String get switchToCalendar => 'Switch to calendar';
+  String get switchToCalendar => 'Cambiar al calendario';
 
   @override
-  String get lecturesShort => 'Lect.';
+  String get lecturesShort => 'Mag.';
 
   @override
-  String get practiceShort => 'Pract.';
+  String get practiceShort => 'Práct.';
 
   @override
   String get labsShort => 'Lab.';
 
   @override
-  String get legend => 'Legend';
+  String get legend => 'Leyenda';
 
   @override
-  String get laboratoryWork => 'Laboratory';
+  String get laboratoryWork => 'Laboratorio';
 
   @override
   String get scheduleLoadError =>
-      'An error occurred while fetching the schedule. Please try again.';
+      'Ocurrió un error al obtener el horario. Por favor, intenta de nuevo.';
 
   @override
   String get selectSchedulesForComparison =>
-      'Select schedules for comparison (up to 3)';
+      'Seleccionar horarios para comparar (hasta 3)';
 
   @override
   String deleteScheduleConfirm(String name) {
-    return 'Are you sure you want to delete \"$name\"?';
+    return '¿Estás seguro de que quieres eliminar \"$name\"?';
   }
 
   @override
   String deleteClassConfirm(String subject) {
-    return 'Are you sure you want to delete \"$subject\" from the schedule?';
+    return '¿Estás seguro de que quieres eliminar \"$subject\" del horario?';
   }
 
   @override
-  String get commentTooLong => 'Comment is too long';
+  String get commentTooLong => 'El comentario es demasiado largo';
 
   @override
   String get addOneClassroomOrOnline =>
-      'Add at least one classroom or make the class online';
+      'Añade al menos una aula o marca la clase como en línea';
 
   @override
-  String get createClass => 'Create class';
+  String get createClass => 'Crear clase';
 
   @override
-  String get editClass => 'Edit class';
+  String get editClass => 'Editar clase';
 
   @override
-  String get startTime => 'Start';
+  String get startTime => 'Inicio';
 
   @override
-  String get endTime => 'End';
+  String get endTime => 'Fin';
 
   @override
-  String get lessonNumber => 'Lesson number';
+  String get lessonNumber => 'Número de lección';
 
   @override
-  String get teacherFullNameHint => 'e.g. Ivanov Ivan Ivanovich';
+  String get teacherFullNameHint => 'ej. Ivanov Iván Ivánovich';
 
   @override
-  String get enterTeacherFullName => 'Enter teacher full name';
+  String get enterTeacherFullName =>
+      'Introduce el nombre completo del profesor';
 
   @override
-  String get onlineLessonUrl => 'Online lesson URL';
+  String get onlineLessonUrl => 'URL de la clase en línea';
 
   @override
-  String get enterUrl => 'Enter URL';
+  String get enterUrl => 'Introduce una URL';
 
   @override
-  String get classroomNumberHint => 'e.g. A-123';
+  String get classroomNumberHint => 'ej. A-123';
 
   @override
-  String get enterClassroomNumber => 'Enter classroom number';
+  String get enterClassroomNumber => 'Introduce el número de aula';
 
   @override
-  String get enterGroupName => 'Enter group name';
+  String get enterGroupName => 'Introduce el nombre del grupo';
 
   @override
-  String get basic => 'Basic';
+  String get basic => 'Básico';
 
   @override
-  String get dates => 'Dates';
+  String get dates => 'Fechas';
 
   @override
-  String get place => 'Place';
+  String get place => 'Lugar';
 
   @override
-  String get create => 'Create';
+  String get create => 'Crear';
 
   @override
-  String get addDate => 'Add date';
+  String get addDate => 'Añadir fecha';
 
   @override
-  String get lessonDeliveryType => 'Lesson delivery type';
+  String get lessonDeliveryType => 'Tipo de impartición de la clase';
 
   @override
-  String get noClassroomsSelected => 'No classrooms selected';
+  String get noClassroomsSelected => 'No hay aulas seleccionadas';
 
   @override
-  String get back => 'Back';
+  String get back => 'Atrás';
 }

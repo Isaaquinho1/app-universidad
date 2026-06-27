@@ -98,9 +98,9 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Поддержите наш сервис'),
+            title: const Text('Apoya nuestro servicio'),
             content: const Text(
-              'Реклама помогает нам бесплатно развивать приложение, добавлять новые возможности и поддерживать качественную работу сервиса. Отключая рекламу, вы лишаете нас важного источника поддержки. Вы уверены, что хотите отключить показ рекламы?',
+              'La publicidad nos ayuda a desarrollar la aplicación de forma gratuita, añadir nuevas funciones y mantener el funcionamiento de calidad del servicio. Al desactivar la publicidad, nos privas de una fuente importante de apoyo. ¿Estás seguro de que quieres desactivar la visualización de publicidad?',
             ),
             actions: [
               TextButton(
@@ -108,14 +108,14 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
                   context.read<AdsBloc>().add(const SetAdsVisibility(showAds: true));
                   Navigator.of(context).pop();
                 },
-                child: const Text('Оставить рекламу'),
+                child: const Text('Mantener publicidad'),
               ),
               TextButton(
                 onPressed: () {
                   context.read<AdsBloc>().add(const SetAdsVisibility(showAds: false));
                   Navigator.of(context).pop();
                 },
-                child: const Text('Отключить'),
+                child: const Text('Desactivar'),
               ),
             ],
           ),
@@ -162,15 +162,15 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ScheduleSectionWrapper(
-          title: "Управление расписанием",
+          title: "Gestión de horarios",
           scheduleSection: ScheduleManagementSection(onFeedbackTap: _onFeedbackTap),
         ),
         const SizedBox(height: 24),
         SettingsSection(
-          title: "Общее",
+          title: "General",
           children: [
             SettingsItem(
-              text: 'О приложении',
+              text: 'Sobre la aplicación',
               icon: HugeIcon(icon: HugeIcons.strokeRoundedCoffee02, color: colors.active),
               onPressed: () => context.go('/profile/about'),
               trailing: Icon(Icons.chevron_right, color: colors.deactive),
@@ -182,19 +182,19 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
-                    'Тема приложения',
+                    'Tema de la aplicación',
                     style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w500),
                   ),
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildThemeOption(ThemeOption.light, 'Светлая', Icons.wb_sunny_outlined)),
+                    Expanded(child: _buildThemeOption(ThemeOption.light, 'Claro', Icons.wb_sunny_outlined)),
                     const SizedBox(width: 8),
-                    Expanded(child: _buildThemeOption(ThemeOption.dark, 'Тёмная', Icons.nightlight_outlined)),
+                    Expanded(child: _buildThemeOption(ThemeOption.dark, 'Oscuro', Icons.nightlight_outlined)),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: _buildThemeOption(ThemeOption.system, 'Системная', Icons.settings_suggest_outlined),
+                      child: _buildThemeOption(ThemeOption.system, 'Sistema', Icons.settings_suggest_outlined),
                     ),
                   ],
                 ),
@@ -202,7 +202,7 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
             ),
             const Divider(height: 24, thickness: 0.5),
             SettingsItem(
-              text: 'Управление рекламой',
+              text: 'Gestión de publicidad',
               icon: Icon(Icons.ad_units, color: Colors.blue, size: 24),
               onPressed: () => _onAdsSettingTap(context),
               trailing: Icon(Icons.chevron_right, color: colors.deactive),

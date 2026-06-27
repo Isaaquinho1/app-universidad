@@ -35,7 +35,7 @@ class _ServicesViewState extends State<ServicesView>
   bool _isUserInteracting = false;
   bool _isScreenInFocus = true;
 
-  final List<String> _categories = ["Главная", "Цифровой университет"];
+  final List<String> _categories = ["Inicio", "Universidad digital"];
   int _selectedIndex = 0;
   int _currentBannerIndex = 0;
 
@@ -220,7 +220,7 @@ class _ServicesViewState extends State<ServicesView>
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: const SectionHeader(title: "Важные"),
+          child: const SectionHeader(title: "Importantes"),
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
@@ -250,8 +250,8 @@ class _ServicesViewState extends State<ServicesView>
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
           child: SectionHeaderWithButton(
-            title: "Обсуждаемое",
-            buttonText: "Все",
+            title: "Discutido",
+            buttonText: "Ver todo",
             onPressed:
                 () => launchUrlString(
                   'https://mirea.ninja/top',
@@ -265,8 +265,8 @@ class _ServicesViewState extends State<ServicesView>
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
           child: const SectionHeaderWithButton(
-            title: "Сообщества",
-            buttonText: "Все",
+            title: "Comunidades",
+            buttonText: "Ver todo",
             onPressed: _dummy,
           ),
         ),
@@ -371,7 +371,7 @@ class _ServicesViewState extends State<ServicesView>
         const SizedBox(height: AppSpacing.xlg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: const SectionHeader(title: 'Основные сервисы'),
+          child: const SectionHeader(title: 'Servicios principales'),
         ),
         const SizedBox(height: AppSpacing.md),
         Padding(
@@ -408,7 +408,7 @@ class _ServicesViewState extends State<ServicesView>
           children: [
             Padding(
               padding: const EdgeInsets.only(left: AppSpacing.xlg),
-              child: const SectionHeader(title: 'Студенческая жизнь'),
+              child: const SectionHeader(title: 'Vida estudiantil'),
             ),
             const SizedBox(height: AppSpacing.md),
             _buildHorizontalCardsList(),
@@ -420,7 +420,7 @@ class _ServicesViewState extends State<ServicesView>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SectionHeader(title: 'Полезное'),
+              const SectionHeader(title: 'Útil'),
               const SizedBox(height: AppSpacing.lg),
               _buildWideCardsList(),
             ],
