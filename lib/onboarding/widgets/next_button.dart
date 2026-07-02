@@ -39,7 +39,7 @@ class NextButton extends StatelessWidget {
         child:
             isLastPage
                 ? Text(
-                  "Начать!",
+                  "¡Empezar!",
                   style: AppTextStyle.buttonS.copyWith(color: Theme.of(context).extension<AppColors>()!.white),
                 )
                 : Icon(Icons.arrow_forward_ios, color: Theme.of(context).extension<AppColors>()!.active),

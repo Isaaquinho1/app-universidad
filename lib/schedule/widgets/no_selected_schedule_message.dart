@@ -42,10 +42,10 @@ class NoSelectedScheduleMessage extends StatelessWidget {
                     ),
               ),
               const SizedBox(height: 8),
-              Text("Не установлена активная группа", style: AppTextStyle.h5),
+              Text("Grupo no configurado", style: AppTextStyle.h5),
               const SizedBox(height: 8),
               Text(
-                "Скачайте расписание по крайней мере для одной группы, чтобы отобразить календарь.",
+                "Descarga el horario de al menos un grupo para ver el calendario.",
                 style: AppTextStyle.body.copyWith(
                   color: Theme.of(context).extension<AppColors>()!.deactive,
                 ),
@@ -60,7 +60,7 @@ class NoSelectedScheduleMessage extends StatelessWidget {
                           : CrossAxisAlignment.stretch,
                   children: [
                     ColorfulButton(
-                      text: "Настроить",
+                      text: "Configurar",
                       onClick: onTap,
                       backgroundColor:
                           Theme.of(context).extension<AppColors>()!.primary,

@@ -101,7 +101,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     }
 
     _previewLesson = LessonSchedulePart(
-      subject: _subjectController.text.isNotEmpty ? _subjectController.text : 'Название предмета',
+      subject: _subjectController.text.isNotEmpty ? _subjectController.text : 'Nombre de la materia',
       lessonType: _lessonType,
       teachers: _selectedTeachers,
       classrooms: classrooms,
@@ -127,12 +127,12 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.lesson == null ? 'Создание пары' : 'Редактирование пары'),
+        title: Text(widget.lesson == null ? 'Crear clase' : 'Editar clase'),
         centerTitle: true,
         elevation: 0,
         actions: [
           Tooltip(
-            message: 'Сохранить',
+            message: 'Guardar',
             child: IconButton(
               icon:  HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle02, color: colors.primary),
               onPressed: _saveLesson,
@@ -150,7 +150,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
               child: _buildStepsIndicator(),
             ),
 
-            // Контент текущего шага
+            // Contenido del paso actual
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(8),
@@ -189,16 +189,16 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Название предмета
+        // Nombre de la materia
         TextInput(
           controller: _subjectController,
-          labelText: 'Название предмета',
-          hintText: 'Введите название предмета',
+          labelText: 'Nombre de la materia',
+          hintText: 'Introduce el nombre de la materia',
           onChanged: (_) => _updatePreview(),
-          errorText: _subjectController.text.isEmpty ? 'Введите название предмета' : null,
+          errorText: _subjectController.text.isEmpty ? 'Introduce el nombre de la materia' : null,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Введите название предмета';
+              return 'Introduce el nombre de la materia';
             }
             return null;
           },
@@ -211,14 +211,14 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Время занятия
+        // Hora de la clase
         Row(
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Начало', style: AppTextStyle.body.copyWith(color: colors.active, fontWeight: FontWeight.w500)),
+                  Text('Inicio', style: AppTextStyle.body.copyWith(color: colors.active, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () async {
@@ -231,7 +231,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                         setState(() {
                           _startTime = TimeOfDay(hour: timeOfDay.hour, minute: timeOfDay.minute);
 
-                          // Проверяем, что время окончания позже времени начала
+                          // Comprobamos que la hora de fin sea posterior a la hora de inicio
                           if (_endTime.hour < _startTime.hour ||
                               (_endTime.hour == _startTime.hour && _endTime.minute <= _startTime.minute)) {
                             _endTime = TimeOfDay(hour: _startTime.hour + 1, minute: _startTime.minute);
@@ -269,7 +269,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Конец', style: AppTextStyle.body.copyWith(color: colors.active, fontWeight: FontWeight.w500)),
+                  Text('Fin', style: AppTextStyle.body.copyWith(color: colors.active, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () async {
@@ -289,7 +289,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Время окончания должно быть позже времени начала')),
+                            const SnackBar(content: Text('La hora de fin debe ser posterior a la hora de inicio')),
                           );
                         }
                       }
@@ -322,14 +322,14 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Номер пары
-        Text('Номер пары', style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600)),
+        // Número de clase
+        Text('Número de clase', style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600)),
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
           children: [
             ChoiceChip(
-              label: const Text('Нет'),
+              label: const Text('No'),
               selected: _lessonNumber == null,
               onSelected: (selected) {
                 if (selected) {
@@ -358,11 +358,11 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Группы
+        // Grupos
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Группы', style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600)),
+            Text('Grupos', style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600)),
             IconButton(icon: const Icon(Icons.add), onPressed: () => _addGroup(context)),
           ],
         ),
@@ -371,12 +371,12 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Преподаватели
+        // Profesores
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Преподаватели',
+              'Profesores',
               style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600),
             ),
             IconButton(icon: const Icon(Icons.add), onPressed: () => _addTeacher(context)),

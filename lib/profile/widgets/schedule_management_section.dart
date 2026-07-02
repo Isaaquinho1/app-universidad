@@ -29,13 +29,13 @@ class ScheduleManagementSection extends StatelessWidget {
         if (state.isSuccess) {
           ScaffoldMessengerHelper.showMessage(
             context: context,
-            title: 'Расписание экспортировано',
+            title: 'Horario exportado',
           );
         } else if (state.errorMessage.isNotEmpty) {
           ScaffoldMessengerHelper.showMessage(
             context: context,
-            title: 'Ошибка',
-            subtitle: 'Не удалось экспортировать расписание',
+            title: 'Error',
+            subtitle: 'No se pudo exportar el horario',
             isSuccess: false,
           );
         }
@@ -55,7 +55,7 @@ class ScheduleManagementSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProfileButton(
-                    text: 'Группы',
+                    text: 'Grupos',
                     icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedUserGroup,
                       size: 26,
@@ -85,7 +85,7 @@ class ScheduleManagementSection extends StatelessWidget {
                   ),
                   const Divider(height: 24, thickness: 0.5),
                   _SettingToggleRow(
-                    title: "Компактный вид",
+                    title: "Vista compacta",
                     icon: Assets.icons.hugeicons.listView.svg(
                       color: Theme.of(context).extension<AppColors>()!.primary,
                       height: 24,
@@ -99,7 +99,7 @@ class ScheduleManagementSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _SettingToggleRow(
-                    title: "Пустые пары",
+                    title: "Horas libres",
                     icon: Icon(
                       Icons.event_busy_outlined,
                       color: Theme.of(context).extension<AppColors>()!.primary,
@@ -116,7 +116,7 @@ class ScheduleManagementSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _SettingToggleRow(
-                    title: "Индикатор заметок",
+                    title: "Indicador de notas",
                     icon: Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
@@ -144,7 +144,7 @@ class ScheduleManagementSection extends StatelessWidget {
                   if (state.selectedSchedule != null) ...[
                     const Divider(height: 32, thickness: 0.5),
                     ProfileButton(
-                      text: "Экспорт в календарь",
+                      text: "Exportar a calendario",
                       icon: Assets.icons.hugeicons.calendarCheckOut01.svg(
                         color:
                             Theme.of(context).extension<AppColors>()!.primary,
@@ -161,7 +161,7 @@ class ScheduleManagementSection extends StatelessWidget {
 
                         BottomModalSheet.show(
                           context,
-                          title: 'Экспорт в календарь',
+                          title: 'Exportar a calendario',
                           isExpandable: true,
                           isDismissible: true,
                           showFullScreen: true,
@@ -181,7 +181,7 @@ class ScheduleManagementSection extends StatelessWidget {
                   ],
                   const Divider(height: 32, thickness: 0.5),
                   ProfileButton(
-                    text: "Проблемы с расписанием",
+                    text: "Problemas con el horario",
                     icon: Assets.icons.hugeicons.share01.svg(
                       color:
                           Theme.of(context).extension<AppColors>()!.colorful07,

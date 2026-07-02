@@ -35,20 +35,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   ];
 
   static const List titlesTexts = [
-    'Добро пожаловать!',
-    'Смотри расписание!',
-    'Будь в курсе в любой момент!',
-    // 'Ставь цели!',
-    //'Коммуницируй!',
+    '¡Bienvenid@!',
+    '¡Consulta tu horario!',
+    '¡Mantente informado en todo momento!',
+    // '¡Establece metas!',
+    // '¡Comunícate!',
   ];
 
   /// Bottom text strings
   static const List contentTexts = [
-    'Это приложение было создано студентами для студентов',
-    'Как же легко, оказывается, можно смотреть расписание, а главное – быстро',
-    'Иногда так лень заходить на сайт и искать нужную тебе информацию, мы это исправили',
-    // 'Как же много дедлайнов!? Создавать дедлайны теперь как никогда просто и удобно',
-    //'Слово сложное, но на деле всё легко. Общайся и делись материалами с другими группами мгновенно',
+    'Esta aplicación fue creada por estudiantes para estudiantes.',
+    'Consultar tu horario nunca había sido tan fácil y rápido.',
+    'Sabemos que a veces da pereza entrar al sitio web y buscar la información que necesitas. Nosotros lo solucionamos.',
+    // '¿Demasiadas fechas límite? Ahora crear recordatorios y gestionar tus pendientes es más fácil que nunca.',
+    // 'Puede sonar complicado, pero en realidad es muy sencillo. Comunícate y comparte materiales con otros grupos al instante.',
   ];
 
   /// Top padding for every image
@@ -205,7 +205,7 @@ class _PageIndicatorsState extends State<PageIndicators> {
                         context.go('/schedule');
                       },
                       child: Text(
-                        "Пропустить",
+                        "Omitir",
                         style: AppTextStyle.buttonS.copyWith(color: Theme.of(context).extension<AppColors>()!.active),
                       ),
                     ),

@@ -109,13 +109,13 @@ class NavigationButtonsWidget extends StatelessWidget {
         child: Row(
           children: [
             if (onBack != null)
-              TextButton(onPressed: onBack, child: const Text('Назад'))
+              TextButton(onPressed: onBack, child: const Text('Atrás'))
             else
               const SizedBox.shrink(),
             const Spacer(),
             FilledButton(
               onPressed: canProceed ? onNext : null,
-              child: Text(nextLabel ?? (isLastStep ? 'Готово' : 'Далее')),
+              child: Text(nextLabel ?? (isLastStep ? 'Finalizar' : 'Siguiente')),
             ),
           ],
         ),
@@ -222,9 +222,9 @@ class GroupsSelectorWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Группы', style: AppTextStyle.titleS),
+            Text('Grupos', style: AppTextStyle.titleS),
             const Spacer(),
-            TextButton(onPressed: onAddGroup, child: const Text('Добавить')),
+            TextButton(onPressed: onAddGroup, child: const Text('Añadir')),
           ],
         ),
         Wrap(
@@ -261,9 +261,9 @@ class TeachersSelectorWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Преподаватели', style: AppTextStyle.titleS),
+            Text('Profesores', style: AppTextStyle.titleS),
             const Spacer(),
-            TextButton(onPressed: onAddTeacher, child: const Text('Добавить')),
+            TextButton(onPressed: onAddTeacher, child: const Text('Añadir')),
           ],
         ),
         Wrap(
@@ -302,9 +302,9 @@ class DateSelectorWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Даты', style: AppTextStyle.titleS),
+            Text('Fechas', style: AppTextStyle.titleS),
             const Spacer(),
-            TextButton(onPressed: onAddDates, child: const Text('Выбрать')),
+            TextButton(onPressed: onAddDates, child: const Text('Seleccionar')),
           ],
         ),
         Wrap(
@@ -352,7 +352,7 @@ class LocationSelectorWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Онлайн', style: AppTextStyle.titleS),
+            Text('En línea', style: AppTextStyle.titleS),
             const Spacer(),
             Switch(value: isOnline, onChanged: onOnlineChanged),
           ],
@@ -360,17 +360,17 @@ class LocationSelectorWidget extends StatelessWidget {
         if (isOnline)
           TextInput(
             controller: TextEditingController(text: onlineUrl),
-            labelText: 'Ссылка',
+            labelText: 'Enlace',
             onChanged: (v) => onUrlChanged(v),
           )
         else ...[
           Row(
             children: [
-              Text('Аудитории', style: AppTextStyle.titleS),
+              Text('Aulas', style: AppTextStyle.titleS),
               const Spacer(),
               TextButton(
                 onPressed: onAddClassroom,
-                child: const Text('Добавить'),
+                child: const Text('Añadir'),
               ),
             ],
           ),
