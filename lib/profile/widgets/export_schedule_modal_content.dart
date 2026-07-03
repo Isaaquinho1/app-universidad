@@ -27,10 +27,10 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
   late TabController _tabController;
 
   final Map<String, int> _presetReminders = {
-    '10 минут до': 10,
-    '30 минут до': 30,
-    '1 час до': 60,
-    '12 часов до': 720,
+    '10 minutos antes': 10,
+    '30 minutos antes': 30,
+    '1 hora antes': 60,
+    '12 horas antes': 720,
   };
 
   late Map<String, bool> _selectedPresetReminders;
@@ -149,9 +149,9 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
           indicatorSize: TabBarIndicatorSize.label,
           labelStyle: AppTextStyle.bodyL.copyWith(fontWeight: FontWeight.w600),
           tabs: const [
-            Tab(text: "Настройки"),
-            Tab(text: "Предметы"),
-            Tab(text: "Напоминания"),
+            Tab(text: "Configuración"),
+            Tab(text: "Materias"),
+            Tab(text: "Recordatorios"),
           ],
         ),
         const SizedBox(height: 16),
@@ -187,14 +187,14 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Календарь: ${widget.calendarName}',
+                      'Calendario: ${widget.calendarName}',
                       style: AppTextStyle.body.copyWith(color: colors.deactive),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Предметов: ${_selectedSubjects.values.where((v) => v).length}/${_selectedSubjects.length}',
+                      'Materias: ${_selectedSubjects.values.where((v) => v).length}/${_selectedSubjects.length}',
                       style: AppTextStyle.body.copyWith(color: colors.deactive),
                     ),
                   ],
@@ -221,7 +221,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
 
                     Navigator.of(context).pop();
                   },
-                  text: 'Экспортировать',
+                  text: 'Exportar',
                   icon: Icon(
                     Icons.calendar_today,
                     size: 20,
@@ -243,12 +243,12 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       children: [
         _SectionCard(
-          title: 'Настройки экспорта',
+          title: 'Configuración de exportación',
           icon: Icons.settings_outlined,
           children: [
             _SettingToggleItem(
-              title: 'Эмодзи в типах пар',
-              subtitle: 'Пример: "📚 Лекция" вместо "Лекция"',
+              title: 'Emojis en los tipos de clase',
+              subtitle: 'Ejemplo: "📚 Clase" en lugar de "Clase"',
               value: _includeEmojis,
               onChanged: (value) {
                 setState(() => _includeEmojis = value);
@@ -256,8 +256,8 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
             ),
             const Divider(),
             _SettingToggleItem(
-              title: 'Короткие названия типов',
-              subtitle: 'Пример: "Лек." вместо "Лекция"',
+              title: 'Nombres cortos de tipos',
+              subtitle: 'Ejemplo: "Clas." en lugar de "Clase"',
               value: _includeShortTypeNames,
               onChanged: (value) {
                 setState(() => _includeShortTypeNames = value);
@@ -267,25 +267,25 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
         ),
         const SizedBox(height: 16),
         _SectionCard(
-          title: 'Предпросмотр',
+          title: 'Vista previa',
           icon: Icons.preview_outlined,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                'Пример названий пар:',
+                'Ejemplo de nombres de clases:',
                 style: AppTextStyle.body.copyWith(color: colors.deactive),
               ),
             ),
             _PreviewItem(
-              title: _includeEmojis ? '📚 Лекция' : 'Лекция',
-              subtitle: 'Полное название типа',
+              title: _includeEmojis ? '📚 Clase' : 'Clase',
+              subtitle: 'Nombre completo del tipo',
               enabled: !_includeShortTypeNames,
             ),
             const SizedBox(height: 8),
             _PreviewItem(
-              title: _includeEmojis ? '📚 Лек.' : 'Лек.',
-              subtitle: 'Сокращенное название типа',
+              title: _includeEmojis ? '📚 Clas.' : 'Clas.',
+              subtitle: 'Nombre abreviado del tipo',
               enabled: _includeShortTypeNames,
             ),
           ],
@@ -303,7 +303,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       children: [
         _SectionCard(
-          title: 'Выбор предметов',
+          title: 'Selección de materias',
           icon: Icons.subject_outlined,
           trailing: Text(
             '$selectedCount/${subjects.length}',
@@ -329,7 +329,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Выбрать все',
+                      'Seleccionar todo',
                       style: AppTextStyle.bodyL.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -367,7 +367,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       children: [
         _SectionCard(
-          title: 'Стандартные напоминания',
+          title: 'Recordatorios estándar',
           icon: Icons.access_time,
           children:
               _presetReminders.keys
@@ -386,29 +386,29 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
         ),
         const SizedBox(height: 16),
         _SectionCard(
-          title: 'Свои напоминания (в минутах)',
+          title: 'Recordatorios personalizados (en minutos)',
           icon: Icons.add_alert_outlined,
           children: [
             Row(
               children: [
                 Expanded(
                   child: LabelledInput(
-                    label: 'Минуты',
-                    placeholder: 'Например, 5',
+                    label: 'Minutos',
+                    placeholder: 'Por ejemplo, 5',
                     controller: _customReminderController,
                     keyboardType: TextInputType.number,
                     onChanged: (_) => setState(() {}),
                     errorText:
                         _validateCustomReminder(_customReminderController.text)
                             ? null
-                            : 'Введите уникальное число > 0',
+                            : 'Ingresa un número único mayor que 0',
                   ),
                 ),
                 const SizedBox(width: 12),
                 SizedBox(
                   width: 120,
                   child: TextOutlinedButton(
-                    content: 'Добавить',
+                    content: 'Agregar',
                     onPressed: _addCustomReminder,
                   ),
                 ),
@@ -417,7 +417,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
             const SizedBox(height: 12),
             if (_customReminders.isEmpty)
               Text(
-                'Пока нет пользовательских напоминаний',
+                'Todavía no hay recordatorios personalizados',
                 style: AppTextStyle.body.copyWith(color: colors.deactive),
               )
             else
@@ -443,7 +443,7 @@ class _ExportScheduleModalContentState extends State<ExportScheduleModalContent>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  '$m мин',
+                                  '$m min',
                                   style: AppTextStyle.body.copyWith(
                                     color: colors.active,
                                   ),

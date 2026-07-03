@@ -12,7 +12,7 @@ class NotificationsSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Настройки уведомлений")),
+      appBar: AppBar(title: const Text("Configuración de notificaciones")),
       body: const SafeArea(child: _NotificationPreferencesView()),
     );
   }
@@ -28,10 +28,10 @@ class _NotificationPreferencesView extends StatefulWidget {
 class _NotificationPreferencesViewState extends State<_NotificationPreferencesView> {
   String _getDescription(String category) {
     switch (category) {
-      case 'Объявления':
-        return 'Важные общеуниверситетские объявления';
-      case 'Обновления расписания':
-        return 'Изменения в расписании вашей группы';
+      case 'Avisos':
+        return 'Avisos institucionales importantes para la comunidad estudiantil';
+      case 'Actualizaciones de horario':
+        return 'Cambios en el horario de tu grupo';
       default:
         return '';
     }
@@ -58,7 +58,7 @@ class _NotificationPreferencesViewState extends State<_NotificationPreferencesVi
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text('Категории уведомлений', style: Theme.of(context).textTheme.titleMedium),
+          child: Text('Categorías de notificaciones', style: Theme.of(context).textTheme.titleMedium),
         ),
         const SizedBox(height: 8),
         Expanded(

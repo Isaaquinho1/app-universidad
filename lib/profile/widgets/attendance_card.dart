@@ -1,18 +1,31 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:app_ui/app_ui.dart';
 
 class AttendanceCard extends StatelessWidget {
-  const AttendanceCard({super.key, required this.type, required this.date, required this.time});
+  const AttendanceCard({
+    super.key,
+    required this.type,
+    required this.date,
+    required this.time,
+  });
 
   final String type;
   final String date;
   final String time;
 
+  bool get _isEntry {
+    const legacyEntryType = '\u0412\u0445\u043e\u0434';
+    return type == 'Entrada' || type == legacyEntryType;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+    final displayType = _isEntry ? 'Entrada' : type;
+
     return Card(
-      color: Theme.of(context).extension<AppColors>()!.background02,
+      color: colors.background02,
       child: Container(
         width: double.infinity,
         height: 80,
@@ -27,31 +40,29 @@ class AttendanceCard extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).extension<AppColors>()!.background03,
+                color: colors.background03,
               ),
               alignment: Alignment.center,
               child: Container(
                 width: 24,
                 height: 24,
-                decoration:
-                    type == "Вход"
-                        ? const BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Color(0xff99db7e), Color(0xff6da95b)],
-                          ),
-                        )
-                        : BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).extension<AppColors>()!.colorful02,
+                decoration: _isEntry
+                    ? const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xff99db7e), Color(0xff6da95b)],
                         ),
+                      )
+                    : BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colors.colorful02,
+                      ),
                 alignment: Alignment.center,
-                child:
-                    type == "Вход"
-                        ? FaIcon(FontAwesomeIcons.rightToBracket, size: 15)
-                        : FaIcon(FontAwesomeIcons.rightFromBracket, size: 15),
+                child: _isEntry
+                    ? const FaIcon(FontAwesomeIcons.rightToBracket, size: 15)
+                    : const FaIcon(FontAwesomeIcons.rightFromBracket, size: 15),
               ),
             ),
             const SizedBox(width: 55.50),
@@ -60,14 +71,11 @@ class AttendanceCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(type, style: AppTextStyle.bodyBold),
+                Text(displayType, style: AppTextStyle.bodyBold),
                 Text(
                   '$date, $time',
                   style: AppTextStyle.captionL.copyWith(
-                    color:
-                        type == "Вход"
-                            ? Theme.of(context).extension<AppColors>()!.colorful05
-                            : Theme.of(context).extension<AppColors>()!.colorful02,
+                    color: _isEntry ? colors.colorful05 : colors.colorful02,
                   ),
                 ),
               ],

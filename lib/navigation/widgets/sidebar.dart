@@ -117,14 +117,14 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                               // Main navigation
                               Padding(
                                 padding: const EdgeInsets.only(left: 16, bottom: 12),
-                                child: _buildSectionTitle('Навигация', colors),
+                                child: _buildSectionTitle('Navegación', colors),
                               ),
 
                               _buildNavigationItem(
                                 icon: Assets.icons.hugeicons.news.svg(
                                   color: widget.currentIndex == 0 ? colors.colorful03 : colors.active.withOpacity(0.8),
                                 ),
-                                title: 'Новости',
+                                title: 'Noticias',
                                 index: 0,
                                 accentColor: colors.colorful03,
                                 colors: colors,
@@ -134,7 +134,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                 icon: Assets.icons.hugeicons.calendar03.svg(
                                   color: widget.currentIndex == 1 ? colors.colorful01 : colors.active.withOpacity(0.8),
                                 ),
-                                title: 'Расписание',
+                                title: 'Horario',
                                 index: 1,
                                 accentColor: colors.colorful01,
                                 colors: colors,
@@ -144,7 +144,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                 icon: Assets.icons.hugeicons.dashboardSquare01.svg(
                                   color: widget.currentIndex == 2 ? colors.colorful02 : colors.active.withOpacity(0.8),
                                 ),
-                                title: 'Сервисы',
+                                title: 'Servicios',
                                 index: 2,
                                 accentColor: colors.colorful02,
                                 colors: colors,
@@ -154,7 +154,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                 icon: Assets.icons.hugeicons.userAccount.svg(
                                   color: widget.currentIndex == 3 ? colors.primary : colors.active.withOpacity(0.8),
                                 ),
-                                title: 'Профиль',
+                                title: 'Perfil',
                                 index: 3,
                                 accentColor: colors.primary,
                                 colors: colors,
@@ -172,7 +172,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(left: 16, bottom: 12),
-                                        child: _buildSectionTitle('Приложение', colors),
+                                        child: _buildSectionTitle('Aplicación', colors),
                                       ),
                                       _buildSettingsItem(
                                         icon: Icon(
@@ -180,7 +180,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                           color: colors.active.withOpacity(0.8),
                                           size: 20,
                                         ),
-                                        title: 'О приложении',
+                                        title: 'Acerca de la app',
                                         colors: colors,
                                         onTap: () {},
                                       ),
@@ -190,7 +190,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                                           color: colors.active.withOpacity(0.8),
                                           size: 20,
                                         ),
-                                        title: 'Настройки',
+                                        title: 'Configuración',
                                         colors: colors,
                                         onTap: () {},
                                       ),
@@ -255,7 +255,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "РТУ МИРЭА",
+                      "Conecta ITT",
                       style: AppTextStyle.titleM.copyWith(
                         fontWeight: FontWeight.w700,
                         color: colors.active,
@@ -263,7 +263,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text("Университет", style: AppTextStyle.captionL.copyWith(color: colors.deactive)),
+                    Text("TecNM Campus Tlalpan", style: AppTextStyle.captionL.copyWith(color: colors.deactive)),
                   ],
                 ),
               ),
@@ -465,7 +465,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                     child: FadeTransition(
                       opacity: _textFadeAnimation,
                       child: Text(
-                        isExpanded ? "Свернуть" : "Развернуть",
+                        isExpanded ? "Contraer" : "Expandir",
                         style: AppTextStyle.captionL.copyWith(fontWeight: FontWeight.w500, color: colors.active),
                       ),
                     ),

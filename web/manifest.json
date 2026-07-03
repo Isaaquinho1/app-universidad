@@ -1,6 +1,6 @@
 {
-    "name": "rtu_mirea_app",
-    "short_name": "rtu_mirea_app",
+    "name": "Conecta ITT Admin",
+    "short_name": "Conecta ITT",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -56,7 +56,7 @@ class _HeaderTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      'Войдите, чтобы продолжить',
+      'Inicia sesión para continuar',
       key: const Key('loginWithEmailForm_header_title'),
       style: AppTextStyle.h4.copyWith(color: theme.colorScheme.onSurface),
     );
@@ -80,10 +80,10 @@ class _EmailInputState extends State<_EmailInput> {
     return LabelledInput(
       key: const Key('loginWithEmailForm_emailInput_textField'),
       controller: _controller,
-      label: 'Ваш email',
-      placeholder: '@mirea.ru или @edu.mirea.ru',
+      label: 'Tu correo electrónico',
+      placeholder: 'correo@ejemplo.com',
       onChanged: (email) => context.read<LoginBloc>().add(LoginEmailChanged(email)),
-      errorText: !state.email.isValid ? 'Недопустимый адрес электронной почты' : null,
+      errorText: !state.email.isValid ? 'Correo electrónico no válido' : null,
     );
   }
 
@@ -107,7 +107,7 @@ class _TermsAndPrivacyPolicyLinkTexts extends StatelessWidget {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-              text: 'Вы можете использовать только адрес электронной почты в домене @mirea.ru или @edu.mirea.ru',
+              text: 'Puedes usar cualquier correo electrónico válido para registrarte o iniciar sesión.',
               style: AppTextStyle.body.copyWith(color: theme.deactive),
             ),
           ],
@@ -130,7 +130,7 @@ class _NextButton extends StatelessWidget {
       child:
           state.status.isInProgress
               ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator())
-              : Text('Далее'),
+              : Text('Continuar'),
     );
   }
 }

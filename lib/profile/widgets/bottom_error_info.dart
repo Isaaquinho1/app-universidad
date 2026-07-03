@@ -37,10 +37,10 @@ class BottomErrorInfo extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 40),
                   child: Assets.images.saly39.image(height: 205.0),
                 ),
-                Text("Профиль теперь недоступен", style: AppTextStyle.h5, textAlign: TextAlign.center),
+                Text("Perfil no disponible", style: AppTextStyle.h5, textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text(
-                  "Разработчики, отвечающие за API ЛКС, отключили возможность производить аутентификацию и получать данные своего аккаунта. Пожалуйста, используйте lk.mirea.ru",
+                  "El módulo de perfil institucional todavía se encuentra en proceso de adaptación para Conecta ITT. Algunas funciones estarán disponibles en próximas etapas del proyecto.",
                   style: AppTextStyle.captionL.copyWith(color: Theme.of(context).extension<AppColors>()!.deactive),
                   textAlign: TextAlign.center,
                 ),
@@ -57,7 +57,7 @@ class BottomErrorInfo extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Понятно!', style: AppTextStyle.buttonS),
+                    child: Text('Entendido', style: AppTextStyle.buttonS),
                   ),
                 ),
               ],

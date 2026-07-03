@@ -1,5 +1,5 @@
 name: rtu_mirea_app
-description: Mobile application for students of RTU MIREA
+description: Plataforma móvil institucional para estudiantes del Tecnológico Nacional de México Campus Tlalpan.
 publish_to: 'none'
 
 version: 1.6.0+145

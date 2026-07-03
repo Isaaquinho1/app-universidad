@@ -11,7 +11,7 @@ class AboutAppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("О приложении")),
+      appBar: AppBar(title: const Text("Acerca de la aplicación")),
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -43,10 +43,10 @@ class AboutAppPage extends StatelessWidget {
           _buildAppInfoRow(context),
           const SizedBox(height: 8),
           Text(
-            'Это приложение и все относящиеся к нему сервисы являются '
-            '100% бесплатными и Open Source продуктами. Мы с огромным '
-            'удовольствием примем любые ваши предложения и сообщения, а '
-            'также мы рады любому вашему участию в проекте!',
+            'Conecta ITT es una plataforma institucional desarrollada '
+            'para el Tecnológico Nacional de México Campus Tlalpan. '
+            'Su propósito es centralizar servicios, avisos, calendario '
+            'académico e información útil para la comunidad estudiantil.',
             style: AppTextStyle.body,
           ),
           const SizedBox(height: 16),
@@ -111,7 +111,7 @@ class AboutAppPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Поддержавшие 💜', style: AppTextStyle.h6),
+          Text('Colaboradores 💙', style: AppTextStyle.h6),
           const SizedBox(height: 16),
           const SponsorsView(),
         ],
@@ -125,7 +125,7 @@ class AboutAppPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text('Участники проекта', style: AppTextStyle.h6),
+          child: Text('Participantes del proyecto', style: AppTextStyle.h6),
         ),
         const SizedBox(height: 16),
         const ContributorsView(),
@@ -140,7 +140,7 @@ class AboutAppPage extends StatelessWidget {
         height: 40,
         width: double.infinity,
         child: ColorfulButton(
-          text: 'Сообщить об ошибке',
+          text: 'Reportar un error',
           backgroundColor: Theme.of(
             context,
           ).extension<AppColors>()!.colorful07.withBlue(180),

@@ -28,8 +28,8 @@ class ServicesConfig {
         routePath: '/services/nfc',
       ),
       // ImportantServiceModel(
-      //   title: 'Бюро находок',
-      //   description: 'Найди потерянные вещи',
+      //   title: 'Objetos perdidos',
+      //   description: 'Encuentra objetos extraviados',
       //   iconData: Icons.search_rounded,
       //   color: colors.colorful01,
       //   isExternal: false,
