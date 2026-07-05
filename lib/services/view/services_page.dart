@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
 import 'package:rtu_mirea_app/services/services.dart';
-import 'package:rtu_mirea_app/top_discussions/view/view.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
@@ -246,21 +245,6 @@ class _ServicesViewState extends State<ServicesView>
             },
           ),
         ),
-        const SizedBox(height: AppSpacing.xlg),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: SectionHeaderWithButton(
-            title: "Discutido",
-            buttonText: "Ver todo",
-            onPressed:
-                () => launchUrlString(
-                  'https://mirea.ninja/top',
-                  mode: LaunchMode.externalApplication,
-                ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        const TopTopicsView(),
         const SizedBox(height: AppSpacing.xlg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
