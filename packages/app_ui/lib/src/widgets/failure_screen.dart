@@ -32,6 +32,8 @@ class FailureScreen extends StatelessWidget {
   final String? description;
 
   /// The icon to display at the top of the screen.
+  ///
+  /// Supports Flutter [IconData] and HugeIcons icon data.
   final dynamic icon;
 
   /// The size of the icon.
@@ -47,6 +49,8 @@ class FailureScreen extends StatelessWidget {
   final String? buttonText;
 
   /// The icon to show in the action button.
+  ///
+  /// Supports Flutter [IconData] and HugeIcons icon data.
   final dynamic buttonIcon;
 
   /// The callback that is called when the action button is tapped.
@@ -77,8 +81,8 @@ class FailureScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: HugeIcon(
-                    icon: icon as List<List<dynamic>>,
+                  child: _FailureIcon(
+                    icon: icon,
                     size: iconSize,
                     color: iconColor ?? colors.deactive,
                   ),
@@ -103,11 +107,12 @@ class FailureScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxlg),
               PrimaryButton(
                 onPressed: onButtonPressed,
-                icon: buttonIcon is IconData 
-                    ? Icon(buttonIcon as IconData) 
-                    : HugeIcon(
-                        icon: buttonIcon as List<List<dynamic>>,
-                        color: Colors.white, // Ajusta al color que requiera tu botón
+                icon: buttonIcon == null
+                    ? null
+                    : _FailureIcon(
+                        icon: buttonIcon,
+                        size: 20,
+                        color: Colors.white,
                       ),
                 text: buttonText!,
               ),
@@ -115,6 +120,43 @@ class FailureScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FailureIcon extends StatelessWidget {
+  const _FailureIcon({
+    required this.icon,
+    required this.size,
+    required this.color,
+  });
+
+  final dynamic icon;
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    if (icon is IconData) {
+      return Icon(
+        icon as IconData,
+        size: size,
+        color: color,
+      );
+    }
+
+    if (icon is List<List<dynamic>>) {
+      return HugeIcon(
+        icon: icon as List<List<dynamic>>,
+        size: size,
+        color: color,
+      );
+    }
+
+    return Icon(
+      Icons.error_outline,
+      size: size,
+      color: color,
     );
   }
 }
