@@ -81,10 +81,10 @@ class FeedView extends StatelessWidget {
       child: ColoredBox(
         color: Theme.of(context).colorScheme.surface,
         child: FailureScreen(
-          title: 'Ошибка загрузки',
-          description: 'Не удалось загрузить категории',
+          title: 'Error al cargar',
+          description: 'No se pudieron cargar las categorías.',
           icon: Icons.category_outlined,
-          buttonText: 'Повторить',
+          buttonText: 'Reintentar',
           onButtonPressed: () {
             context.read<CategoriesBloc>().add(const CategoriesRequested());
           },
