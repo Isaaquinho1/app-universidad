@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "952856895087",
+    "project_id": "conecta-itt-55275",
+    "storage_bucket": "conecta-itt-55275.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952856895087:android:355e592b62604ff671b79a",
+        "android_client_info": {
+          "package_name": "mx.tecnm.tlalpan.conectaitt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7ql_m1krrnR0UqlDElp_VF4RQwW-BN4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

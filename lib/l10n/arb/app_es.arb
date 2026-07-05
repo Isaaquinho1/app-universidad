@@ -1,0 +1,1673 @@
+{
+  "@@locale": "es",
+  "scheduleAppBarTitle": "Horario",
+  "@scheduleAppBarTitle": {
+    "description": "Título para la página del horario"
+  },
+  "loadingError": "Error de carga",
+  "@loadingError": {
+    "description": "Mensaje de error cuando falla la carga"
+  },
+  "imageViewer": "Visor de imágenes",
+  "@imageViewer": {
+    "description": "Título para el visor de imágenes"
+  },
+  "selectDate": "Seleccionar fecha",
+  "@selectDate": {
+    "description": "Texto del botón para seleccionar una fecha"
+  },
+  "selectDates": "Seleccionar fechas",
+  "@selectDates": {
+    "description": "Texto del botón para seleccionar un rango de fechas"
+  },
+ "enableComparisonMode": "Activar modo comparación",
+  "@enableComparisonMode": {
+    "description": "Texto emergente para activar el modo comparación"
+  },
+  "disableComparisonMode": "Desactivar modo comparación",
+  "@disableComparisonMode": {
+    "description": "Texto emergente para desactivar el modo comparación"
+  },
+  "compareSchedules": "Comparar horarios",
+  "@compareSchedules": {
+    "description": "Texto del botón para comparar horarios"
+  },
+  "noClassesToday": "No hay clases hoy",
+  "@noClassesToday": {
+    "description": "Mensaje cuando no hay clases programadas"
+  },
+  "selectTime": "Seleccionar hora",
+  "@selectTime": {
+    "description": "Marcador de posición para la selección de hora"
+  },
+  "clear": "Limpiar",
+  "@clear": {
+    "description": "Texto del botón para limpiar la selección"
+  },
+  "month": "Mes",
+  "@month": {
+    "description": "Formato de calendario - vista mensual"
+  },
+  "week": "Semana",
+  "@week": {
+    "description": "Formato de calendario - vista semanal"
+  },
+  "apply": "Aplicar",
+  "@apply": {
+    "description": "Texto del botón para aplicar cambios"
+  },
+  "previousDay": "Día anterior",
+  "@previousDay": {
+    "description": "Texto emergente para el botón de día anterior"
+  },
+ "nextDay": "Día siguiente",
+  "@nextDay": {
+    "description": "Texto emergente para el botón de día siguiente"
+  },
+  "today": "Hoy",
+  "@today": {
+    "description": "Texto del botón para ir al día de hoy"
+  },
+  "refreshData": "Actualizar datos",
+  "@refreshData": {
+    "description": "Texto emergente para el botón de actualizar"
+  },
+  "scheduleComparison": "Comparación de horarios",
+  "@scheduleComparison": {
+    "description": "Título de comparación de horarios"
+  },
+  "scheduleAnalytics": "Analítica de horarios",
+  "@scheduleAnalytics": {
+    "description": "Texto emergente para la analítica de horarios"
+  },
+  "allClassesList": "Lista de todas las clases",
+  "@allClassesList": {
+    "description": "Texto emergente para la lista de todas las clases"
+  },
+  "scheduleNotSelected": "Horario no seleccionado",
+  "@scheduleNotSelected": {
+    "description": "Mensaje cuando no hay un horario seleccionado"
+  },
+  "findSchedule": "Buscar horario",
+  "@findSchedule": {
+    "description": "Texto del botón para buscar un horario"
+  },
+  "scheduleForSelectedDay": "Horario para el día seleccionado",
+  "@scheduleForSelectedDay": {
+    "description": "Título para el contenido del horario"
+  },
+  "tomorrow": "Mañana",
+  "@tomorrow": {
+    "description": "Texto para mañana"
+  },
+  "showEmptyClasses": "Mostrar clases vacías",
+  "@showEmptyClasses": {
+    "description": "Etiqueta de la casilla de verificación para mostrar clases vacías"
+  },
+  "emptyClasses": "Clases vacías",
+  "@emptyClasses": {
+    "description": "Etiqueta para la sección de clases vacías"
+  },
+  "analytics": "Analítica",
+  "@analytics": {
+    "description": "Etiqueta para la sección de analítica"
+  },
+  "weekend": "Fin de semana",
+  "@weekend": {
+    "description": "Título para la página de fin de semana"
+  },
+  "noClassesThisDay": "No hay clases este día",
+  "@noClassesThisDay": {
+    "description": "Mensaje cuando no hay clases en un día específico"
+  },
+  "canRestOrStudy": "Puedes descansar o realizar trabajo independiente",
+  "@canRestOrStudy": {
+    "description": "Sugerencia para el tiempo libre"
+  },
+ "goToAnotherDay": "Ir a otro día",
+  "@goToAnotherDay": {
+    "description": "Texto del botón para navegar a otro día"
+  },
+  "classesCount": "{count, plural, =0{sin clases} =1{1 clase} other{{count} clases}}",
+  "@classesCount": {
+    "description": "Forma plural para el conteo de clases",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noClass": "Sin clase",
+  "@noClass": {
+    "description": "Texto cuando no hay clase"
+  },
+  "displaySettings": "Ajustes de visualización",
+  "@displaySettings": {
+    "description": "Título para los ajustes de visualización"
+  },
+  "showCommentIndicators": "Mostrar indicadores de comentarios",
+  "@showCommentIndicators": {
+    "description": "Etiqueta de la casilla de verificación para mostrar indicadores de comentarios"
+  },
+  "compactCardMode": "Modo de tarjeta compacta",
+  "@compactCardMode": {
+    "description": "Etiqueta de la casilla de verificación para el modo de tarjeta compacta"
+  },
+  "lecture": "Clase magistral",
+  "@lecture": {
+    "description": "Tipo de lección - clase magistral"
+  },
+  "laboratory": "Laboratorio",
+  "@laboratory": {
+    "description": "Tipo de lección - laboratorio"
+  },
+  "practice": "Práctica",
+  "@practice": {
+    "description": "Tipo de lección - práctica"
+  },
+  "exam": "Examen",
+  "@exam": {
+    "description": "Tipo de lección - examen"
+  },
+  "consultation": "Consulta",
+  "@consultation": {
+    "description": "Tipo de lección - consulta"
+  },
+  "credit": "Crédito",
+  "@credit": {
+    "description": "Tipo de lección - crédito"
+  },
+  "unknown": "Desconocido",
+  "@unknown": {
+    "description": "Etiqueta para autor desconocido"
+  },
+  "lessonType": "Tipo de clase",
+  "@lessonType": {
+    "description": "Etiqueta para el selector de tipo de clase"
+  },
+  "individual": "Individual",
+  "@individual": {
+    "description": "Tipo de lección - trabajo individual"
+  },
+  "physicalEducation": "Educación física",
+  "@physicalEducation": {
+    "description": "Tipo de lección - educación física"
+  },
+  "courseWork": "Trabajo de curso",
+  "@courseWork": {
+    "description": "Tipo de lección - trabajo de curso"
+  },
+  "courseProject": "Proyecto de curso",
+  "@courseProject": {
+    "description": "Tipo de lección - proyecto de curso"
+  },
+  "mapsOnlyOnMobile": "Los mapas solo están disponibles en dispositivos móviles",
+  "@mapsOnlyOnMobile": {
+    "description": "Mensaje para usuarios de escritorio sobre los mapas"
+  },
+  "scheduleAnalyticsTitle": "Analítica de horarios",
+  "@scheduleAnalyticsTitle": {
+    "description": "Título para la página de analítica de horarios"
+  },
+  "scheduleAnalyticsDescription": "Estadísticas y análisis de tu horario académico",
+  "@scheduleAnalyticsDescription": {
+    "description": "Descripción para la analítica de horarios"
+  },
+  "loadByDays": "Carga por días",
+  "@loadByDays": {
+    "description": "Título del gráfico para la carga diaria"
+  },
+  "lessonTypes": "Tipos de clases",
+  "@lessonTypes": {
+    "description": "Título del gráfico para los tipos de clases"
+  },
+  "teachers": "Profesores",
+  "@teachers": {
+    "description": "Título de la sección de profesores"
+  },
+  "classrooms": "Aulas",
+  "@classrooms": {
+    "description": "Título de la sección de aulas"
+  },
+  "noDataForAnalytics": "No hay datos para la analítica",
+  "@noDataForAnalytics": {
+    "description": "Mensaje cuando no hay datos para la analítica"
+  },
+  "selectAnotherSchedule": "Selecciona otro horario o verifica si hay clases",
+  "@selectAnotherSchedule": {
+    "description": "Sugerencia cuando no hay datos de analítica"
+  },
+  "exportData": "Exportar datos",
+  "@exportData": {
+    "description": "Texto del botón para exportar datos"
+  },
+  "fullReportWithCharts": "Informe completo con todos los gráficos",
+  "@fullReportWithCharts": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "dataInTableFormat": "Datos en formato de tabla",
+  "@dataInTableFormat": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "shareImage": "Compartir imagen",
+  "@shareImage": {
+    "description": "Título de la opción de exportación"
+  },
+  "currentOrAllCharts": "Gráfico actual o todos",
+  "@currentOrAllCharts": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "export": "Exportar",
+  "@export": {
+    "description": "Texto del botón para exportar"
+  },
+  "monday": "Lunes",
+  "@monday": {
+    "description": "Día de la semana - Lunes"
+  },
+  "tuesday": "Martes",
+  "@tuesday": {
+    "description": "Día de la semana - Martes"
+  },
+  "wednesday": "Miércoles",
+  "@wednesday": {
+    "description": "Día de la semana - Miércoles"
+  },
+  "thursday": "Jueves",
+  "@thursday": {
+    "description": "Día de la semana - Jueves"
+  },
+  "friday": "Viernes",
+  "@friday": {
+    "description": "Día de la semana - Viernes"
+  },
+  "scheduleChanges": "Cambios en el horario",
+  "@scheduleChanges": {
+    "description": "Título para el diálogo de cambios en el horario"
+  },
+  "calendar": "Calendario",
+  "@calendar": {
+    "description": "Título para la página de calendario"
+  },
+  "scheduleLoadingError": "Error al cargar el horario",
+  "@scheduleLoadingError": {
+    "description": "Mensaje de error para la carga del horario"
+  },
+  "addSchedulesForComparison": "Añadir horarios para comparar",
+  "@addSchedulesForComparison": {
+    "description": "Mensaje cuando no hay horarios para comparar"
+  },
+  "buildRoute": "Trazar ruta",
+  "@buildRoute": {
+    "description": "Texto del botón para trazar una ruta"
+  },
+  "mySchedules": "Mis horarios",
+  "@mySchedules": {
+    "description": "Título para la página de horarios personalizados"
+  },
+  "createSchedule": "Crear horario",
+  "@createSchedule": {
+    "description": "Texto del botón para crear un horario"
+  },
+  "addClass": "Añadir clase",
+  "@addClass": {
+    "description": "Texto del botón para añadir una clase"
+  },
+  "classesList": "Lista de clases",
+  "@classesList": {
+    "description": "Texto del botón para la lista de clases"
+  },
+  "classLabel": "Clase",
+  "@classLabel": {
+    "description": "Etiqueta para una sola clase"
+  },
+  "open": "Abrir",
+  "@open": {
+    "description": "Texto del botón para abrir"
+  },
+  "edit": "Editar",
+  "@edit": {
+    "description": "Elemento de menú para editar"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Elemento de menú para eliminar"
+  },
+  "editSchedule": "Editar horario",
+  "@editSchedule": {
+    "description": "Título del diálogo para editar el horario"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Texto del botón para cancelar"
+  },
+  "save": "Guardar",
+  "@save": {
+    "description": "Texto del botón para guardar"
+  },
+  "deleteSchedule": "Eliminar horario",
+  "@deleteSchedule": {
+    "description": "Título del diálogo para eliminar el horario"
+  },
+ "deleteScheduleConfirmation": "¿Estás seguro de que quieres eliminar el horario \"{scheduleName}\"?",
+  "@deleteScheduleConfirmation": {
+    "description": "Mensaje de confirmación para eliminar un horario",
+    "placeholders": {
+      "scheduleName": {
+        "type": "String"
+      }
+    }
+  },
+  "createNewClass": "Crear nueva clase",
+  "@createNewClass": {
+    "description": "Texto del botón para crear una nueva clase"
+  },
+  "noAddedClasses": "No hay clases añadidas",
+  "@noAddedClasses": {
+    "description": "Mensaje cuando no hay clases añadidas"
+  },
+  "deleteClass": "Eliminar clase",
+  "@deleteClass": {
+    "description": "Título del diálogo para eliminar una clase"
+  },
+  "deleteClassConfirmation": "¿Estás seguro de que quieres eliminar la clase \"{subject}\" del horario?",
+  "@deleteClassConfirmation": {
+    "description": "Mensaje de confirmación para eliminar una clase",
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "start": "Inicio",
+  "@start": {
+    "description": "Etiqueta para la hora de inicio"
+  },
+  "end": "Fin",
+  "@end": {
+    "description": "Etiqueta para la hora de finalización"
+  },
+  "endTimeMustBeAfterStart": "La hora de fin debe ser posterior a la hora de inicio",
+  "@endTimeMustBeAfterStart": {
+    "description": "Mensaje de error para un rango de tiempo no válido"
+  },
+  "classNumber": "Número de clase",
+  "@classNumber": {
+    "description": "Etiqueta para el número de clase"
+  },
+  "none": "Ninguno",
+  "@none": {
+    "description": "Opción para sin número de clase"
+  },
+  "groups": "Grupos",
+  "@groups": {
+    "description": "Título de la sección de grupos"
+  },
+  "noTeachersSelected": "No hay profesores seleccionados",
+  "@noTeachersSelected": {
+    "description": "Mensaje cuando no hay profesores seleccionados"
+  },
+  "addTeacher": "Añadir profesor",
+  "@addTeacher": {
+    "description": "Título del diálogo para añadir un profesor"
+  },
+ "add": "Añadir",
+  "@add": {
+    "description": "Texto del botón para añadir"
+  },
+  "selectAtLeastOneDate": "Selecciona al menos una fecha",
+  "@selectAtLeastOneDate": {
+    "description": "Validación cuando faltan fechas"
+  },
+  "addAtLeastOneClassroom": "Añade al menos un aula o marca la clase como online",
+  "@addAtLeastOneClassroom": {
+    "description": "Mensaje de error para la selección de aula"
+  },
+  "noSelectedDates": "No hay fechas seleccionadas",
+  "@noSelectedDates": {
+    "description": "Mensaje cuando no hay fechas seleccionadas"
+  },
+  "selectDatesButton": "Seleccionar fechas",
+  "@selectDatesButton": {
+    "description": "Texto del botón para seleccionar fechas"
+  },
+  "noSelectedClassrooms": "No hay aulas seleccionadas",
+  "@noSelectedClassrooms": {
+    "description": "Mensaje cuando no hay aulas seleccionadas"
+  },
+  "addClassroom": "Añadir aula",
+  "@addClassroom": {
+    "description": "Texto del botón para añadir aula"
+  },
+  "noGroupsSelected": "No hay grupos seleccionados",
+  "@noGroupsSelected": {
+    "description": "Mensaje cuando no hay grupos seleccionados"
+  },
+  "addGroup": "Añadir grupo",
+  "@addGroup": {
+    "description": "Título del diálogo para añadir un grupo"
+  },
+  "exampleClassNames": "Ejemplos de nombres de clase:",
+  "@exampleClassNames": {
+    "description": "Etiqueta para ejemplos de nombres de clase"
+  },
+  "textCopied": "¡Texto copiado!",
+  "@textCopied": {
+    "description": "Mensaje cuando se copia un texto"
+  },
+  "failedToOpenImage": "No se pudo abrir la imagen: {error}",
+  "@failedToOpenImage": {
+    "description": "Mensaje de error cuando falla la apertura de una imagen",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loginFailed": "Error de inicio de sesión",
+  "@loginFailed": {
+    "description": "Mensaje de error para el fallo de inicio de sesión"
+  },
+  "next": "Siguiente",
+  "@next": {
+    "description": "Texto del botón para siguiente"
+  },
+  "errorLoadingSponsors": "Error al cargar los patrocinadores",
+  "@errorLoadingSponsors": {
+    "description": "Mensaje de error para la carga de patrocinadores"
+  },
+  "login": "Iniciar sesión",
+  "@login": {
+    "description": "Texto del botón para iniciar sesión"
+  },
+  "loginToContinue": "Inicia sesión para continuar",
+  "@loginToContinue": {
+    "description": "Mensaje para solicitar el inicio de sesión"
+  },
+  "deleteScheduleTitle": "Eliminar horario",
+  "@deleteScheduleTitle": {
+    "description": "Título para el diálogo de eliminar horario"
+  },
+  "deleteScheduleMessage": "¿Estás seguro de que quieres eliminar este horario?",
+  "@deleteScheduleMessage": {
+    "description": "Mensaje para la confirmación de eliminar horario"
+  },
+  "makeActive": "Activar",
+  "@makeActive": {
+    "description": "Elemento de menú para activar el horario"
+  },
+  "comment": "Comentario",
+  "@comment": {
+    "description": "Etiqueta para comentario"
+  },
+  "schedules": "Horarios",
+  "@schedules": {
+    "description": "Título para la página de horarios"
+  },
+  "loadingSchedules": "Cargando horarios...",
+  "@loadingSchedules": {
+    "description": "Mensaje mientras se cargan los horarios"
+  },
+  "addedClass": "Clase añadida:",
+  "@addedClass": {
+    "description": "Etiqueta para la clase añadida"
+  },
+  "createNewSchedule": "Crear nuevo horario",
+  "@createNewSchedule": {
+    "description": "Texto del botón para crear un nuevo horario"
+  },
+  "selectSchedule": "Seleccionar horario:",
+  "@selectSchedule": {
+    "description": "Etiqueta para la selección de horario"
+  },
+  "classAddedToSchedule": "Clase añadida al horario \"{scheduleName}\"",
+  "@classAddedToSchedule": {
+    "description": "Mensaje de éxito cuando se añade una clase",
+    "placeholders": {
+      "scheduleName": {
+        "type": "String"
+      }
+    }
+  },
+  "legends": "Leyendas",
+  "@legends": {
+    "description": "Etiqueta para las leyendas del calendario"
+  },
+  "maxThreeSchedules": "Máximo 3 horarios para comparar",
+  "@maxThreeSchedules": {
+    "description": "Mensaje de error para el límite de comparación de horarios"
+  },
+  "university": "Universidad",
+  "@university": {
+    "description": "Etiqueta para universidad"
+  },
+  "search": "Buscar",
+  "@search": {
+    "description": "Texto del marcador de posición de búsqueda"
+  },
+  "all": "Todos",
+  "@all": {
+    "description": "Modo de búsqueda - todos los resultados"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Título de error"
+  },
+  "searchFailed": "Error al realizar la búsqueda",
+  "@searchFailed": {
+    "description": "Mensaje de error de búsqueda"
+  },
+  "enterCommentText": "Introduce el texto del comentario...",
+  "@enterCommentText": {
+    "description": "Marcador de posición para la entrada de comentario"
+  },
+  "remove": "Eliminar",
+  "@remove": {
+    "description": "Texto del botón para eliminar"
+  },
+  "noAvailableSchedules": "No hay horarios disponibles",
+  "@noAvailableSchedules": {
+    "description": "Mensaje cuando no hay horarios disponibles"
+  },
+  "scheduleDeleted": "Horario eliminado",
+  "@scheduleDeleted": {
+    "description": "Mensaje de éxito cuando se elimina un horario"
+  },
+  "deleteScheduleConfirmationDialog": "¿Estás seguro de que quieres eliminar este horario?",
+  "@deleteScheduleConfirmationDialog": {
+    "description": "Mensaje de confirmación para eliminar un horario"
+  },
+  "active": "Activo",
+  "@active": {
+    "description": "Estado activo"
+  },
+  "comments": "Comentarios",
+  "@comments": {
+    "description": "Etiqueta de comentarios en plural"
+  },
+  "activate": "Activar",
+  "@activate": {
+    "description": "Texto del botón activar"
+  },
+  "group": "Grupo",
+  "@group": {
+    "description": "Etiqueta de grupo"
+  },
+  "teacher": "Profesor",
+  "@teacher": {
+    "description": "Etiqueta de profesor"
+  },
+  "classroom": "Aula",
+  "@classroom": {
+    "description": "Etiqueta de aula"
+  },
+  "schedule": "Horario",
+  "@schedule": {
+    "description": "Etiqueta para horario"
+  },
+  "commentDeleted": "Comentario eliminado",
+  "@commentDeleted": {
+    "description": "Mensaje de éxito cuando se elimina un comentario"
+  },
+  "commentSaved": "Comentario guardado",
+  "@commentSaved": {
+    "description": "Mensaje de éxito cuando se guarda un comentario"
+  },
+  "scheduleComment": "Comentario del horario",
+  "@scheduleComment": {
+    "description": "Título para el comentario del horario"
+  },
+  "addOrEditNote": "Añadir o editar una nota en el horario",
+  "@addOrEditNote": {
+    "description": "Descripción para el comentario del horario"
+  },
+  "editComment": "Editar comentario",
+  "@editComment": {
+    "description": "Elemento de menú para editar comentario"
+  },
+  "addComment": "Añadir comentario",
+  "@addComment": {
+    "description": "Elemento de menú para añadir comentario"
+  },
+  "addSchedule": "Añadir horario",
+  "@addSchedule": {
+    "description": "Texto emergente para añadir horario"
+  },
+  "activeSchedule": "Horario activo",
+  "@activeSchedule": {
+    "description": "Etiqueta para horario activo"
+  },
+  "goToView": "Ir a la vista",
+  "@goToView": {
+    "description": "Texto emergente para ir a la vista"
+  },
+  "noAddedGroups": "No hay grupos añadidos",
+  "@noAddedGroups": {
+    "description": "Mensaje cuando no hay grupos añadidos"
+  },
+  "addGroupToSeeSchedule": "Añade un grupo para ver su horario",
+  "@addGroupToSeeSchedule": {
+    "description": "Instrucción para añadir un grupo"
+  },
+  "noAddedTeachers": "No hay profesores añadidos",
+  "@noAddedTeachers": {
+    "description": "Mensaje cuando no hay profesores añadidos"
+  },
+  "addTeacherToSeeSchedule": "Añade un profesor para ver su horario",
+  "@addTeacherToSeeSchedule": {
+    "description": "Instrucción para añadir un profesor"
+  },
+  "noAddedClassrooms": "No hay aulas añadidas",
+  "@noAddedClassrooms": {
+    "description": "Mensaje cuando no hay aulas añadidas"
+  },
+  "addClassroomToSeeSchedule": "Añade un aula para ver su horario",
+  "@addClassroomToSeeSchedule": {
+    "description": "Instrucción para añadir un aula"
+  },
+ "failedToLoadSchedules": "Error al cargar los horarios",
+  "@failedToLoadSchedules": {
+    "description": "Mensaje de error cuando fallan al cargar los horarios"
+  },
+  "checkInternetConnection": "Comprueba tu conexión a internet",
+  "@checkInternetConnection": {
+    "description": "Descripción del error de conexión a internet"
+  },
+  "enterJsonString": "Por favor, introduce la cadena JSON",
+  "@enterJsonString": {
+    "description": "Mensaje de validación de entrada JSON"
+  },
+  "enterJsonStringPlaceholder": "Introduce la cadena JSON...",
+  "@enterJsonStringPlaceholder": {
+    "description": "Marcador de posición de entrada JSON"
+  },
+  "tabs": "Pestañas",
+  "@tabs": {
+    "description": "Etiqueta para pestañas"
+  },
+  "scheduleChangesTitle": "Cambios en el horario",
+  "@scheduleChangesTitle": {
+    "description": "Título del diálogo de cambios en el horario"
+  },
+  "loadByDaysChart": "Carga por días",
+  "@loadByDaysChart": {
+    "description": "Título del gráfico de carga diaria"
+  },
+  "lessonTypesChart": "Tipos de clases",
+  "@lessonTypesChart": {
+    "description": "Título del gráfico de tipos de clases"
+  },
+  "teachersChart": "Profesores",
+  "@teachersChart": {
+    "description": "Título del gráfico de profesores"
+  },
+  "classroomsChart": "Aulas",
+  "@classroomsChart": {
+    "description": "Título del gráfico de aulas"
+  },
+  "fullReportWithAllCharts": "Informe completo con todos los gráficos",
+  "@fullReportWithAllCharts": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "dataInTableFormatExport": "Datos en formato de tabla",
+  "@dataInTableFormatExport": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "shareImageExport": "Compartir imagen",
+  "@shareImageExport": {
+    "description": "Título de la opción de exportación"
+  },
+  "currentOrAllChartsExport": "Gráfico actual o todos",
+  "@currentOrAllChartsExport": {
+    "description": "Descripción de la opción de exportación"
+  },
+  "totalClasses": "Total de clases",
+  "@totalClasses": {
+    "description": "Etiqueta de estadística del total de clases"
+  },
+  "forEntirePeriod": "Para todo el período",
+  "@forEntirePeriod": {
+    "description": "Descripción del período de estadísticas"
+  },
+  "averagePerDay": "Promedio por día",
+  "@averagePerDay": {
+    "description": "Etiqueta de estadística de promedio por día"
+  },
+  "academicLoad": "Carga académica",
+  "@academicLoad": {
+    "description": "Descripción de la carga académica"
+  },
+  "maximumPerDay": "Máximo por día",
+  "@maximumPerDay": {
+    "description": "Etiqueta de estadística de máximo por día"
+  },
+  "busiestDay": "Día con más carga",
+  "@busiestDay": {
+    "description": "Descripción del día con más carga"
+  },
+  "showEmptyClassesSettings": "Mostrar clases vacías",
+  "@showEmptyClassesSettings": {
+    "description": "Ajuste para mostrar clases vacías"
+  },
+  "showCommentIndicatorsSettings": "Mostrar indicadores de comentarios",
+  "@showCommentIndicatorsSettings": {
+    "description": "Ajuste para mostrar indicadores de comentarios"
+  },
+  "compactCardModeSettings": "Modo de tarjeta compacta",
+  "@compactCardModeSettings": {
+    "description": "Ajuste del modo de tarjeta compacta"
+  },
+  "holiday": "Festivo",
+  "@holiday": {
+    "description": "Título de la página de festivos"
+  },
+  "selectExisting": "Seleccionar existente",
+  "@selectExisting": {
+    "description": "Opción para seleccionar existente"
+  },
+  "createNew": "Crear nuevo",
+  "@createNew": {
+    "description": "Opción para crear nuevo"
+  },
+  "scheduleName": "Nombre del horario",
+  "@scheduleName": {
+    "description": "Etiqueta del campo de nombre del horario"
+  },
+  "scheduleNamePlaceholder": "Por ejemplo: Mi horario principal",
+  "@scheduleNamePlaceholder": {
+    "description": "Marcador de posición del nombre del horario"
+  },
+  "descriptionOptional": "Descripción (opcional)",
+  "@descriptionOptional": {
+    "description": "Etiqueta del campo de descripción"
+  },
+  "addScheduleDescription": "Añadir descripción del horario",
+  "@addScheduleDescription": {
+    "description": "Marcador de posición del campo de descripción"
+  },
+  "openSchedule": "Abrir",
+  "@openSchedule": {
+    "description": "Botón para abrir el horario"
+  },
+  "selectWeek": "Seleccionar semana",
+  "@selectWeek": {
+    "description": "Título para la selección de semana"
+  },
+  "quickWayToWeek": "Manera rápida de ir a una semana específica",
+  "@quickWayToWeek": {
+    "description": "Descripción de la selección de semana"
+  },
+  "selectUpToFourSchedules": "Selecciona hasta 4 horarios para compararlos por días",
+  "@selectUpToFourSchedules": {
+    "description": "Descripción de la comparación de horarios"
+  },
+  "addToSchedule": "Añadir al horario",
+  "@addToSchedule": {
+    "description": "Título para añadir al horario"
+  },
+  "enterLessonComment": "Introduce un comentario para la clase...",
+  "@enterLessonComment": {
+    "description": "Sugerencia para el comentario"
+  },
+  "noOwnSchedules": "Aún no tienes tus propios horarios",
+  "@noOwnSchedules": {
+    "description": "Mensaje de no hay horarios personalizados"
+  },
+  "createCustomSchedule": "Crea un horario personalizado añadiendo clases de diferentes horarios disponibles",
+  "@createCustomSchedule": {
+    "description": "Descripción de la creación de horario personalizado"
+  },
+  "scheduleCreation": "Creación de horario",
+  "@scheduleCreation": {
+    "description": "Título para la creación de horario"
+  },
+  "enterNameAndDescription": "Introduce el nombre y la descripción para el nuevo horario",
+  "@enterNameAndDescription": {
+    "description": "Descripción para la creación de horario"
+  },
+  "scheduleNameLabel": "Nombre del horario",
+  "@scheduleNameLabel": {
+    "description": "Etiqueta para el nombre del horario"
+  },
+  "scheduleNameExample": "Por ejemplo: Mi horario",
+  "@scheduleNameExample": {
+    "description": "Ejemplo de nombre de horario"
+  },
+  "descriptionOptionalLabel": "Descripción (opcional)",
+  "@descriptionOptionalLabel": {
+    "description": "Etiqueta para descripción opcional"
+  },
+  "addScheduleDescriptionPlaceholder": "Añadir descripción del horario",
+  "@addScheduleDescriptionPlaceholder": {
+    "description": "Marcador de posición para descripción"
+  },
+  "editScheduleTitle": "Editar horario",
+  "@editScheduleTitle": {
+    "description": "Título de editar horario"
+  },
+  "classesListTitle": "Lista de clases",
+  "@classesListTitle": {
+    "description": "Título de la lista de clases"
+  },
+  "addNewClassToSchedule": "Puedes añadir una nueva clase al horario {scheduleName}",
+  "@addNewClassToSchedule": {
+    "description": "Descripción para añadir nueva clase",
+    "placeholders": {
+      "scheduleName": {
+        "type": "String"
+      }
+    }
+  },
+  "offline": "Sin conexión",
+  "@offline": {
+    "description": "Etiqueta para modo sin conexión"
+  },
+  "online": "En línea",
+  "@online": {
+    "description": "Etiqueta para modo en línea"
+  },
+  "subjectName": "Nombre de la asignatura",
+  "@subjectName": {
+    "description": "Etiqueta para el campo de nombre de asignatura"
+  },
+  "enterSubjectName": "Introduce el nombre de la asignatura",
+  "@enterSubjectName": {
+    "description": "Marcador de posición para nombre de asignatura"
+  },
+  "teacherFullName": "Nombre completo del profesor",
+  "@teacherFullName": {
+    "description": "Etiqueta para el campo de nombre del profesor"
+  },
+  "teacherNameExample": "Por ejemplo: Juan Pérez Pérez",
+  "@teacherNameExample": {
+    "description": "Ejemplo de nombre de profesor"
+  },
+  "endTimeMustBeAfterStartTime": "La hora de fin debe ser posterior a la hora de inicio",
+  "@endTimeMustBeAfterStartTime": {
+    "description": "Error de validación de tiempo"
+  },
+  "selectAtLeastOneDateError": "Selecciona al menos una fecha",
+  "@selectAtLeastOneDateError": {
+    "description": "Error de selección de fecha"
+  },
+ "addAtLeastOneClassroomError": "Añade al menos un aula o marca la clase como online",
+  "@addAtLeastOneClassroomError": {
+    "description": "Error de selección de aula"
+  },
+  "selectDatesButtonText": "Seleccionar fechas",
+  "@selectDatesButtonText": {
+    "description": "Texto del botón para seleccionar fechas"
+  },
+  "onlineClassLink": "Enlace de la clase online",
+  "@onlineClassLink": {
+    "description": "Etiqueta para el campo de enlace de clase online"
+  },
+  "enterConnectionUrl": "Introduce la URL de conexión",
+  "@enterConnectionUrl": {
+    "description": "Marcador de posición para la URL de conexión"
+  },
+  "classroomNumber": "Aula {name}",
+  "@classroomNumber": {
+    "description": "Título del número de aula",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "classroomExample": "Por ejemplo: A-123",
+  "@classroomExample": {
+    "description": "Ejemplo de número de aula"
+  },
+  "campusNameOptional": "Nombre del campus (opcional)",
+  "@campusNameOptional": {
+    "description": "Etiqueta para el campo de nombre del campus"
+  },
+  "campusExample": "Por ejemplo: B-78",
+  "@campusExample": {
+    "description": "Ejemplo de nombre de campus"
+  },
+  "addClassroomDialog": "Añadir aula",
+  "@addClassroomDialog": {
+    "description": "Título del diálogo para añadir aula"
+  },
+  "groupName": "Nombre del grupo",
+  "@groupName": {
+    "description": "Etiqueta para el nombre del grupo"
+  },
+  "groupNameExample": "Por ejemplo: IKBO-01-21",
+  "@groupNameExample": {
+    "description": "Ejemplo de nombre de grupo"
+  },
+  "addGroupDialog": "Añadir grupo",
+  "@addGroupDialog": {
+    "description": "Título del diálogo para añadir grupo"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Texto del botón de reintentar"
+  },
+  "resetFilter": "Restablecer filtro",
+  "@resetFilter": {
+    "description": "Texto del botón para restablecer filtro"
+  },
+  "supportOurService": "Apoya nuestro servicio",
+  "@supportOurService": {
+    "description": "Título para apoyar el servicio"
+  },
+  "leaveAd": "Dejar anuncio",
+  "@leaveAd": {
+    "description": "Texto del botón para dejar un anuncio"
+  },
+  "disable": "Desactivar",
+  "@disable": {
+    "description": "Texto del botón para desactivar"
+  },
+  "errorWithMessage": "Error: {message}",
+  "@errorWithMessage": {
+    "description": "Mensaje de error con detalles",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "map": "Mapa",
+  "@map": {
+    "description": "Título de la página del mapa"
+  },
+  "tryAgain": "Intentar de nuevo",
+  "@tryAgain": {
+    "description": "Texto del botón para intentar de nuevo"
+  },
+  "announcement": "Anuncio",
+  "@announcement": {
+    "description": "Etiqueta para anuncio"
+  },
+  "contact": "Contacto",
+  "@contact": {
+    "description": "Texto del botón de contacto"
+  },
+  "copiedToClipboard": "{title} copiado al portapapeles",
+  "@copiedToClipboard": {
+    "description": "Mensaje de copiado al portapapeles",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "post": "Publicación",
+  "@post": {
+    "description": "Título de la página de publicación"
+  },
+  "errorLoadingPost": "Error al cargar la publicación",
+  "@errorLoadingPost": {
+    "description": "Mensaje de error al cargar la publicación"
+  },
+  "errorLoadingContributors": "Error al cargar los colaboradores",
+  "@errorLoadingContributors": {
+    "description": "Mensaje de error al cargar los colaboradores"
+  },
+  "relatedArticles": "Artículos relacionados",
+  "@relatedArticles": {
+    "description": "Título de la sección de artículos relacionados"
+  },
+  "failedToLoadArticle": "Error al cargar el artículo",
+  "@failedToLoadArticle": {
+    "description": "Descripción del error cuando falla la carga de un artículo"
+  },
+  "shareFailed": "Error al compartir",
+  "@shareFailed": {
+    "description": "Mensaje de error cuando falla la acción de compartir"
+  },
+  "trending": "Tendencias",
+  "@trending": {
+    "description": "Título de la sección de tendencias"
+  },
+  "slideshow": "Presentación",
+  "@slideshow": {
+    "description": "Etiqueta para presentación"
+  },
+  "enterSearchQuery": "Introduce una consulta de búsqueda",
+  "@enterSearchQuery": {
+    "description": "Aviso de búsqueda cuando no se ha introducido ninguna consulta"
+  },
+  "failedToLoadMoreContent": "Error al cargar más contenido",
+  "@failedToLoadMoreContent": {
+    "description": "Descripción del error cuando falla la carga de más contenido"
+  },
+  "searchHistory": "Historial",
+  "@searchHistory": {
+    "description": "Encabezado del historial de búsqueda"
+  },
+  "enterScheduleName": "Introduce un nombre",
+  "@enterScheduleName": {
+    "description": "Mensaje de validación cuando el nombre del horario está vacío"
+  },
+  "nameTooLong": "El nombre es demasiado largo",
+  "@nameTooLong": {
+    "description": "Mensaje de validación cuando el nombre del horario es demasiado largo"
+  },
+  "createAndAddClass": "Crear y añadir clase",
+  "@createAndAddClass": {
+    "description": "Texto del botón para crear un horario y añadir una clase"
+  },
+  "addToSelectedSchedule": "Añadir al horario seleccionado",
+  "@addToSelectedSchedule": {
+    "description": "Texto del botón para añadir clase al horario seleccionado"
+  },
+  "mireaMap": "Mapa MIREA",
+  "@mireaMap": {
+    "description": "Título del servicio Mapa MIREA"
+  },
+  "findNeededClassroom": "Encuentra el aula necesaria",
+  "@findNeededClassroom": {
+    "description": "Descripción del servicio Mapa MIREA"
+  },
+  "nfcPass": "Pase NFC",
+  "@nfcPass": {
+    "description": "Título del servicio Pase NFC"
+  },
+  "passForUniversityEntry": "Pase para la entrada a la universidad",
+  "@passForUniversityEntry": {
+    "description": "Descripción del servicio Pase NFC"
+  },
+  "cloudMireaNinja": "Cloud Mirea Ninja",
+  "@cloudMireaNinja": {
+    "description": "Título del servicio en la nube"
+  },
+  "mireaNinja": "Mirea Ninja",
+  "@mireaNinja": {
+    "description": "Título de la comunidad Mirea Ninja"
+  },
+  "mostPopularUnofficialChat": "El chat no oficial más popular",
+  "@mostPopularUnofficialChat": {
+    "description": "Descripción de la comunidad Mirea Ninja"
+  },
+  "kisDepartment": "Departamento KIS",
+  "@kisDepartment": {
+    "description": "Título del Departamento KIS"
+  },
+  "corporateInformationSystems": "Departamento de Sistemas de Información Corporativa",
+  "@corporateInformationSystems": {
+    "description": "Descripción del Departamento KIS"
+  },
+  "ippoDepartment": "Departamento IPPO",
+  "@ippoDepartment": {
+    "description": "Título del Departamento IPPO"
+  },
+  "instrumentalAndAppliedSoftware": "Departamento de Software Instrumental y Aplicado",
+  "@instrumentalAndAppliedSoftware": {
+    "description": "Descripción del Departamento IPPO"
+  },
+  "competitiveProgrammingMirea": "Programación Competitiva MIREA",
+  "@competitiveProgrammingMirea": {
+    "description": "Título de programación competitiva"
+  },
+  "competitiveProgrammingDescription": "Aquí se publican diversas noticias y actualizaciones sobre programación competitiva en MIREA",
+  "@competitiveProgrammingDescription": {
+    "description": "Descripción de programación competitiva"
+  },
+  "personalAccount": "Cuenta Personal",
+  "@personalAccount": {
+    "description": "Título del servicio de cuenta personal"
+  },
+  "accessToGradesAndServices": "Acceso a calificaciones, solicitudes y otros servicios",
+  "@accessToGradesAndServices": {
+    "description": "Descripción de la cuenta personal"
+  },
+  "openAction": "Abrir",
+  "@openAction": {
+    "description": "Botón de acción abrir"
+  },
+  "educationalPortal": "Portal Educativo",
+  "@educationalPortal": {
+    "description": "Título del portal educativo"
+  },
+  "accessToCoursesAndMaterials": "Acceso a cursos y materiales",
+  "@accessToCoursesAndMaterials": {
+    "description": "Descripción del portal educativo"
+  },
+  "goToAction": "Ir a",
+  "@goToAction": {
+    "description": "Botón de acción ir a"
+  },
+  "electronicJournal": "Diario Electrónico",
+  "@electronicJournal": {
+    "description": "Título del diario electrónico"
+  },
+  "attendanceCheckSchedule": "Control de asistencia, horario",
+  "@attendanceCheckSchedule": {
+    "description": "Descripción del diario electrónico"
+  },
+  "library": "Biblioteca",
+  "@library": {
+    "description": "Título del servicio de biblioteca"
+  },
+  "freeSoftware": "Software Libre",
+  "@freeSoftware": {
+    "description": "Título del servicio de software libre"
+  },
+  "cyberzone": "Ciberzona",
+  "@cyberzone": {
+    "description": "Título del servicio de Ciberzona"
+  },
+  "handbook": "Manual",
+  "@handbook": {
+    "description": "Título del servicio de manual"
+  },
+  "scholarships": "Becas",
+  "@scholarships": {
+    "description": "Título del servicio de becas"
+  },
+  "militaryRegistration": "Registro Militar",
+  "@militaryRegistration": {
+    "description": "Título del servicio de registro militar"
+  },
+  "dormitories": "Residencias",
+  "@dormitories": {
+    "description": "Título del servicio de residencias"
+  },
+  "studentOffice": "Oficina de Estudiantes",
+  "@studentOffice": {
+    "description": "Título del servicio de oficina de estudiantes"
+  },
+  "certificatesDocumentsQuestions": "Certificados, documentos, preguntas",
+  "@certificatesDocumentsQuestions": {
+    "description": "Descripción de la oficina de estudiantes"
+  },
+  "careerCenter": "Centro de Carreras",
+  "@careerCenter": {
+    "description": "Título del servicio de centro de carreras"
+  },
+  "vacanciesAndInternships": "Vacantes y prácticas profesionales",
+  "@vacanciesAndInternships": {
+    "description": "Descripción del centro de carreras"
+  },
+  "initiativeService": "Servicio de Iniciativas",
+  "@initiativeService": {
+    "description": "Título del servicio de iniciativas"
+  },
+  "ideasAndSuggestions": "Ideas y sugerencias",
+  "@ideasAndSuggestions": {
+    "description": "Descripción del servicio de iniciativas"
+  },
+  "virtualTour": "Recorrido Virtual",
+  "@virtualTour": {
+    "description": "Título del servicio de recorrido virtual"
+  },
+  "interactiveUniversityTour": "Recorrido interactivo por los edificios de la universidad",
+  "@interactiveUniversityTour": {
+    "description": "Descripción del recorrido virtual"
+  },
+  "startupAccelerator": "Aceleradora de Startups",
+  "@startupAccelerator": {
+    "description": "Título del servicio de aceleradora de startups"
+  },
+  "startupSupport": "Apoyo a startups e ideas emprendedoras",
+  "@startupSupport": {
+    "description": "Descripción de la aceleradora de startups"
+  },
+  "corporatePortal": "Portal Corporativo",
+  "@corporatePortal": {
+    "description": "Título del servicio de portal corporativo"
+  },
+  "accessForTeachersAndStaff": "Acceso para profesores y personal",
+  "@accessForTeachersAndStaff": {
+    "description": "Descripción del portal corporativo"
+  },
+  "mainServices": "Servicios principales",
+  "@mainServices": {
+    "description": "Título de la sección de servicios principales"
+  },
+  "studentLife": "Vida estudiantil",
+  "@studentLife": {
+    "description": "Título de la sección de vida estudiantil"
+  },
+  "useful": "Útil",
+  "@useful": {
+    "description": "Título de la sección de utilidad"
+  },
+  "createAccount": "Crear cuenta",
+  "@createAccount": {
+    "description": "Texto del botón para crear cuenta"
+  },
+  "createAccountTitle": "Crear una cuenta",
+  "@createAccountTitle": {
+    "description": "Título del diálogo de crear cuenta"
+  },
+  "createAccountDescription": "¡Te ofrecemos crear una cuenta gratuita en nuestro almacenamiento en la nube para que puedas guardar tus archivos y documentos!",
+  "@createAccountDescription": {
+    "description": "Descripción del diálogo de crear cuenta"
+  },
+  "cloudStorageDescription": "En cloud.mirea.ninja puedes almacenar hasta 10 GB de forma gratuita (la cuota se puede ampliar en el bot de telegram), así como compartir archivos y editar documentos en línea junto con tus compañeros.",
+  "@cloudStorageDescription": {
+    "description": "Descripción del servicio de almacenamiento en la nube"
+  },
+  "searchPlaceholder": "Buscar",
+  "@searchPlaceholder": {
+    "description": "Marcador de posición de búsqueda"
+  },
+  "searchInAnnouncements": "Buscar en anuncios...",
+  "@searchInAnnouncements": {
+    "description": "Marcador de posición para buscar en anuncios"
+  },
+  "itemName": "Nombre del objeto",
+  "@itemName": {
+    "description": "Etiqueta para el nombre del objeto"
+  },
+  "itemNameExample": "Por ejemplo: Llaves con llavero",
+  "@itemNameExample": {
+    "description": "Ejemplo de nombre del objeto"
+  },
+  "description": "Descripción",
+  "@description": {
+    "description": "Etiqueta para el campo de descripción"
+  },
+  "itemDescription": "Detalles sobre el objeto, dónde y cuándo se encontró/perdió...",
+  "@itemDescription": {
+    "description": "Marcador de posición para la descripción del objeto"
+  },
+  "telegram": "Telegram",
+  "@telegram": {
+    "description": "Etiqueta para el campo de Telegram"
+  },
+  "phone": "Teléfono",
+  "@phone": {
+    "description": "Etiqueta para el campo de teléfono"
+  },
+  "leaveFeedback": "Dejar comentarios",
+  "@leaveFeedback": {
+    "description": "Título para dejar comentarios"
+  },
+  "yourEmail": "Tu correo electrónico",
+  "@yourEmail": {
+    "description": "Etiqueta para el campo de correo electrónico"
+  },
+  "enterEmail": "Introduce tu correo electrónico",
+  "@enterEmail": {
+    "description": "Marcador de posición para el correo electrónico"
+  },
+  "whatHappened": "¿Qué ha sucedido?",
+  "@whatHappened": {
+    "description": "Etiqueta para la pregunta de comentarios"
+  },
+  "feedbackPlaceholder": "Cuando pulso \"X\" ocurre \"Y\"",
+  "@feedbackPlaceholder": {
+    "description": "Texto del marcador de posición para comentarios"
+  },
+  "exportToCalendar": "Exportar al calendario",
+  "@exportToCalendar": {
+    "description": "Título para exportar al calendario"
+  },
+  "scheduleExported": "Horario exportado",
+  "@scheduleExported": {
+    "description": "Mensaje de éxito al exportar el horario"
+  },
+  "failedToExportSchedule": "Error al exportar el horario",
+  "@failedToExportSchedule": {
+    "description": "Mensaje de error al exportar el horario"
+  },
+  "exportSettings": "Configuración de exportación",
+  "@exportSettings": {
+    "description": "Título de la configuración de exportación"
+  },
+  "emojiInLessonTypes": "Emoji en los tipos de lección",
+  "@emojiInLessonTypes": {
+    "description": "Título del ajuste de emojis"
+  },
+  "emojiExample": "Ejemplo: \"📚 Clase\" en lugar de \"Clase\"",
+  "@emojiExample": {
+    "description": "Descripción del ajuste de emojis"
+  },
+  "shortLessonTypeNames": "Nombres cortos para tipos de lección",
+  "@shortLessonTypeNames": {
+    "description": "Título del ajuste de nombres cortos"
+  },
+  "shortNamesExample": "Ejemplo: \"Cl.\" en lugar de \"Clase\"",
+  "@shortNamesExample": {
+    "description": "Descripción del ajuste de nombres cortos"
+  },
+  "preview": "Vista previa",
+  "@preview": {
+    "description": "Título de la sección de vista previa"
+  },
+  "fullTypeName": "Nombre completo del tipo",
+  "@fullTypeName": {
+    "description": "Subtítulo del nombre completo del tipo"
+  },
+  "shortTypeName": "Nombre corto del tipo",
+  "@shortTypeName": {
+    "description": "Subtítulo del nombre corto del tipo"
+  },
+  "subjectSelection": "Selección de asignatura",
+  "@subjectSelection": {
+    "description": "Título de la selección de asignatura"
+  },
+  "standardReminders": "Recordatorios estándar",
+  "@standardReminders": {
+    "description": "Título de recordatorios estándar"
+  },
+  "cardSettings": "Configuración de tarjeta",
+  "@cardSettings": {
+    "description": "Título de la configuración de tarjeta"
+  },
+  "codeFromEmail": "Código del correo electrónico",
+  "@codeFromEmail": {
+    "description": "Título de código del correo electrónico"
+  },
+  "news": "Noticias",
+  "@news": {
+    "description": "Elemento de navegación de noticias"
+  },
+  "services": "Servicios",
+  "@services": {
+    "description": "Elemento de navegación de servicios"
+  },
+  "profile": "Perfil",
+  "@profile": {
+    "description": "Elemento de navegación para el perfil"
+  },
+  "aboutApp": "Acerca de la aplicación",
+  "@aboutApp": {
+    "description": "Elemento de navegación acerca de la aplicación"
+  },
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Elemento de navegación de configuración"
+  },
+  "findScheduleForClassroom": "Puedes encontrar rápidamente un horario para esta aula usando la búsqueda de horarios.",
+  "@findScheduleForClassroom": {
+    "description": "Descripción de la búsqueda de horario de aula"
+  },
+  "newYearHolidays": "Vacaciones de Año Nuevo",
+  "@newYearHolidays": {
+    "description": "Título de las vacaciones de Año Nuevo"
+  },
+  "winterVacation": "Vacaciones de invierno",
+  "@winterVacation": {
+    "description": "Título de las vacaciones de invierno"
+  },
+  "defenderOfFatherlandDay": "Día del Defensor de la Patria",
+  "@defenderOfFatherlandDay": {
+    "description": "Título del Día del Defensor de la Patria"
+  },
+  "internationalWomensDay": "Día Internacional de la Mujer",
+  "@internationalWomensDay": {
+    "description": "Título del Día Internacional de la Mujer"
+  },
+  "springAndLaborDay": "Día de la Primavera y del Trabajo",
+  "@springAndLaborDay": {
+    "description": "Título del Día de la Primavera y del Trabajo"
+  },
+  "victoryDay": "Día de la Victoria",
+  "@victoryDay": {
+    "description": "Título del Día de la Victoria"
+  },
+  "russiaDay": "Día de Rusia",
+  "@russiaDay": {
+    "description": "Título del Día de Rusia"
+  },
+  "nationalUnityDay": "Día de la Unidad Nacional",
+  "@nationalUnityDay": {
+    "description": "Título del Día de la Unidad Nacional"
+  },
+  "newYear": "Año Nuevo",
+  "@newYear": {
+    "description": "Título de Año Nuevo"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Etiqueta para el total"
+  },
+  "lectures": "Clases magistrales",
+  "@lectures": {
+    "description": "Etiqueta para clases magistrales"
+  },
+  "practicals": "Prácticas",
+  "@practicals": {
+    "description": "Etiqueta para prácticas"
+  },
+  "labs": "Laboratorios",
+  "@labs": {
+    "description": "Etiqueta para laboratorios"
+  },
+  "justNow": "hace un momento",
+  "@justNow": {
+    "description": "Etiqueta de tiempo para hace un momento"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Etiqueta para estado"
+  },
+  "phoneContact": "Teléfono: {phoneNumber}",
+  "@phoneContact": {
+    "description": "Etiqueta para contacto telefónico",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "lessonsOnDay": "Clases del {day}",
+  "@lessonsOnDay": {
+    "description": "Encabezado para las clases de un día específico",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "todayLower": "hoy",
+  "@todayLower": {
+    "description": "hoy, en minúsculas"
+  },
+  "tomorrowLower": "mañana",
+  "@tomorrowLower": {
+    "description": "mañana, en minúsculas"
+  },
+  "showEmptyLessonsTooltip": "Mostrar clases vacías",
+  "@showEmptyLessonsTooltip": {
+    "description": "Información sobre herramientas para el interruptor de clases vacías"
+  },
+  "emptyLessons": "Clases vacías",
+  "@emptyLessons": {
+    "description": "Etiqueta para el interruptor de clases vacías"
+  },
+  "analyticsShort": "Analíticas",
+  "@analyticsShort": {
+    "description": "Etiqueta corta para analíticas"
+  },
+  "dayOff": "Día libre",
+  "@dayOff": {
+    "description": "Título de día festivo para el domingo"
+  },
+  "noLessonsThatDay": "No hay clases este día",
+  "@noLessonsThatDay": {
+    "description": "Título para día sin clases"
+  },
+  "noLessonsThatDayShort": "¡No hay clases este día!",
+  "@noLessonsThatDayShort": {
+    "description": "Línea corta para día sin clases"
+  },
+  "restSuggestion": "Puedes descansar o estudiar por tu cuenta",
+  "@restSuggestion": {
+    "description": "Sugerencia para días sin clases"
+  },
+  "windowGap": "Ventana: {count, plural, one{{count} clase} other{{count} clases}}",
+  "@windowGap": {
+    "description": "Ventana (hueco) entre clases con pluralización",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noScheduleSelected": "No hay horario seleccionado",
+  "@noScheduleSelected": {
+    "description": "Título para horario vacío en escritorio"
+  },
+  "selectEntityToSeeSchedule": "Selecciona un grupo, profesor o aula para ver el horario",
+  "@selectEntityToSeeSchedule": {
+    "description": "Subtítulo para horario vacío en escritorio"
+  },
+  "errorLoadingSchedule": "Error al cargar el horario",
+  "@errorLoadingSchedule": {
+    "description": "Error al cargar el horario (snack)"
+  },
+  "manageComparisons": "Gestionar comparaciones",
+  "@manageComparisons": {
+    "description": "Información sobre herramientas para gestionar comparaciones"
+  },
+  "selectUpTo4Schedules": "Selecciona hasta 4 horarios para comparar por días",
+  "@selectUpTo4Schedules": {
+    "description": "Descripción para el modal de comparación"
+  },
+  "noUpcomingLessons": "No hay clases próximas",
+  "@noUpcomingLessons": {
+    "description": "Título para el estado de no hay clases próximas"
+  },
+  "noUpcomingLessonsDescription": "No hay clases programadas en un futuro cercano. Cambia al calendario para ver otros días.",
+  "@noUpcomingLessonsDescription": {
+    "description": "Descripción para el estado de no hay clases próximas"
+  },
+  "switchToCalendar": "Cambiar al calendario",
+  "@switchToCalendar": {
+    "description": "Botón para cambiar al calendario"
+  },
+  "lecturesShort": "Mag.",
+  "@lecturesShort": {
+    "description": "Etiqueta corta para clases magistrales"
+  },
+  "practiceShort": "Práct.",
+  "@practiceShort": {
+    "description": "Etiqueta corta para prácticas"
+  },
+  "labsShort": "Lab.",
+  "@labsShort": {
+    "description": "Etiqueta corta para laboratorios"
+  },
+  "legend": "Leyenda",
+  "@legend": {
+    "description": "Título de la leyenda"
+  },
+  "laboratoryWork": "Laboratorio",
+  "@laboratoryWork": {
+    "description": "Etiqueta para trabajo de laboratorio"
+  },
+  "scheduleLoadError": "Ocurrió un error al obtener el horario. Por favor, intenta de nuevo.",
+  "@scheduleLoadError": {
+    "description": "Descripción del error al cargar el horario"
+  },
+  "selectSchedulesForComparison": "Seleccionar horarios para comparar (hasta 3)",
+  "@selectSchedulesForComparison": {
+    "description": "Título del gestor de comparaciones"
+  },
+  "deleteScheduleConfirm": "¿Estás seguro de que quieres eliminar \"{name}\"?",
+  "@deleteScheduleConfirm": {
+    "description": "Confirmar eliminación de horario",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteClassConfirm": "¿Estás seguro de que quieres eliminar \"{subject}\" del horario?",
+  "@deleteClassConfirm": {
+    "description": "Confirmar eliminación de clase",
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "commentTooLong": "El comentario es demasiado largo",
+  "@commentTooLong": {
+    "description": "Validación de longitud del comentario"
+  },
+  "addOneClassroomOrOnline": "Añade al menos una aula o marca la clase como en línea",
+  "@addOneClassroomOrOnline": {
+    "description": "Validación de aula faltante"
+  },
+  "createClass": "Crear clase",
+  "@createClass": {
+    "description": "Título de crear clase"
+  },
+  "editClass": "Editar clase",
+  "@editClass": {
+    "description": "Título de editar clase"
+  },
+  "startTime": "Inicio",
+  "@startTime": {
+    "description": "Etiqueta para hora de inicio"
+  },
+  "endTime": "Fin",
+  "@endTime": {
+    "description": "Etiqueta para hora de fin"
+  },
+  "lessonNumber": "Número de lección",
+  "@lessonNumber": {
+    "description": "Etiqueta para número de lección"
+  },
+  "teacherFullNameHint": "ej. Ivanov Iván Ivánovich",
+  "@teacherFullNameHint": {
+    "description": "Sugerencia para nombre completo del profesor"
+  },
+  "enterTeacherFullName": "Introduce el nombre completo del profesor",
+  "@enterTeacherFullName": {
+    "description": "Validación para nombre completo del profesor"
+  },
+  "onlineLessonUrl": "URL de la clase en línea",
+  "@onlineLessonUrl": {
+    "description": "Etiqueta para URL en línea"
+  },
+  "enterUrl": "Introduce una URL",
+  "@enterUrl": {
+    "description": "Sugerencia de URL"
+  },
+  "classroomNumberHint": "ej. A-123",
+  "@classroomNumberHint": {
+    "description": "Sugerencia de número de aula"
+  },
+  "enterClassroomNumber": "Introduce el número de aula",
+  "@enterClassroomNumber": {
+    "description": "Validación de número de aula"
+  },
+  "enterGroupName": "Introduce el nombre del grupo",
+  "@enterGroupName": {
+    "description": "Validación de nombre de grupo"
+  },
+  "basic": "Básico",
+  "@basic": {
+    "description": "Pestaña básica"
+  },
+  "dates": "Fechas",
+  "@dates": {
+    "description": "Pestaña de fechas"
+  },
+  "place": "Lugar",
+  "@place": {
+    "description": "Pestaña de lugar"
+  },
+  "create": "Crear",
+  "@create": {
+    "description": "Botón de crear"
+  },
+  "addDate": "Añadir fecha",
+  "@addDate": {
+    "description": "Información sobre herramientas para añadir fecha"
+  },
+  "lessonDeliveryType": "Tipo de impartición de la clase",
+  "@lessonDeliveryType": {
+    "description": "Encabezado para el tipo de impartición de la clase"
+  },
+  "noClassroomsSelected": "No hay aulas seleccionadas",
+  "@noClassroomsSelected": {
+    "description": "Estado vacío para aulas"
+  },
+  "back": "Atrás",
+  "@back": {
+    "description": "Botón de atrás"
+  }
+}

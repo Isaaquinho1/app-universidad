@@ -1,0 +1,66 @@
+name: Shorebird Release
+
+on:
+  workflow_dispatch:
+
+env:
+  SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+  MAPKIT_API_KEY: ${{ secrets.MAPKIT_API_KEY }}
+  STORYLY_ID: ${{ secrets.STORYLY_ID }}
+  SENTRY_DSN: ${{ secrets.STORYLY_ID }}
+
+jobs:
+  release:
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: macos-15
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐦 Setup Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+        with:
+          cache: true
+
+      - name: ♻️ Cache Flutter Pub
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            build/
+          key: ${{ runner.os }}-pub-cache-${{ hashFiles('pubspec.lock') }}
+
+      - name: 🚀 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: 📦 Flutter Pub Get
+        run: flutter pub get
+
+
+      - name: 🛠️ Generate Build Runner (env.g.dart)
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🚀 Shorebird Release (Android)
+        uses: shorebirdtech/shorebird-release@v0
+        with:
+          platform: android
+
+      - name: 🚀 Shorebird Release (iOS)
+        uses: shorebirdtech/shorebird-release@v0
+        with:
+          platform: ios
