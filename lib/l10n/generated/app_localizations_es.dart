@@ -809,7 +809,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addToSelectedSchedule => 'Añadir al horario seleccionado';
 
   @override
-  String get mireaMap => 'Mapa MIREA';
+  String get mireaMap => 'Mapa del Campus Tlalpan';
 
   @override
   String get findNeededClassroom => 'Encuentra el aula necesaria';
@@ -821,10 +821,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get passForUniversityEntry => 'Pase para la entrada a la universidad';
 
   @override
-  String get cloudMireaNinja => 'Cloud Mirea Ninja';
+  String get cloudMireaNinja => 'Cloud Campus Tlalpan';
 
   @override
-  String get mireaNinja => 'Mirea Ninja';
+  String get mireaNinja => 'Portal estudiantil';
 
   @override
   String get mostPopularUnofficialChat => 'El chat no oficial más popular';
@@ -844,11 +844,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Departamento de Software Instrumental y Aplicado';
 
   @override
-  String get competitiveProgrammingMirea => 'Programación Competitiva MIREA';
+  String get competitiveProgrammingMirea => 'Programación Competitiva';
 
   @override
   String get competitiveProgrammingDescription =>
-      'Aquí se publican diversas noticias y actualizaciones sobre programación competitiva en MIREA';
+      'Espacio para noticias, actividades y recursos relacionados con programación competitiva y tecnología.';
 
   @override
   String get personalAccount => 'Cuenta Personal';
@@ -955,7 +955,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cloudStorageDescription =>
-      'En cloud.mirea.ninja puedes almacenar hasta 10 GB de forma gratuita (la cuota se puede ampliar en el bot de telegram), así como compartir archivos y editar documentos en línea junto con tus compañeros.';
+      'Este servicio permitirá compartir recursos académicos, documentos y materiales útiles para la comunidad estudiantil del TecNM Campus Tlalpan.';
 
   @override
   String get searchPlaceholder => 'Buscar';

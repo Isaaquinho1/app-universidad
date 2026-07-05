@@ -1057,13 +1057,13 @@
   "@addToSelectedSchedule": {
     "description": "Texto del botón para añadir clase al horario seleccionado"
   },
-  "mireaMap": "Mapa MIREA",
+  "mireaMap": "Mapa del Campus Tlalpan",
   "@mireaMap": {
-    "description": "Título del servicio Mapa MIREA"
+    "description": "Título del servicio Mapa Campus Tlalpan"
   },
   "findNeededClassroom": "Encuentra el aula necesaria",
   "@findNeededClassroom": {
-    "description": "Descripción del servicio Mapa MIREA"
+    "description": "Descripción del servicio Mapa Campus Tlalpan"
   },
   "nfcPass": "Pase NFC",
   "@nfcPass": {
@@ -1073,17 +1073,17 @@
   "@passForUniversityEntry": {
     "description": "Descripción del servicio Pase NFC"
   },
-  "cloudMireaNinja": "Cloud Mirea Ninja",
+  "cloudMireaNinja": "Cloud Campus Tlalpan",
   "@cloudMireaNinja": {
     "description": "Título del servicio en la nube"
   },
-  "mireaNinja": "Mirea Ninja",
+  "mireaNinja": "Portal estudiantil",
   "@mireaNinja": {
-    "description": "Título de la comunidad Mirea Ninja"
+    "description": "Título de la comunidad Campus Tlalpan"
   },
   "mostPopularUnofficialChat": "El chat no oficial más popular",
   "@mostPopularUnofficialChat": {
-    "description": "Descripción de la comunidad Mirea Ninja"
+    "description": "Descripción de la comunidad Campus Tlalpan"
   },
   "kisDepartment": "Departamento KIS",
   "@kisDepartment": {
@@ -1101,11 +1101,11 @@
   "@instrumentalAndAppliedSoftware": {
     "description": "Descripción del Departamento IPPO"
   },
-  "competitiveProgrammingMirea": "Programación Competitiva MIREA",
+  "competitiveProgrammingMirea": "Programación Competitiva",
   "@competitiveProgrammingMirea": {
     "description": "Título de programación competitiva"
   },
-  "competitiveProgrammingDescription": "Aquí se publican diversas noticias y actualizaciones sobre programación competitiva en MIREA",
+  "competitiveProgrammingDescription": "Espacio para noticias, actividades y recursos relacionados con programación competitiva y tecnología.",
   "@competitiveProgrammingDescription": {
     "description": "Descripción de programación competitiva"
   },
@@ -1241,7 +1241,7 @@
   "@createAccountDescription": {
     "description": "Descripción del diálogo de crear cuenta"
   },
-  "cloudStorageDescription": "En cloud.mirea.ninja puedes almacenar hasta 10 GB de forma gratuita (la cuota se puede ampliar en el bot de telegram), así como compartir archivos y editar documentos en línea junto con tus compañeros.",
+  "cloudStorageDescription": "Este servicio permitirá compartir recursos académicos, documentos y materiales útiles para la comunidad estudiantil del TecNM Campus Tlalpan.",
   "@cloudStorageDescription": {
     "description": "Descripción del servicio de almacenamiento en la nube"
   },
