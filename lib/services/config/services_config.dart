@@ -13,7 +13,7 @@ class ServicesConfig {
     return [
       ImportantServiceModel(
         title: 'Mapa del campus',
-        description: 'Ubica edificios, áreas administrativas y espacios del campus.',
+        description: 'Ubica edificios, aulas, áreas administrativas y espacios del TecNM Campus Tlalpan.',
         iconData: Icons.map,
         color: colors.colorful07,
         isExternal: false,
@@ -21,7 +21,7 @@ class ServicesConfig {
       ),
       ImportantServiceModel(
         title: 'Horario de clases',
-        description: 'Consulta y administra tu horario académico.',
+        description: 'Consulta y administra tu horario académico desde la aplicación.',
         iconData: Icons.calendar_month_rounded,
         color: colors.colorful04,
         isExternal: false,
