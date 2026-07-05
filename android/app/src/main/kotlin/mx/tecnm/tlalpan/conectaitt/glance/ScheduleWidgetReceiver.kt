@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp.glance
+package mx.tecnm.tlalpan.conectaitt.glance
 
 import HomeWidgetGlanceWidgetReceiver
 

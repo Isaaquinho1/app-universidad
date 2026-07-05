@@ -47,12 +47,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB7ql_m1krrnR0UqlDElp_VF4RQwW-BN4g',
-    appId: '1:952856895087:android:6a66ef3df744610c71b79a',
+    appId: '1:952856895087:android:355e592b62604ff671b79a',
     messagingSenderId: '952856895087',
     projectId: 'conecta-itt-55275',
     storageBucket: 'conecta-itt-55275.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAWhPt9mgbL7JF2MPmT9SCmJYzSMexUd7s',
     appId: '1:952856895087:ios:8afd071c5c11706371b79a',

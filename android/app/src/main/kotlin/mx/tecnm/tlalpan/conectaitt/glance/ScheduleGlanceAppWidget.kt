@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp.glance
+package mx.tecnm.tlalpan.conectaitt.glance
 
 import android.content.ComponentName
 import android.content.Context
@@ -39,8 +39,8 @@ import androidx.glance.unit.ColorProvider
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ninja.mirea.mireaapp.MainActivity
-import ninja.mirea.mireaapp.R
+import mx.tecnm.tlalpan.conectaitt.MainActivity
+import mx.tecnm.tlalpan.conectaitt.R
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar

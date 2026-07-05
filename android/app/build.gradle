@@ -25,12 +25,12 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "ninja.mirea.mireaapp"
+    namespace "mx.tecnm.tlalpan.conectaitt"
     compileSdk 35
     ndkVersion "27.0.12077973"
 
     defaultConfig {
-        applicationId "ninja.mirea.mireaapp"
+        applicationId "mx.tecnm.tlalpan.conectaitt"
         minSdk 26
         targetSdk 34
         versionCode flutterVersionCode.toInteger()
