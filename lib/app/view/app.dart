@@ -1,4 +1,3 @@
-import 'package:ads_ui/ads_ui.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,10 +5,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:platform/platform.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:rtu_mirea_app/ads/bloc/ads_bloc.dart';
-import 'package:rtu_mirea_app/ads/bloc/full_screen_ads_bloc.dart';
 import 'package:rtu_mirea_app/app/app.dart';
 import 'package:rtu_mirea_app/categories/categories.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
@@ -31,43 +28,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:rtu_mirea_app/di/app_scope.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
-import 'package:yandex_mobileads/mobile_ads.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-
-Future<void> yandexInterstitialAdLoader({
-  required String adUnitId,
-  required AdRequestConfiguration adRequestConfiguration,
-  required void Function(InterstitialAd ad) onAdLoaded,
-  required void Function(Object error) onAdFailedToLoad,
-}) async {
-  try {
-    final loader = await InterstitialAdLoader.create(
-      onAdLoaded: onAdLoaded,
-      onAdFailedToLoad: onAdFailedToLoad,
-    );
-
-    await loader.loadAd(adRequestConfiguration: adRequestConfiguration);
-  } catch (error) {
-    onAdFailedToLoad(error);
-  }
-}
-
-Future<void> yandexRewardedAdLoader({
-  required String adUnitId,
-  required AdRequestConfiguration adRequestConfiguration,
-  required void Function(RewardedAd ad) onAdLoaded,
-  required void Function(Object error) onAdFailedToLoad,
-}) async {
-  try {
-    final loader = await RewardedAdLoader.create(
-      onAdLoaded: onAdLoaded,
-      onAdFailedToLoad: onAdFailedToLoad,
-    );
-    await loader.loadAd(adRequestConfiguration: adRequestConfiguration);
-  } catch (error) {
-    onAdFailedToLoad(error);
-  }
-}
 
 class App extends StatelessWidget {
   const App({super.key, required User user}) : _user = user;
@@ -138,19 +99,6 @@ class App extends StatelessWidget {
               BlocProvider<NfcPassCubit>(
                 create:
                     (_) => NfcPassCubit(repository: appScope.nfcPassRepository),
-              ),
-              BlocProvider(
-                create:
-                    (_) =>
-                        FullScreenAdsBloc(
-                            interstitialAdLoader: yandexInterstitialAdLoader,
-                            rewardedAdLoader: yandexRewardedAdLoader,
-                            adsRetryPolicy: const AdsRetryPolicy(),
-                            localPlatform: const LocalPlatform(),
-                          )
-                          ..add(const LoadInterstitialAdRequested())
-                          ..add(const LoadRewardedAdRequested()),
-                lazy: false,
               ),
               BlocProvider(
                 create:
