@@ -43,7 +43,6 @@ class App extends StatelessWidget {
             RepositoryProvider.value(value: appScope.analyticsRepository),
             RepositoryProvider.value(value: appScope.scheduleRepository),
             RepositoryProvider.value(value: appScope.communityRepository),
-            RepositoryProvider.value(value: appScope.discourseRepository),
             RepositoryProvider.value(value: appScope.newsRepository),
             RepositoryProvider.value(value: appScope.articleRepository),
             RepositoryProvider.value(

@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtu_mirea_app/article/view/article_page.dart';
-import 'package:rtu_mirea_app/discourse_post_overview/view/view.dart';
-
 import 'package:rtu_mirea_app/home/view/home_page.dart';
 import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
 import 'package:rtu_mirea_app/map/view/map_page_view.dart';
@@ -78,9 +76,6 @@ class OnboardingRoute extends GoRouteData {
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<NfcPassRoute>(path: 'nfc'),
             TypedGoRoute<MapRoute>(path: 'map'),
-            TypedGoRoute<DiscoursePostOverviewRoute>(
-              path: 'discourse-post-overview/:postId',
-            ),
             TypedGoRoute<RatingSystemCalculatorRoute>(
               path: 'rating-system-calculator',
               routes: <TypedRoute<RouteData>>[
@@ -261,17 +256,6 @@ class MapRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const MapPageView();
-  }
-}
-
-class DiscoursePostOverviewRoute extends GoRouteData {
-  const DiscoursePostOverviewRoute({required this.postId});
-
-  final int postId;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return DiscoursePostOverviewPageView(postId: postId);
   }
 }
 

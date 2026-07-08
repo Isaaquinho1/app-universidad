@@ -2,8 +2,6 @@ import 'package:analytics_repository/analytics_repository.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:community_repository/community_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
-import 'package:discourse_api_client/discourse_api_client.dart';
-import 'package:discourse_repository/discourse_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lost_and_found_repository/lost_and_found_repository.dart';
@@ -36,7 +34,6 @@ abstract class AppScope implements Scope {
   ScheduleExporterRepository get scheduleExporterRepository;
   ScheduleRepository get scheduleRepository;
   CommunityRepository get communityRepository;
-  DiscourseRepository get discourseRepository;
   NewsRepository get newsRepository;
   ArticleRepository get articleRepository;
   NfcPassRepository get nfcPassRepository;
@@ -91,10 +88,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
     }
     return ApiClient(tokenProvider: tokenProvider);
   });
-
-  late final _discourseApiClientDep = dep(
-    () => DiscourseApiClient(baseUrl: 'https://mirea.ninja'),
-  );
 
   // Storage layer
   late final _persistentStorageDep = dep(
@@ -153,9 +146,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   late final _communityRepositoryDep = dep(
     () => CommunityRepository(apiClient: _apiClientDep.get),
   );
-  late final _discourseRepositoryDep = dep(
-    () => DiscourseRepository(apiClient: _discourseApiClientDep.get),
-  );
   late final _newsRepositoryDep = dep(
     () => NewsRepository(apiClient: _apiClientDep.get),
   );
@@ -208,8 +198,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   ScheduleRepository get scheduleRepository => _scheduleRepositoryDep.get;
   @override
   CommunityRepository get communityRepository => _communityRepositoryDep.get;
-  @override
-  DiscourseRepository get discourseRepository => _discourseRepositoryDep.get;
   @override
   NewsRepository get newsRepository => _newsRepositoryDep.get;
   @override
