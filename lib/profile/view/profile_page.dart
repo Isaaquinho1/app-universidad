@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:rtu_mirea_app/ads/ads.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
 
@@ -93,35 +92,6 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
     launchUrlString('https://t.me/mirea_ninja_chat/473603', mode: LaunchMode.externalApplication);
   }
 
-  void _onAdsSettingTap(BuildContext context) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Apoya nuestro servicio'),
-            content: const Text(
-              'La publicidad nos ayuda a desarrollar la aplicación de forma gratuita, añadir nuevas funciones y mantener el funcionamiento de calidad del servicio. Al desactivar la publicidad, nos privas de una fuente importante de apoyo. ¿Estás seguro de que quieres desactivar la visualización de publicidad?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  context.read<AdsBloc>().add(const SetAdsVisibility(showAds: true));
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Mantener publicidad'),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<AdsBloc>().add(const SetAdsVisibility(showAds: false));
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Desactivar'),
-              ),
-            ],
-          ),
-    );
-  }
-
   Widget _buildThemeOption(ThemeOption option, String title, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final isSelected = _selectedTheme == option;
@@ -199,13 +169,6 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
                   ],
                 ),
               ],
-            ),
-            const Divider(height: 24, thickness: 0.5),
-            SettingsItem(
-              text: 'Gestión de publicidad',
-              icon: Icon(Icons.ad_units, color: Colors.blue, size: 24),
-              onPressed: () => _onAdsSettingTap(context),
-              trailing: Icon(Icons.chevron_right, color: colors.deactive),
             ),
           ],
         ),
