@@ -6,7 +6,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:rtu_mirea_app/ads/bloc/ads_bloc.dart';
 import 'package:rtu_mirea_app/app/app.dart';
 import 'package:rtu_mirea_app/categories/categories.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
@@ -68,7 +67,6 @@ class App extends StatelessWidget {
                 create:
                     (_) => FeedBloc(newsRepository: appScope.newsRepository),
               ),
-              BlocProvider(create: (_) => AdsBloc()),
               BlocProvider(
                 create:
                     (_) => ScheduleExporterCubit(

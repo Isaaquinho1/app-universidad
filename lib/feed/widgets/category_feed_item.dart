@@ -1,4 +1,3 @@
-import 'package:ads_ui/ads_ui.dart';
 import 'package:flutter/material.dart' hide Spacer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -65,23 +64,15 @@ class CategoryFeedItem extends StatelessWidget {
         categoryName: categoryName,
         onPressed: (action) => _onFeedItemAction(context, action),
       );
-    } else if (newsBlock is NewsletterBlock) {
-      widget = const SizedBox(); // Remove Newsletter widget
     } else if (newsBlock is BannerAdBlock) {
-      widget = Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: BannerAd(
-          block: newsBlock,
-          adFailedToLoadTitle: context.l10n.errorLoadingSponsors,
-        ),
-      );
-    } else {
+  widget = const SizedBox.shrink();
+} else {
       // Render an empty widget for the unsupported block type.
       widget = const SizedBox();
     }
 
-    // Добавляем отступы между статьями для лучшей читаемости
-    // Элементы которые уже имеют отступы: DividerHorizontalBlock, SectionHeaderBlock, BannerAdBlock
+    // Agrega espaciado entre bloques para mejorar la legibilidad.
+    // Algunos bloques ya manejan su propio espaciado.
     final needsExtraPadding =
         !(newsBlock is DividerHorizontalBlock ||
             newsBlock is SectionHeaderBlock ||
