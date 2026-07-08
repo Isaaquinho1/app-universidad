@@ -213,6 +213,7 @@ class _ServicesViewState extends State<ServicesView>
   }
 
   Widget _buildMainTab() {
+    final colors = Theme.of(context).extension<AppColors>()!;
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
@@ -269,8 +270,12 @@ class _ServicesViewState extends State<ServicesView>
                     title: community.title,
                     url: community.url,
                     logo: CircleAvatar(
-                      foregroundImage: NetworkImage(community.logoUrl),
-                    ),
+                      backgroundColor: colors.background03,
+                        child: Icon(
+                          Icons.school_rounded,
+                            color: colors.active,
+                               ),
+                            ),
                     launchMode: LaunchMode.externalApplication,
                     description: community.description,
                   ),
