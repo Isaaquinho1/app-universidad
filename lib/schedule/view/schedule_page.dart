@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:rtu_mirea_app/ads/ads.dart';
+
 import 'package:rtu_mirea_app/common/utils/calendar_utils.dart';
 import 'package:rtu_mirea_app/presentation/constants.dart';
 import 'package:app_ui/app_ui.dart';
@@ -138,16 +138,16 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isWideScreen = ResponsiveLayout.isDesktop(context);
+  final isWideScreen = ResponsiveLayout.isDesktop(context);
 
-    return BlocBuilder<AdsBloc, AdsState>(
-      builder: (context, state) {
-        return BlocConsumer<ScheduleBloc, ScheduleState>(
-          listener: (context, state) {
-            if (state.status == ScheduleStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.errorLoadingSchedule)));
-            }
-          },
+  return BlocConsumer<ScheduleBloc, ScheduleState>(
+    listener: (context, state) {
+      if (state.status == ScheduleStatus.failure) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.errorLoadingSchedule)),
+        );
+      }
+    },
           buildWhen:
               (previous, current) => current.status != ScheduleStatus.failure && current.selectedSchedule != null,
           builder: (context, state) {
@@ -234,8 +234,6 @@ class _SchedulePageState extends State<SchedulePage> {
             );
           },
         );
-      },
-    );
   }
 
   Widget _buildDesktopLayout(ScheduleState state) {
@@ -448,7 +446,6 @@ class _ListModeView extends StatelessWidget {
 
     return CustomScrollView(
       slivers: [
-        const SliverToBoxAdapter(child: StickyAd()),
         for (var entry in filteredLessonsByDay)
           StickyHeader(day: entry.key, lessons: entry.value?.whereType<LessonSchedulePart>().toList() ?? []),
       ],
