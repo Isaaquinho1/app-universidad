@@ -1,4 +1,3 @@
-import 'package:rtu_mirea_app/contributors/view/view.dart';
 import 'package:rtu_mirea_app/sponsors/view/sponsors_view.dart';
 import 'package:unicons/unicons.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,7 @@ class AboutAppPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Text('Open Source', style: AppTextStyle.h4)],
+      children: [Text('Acerca del proyecto', style: AppTextStyle.h4)],
     );
   }
 
@@ -121,18 +120,53 @@ class AboutAppPage extends StatelessWidget {
   }
 
   Widget _buildContributorsSection() {
-    return Column(
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text('Participantes del proyecto', style: AppTextStyle.h6),
+        Text('Equipo del proyecto', style: AppTextStyle.h4),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Esteban Isaac Méndez Vázquez',
+          style: AppTextStyle.bodyBold,
         ),
-        const SizedBox(height: 16),
-        const ContributorsView(),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Responsable del desarrollo y adaptación de la aplicación móvil para el TecNM Campus Tlalpan.',
+          style: AppTextStyle.body,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Jessica Viannney Sánchez Díaz',
+          style: AppTextStyle.bodyBold,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Colaborador del proyecto.',
+          style: AppTextStyle.body,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Jesús Ali Lucas Mendoza',
+          style: AppTextStyle.bodyBold,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Colaborador del proyecto.',
+          style: AppTextStyle.body,
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Text('Institución', style: AppTextStyle.h4),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Tecnológico Nacional de México — Campus Tlalpan',
+          style: AppTextStyle.body,
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildFeedbackButton(BuildContext context) {
     return Padding(
