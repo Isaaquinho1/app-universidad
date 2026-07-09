@@ -27,8 +27,6 @@ workspace:
   - packages/mini_app
   - packages/news_blocks_ui
   - packages/news_repository
-  - packages/nfc_pass_client
-  - packages/nfc_pass_repository
   - packages/notifications_client/firebase_notifications_client
   - packages/notifications_client/notifications_client
   - packages/notifications_repository
@@ -181,10 +179,6 @@ dependencies:
   image_picker: ^1.1.2
   video_player: ^2.9.2
   fluttertoast: ^9.0.0
-  nfc_pass_client:
-    path: packages/nfc_pass_client
-  nfc_pass_repository:
-    path: packages/nfc_pass_repository
   watch_connectivity: ^0.2.1
   app_ui:
     path: packages/app_ui

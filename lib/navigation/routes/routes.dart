@@ -6,7 +6,6 @@ import 'package:rtu_mirea_app/article/view/article_page.dart';
 import 'package:rtu_mirea_app/home/view/home_page.dart';
 import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
 import 'package:rtu_mirea_app/map/view/map_page_view.dart';
-import 'package:rtu_mirea_app/nfc_pass/view/nfc_pass_page_view.dart';
 import 'package:rtu_mirea_app/profile/profile.dart';
 import 'package:rtu_mirea_app/profile/view/notifications_settings_page.dart';
 import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
@@ -74,7 +73,6 @@ class OnboardingRoute extends GoRouteData {
         TypedGoRoute<ServicesRoute>(
           path: '/services',
           routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<NfcPassRoute>(path: 'nfc'),
             TypedGoRoute<MapRoute>(path: 'map'),
             TypedGoRoute<RatingSystemCalculatorRoute>(
               path: 'rating-system-calculator',
@@ -238,15 +236,6 @@ class ServicesRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ServicesPage();
-  }
-}
-
-class NfcPassRoute extends GoRouteData {
-  const NfcPassRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const NfcPassPageView();
   }
 }
 

@@ -11,7 +11,6 @@ import 'package:rtu_mirea_app/categories/categories.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
 import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
 import 'package:rtu_mirea_app/navigation/navigation.dart';
-import 'package:rtu_mirea_app/nfc_pass/bloc/nfc_pass_cubit.dart';
 import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
@@ -48,7 +47,6 @@ class App extends StatelessWidget {
             RepositoryProvider.value(
               value: appScope.scheduleExporterRepository,
             ),
-            RepositoryProvider.value(value: appScope.nfcPassRepository),
             RepositoryProvider.value(value: appScope.lostFoundRepository),
             RepositoryProvider.value(value: appScope.userRepository),
           ],
@@ -92,10 +90,6 @@ class App extends StatelessWidget {
                     (_) => ScheduleBloc(
                       scheduleRepository: appScope.scheduleRepository,
                     )..add(const RefreshSelectedScheduleData()),
-              ),
-              BlocProvider<NfcPassCubit>(
-                create:
-                    (_) => NfcPassCubit(repository: appScope.nfcPassRepository),
               ),
               BlocProvider(
                 create:

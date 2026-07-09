@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lost_and_found_repository/lost_and_found_repository.dart';
 import 'package:news_repository/news_repository.dart';
-import 'package:nfc_pass_repository/nfc_pass_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:rtu_mirea_app/common/utils/logger.dart';
@@ -36,7 +35,6 @@ abstract class AppScope implements Scope {
   CommunityRepository get communityRepository;
   NewsRepository get newsRepository;
   ArticleRepository get articleRepository;
-  NfcPassRepository get nfcPassRepository;
   LostFoundRepository get lostFoundRepository;
   UserRepository get userRepository;
   SupabaseClient get supabaseClient;
@@ -158,9 +156,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
       storage: _articleStorageDep.get,
     ),
   );
-  late final _nfcPassRepositoryDep = dep(
-    () => NfcPassRepository(storage: _secureStorageDep.get),
-  );
   late final _lostFoundRepositoryDep = dep(
     () => LostFoundRepository(apiClient: _apiClientDep.get),
   );
@@ -205,8 +200,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   ScheduleExporterRepository get scheduleExporterRepository =>
       _scheduleExporterRepositoryDep.get;
-  @override
-  NfcPassRepository get nfcPassRepository => _nfcPassRepositoryDep.get;
   @override
   LostFoundRepository get lostFoundRepository => _lostFoundRepositoryDep.get;
   @override

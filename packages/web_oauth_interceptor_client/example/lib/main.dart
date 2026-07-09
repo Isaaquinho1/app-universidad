@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:web_oauth_interceptor_client/web_oauth_interceptor_client.dart';
 
-Future main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
@@ -21,15 +21,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final OAuthInterceptorClient oauthClient = OAuthInterceptorClient(
-    oauthUrl:
-        'https://attendance.mirea.ru/api/auth/login?redirectUri=https%3A%2F%2Fattendance-app.mirea.ru&rememberMe=True',
-    expectedRedirectUrls: ['https://attendance-app.mirea.ru/'],
-    specialCookieName: '.AspNetCore.Cookies',
+    oauthUrl: 'https://example.edu/login',
+    expectedRedirectUrls: ['https://example.edu/callback'],
+    specialCookieName: 'example_session',
     onLoginSuccess: (data) {
-      print('Login success! Data: ${data.specialCookieValue}');
+      debugPrint('Login success. Cookie: ${data.specialCookieValue}');
     },
     onLoginError: (String error) {
-      print('Login failure! Error: $error');
+      debugPrint('Login failure. Error: $error');
     },
   );
 
@@ -44,7 +43,7 @@ class _MyAppState extends State<MyApp> {
           onPressed: () async {
             await oauthClient.initiateOAuthFlow();
           },
-          child: const Text("Start OAuth Flow"),
+          child: const Text('Start OAuth Flow'),
         ),
       ),
     );
