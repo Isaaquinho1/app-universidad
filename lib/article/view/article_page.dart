@@ -83,7 +83,7 @@ class ArticleView extends StatelessWidget {
                 key: const Key('articlePage_shareButton'),
                 padding: const EdgeInsets.only(right: AppSpacing.lg),
                 child: ShareButton(
-                  shareText: 'Поделиться',
+                  shareText: 'Compartir',
                   color: foregroundColor,
                   onPressed: () => context.read<ArticleBloc>().add(ShareRequested(uri: uri)),
                 ),

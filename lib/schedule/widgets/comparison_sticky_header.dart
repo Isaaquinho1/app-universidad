@@ -67,7 +67,7 @@ class _EmptyDayIndicator extends StatelessWidget {
       height: 100,
       alignment: Alignment.center,
       child: Text(
-        'Нет пар в этот день',
+        'No hay clases este día',
         style: AppTextStyle.body.copyWith(
           color: Theme.of(context).extension<AppColors>()!.active,
           fontStyle: FontStyle.italic,

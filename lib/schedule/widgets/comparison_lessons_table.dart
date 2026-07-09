@@ -154,6 +154,6 @@ class _ComparisonScheduleLegend extends StatelessWidget {
     } else if (schedule is SelectedClassroomSchedule) {
       return schedule.classroom.name;
     }
-    return 'Неизвестно';
+    return 'No especificado';
   }
 }

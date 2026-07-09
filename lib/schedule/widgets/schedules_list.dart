@@ -15,7 +15,7 @@ class SchedulesList extends StatelessWidget {
     } else if (schedule is SelectedClassroomSchedule) {
       return schedule.classroom.name;
     } else {
-      return "неизвестно";
+      return "desconocido";
     }
   }
 
@@ -48,7 +48,7 @@ class SchedulesList extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               Text(
-                "Сохранено".toUpperCase(),
+                "Guardado".toUpperCase(),
                 style: AppTextStyle.chip.copyWith(color: AppColors.dark.deactive),
                 textAlign: TextAlign.left,
               ),
@@ -70,13 +70,13 @@ class SchedulesList extends StatelessWidget {
                         context.read<ScheduleBloc>().add(
                           DeleteSchedule(identifier: el.$1, target: ScheduleTarget.group),
                         );
-                        _showSnackbar(context, "Удалено расписание группы ${el.$2.name}", Icons.delete);
+                        _showSnackbar(context, "Horario de grupo eliminado ${el.$2.name}", Icons.delete);
                       },
                       onSelectedPressed: () {
                         context.read<ScheduleBloc>().add(
                           SetSelectedSchedule(selectedSchedule: SelectedGroupSchedule(group: el.$2, schedule: el.$3)),
                         );
-                        _showSnackbar(context, "Выбрано расписание группы ${el.$2.name}", Icons.check);
+                        _showSnackbar(context, "Horario de grupo seleccionado ${el.$2.name}", Icons.check);
                       },
                     ),
                   ),
@@ -91,7 +91,7 @@ class SchedulesList extends StatelessWidget {
                         context.read<ScheduleBloc>().add(
                           DeleteSchedule(identifier: el.$1, target: ScheduleTarget.teacher),
                         );
-                        _showSnackbar(context, "Удалено расписание преподавателя ${el.$2.name}", Icons.delete);
+                        _showSnackbar(context, "Horario de docente eliminado ${el.$2.name}", Icons.delete);
                       },
                       onSelectedPressed: () {
                         context.read<ScheduleBloc>().add(
@@ -99,7 +99,7 @@ class SchedulesList extends StatelessWidget {
                             selectedSchedule: SelectedTeacherSchedule(teacher: el.$2, schedule: el.$3),
                           ),
                         );
-                        _showSnackbar(context, "Выбрано расписание преподавателя ${el.$2.name}", Icons.check);
+                        _showSnackbar(context, "Horario de docente seleccionado ${el.$2.name}", Icons.check);
                       },
                     ),
                   ),
@@ -116,13 +116,13 @@ class SchedulesList extends StatelessWidget {
                             selectedSchedule: SelectedClassroomSchedule(classroom: el.$2, schedule: el.$3),
                           ),
                         );
-                        _showSnackbar(context, "Выбрано расписание аудитории ${el.$2.name}", Icons.check);
+                        _showSnackbar(context, "Horario de aula seleccionado ${el.$2.name}", Icons.check);
                       },
                       onDeletePressed: () {
                         context.read<ScheduleBloc>().add(
                           DeleteSchedule(identifier: el.$1, target: ScheduleTarget.classroom),
                         );
-                        _showSnackbar(context, "Удалено расписание аудитории ${el.$2.name}", Icons.delete);
+                        _showSnackbar(context, "Horario de aula eliminado ${el.$2.name}", Icons.delete);
                       },
                     ),
                   ),

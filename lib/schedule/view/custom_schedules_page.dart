@@ -34,7 +34,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Мои расписания')),
+      appBar: AppBar(title: const Text('Mis horarios')),
       body: BlocBuilder<ScheduleBloc, ScheduleState>(
         builder: (context, state) {
           if (state.customSchedules.isEmpty) {
@@ -60,7 +60,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                               child: TextButton.icon(
                                 onPressed: () => _showCreateScheduleDialog(),
                                 icon: const  HugeIcon(icon: HugeIcons.strokeRoundedCalendar01, size: 20, color: Colors.grey),
-                                label: const Text('Создать расписание'),
+                                label: const Text('Crear horario'),
                                 style: TextButton.styleFrom(
                                   foregroundColor: colors.primary,
                                   backgroundColor: Colors.transparent,
@@ -76,7 +76,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                                 child: TextButton.icon(
                                   onPressed: () => _addCustomLesson(state.customSchedules.first.id),
                                   icon: const  HugeIcon(icon: HugeIcons.strokeRoundedNotebook01, size: 20, color: Colors.grey),
-                                  label: const Text('Добавить пару'),
+                                  label: const Text('Agregar clase'),
                                   style: TextButton.styleFrom(
                                     foregroundColor: colors.colorful07,
                                     backgroundColor: Colors.transparent,
@@ -118,9 +118,9 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
   Widget _buildEmptyState() {
     return FailureScreen(
       icon: HugeIcons.strokeRoundedCalendar01,
-      title: 'У вас пока нет своих расписаний',
-      description: 'Создайте собственное расписание, добавляя в него пары из разных доступных расписаний',
-      buttonText: 'Создать расписание',
+      title: 'Aún no tienes horarios propios',
+      description: 'Crea tu propio horario agregando clases de distintos horarios disponibles',
+      buttonText: 'Crear horario',
       buttonIcon: HugeIcons.strokeRoundedAdd01,
       onButtonPressed: () => _showCreateScheduleDialog(),
     );
@@ -128,8 +128,8 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
 
   Widget _buildScheduleCard(CustomSchedule schedule) {
     final colors = Theme.of(context).extension<AppColors>()!;
-    final formatter = DateFormat('dd.MM.yyyy в HH:mm');
-    final updatedAt = schedule.updatedAt != null ? formatter.format(schedule.updatedAt!) : 'Дата неизвестна';
+    final formatter = DateFormat('dd/MM/yyyy HH:mm');
+    final updatedAt = schedule.updatedAt != null ? formatter.format(schedule.updatedAt!) : 'Fecha desconocida';
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
@@ -186,11 +186,11 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
             child: Row(
               children: [
-                _buildStatistic(context, '${schedule.lessons.length}', 'пар', HugeIcons.strokeRoundedNotebook01),
+                _buildStatistic(context, '${schedule.lessons.length}', 'clases', HugeIcons.strokeRoundedNotebook01),
                 const SizedBox(width: AppSpacing.xlg),
                 Expanded(
                   child: Text(
-                    'Обновлено: $updatedAt',
+                    'Actualizado: $updatedAt',
                     style: AppTextStyle.captionL.copyWith(color: colors.deactive),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -214,7 +214,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                     ),
                     onPressed: () => _showScheduleLessons(schedule),
                     icon: const  HugeIcon(icon: HugeIcons.strokeRoundedListView, size: 18, color: Colors.grey),
-                    label: const Text('Список пар'),
+                    label: const Text('Lista de clases'),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -227,7 +227,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                   ),
                   onPressed: () => _addCustomLesson(schedule.id),
                   icon: const  HugeIcon(icon: HugeIcons.strokeRoundedAdd01, size: 18, color: Colors.grey),
-                  label: const Text('Пара'),
+                  label: const Text('Clase'),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 FilledButton.icon(
@@ -238,7 +238,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                   ),
                   onPressed: () => _selectCustomSchedule(schedule),
                   icon: const Icon(Icons.visibility, size: 18),
-                  label: const Text('Открыть'),
+                  label: const Text('Abrir'),
                 ),
               ],
             ),
@@ -280,8 +280,8 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
 
     BottomModalSheet.show(
       context,
-      title: 'Создание расписания',
-      description: 'Введите название и описание для нового расписания',
+      title: 'Crear horario',
+      description: 'Ingresa el nombre y la descripción del nuevo horario',
       isDismissible: true,
       child: Form(
         key: _formKey,
@@ -290,14 +290,14 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
           children: [
             TextInput(
               controller: _nameController,
-              labelText: 'Название расписания',
-              hintText: 'Например: Моё расписание',
+              labelText: 'Nombre del horario',
+              hintText: 'Ejemplo: Mi horario',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Введите название';
+                  return 'Ingresa el nombre';
                 }
                 if (value.length > 50) {
-                  return 'Слишком длинное название';
+                  return 'El nombre es demasiado largo';
                 }
                 return null;
               },
@@ -305,13 +305,13 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
             const SizedBox(height: AppSpacing.lg),
             TextInput(
               controller: _descriptionController,
-              labelText: 'Описание (необязательно)',
-              hintText: 'Добавьте описание расписания',
+              labelText: 'Descripción opcional',
+              hintText: 'Agrega una descripción del horario',
               maxLines: 3,
             ),
             const SizedBox(height: AppSpacing.xlg),
             PrimaryButton(
-              text: 'Создать расписание',
+              text: 'Crear horario',
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   context.read<ScheduleBloc>().add(
@@ -341,7 +341,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.edit),
-                  title: const Text('Редактировать'),
+                  title: const Text('Editar'),
                   onTap: () {
                     Navigator.pop(context);
                     _showEditDialog(schedule);
@@ -349,7 +349,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete),
-                  title: const Text('Удалить'),
+                  title: const Text('Eliminar'),
                   textColor: Colors.red,
                   iconColor: Colors.red,
                   onTap: () {
@@ -371,7 +371,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Редактирование расписания'),
+            title: const Text('Editar horario'),
             content: Form(
               key: _formKey,
               child: Column(
@@ -379,13 +379,13 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                 children: [
                   TextInput(
                     controller: _nameController,
-                    labelText: 'Название расписания',
+                    labelText: 'Nombre del horario',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Введите название';
+                        return 'Ingresa el nombre';
                       }
                       if (value.length > 50) {
-                        return 'Слишком длинное название';
+                        return 'El nombre es demasiado largo';
                       }
                       return null;
                     },
@@ -393,15 +393,15 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                   const SizedBox(height: AppSpacing.lg),
                   TextInput(
                     controller: _descriptionController,
-                    labelText: 'Описание (необязательно)',
-                    hintText: 'Добавьте описание расписания',
+                    labelText: 'Descripción opcional',
+                    hintText: 'Agrega una descripción del horario',
                     maxLines: 3,
                   ),
                 ],
               ),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -418,7 +418,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Сохранить'),
+                child: const Text('Guardar'),
               ),
             ],
           ),
@@ -430,17 +430,17 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Удаление расписания'),
-            content: Text('Вы уверены, что хотите удалить расписание "${schedule.name}"?'),
+            title: const Text('Eliminar horario'),
+            content: Text('¿Seguro que deseas eliminar el horario "${schedule.name}"?'),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 style: FilledButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () {
                   context.read<ScheduleBloc>().add(DeleteCustomSchedule(scheduleId: schedule.id));
                   Navigator.pop(context);
                 },
-                child: const Text('Удалить'),
+                child: const Text('Eliminar'),
               ),
             ],
           ),
@@ -453,7 +453,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
 
     final content = Column(
       children: [
-        // Кнопка добавления пары
+        // Botón para agregar clases
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.lg),
           child: OutlinedButton.icon(
@@ -462,7 +462,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
               _addCustomLesson(schedule.id);
             },
             icon: const  HugeIcon(icon: HugeIcons.strokeRoundedAdd01, color: Colors.grey),
-            label: const Text('Создать новую пару'),
+            label: const Text('Crear nueva clase'),
           ),
         ),
 
@@ -470,7 +470,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
           child:
               schedule.lessons.isEmpty
                   ? Center(
-                    child: Text('Нет добавленных пар', style: AppTextStyle.body.copyWith(color: colors.deactive)),
+                    child: Text('No hay clases agregadas', style: AppTextStyle.body.copyWith(color: colors.deactive)),
                   )
                   : ListView.separated(
                     controller: controller,
@@ -488,8 +488,8 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
 
     BottomModalSheet.show(
       context,
-      title: 'Список пар',
-      description: 'Вы можете добавить новую пару в расписание ${schedule.name}',
+      title: 'Lista de clases',
+      description: 'Puedes agregar una nueva clase al horario ${schedule.name}',
       isDismissible: true,
       child: content,
     );
@@ -548,7 +548,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                       if (lesson.classrooms.isNotEmpty) ...[
                         const SizedBox(height: AppSpacing.sm),
                         Text(
-                          'Аудитория: ${lesson.classrooms.map((e) => e.name).join(", ")}',
+                          'Aula: ${lesson.classrooms.map((e) => e.name).join(", ")}',
                           style: AppTextStyle.captionL.copyWith(color: colors.deactive),
                         ),
                       ],
@@ -596,10 +596,10 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Удаление пары'),
-            content: Text('Вы уверены, что хотите удалить пару "${lesson.subject}" из расписания?'),
+            title: const Text('Eliminación de clase'),
+            content: Text('¿Seguro que deseas eliminar la clase "${lesson.subject}" del horario?'),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 style: FilledButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () {
@@ -608,7 +608,7 @@ class _CustomSchedulesPageState extends State<CustomSchedulesPage> {
                   );
                   Navigator.pop(context);
                 },
-                child: const Text('Удалить'),
+                child: const Text('Eliminar'),
               ),
             ],
           ),

@@ -17,7 +17,7 @@ class SettingsButton extends StatelessWidget {
         color: Theme.of(context).extension<AppColors>()!.active,
       ),
       material:
-          (_, __) => MaterialIconButtonData(padding: const EdgeInsets.all(16.0), tooltip: 'Управление расписанием'),
+          (_, __) => MaterialIconButtonData(padding: const EdgeInsets.all(16.0), tooltip: 'Gestión de horarios'),
       onPressed: onPressed,
     );
   }

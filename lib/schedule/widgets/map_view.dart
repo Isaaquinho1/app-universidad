@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:rtu_mirea_app/schedule/widgets/mobile_map_view.dart'
     if (dart.library.html) 'package:rtu_mirea_app/schedule/widgets/web_map_view.dart';
 
-/// Кроссплатформенный виджет для отображения карты
+/// Widget multiplataforma para mostrar el mapa
 class CampusMapView extends StatelessWidget {
-  /// Широта точки для отображения
+  /// Latitud del punto a mostrar
   final double latitude;
 
-  /// Долгота точки для отображения
+  /// Longitud del punto a mostrar
   final double longitude;
 
   const CampusMapView({super.key, required this.latitude, required this.longitude});
@@ -18,10 +18,10 @@ class CampusMapView extends StatelessWidget {
     if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
       return createMapView(latitude: latitude, longitude: longitude);
     } else {
-      // На неподдерживаемых платформах показываем заглушку
+      // En plataformas no compatibles se muestra un marcador
       return Container(
         color: Colors.grey[200],
-        child: const Center(child: Text('Карты доступны только на мобильных устройствах', textAlign: TextAlign.center)),
+        child: const Center(child: Text('Los mapas solo están disponibles en dispositivos móviles', textAlign: TextAlign.center)),
       );
     }
   }

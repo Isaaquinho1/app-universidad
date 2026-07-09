@@ -8,7 +8,7 @@ class LessonTypeSelector extends StatelessWidget {
     super.key,
     required this.selectedType,
     required this.onTypeSelected,
-    this.label = 'Тип занятия',
+    this.label = 'Tipo de clase',
   });
 
   final LessonType selectedType;
@@ -19,18 +19,18 @@ class LessonTypeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
-    // Типы занятий с иконками, названиями и цветами
+    // Tipos de clase con iconos, nombres y colores
     final lessonTypes = [
-      (LessonType.practice, 'Практика', colors.colorful01, HugeIcons.strokeRoundedDocumentAttachment),
-      (LessonType.lecture, 'Лекция', colors.colorful02, HugeIcons.strokeRoundedTeaching),
-      (LessonType.laboratoryWork, 'Лабораторная', colors.colorful03, HugeIcons.strokeRoundedEcoLab01),
-      (LessonType.individualWork, 'Индивидуальная', colors.colorful04, HugeIcons.strokeRoundedUserCircle),
-      (LessonType.physicalEducation, 'Физкультура', colors.colorful05, HugeIcons.strokeRoundedWorkoutGymnastics),
-      (LessonType.consultation, 'Консультация', colors.colorful06, HugeIcons.strokeRoundedMessage01),
-      (LessonType.exam, 'Экзамен', colors.colorful07, HugeIcons.strokeRoundedGivePill),
-      (LessonType.credit, 'Зачет', colors.success, HugeIcons.strokeRoundedTick01),
-      (LessonType.courseWork, 'Курсовая работа', colors.info, HugeIcons.strokeRoundedBook02),
-      (LessonType.courseProject, 'Курсовой проект', colors.accent, HugeIcons.strokeRoundedDocumentCode),
+      (LessonType.practice, 'Práctica', colors.colorful01, HugeIcons.strokeRoundedDocumentAttachment),
+      (LessonType.lecture, 'Clase teórica', colors.colorful02, HugeIcons.strokeRoundedTeaching),
+      (LessonType.laboratoryWork, 'Laboratorio', colors.colorful03, HugeIcons.strokeRoundedEcoLab01),
+      (LessonType.individualWork, 'Individual', colors.colorful04, HugeIcons.strokeRoundedUserCircle),
+      (LessonType.physicalEducation, 'Educación física', colors.colorful05, HugeIcons.strokeRoundedWorkoutGymnastics),
+      (LessonType.consultation, 'Asesoría', colors.colorful06, HugeIcons.strokeRoundedMessage01),
+      (LessonType.exam, 'Examen', colors.colorful07, HugeIcons.strokeRoundedGivePill),
+      (LessonType.credit, 'Evaluación', colors.success, HugeIcons.strokeRoundedTick01),
+      (LessonType.courseWork, 'Trabajo de curso', colors.info, HugeIcons.strokeRoundedBook02),
+      (LessonType.courseProject, 'Proyecto de curso', colors.accent, HugeIcons.strokeRoundedDocumentCode),
     ];
 
     return Column(
@@ -39,7 +39,7 @@ class LessonTypeSelector extends StatelessWidget {
         Text(label, style: AppTextStyle.titleS.copyWith(color: colors.active, fontWeight: FontWeight.w600)),
         const SizedBox(height: 12),
 
-        // Сетка с типами занятий
+        // Cuadrícula con tipos de clase
         GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,

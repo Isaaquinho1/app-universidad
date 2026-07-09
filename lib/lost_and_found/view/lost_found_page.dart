@@ -109,7 +109,7 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
                 ),
                 child: TabBar(
                   controller: _tabController,
-                  tabs: const [Tab(text: 'Все'), Tab(text: 'Потеряно'), Tab(text: 'Найдено')],
+                  tabs: const [Tab(text: 'Todos'), Tab(text: 'Perdido'), Tab(text: 'Encontrado')],
                   indicatorColor: appColors.primary,
                   indicatorWeight: 3,
                   labelColor: appColors.primary,
@@ -146,13 +146,13 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
       backgroundColor: appColors.surface,
       elevation: 0,
       title: Text(
-        'Бюро находок',
+        'Objetos perdidos',
         style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
       ),
       actions: [
         IconButton(
           icon: Icon(Icons.person_outline, color: appColors.active),
-          tooltip: 'Мои объявления',
+          tooltip: 'Mis anuncios',
           onPressed: () {
             Navigator.push(
               context,
@@ -181,7 +181,7 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
           controller: _searchController,
           focusNode: _searchFocusNode,
           decoration: InputDecoration(
-            hintText: 'Поиск по объявлениям...',
+            hintText: 'Buscar en anuncios...',
             hintStyle: AppTextStyle.body.copyWith(color: appColors.deactive),
             prefixIcon: Icon(Icons.search, color: appColors.deactive, size: 20),
             suffixIcon:
@@ -226,7 +226,7 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
       foregroundColor: appColors.white,
       elevation: 2,
       icon: const Icon(Icons.add),
-      label: const Text('Объявление'),
+      label: const Text('Anuncio'),
     );
   }
 
@@ -238,18 +238,18 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
       builder:
           (context) => AlertDialog(
             title: Text(
-              'Вход в систему',
+              'Inicio de sesión',
               style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
             ),
             content: Text(
-              'Для создания объявления необходимо авторизоваться.',
+              'Para crear un anuncio es necesario iniciar sesión.',
               style: AppTextStyle.body.copyWith(color: appColors.deactive),
             ),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Отмена', style: TextStyle(color: appColors.deactive)),
+                child: Text('Cancelar', style: TextStyle(color: appColors.deactive)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -260,7 +260,7 @@ class _LostFoundPageState extends State<LostFoundPage> with SingleTickerProvider
                   backgroundColor: appColors.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-                child: Text('Войти', style: TextStyle(color: appColors.white)),
+                child: Text('Entrar', style: TextStyle(color: appColors.white)),
               ),
             ],
           ),
@@ -299,7 +299,7 @@ class _LostFoundItemList extends StatelessWidget {
           );
         } else if (state is LostFoundError) {
           return ErrorStateWidget(
-            message: 'Ошибка: ${state.message}',
+            message: 'Error: ${state.message}',
             onRetry: () {
               context.read<LostFoundBloc>().add(LoadLostFoundItems(status: status));
             },
@@ -316,14 +316,14 @@ class _LostFoundItemList extends StatelessWidget {
     return EmptyStateWidget(
       message:
           isSearchResult
-              ? 'Ничего не найдено'
+              ? 'No se encontró nada'
               : status == LostFoundItemStatus.lost
-              ? 'Нет потерянных вещей'
+              ? 'No hay objetos perdidos'
               : status == LostFoundItemStatus.found
-              ? 'Нет найденных вещей'
-              : 'Нет объявлений',
+              ? 'No hay objetos encontrados'
+              : 'No hay anuncios',
       icon: isSearchResult ? Icons.search_off : Icons.inbox,
-      buttonText: isLoggedIn ? 'Создать объявление' : 'Войти',
+      buttonText: isLoggedIn ? 'Crear anuncio' : 'Entrar',
       onButtonPressed: () {
         if (isLoggedIn) {
           Navigator.push(

@@ -46,25 +46,25 @@ class LessonCard extends StatefulWidget {
   static String getLessonTypeName(LessonType lessonType) {
     switch (lessonType) {
       case LessonType.lecture:
-        return 'Лекция';
+        return 'Clase teórica';
       case LessonType.laboratoryWork:
-        return 'Лабораторная';
+        return 'Laboratorio';
       case LessonType.practice:
-        return 'Практика';
+        return 'Práctica';
       case LessonType.individualWork:
-        return 'Сам. работа';
+        return 'Trabajo individual';
       case LessonType.exam:
-        return 'Экзамен';
+        return 'Examen';
       case LessonType.consultation:
-        return 'Консультация';
+        return 'Asesoría';
       case LessonType.courseWork:
-        return 'Курс. раб.';
+        return 'Trabajo de curso';
       case LessonType.courseProject:
-        return 'Курс. проект';
+        return 'Proyecto de curso';
       case LessonType.credit:
-        return 'Зачет';
+        return 'Evaluación';
       default:
-        return 'Неизвестно';
+        return 'No especificado';
     }
   }
 
@@ -152,7 +152,7 @@ class _LessonCardState extends State<LessonCard> {
                   ),
                 );
                 // Use the captured cardContext to show the toast.
-                ReactionToast.show(cardContext, message: 'Реакция удалена', reactionType: reactionType);
+                ReactionToast.show(cardContext, message: 'Reacción eliminada', reactionType: reactionType);
               } else {
                 // Add or update reaction
                 cardContext.read<ScheduleBloc>().add(
@@ -165,7 +165,7 @@ class _LessonCardState extends State<LessonCard> {
                 );
 
                 // Show celebration animation
-                // Используем задержку для корректного получения позиции
+                // Se usa una espera para obtener correctamente la posición
                 Future.delayed(const Duration(milliseconds: 100), () {
                   if (!mounted) return;
 
@@ -179,7 +179,7 @@ class _LessonCardState extends State<LessonCard> {
 
                     ReactionCelebrationOverlay.show(cardContext, reactionType: reactionType, position: centerPosition);
                   } else {
-                    // Если не можем получить позицию карточки, показываем по центру экрана
+                    // Si no se puede obtener la posición, se muestra al centro
                     final screenSize = MediaQuery.of(cardContext).size;
                     ReactionCelebrationOverlay.show(
                       cardContext,
@@ -190,7 +190,7 @@ class _LessonCardState extends State<LessonCard> {
                 });
 
                 // Show success toast
-                ReactionToast.show(cardContext, message: 'Реакция добавлена!', reactionType: reactionType);
+                ReactionToast.show(cardContext, message: 'Reacción agregada', reactionType: reactionType);
               }
 
               overlayEntry.remove();
@@ -344,7 +344,7 @@ class _LessonCardState extends State<LessonCard> {
                                 const SizedBox(width: 8),
                                 _buildTag(
                                   context,
-                                  '${widget.lesson.lessonBells.number} пара',
+                                  '${widget.lesson.lessonBells.number} clase',
                                   lessonColor.withOpacity(0.7),
                                   showBorder: true,
                                 ),
@@ -514,7 +514,7 @@ class _LessonCardState extends State<LessonCard> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              '${widget.indexInGroup! + 1}/${widget.countInGroup} ${Intl.plural(widget.countInGroup!, one: 'пара', few: 'пары', many: 'пар', other: 'пар')}',
+              '${widget.indexInGroup! + 1}/${widget.countInGroup} ${Intl.plural(widget.countInGroup!, one: 'clase', few: 'clases', many: 'clases', other: 'clases')}',
               style: AppTextStyle.captionL.copyWith(
                 color: Theme.of(context).extension<AppColors>()!.deactive,
                 fontWeight: FontWeight.w500,

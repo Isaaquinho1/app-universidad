@@ -4,7 +4,7 @@
   "@scheduleAppBarTitle": {
     "description": "Название страницы расписания"
   },
-  "loadingError": "Ошибка загрузки",
+  "loadingError": "Error de carga",
   "@loadingError": {
     "description": "Сообщение об ошибке при загрузке"
   },
@@ -141,7 +141,7 @@
   "@noClass": {
     "description": "Текст когда нет занятия"
   },
-  "displaySettings": "Настройки отображения",
+  "displaySettings": "Configuración de visualización",
   "@displaySettings": {
     "description": "Заголовок для настроек отображения"
   },
@@ -221,11 +221,11 @@
   "@lessonTypes": {
     "description": "Заголовок графика типов занятий"
   },
-  "teachers": "Преподаватели",
+  "teachers": "Docentes",
   "@teachers": {
     "description": "Заголовок секции преподавателей"
   },
-  "classrooms": "Аудитории",
+  "classrooms": "Aulas",
   "@classrooms": {
     "description": "Заголовок секции аудиторий"
   },
@@ -289,7 +289,7 @@
   "@calendar": {
     "description": "Заголовок для страницы календаря"
   },
-  "scheduleLoadingError": "Ошибка при загрузке расписания",
+  "scheduleLoadingError": "Error al cargar el horario",
   "@scheduleLoadingError": {
     "description": "Сообщение об ошибке загрузки расписания"
   },
@@ -321,7 +321,7 @@
   "@classLabel": {
     "description": "Подпись для одной пары"
   },
-  "open": "Открыть",
+  "open": "Abrir",
   "@open": {
     "description": "Текст кнопки для открытия"
   },
@@ -399,11 +399,11 @@
   "@none": {
     "description": "Опция для отсутствия номера пары"
   },
-  "groups": "Группы",
+  "groups": "Grupos",
   "@groups": {
     "description": "Заголовок секции групп"
   },
-  "noTeachersSelected": "Преподаватели не выбраны",
+  "noTeachersSelected": "No se seleccionaron docentes",
   "@noTeachersSelected": {
     "description": "Сообщение когда преподаватели не выбраны"
   },
@@ -439,7 +439,7 @@
   "@addClassroom": {
     "description": "Текст кнопки для добавления аудитории"
   },
-  "noGroupsSelected": "Группы не выбраны",
+  "noGroupsSelected": "No se seleccionaron grupos",
   "@noGroupsSelected": {
     "description": "Сообщение когда группы не выбраны"
   },
@@ -464,7 +464,7 @@
       }
     }
   },
-  "loginFailed": "Ошибка входа",
+  "loginFailed": "Error de inicio de sesión",
   "@loginFailed": {
     "description": "Сообщение об ошибке входа"
   },
@@ -472,7 +472,7 @@
   "@next": {
     "description": "Текст кнопки для продолжения"
   },
-  "errorLoadingSponsors": "Ошибка при загрузке спонсоров",
+  "errorLoadingSponsors": "Error al cargar los colaboradores",
   "@errorLoadingSponsors": {
     "description": "Сообщение об ошибке загрузки спонсоров"
   },
@@ -541,7 +541,7 @@
   "@university": {
     "description": "Подпись для университета"
   },
-  "search": "Поиск",
+  "search": "Buscar",
   "@search": {
     "description": "Текст заполнителя поиска"
   },
@@ -549,7 +549,7 @@
   "@all": {
     "description": "Режим поиска - все результаты"
   },
-  "error": "Ошибка",
+  "error": "Error",
   "@error": {
     "description": "Заголовок ошибки"
   },
@@ -593,11 +593,11 @@
   "@group": {
     "description": "Подпись группы"
   },
-  "teacher": "Преподаватель",
+  "teacher": "Docente",
   "@teacher": {
     "description": "Подпись преподавателя"
   },
-  "classroom": "Аудитория",
+  "classroom": "Aula",
   "@classroom": {
     "description": "Подпись аудитории"
   },
@@ -697,11 +697,11 @@
   "@lessonTypesChart": {
     "description": "Заголовок графика типов занятий"
   },
-  "teachersChart": "Преподаватели",
+  "teachersChart": "Docentes",
   "@teachersChart": {
     "description": "Заголовок графика преподавателей"
   },
-  "classroomsChart": "Аудитории",
+  "classroomsChart": "Aulas",
   "@classroomsChart": {
     "description": "Заголовок графика аудиторий"
   },
@@ -785,7 +785,7 @@
   "@addScheduleDescription": {
     "description": "Заполнитель поля описания"
   },
-  "openSchedule": "Открыть",
+  "openSchedule": "Abrir",
   "@openSchedule": {
     "description": "Кнопка открытия расписания"
   },
@@ -884,15 +884,15 @@
   },
   "endTimeMustBeAfterStartTime": "Время окончания должно быть позже времени начала",
   "@endTimeMustBeAfterStartTime": {
-    "description": "Ошибка валидации времени"
+    "description": "Error de validación de horario"
   },
   "selectAtLeastOneDateError": "Выберите хотя бы одну дату проведения",
   "@selectAtLeastOneDateError": {
-    "description": "Ошибка выбора даты"
+    "description": "Error al seleccionar fecha"
   },
   "addAtLeastOneClassroomError": "Добавьте хотя бы одну аудиторию или сделайте занятие онлайн",
   "@addAtLeastOneClassroomError": {
-    "description": "Ошибка выбора аудитории"
+    "description": "Error al seleccionar aula"
   },
   "selectDatesButtonText": "Выбрать даты",
   "@selectDatesButtonText": {
@@ -906,7 +906,7 @@
   "@enterConnectionUrl": {
     "description": "Заполнитель URL подключения"
   },
-  "classroomNumber": "Аудитория {name}",
+  "classroomNumber": "Aula {name}",
   "@classroomNumber": {
     "description": "Заголовок номера аудитории",
     "placeholders": {
@@ -943,7 +943,7 @@
   "@addGroupDialog": {
     "description": "Заголовок диалога добавления группы"
   },
-  "retry": "Повторить",
+  "retry": "Reintentar",
   "@retry": {
     "description": "Текст кнопки повтора"
   },
@@ -963,7 +963,7 @@
   "@disable": {
     "description": "Текст кнопки отключения"
   },
-  "errorWithMessage": "Ошибка: {message}",
+  "errorWithMessage": "Error: {message}",
   "@errorWithMessage": {
     "description": "Сообщение об ошибке с деталями",
     "placeholders": {
@@ -1001,11 +1001,11 @@
   "@post": {
     "description": "Заголовок страницы поста"
   },
-  "errorLoadingPost": "Ошибка при загрузке поста",
+  "errorLoadingPost": "Error al cargar la publicación",
   "@errorLoadingPost": {
     "description": "Сообщение об ошибке загрузки поста"
   },
-  "errorLoadingContributors": "Ошибка при загрузке контрибьюторов",
+  "errorLoadingContributors": "Error al cargar los colaboradores",
   "@errorLoadingContributors": {
     "description": "Сообщение об ошибке загрузки контрибьюторов"
   },
@@ -1017,7 +1017,7 @@
   "@failedToLoadArticle": {
     "description": "Описание ошибки при загрузке статьи"
   },
-  "shareFailed": "Ошибка при попытке поделиться",
+  "shareFailed": "Error al intentar compartir",
   "@shareFailed": {
     "description": "Сообщение об ошибке при попытке поделиться"
   },
@@ -1117,7 +1117,7 @@
   "@accessToGradesAndServices": {
     "description": "Описание личного кабинета"
   },
-  "openAction": "Открыть",
+  "openAction": "Abrir",
   "@openAction": {
     "description": "Кнопка действия открытия"
   },
@@ -1245,11 +1245,11 @@
   "@cloudStorageDescription": {
     "description": "Описание облачного хранилища"
   },
-  "searchPlaceholder": "Поиск",
+  "searchPlaceholder": "Buscar",
   "@searchPlaceholder": {
     "description": "Заполнитель поля поиска"
   },
-  "searchInAnnouncements": "Поиск по объявлениям...",
+  "searchInAnnouncements": "Buscar en anuncios...",
   "@searchInAnnouncements": {
     "description": "Заполнитель поиска по объявлениям"
   },
@@ -1309,7 +1309,7 @@
   "@failedToExportSchedule": {
     "description": "Сообщение об ошибке экспорта расписания"
   },
-  "exportSettings": "Настройки экспорта",
+  "exportSettings": "Configuración de exportación",
   "@exportSettings": {
     "description": "Заголовок настроек экспорта"
   },
@@ -1349,7 +1349,7 @@
   "@standardReminders": {
     "description": "Заголовок стандартных напоминаний"
   },
-  "cardSettings": "Настройки карточки",
+  "cardSettings": "Configuración de tarjeta",
   "@cardSettings": {
     "description": "Заголовок настроек карточки"
   },
@@ -1373,7 +1373,7 @@
   "@aboutApp": {
     "description": "Пункт навигации о приложении"
   },
-  "settings": "Настройки",
+  "settings": "Configuración",
   "@settings": {
     "description": "Пункт навигации настроек"
   },
@@ -1512,9 +1512,9 @@
   "@selectEntityToSeeSchedule": {
     "description": "Подзаголовок отсутствия расписания"
   },
-  "errorLoadingSchedule": "Ошибка при загрузке расписания",
+  "errorLoadingSchedule": "Error al cargar el horario",
   "@errorLoadingSchedule": {
-    "description": "Ошибка загрузки расписания"
+    "description": "Error de carga расписания"
   },
   "manageComparisons": "Управление сравнениями",
   "@manageComparisons": {

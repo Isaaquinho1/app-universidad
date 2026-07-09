@@ -60,7 +60,7 @@ class DeleteLostFoundItem extends LostFoundEvent {
   List<Object?> get props => [item];
 }
 
-/// Поиск вещей
+/// Búsqueda de objetos
 class SearchLostFoundItems extends LostFoundEvent {
   final String query;
 

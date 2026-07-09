@@ -14,13 +14,13 @@ class ScoresTable extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Баллы", style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w600)),
+                child: Text("Puntos", style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w600)),
               ),
             ),
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Оценка", style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w600)),
+                child: Text("Evaluación", style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w600)),
               ),
             ),
           ],
@@ -68,7 +68,7 @@ class ScoresTable extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("3 (зачет)", style: AppTextStyle.body.copyWith(color: AppColors.dark.colorful07)),
+                child: Text("3 (aprobado)", style: AppTextStyle.body.copyWith(color: AppColors.dark.colorful07)),
               ),
             ),
           ],

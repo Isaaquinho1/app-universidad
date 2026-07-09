@@ -5,20 +5,20 @@ enum ScheduleStatus { initial, loading, failure, loaded }
 @freezed
 class FieldDiff with _$FieldDiff {
   const factory FieldDiff({
-    /// Имя поля (например, "Даты", "Аудитории", "Преподаватели", "Время/номер пары")
+    /// Nombre del campo (por ejemplo, "Fechas", "Aulas", "Docentes", "Horario / número de clase")
     required String fieldName,
 
-    /// Для не-дата полей можно оставить старое и новое значение в виде строки
+    /// Para campos que no son fechas, se puede conservar el valor anterior y nuevo como texto
     String? oldValue,
     String? newValue,
 
-    /// Для поля «Даты»—детальный diff: какие даты добавлены
+    /// Para el campo Fechas: diferencia detallada de fechas agregadas
     List<DateTime>? addedDates,
 
-    /// Для поля «Даты»—детальный diff: какие даты удалены
+    /// Para el campo Fechas: diferencia detallada de fechas eliminadas
     List<DateTime>? removedDates,
 
-    /// И какие даты остались без изменений (можно их просто вывести без подсветки)
+    /// Y qué fechas permanecieron sin cambios (pueden mostrarse sin resaltado)
     List<DateTime>? unchangedDates,
   }) = _FieldDiff;
 }
@@ -28,14 +28,14 @@ enum ChangeType { added, removed, modified }
 @freezed
 class ScheduleChange with _$ScheduleChange {
   const factory ScheduleChange({
-    /// Тип изменения: добавление, удаление, модификация
+    /// Tipo de cambio: agregado, eliminado o modificado
     required ChangeType type,
 
-    /// Название предмета, служащее заголовком для данного diff‑блока
+    /// Nombre предмета, служащее заголовком для данного diff‑блока
     required String subject,
 
-    /// Список изменений по полям: для добавленных и удалённых уроков здесь будут все поля,
-    /// для модифицированных – только те, что изменились.
+    /// Lista de cambios por campo: para clases agregadas y eliminadas se incluyen todos los campos,
+    /// para clases modificadas, solo los campos que cambiaron.
     required List<FieldDiff> fieldDiffs,
   }) = _ScheduleChange;
 }
@@ -43,7 +43,7 @@ class ScheduleChange with _$ScheduleChange {
 @freezed
 class ScheduleDiff with _$ScheduleDiff {
   const factory ScheduleDiff({
-    /// Множество изменений в расписании (можно преобразовать в список для удобства отображения)
+    /// Conjunto de cambios en el horario (puede convertirse en lista para facilitar su visualización)
     required Set<ScheduleChange> changes,
   }) = _ScheduleDiff;
 }

@@ -16,7 +16,7 @@ class AddGroupButton extends StatelessWidget {
         size: 24,
         color: Theme.of(context).extension<AppColors>()!.active,
       ),
-      material: (_, __) => MaterialIconButtonData(padding: const EdgeInsets.all(16.0), tooltip: 'Добавить группу'),
+      material: (_, __) => MaterialIconButtonData(padding: const EdgeInsets.all(16.0), tooltip: 'Agregar grupo'),
       onPressed: onPressed,
     );
   }

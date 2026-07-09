@@ -10,7 +10,7 @@ abstract class LostFoundState extends Equatable {
 /// Начальное состояние
 class LostFoundInitial extends LostFoundState {}
 
-/// Состояние загрузки (например, при фетче данных)
+/// Состояние загрузки (por ejemplo, при фетче данных)
 class LostFoundLoading extends LostFoundState {}
 
 /// Состояние с загруженным списком вещей

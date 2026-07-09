@@ -19,17 +19,17 @@ class ScheduleBody extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
         if (hasGroups)
-          ScheduleSection<Group>(title: 'Группы', schedules: state.groupsSchedule, state: state, scheduleType: 'group'),
+          ScheduleSection<Group>(title: 'Grupos', schedules: state.groupsSchedule, state: state, scheduleType: 'group'),
         if (hasTeachers)
           ScheduleSection<Teacher>(
-            title: 'Преподаватели',
+            title: 'Docentes',
             schedules: state.teachersSchedule,
             state: state,
             scheduleType: 'teacher',
           ),
         if (hasClassrooms)
           ScheduleSection<Classroom>(
-            title: 'Аудитории',
+            title: 'Aulas',
             schedules: state.classroomsSchedule,
             state: state,
             scheduleType: 'classroom',

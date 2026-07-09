@@ -39,9 +39,9 @@ class _SyncfusionCalendarViewState extends State<SyncfusionCalendarView> {
         lesson.lessonBells.endTime.minute,
       );
 
-      final subjectDetails = '${lesson.subject}\nТип: ${LessonCard.getLessonTypeName(lesson.lessonType)}';
+      final subjectDetails = '${lesson.subject}\nTipo: ${LessonCard.getLessonTypeName(lesson.lessonType)}';
       final teacherNames =
-          lesson.teachers.isNotEmpty ? 'Преподаватели: ${lesson.teachers.map((t) => t.name).join(', ')}' : '';
+          lesson.teachers.isNotEmpty ? 'Docentes: ${lesson.teachers.map((t) => t.name).join(', ')}' : '';
       final classroomNames = lesson.classrooms.map((c) => c.name).join(', ');
 
       return Appointment(

@@ -48,14 +48,14 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
     if (candidate == null) {
       final List<FieldDiff> fieldDiffs = [
         FieldDiff(
-          fieldName: 'Даты',
+          fieldName: 'Fechas',
           removedDates: List<DateTime>.from(oldLesson.dates)..sort(),
           addedDates: [],
           unchangedDates: [],
         ),
-        FieldDiff(fieldName: 'Аудитории', oldValue: formatClassrooms(oldLesson.classrooms), newValue: ''),
-        FieldDiff(fieldName: 'Преподаватели', oldValue: formatTeachers(oldLesson.teachers), newValue: ''),
-        FieldDiff(fieldName: 'Время пары', oldValue: formatLessonBells(oldLesson.lessonBells), newValue: ''),
+        FieldDiff(fieldName: 'Aulas', oldValue: formatClassrooms(oldLesson.classrooms), newValue: ''),
+        FieldDiff(fieldName: 'Docentes', oldValue: formatTeachers(oldLesson.teachers), newValue: ''),
+        FieldDiff(fieldName: 'Hora clases', oldValue: formatLessonBells(oldLesson.lessonBells), newValue: ''),
       ];
 
       changes.add(ScheduleChange(type: ChangeType.removed, subject: oldLesson.subject, fieldDiffs: fieldDiffs));
@@ -75,7 +75,7 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
       if (removedDates.isNotEmpty || addedDates.isNotEmpty) {
         fieldDiffs.add(
           FieldDiff(
-            fieldName: 'Даты',
+            fieldName: 'Fechas',
             addedDates: addedDates,
             removedDates: removedDates,
             unchangedDates: unchangedDates,
@@ -86,7 +86,7 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
       if (!areClassroomsEqual(oldLesson.classrooms, candidate.classrooms)) {
         fieldDiffs.add(
           FieldDiff(
-            fieldName: 'Аудитории',
+            fieldName: 'Aulas',
             oldValue: formatClassrooms(oldLesson.classrooms),
             newValue: formatClassrooms(candidate.classrooms),
           ),
@@ -95,7 +95,7 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
       if (!areTeachersEqual(oldLesson.teachers, candidate.teachers)) {
         fieldDiffs.add(
           FieldDiff(
-            fieldName: 'Преподаватели',
+            fieldName: 'Docentes',
             oldValue: formatTeachers(oldLesson.teachers),
             newValue: formatTeachers(candidate.teachers),
           ),
@@ -104,7 +104,7 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
       if (oldLesson.lessonBells != candidate.lessonBells) {
         fieldDiffs.add(
           FieldDiff(
-            fieldName: 'Время пары',
+            fieldName: 'Hora clases',
             oldValue: formatLessonBells(oldLesson.lessonBells),
             newValue: formatLessonBells(candidate.lessonBells),
           ),
@@ -123,14 +123,14 @@ ScheduleDiff? calculateScheduleDiff(List<SchedulePart> oldParts, List<SchedulePa
 
     final List<FieldDiff> fieldDiffs = [
       FieldDiff(
-        fieldName: 'Даты',
+        fieldName: 'Fechas',
         addedDates: List<DateTime>.from(newLesson.dates)..sort(),
         removedDates: [],
         unchangedDates: [],
       ),
-      FieldDiff(fieldName: 'Аудитории', oldValue: '', newValue: formatClassrooms(newLesson.classrooms)),
-      FieldDiff(fieldName: 'Преподаватели', oldValue: '', newValue: formatTeachers(newLesson.teachers)),
-      FieldDiff(fieldName: 'Время пары', oldValue: '', newValue: formatLessonBells(newLesson.lessonBells)),
+      FieldDiff(fieldName: 'Aulas', oldValue: '', newValue: formatClassrooms(newLesson.classrooms)),
+      FieldDiff(fieldName: 'Docentes', oldValue: '', newValue: formatTeachers(newLesson.teachers)),
+      FieldDiff(fieldName: 'Hora clases', oldValue: '', newValue: formatLessonBells(newLesson.lessonBells)),
     ];
 
     changes.add(ScheduleChange(type: ChangeType.added, subject: newLesson.subject, fieldDiffs: fieldDiffs));

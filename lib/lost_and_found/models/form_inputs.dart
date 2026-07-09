@@ -97,9 +97,9 @@ extension TitleValidationErrorExtension on TitleValidationError {
   String text() {
     switch (this) {
       case TitleValidationError.empty:
-        return 'Пожалуйста, введите название';
+        return 'Ingresa el nombre';
       case TitleValidationError.tooShort:
-        return 'Название должно содержать хотя бы 3 символа';
+        return 'El nombre debe contener al menos 3 caracteres';
     }
   }
 }

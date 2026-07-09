@@ -19,11 +19,11 @@ class CalendarFormatToggle extends StatelessWidget {
       decoration: BoxDecoration(color: colors.background03.withOpacity(0.5), borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
-          _buildFormatButton(context, CalendarFormat.week, 'Неделя', HugeIcons.strokeRoundedCalendar01),
+          _buildFormatButton(context, CalendarFormat.week, 'Semana', HugeIcons.strokeRoundedCalendar01),
           SizedBox(width: 8),
-          _buildFormatButton(context, CalendarFormat.twoWeeks, '2 недели', HugeIcons.strokeRoundedCalendar02),
+          _buildFormatButton(context, CalendarFormat.twoWeeks, '2 semanas', HugeIcons.strokeRoundedCalendar02),
           SizedBox(width: 8),
-          _buildFormatButton(context, CalendarFormat.month, 'Месяц', HugeIcons.strokeRoundedCalendar03),
+          _buildFormatButton(context, CalendarFormat.month, 'Mes', HugeIcons.strokeRoundedCalendar03),
         ],
       ),
     );

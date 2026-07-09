@@ -11,7 +11,7 @@ class SubjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.dark.background01,
-      appBar: AppBar(backgroundColor: AppColors.dark.background01, title: const Text("Калькулятор")),
+      appBar: AppBar(backgroundColor: AppColors.dark.background01, title: const Text("Calculadora")),
       body: SafeArea(
         child: Padding(padding: const EdgeInsets.all(24), child: RatingSystemCalculatorView(subject: subject)),
       ),
@@ -45,9 +45,9 @@ class _RatingSystemCalculatorViewState extends State<RatingSystemCalculatorView>
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
-            Text("Здесь вы можете сохранить свои баллы и отслеживать их в удобном формате.", style: AppTextStyle.body),
+            Text("Aquí puedes guardar tus puntos y darles seguimiento de forma sencilla.", style: AppTextStyle.body),
             const SizedBox(height: 16),
-            // Кнопки с выбором посещенных дней. По нажатию на кнопку, она меняет свой цвет.
+            // Botones para seleccionar días asistidos. Al presionarlos, cambian de color.
             Wrap(
               spacing: 8,
               runSpacing: 8,

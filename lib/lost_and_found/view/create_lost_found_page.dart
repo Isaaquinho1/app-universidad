@@ -96,7 +96,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
         } else if (state is LostFoundError) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Ошибка: ${state.message}'), backgroundColor: appColors.colorful07));
+          ).showSnackBar(SnackBar(content: Text('Error: ${state.message}'), backgroundColor: appColors.colorful07));
           setState(() {
             _formState = _formState.copyWith(formStatus: FormzSubmissionStatus.failure);
           });
@@ -105,7 +105,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
       child: Scaffold(
         backgroundColor: appColors.background03,
         appBar: AppBar(
-          title: Text(_isEdit ? 'Редактировать' : 'Добавить'),
+          title: Text(_isEdit ? 'Editar' : 'Agregar'),
           actions: [
             if (_formState.formStatus == FormzSubmissionStatus.inProgress)
               Container(
@@ -132,7 +132,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                 _buildImagePicker(appColors),
                 const SizedBox(height: 20),
                 Text(
-                  'Статус объявления',
+                  'Estado del anuncio',
                   style: Theme.of(
                     context,
                   ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: appColors.active),
@@ -141,7 +141,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                 _buildStatusSelector(context),
                 const SizedBox(height: 20),
                 Text(
-                  'Основная информация',
+                  'Información principal',
                   style: Theme.of(
                     context,
                   ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: appColors.active),
@@ -151,8 +151,8 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                   controller: _nameController,
                   style: TextStyle(color: appColors.active),
                   decoration: InputDecoration(
-                    labelText: 'Название',
-                    hintText: 'Например: Ключи с брелоком',
+                    labelText: 'Nombre',
+                    hintText: 'Ejemplo: Llaves con llavero',
                     filled: true,
                     fillColor: appColors.background02,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -164,8 +164,8 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                   controller: _descController,
                   style: TextStyle(color: appColors.active),
                   decoration: InputDecoration(
-                    labelText: 'Описание',
-                    hintText: 'Подробности о предмете, где и когда был найден/утерян...',
+                    labelText: 'Descripción',
+                    hintText: 'Detalles del objeto, dónde y cuándo fue encontrado o perdido...',
                     filled: true,
                     fillColor: appColors.background02,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -174,7 +174,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Контактная информация',
+                  'Información de contacto',
                   style: Theme.of(
                     context,
                   ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: appColors.active),
@@ -184,7 +184,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                   controller: _contactController,
                   style: TextStyle(color: appColors.active),
                   decoration: InputDecoration(
-                    labelText: 'Телеграм',
+                    labelText: 'Telegram',
                     hintText: '@username',
                     prefixIcon: Icon(Icons.telegram, color: appColors.colorful03),
                     filled: true,
@@ -198,7 +198,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                   style: TextStyle(color: appColors.active),
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: 'Телефон',
+                    labelText: 'Teléfono',
                     hintText: '+7 900 000-00-00',
                     prefixIcon: Icon(Icons.phone, color: appColors.colorful04),
                     filled: true,
@@ -211,7 +211,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
                   width: double.infinity,
                   child: PrimaryButton(
                     onPressed: _formState.isValid ? _submitForm : null,
-                    text: _isEdit ? 'Сохранить изменения' : 'Опубликовать',
+                    text: _isEdit ? 'Guardar cambios' : 'Publicar',
                     enabled: _formState.isValid && _formState.formStatus != FormzSubmissionStatus.inProgress,
                   ),
                 ),
@@ -232,10 +232,10 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
-          Expanded(child: _buildStatusOption('Потеряно', LostFoundItemStatus.lost, Icons.search, appColors)),
+          Expanded(child: _buildStatusOption('Perdido', LostFoundItemStatus.lost, Icons.search, appColors)),
           const SizedBox(width: 16),
           Expanded(
-            child: _buildStatusOption('Найдено', LostFoundItemStatus.found, Icons.check_circle_outline, appColors),
+            child: _buildStatusOption('Encontrado', LostFoundItemStatus.found, Icons.check_circle_outline, appColors),
           ),
         ],
       ),
@@ -288,7 +288,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
               children: [
                 Icon(Icons.add_a_photo, size: 40, color: appColors.deactive),
                 const SizedBox(height: 8),
-                Text('Добавить фотографию', style: TextStyle(color: appColors.deactive)),
+                Text('Agregar fotografía', style: TextStyle(color: appColors.deactive)),
               ],
             ),
           ),
@@ -304,13 +304,13 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              // Новые выбранные фото
+              // Nuevas fotos seleccionadas
               for (final file in _selectedImages)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.file(file, width: 100, height: 100, fit: BoxFit.cover),
                 ),
-              // Уже существующие фото (при редактировании)
+              // Fotos existentes (al editar)
               for (final url in existingImages)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -324,7 +324,7 @@ class _CreateLostFoundItemPageState extends State<CreateLostFoundItemPage> {
             child: TextButton.icon(
               onPressed: _pickImages,
               icon: Icon(Icons.add_a_photo, color: appColors.primary),
-              label: Text('Добавить ещё фото', style: TextStyle(color: appColors.primary)),
+              label: Text('Agregar más fotos', style: TextStyle(color: appColors.primary)),
             ),
           ),
         ],

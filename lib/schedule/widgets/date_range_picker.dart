@@ -42,7 +42,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Выберите даты', style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.bold)),
+              Text('Selecciona las fechas', style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.bold)),
               TextButton.icon(
                 onPressed: () {
                   setState(() {
@@ -50,7 +50,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
                   });
                 },
                 icon: const Icon(Icons.clear),
-                label: const Text('Очистить'),
+                label: const Text('Limpiar'),
                 style: TextButton.styleFrom(foregroundColor: colors.error),
               ),
             ],
@@ -76,7 +76,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
                 _selectedDates.add(normalizedDay);
               }
 
-              // Сортируем даты
+              // Se ordenan las fechas
               _selectedDates.sort();
 
               _focusedDay = focusedDay;
@@ -92,12 +92,12 @@ class _DateRangePickerState extends State<DateRangePicker> {
           },
           calendarStyle: CalendarStyle(
             markersMaxCount: 0,
-            // Стилизация выбранного дня
+            // Estilo del día seleccionado
             selectedDecoration: BoxDecoration(color: colors.primary, shape: BoxShape.circle),
-            // Стилизация сегодняшнего дня
+            // Estilo del día actual
             todayDecoration: BoxDecoration(color: colors.primary.withOpacity(0.3), shape: BoxShape.circle),
             selectedTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            // Стилизация дней вне месяца
+            // Estilo de días fuera del mes
             outsideDaysVisible: false,
           ),
           headerStyle: HeaderStyle(
@@ -107,9 +107,9 @@ class _DateRangePickerState extends State<DateRangePicker> {
             headerPadding: const EdgeInsets.symmetric(vertical: 4),
           ),
           availableCalendarFormats: const {
-            CalendarFormat.month: 'Месяц',
-            CalendarFormat.twoWeeks: '2 недели',
-            CalendarFormat.week: 'Неделя',
+            CalendarFormat.month: 'Mes',
+            CalendarFormat.twoWeeks: '2 semanas',
+            CalendarFormat.week: 'Semana',
           },
           locale: 'ru',
           enabledDayPredicate: widget.selectableDayPredicate,
@@ -120,14 +120,14 @@ class _DateRangePickerState extends State<DateRangePicker> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Выбрано дат: ${_selectedDates.length}',
+                'Fechas seleccionadas: ${_selectedDates.length}',
                 style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w500),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop(_selectedDates);
                 },
-                child: const Text('Применить'),
+                child: const Text('Aplicar'),
               ),
             ],
           ),

@@ -34,7 +34,7 @@ class LostFoundDetailPage extends StatelessWidget {
           if (isCurrentUserAuthor)
             IconButton(
               icon: Icon(Icons.edit, color: hasImages ? Colors.white : appColors.active),
-              tooltip: 'Редактировать',
+              tooltip: 'Editar',
               onPressed: () {
                 Navigator.push(
                   context,
@@ -44,7 +44,7 @@ class LostFoundDetailPage extends StatelessWidget {
             ),
           IconButton(
             icon: Icon(Icons.share_rounded, color: hasImages ? Colors.white : appColors.active),
-            tooltip: 'Поделиться',
+            tooltip: 'Compartir',
             onPressed: () => _shareItem(context),
           ),
         ],
@@ -58,17 +58,17 @@ class LostFoundDetailPage extends StatelessWidget {
                 backgroundColor: appColors.primary,
                 foregroundColor: Colors.white,
                 icon: const Icon(Icons.contact_phone),
-                label: const Text('Связаться'),
+                label: const Text('Contactar'),
               ),
     );
   }
 
   void _shareItem(BuildContext context) {
-    final status = item.status == LostFoundItemStatus.lost ? 'Потеряно' : 'Найдено';
+    final status = item.status == LostFoundItemStatus.lost ? 'Perdido' : 'Encontrado';
     final message =
         '$status: ${item.itemName}\n\n'
         '${item.description ?? ""}\n\n'
-        'Контакты: ${item.telegramContactInfo ?? item.phoneNumberContactInfo ?? item.authorEmail}';
+        'Contactos: ${item.telegramContactInfo ?? item.phoneNumberContactInfo ?? item.authorEmail}';
     Share.share(message);
   }
 
@@ -86,7 +86,7 @@ class LostFoundDetailPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Связаться с автором',
+                  'Contactar al autor',
                   style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
                 ),
                 const SizedBox(height: 24),
@@ -103,7 +103,7 @@ class LostFoundDetailPage extends StatelessWidget {
                   _buildContactButton(
                     context,
                     icon: Icons.phone,
-                    label: 'Телефон: ${item.phoneNumberContactInfo}',
+                    label: 'Teléfono: ${item.phoneNumberContactInfo}',
                     color: appColors.colorful04,
                     onTap: () => _launchUrl('tel:${item.phoneNumberContactInfo!}'),
                   ),
@@ -246,7 +246,7 @@ class _DetailPageContent extends StatelessWidget {
             children: [
               Icon(isLost ? Icons.search : Icons.check_circle, color: Colors.white, size: 16),
               const SizedBox(width: 8),
-              Text(isLost ? 'Потеряно' : 'Найдено', style: AppTextStyle.bodyBold.copyWith(color: Colors.white)),
+              Text(isLost ? 'Perdido' : 'Encontrado', style: AppTextStyle.bodyBold.copyWith(color: Colors.white)),
             ],
           ),
         ),
@@ -276,7 +276,7 @@ class _DetailPageContent extends StatelessWidget {
             children: [
               Icon(Icons.person, size: 16, color: appColors.deactive),
               const SizedBox(width: 6),
-              Text('Автор: ${item.authorEmail}', style: AppTextStyle.body.copyWith(color: appColors.deactive)),
+              Text('Autor: ${item.authorEmail}', style: AppTextStyle.body.copyWith(color: appColors.deactive)),
             ],
           ),
         ],
@@ -298,7 +298,7 @@ class _DetailPageContent extends StatelessWidget {
               Icon(Icons.description, size: 18, color: appColors.primary),
               const SizedBox(width: 8),
               Text(
-                'Описание',
+                'Descripción',
                 style: AppTextStyle.titleS.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
               ),
             ],
@@ -332,7 +332,7 @@ class _DetailPageContent extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                'Контактная информация',
+                'Información de contacto',
                 style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
               ),
             ],
@@ -346,7 +346,7 @@ class _DetailPageContent extends StatelessWidget {
           // Phone number contact
           if (item.phoneNumberContactInfo != null && item.phoneNumberContactInfo!.isNotEmpty) ...[
             const SizedBox(height: 12),
-            _buildContactItem(context, 'Телефон', item.phoneNumberContactInfo!, Icons.phone, appColors.colorful04),
+            _buildContactItem(context, 'Teléfono', item.phoneNumberContactInfo!, Icons.phone, appColors.colorful04),
           ],
 
           // Email contact
@@ -392,13 +392,13 @@ class _DetailPageContent extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('$title скопирован в буфер обмена'),
+                  content: Text('$title copiado al portapapeles'),
                   behavior: SnackBarBehavior.floating,
                   duration: const Duration(seconds: 2),
                 ),
               );
             },
-            tooltip: 'Копировать',
+            tooltip: 'Copiar',
           ),
         ],
       ),
@@ -415,7 +415,7 @@ class _DetailPageContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           child: Text(
-            'Управление объявлением',
+            'Gestión del anuncio',
             style: AppTextStyle.titleS.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
           ),
         ),
@@ -434,7 +434,7 @@ class _DetailPageContent extends StatelessWidget {
               elevation: 0,
             ),
             icon: Icon(isLost ? Icons.check_circle : Icons.search),
-            label: Text(isLost ? 'Отметить как найденное' : 'Отметить как потерянное', style: AppTextStyle.bodyBold),
+            label: Text(isLost ? 'Marcar como encontrado' : 'Marcar como perdido', style: AppTextStyle.bodyBold),
           ),
         ),
         const SizedBox(height: 12),
@@ -452,7 +452,7 @@ class _DetailPageContent extends StatelessWidget {
               elevation: 0,
             ),
             icon: const Icon(Icons.delete_outline),
-            label: Text('Удалить объявление', style: AppTextStyle.bodyBold),
+            label: Text('Eliminar anuncio', style: AppTextStyle.bodyBold),
           ),
         ),
       ],
@@ -479,18 +479,18 @@ class _DetailPageContent extends StatelessWidget {
       builder:
           (context) => AlertDialog(
             title: Text(
-              'Удаление объявления',
+              'Eliminar anuncio',
               style: AppTextStyle.titleM.copyWith(color: appColors.active, fontWeight: FontWeight.w600),
             ),
             content: Text(
-              'Вы действительно хотите удалить объявление "${item.itemName}"? Это действие нельзя будет отменить.',
+              '¿Seguro que deseas eliminar el anuncio "${item.itemName}"? Esta acción no se podrá deshacer.',
               style: AppTextStyle.body.copyWith(color: appColors.deactive),
             ),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Отмена', style: TextStyle(color: appColors.deactive)),
+                child: Text('Cancelar', style: TextStyle(color: appColors.deactive)),
               ),
               ElevatedButton.icon(
                 onPressed: () {
@@ -504,7 +504,7 @@ class _DetailPageContent extends StatelessWidget {
                   elevation: 0,
                 ),
                 icon: const Icon(Icons.delete, size: 18),
-                label: const Text('Удалить'),
+                label: const Text('Eliminar'),
               ),
             ],
           ),
@@ -512,7 +512,7 @@ class _DetailPageContent extends StatelessWidget {
   }
 
   String _formatDate(DateTime date) {
-    final formatter = DateFormat('d MMMM yyyy г.', 'ru_RU');
+    final formatter = DateFormat('d MMMM yyyy', 'es_MX');
     return formatter.format(date);
   }
 }

@@ -16,8 +16,8 @@ class DesktopAccountPanel extends StatelessWidget {
     final state = context.select((ScheduleBloc bloc) => bloc.state);
     final colors = Theme.of(context).extension<AppColors>()!;
 
-    String scheduleTitle = 'Выберите расписание';
-    String scheduleSubtitle = 'Нажмите, чтобы выбрать';
+    String scheduleTitle = 'Selecciona un horario';
+    String scheduleSubtitle = 'Toca para seleccionar';
     dynamic iconData = HugeIcons.strokeRoundedUniversity;
     Color iconColor = colors.deactive;
 
@@ -25,20 +25,20 @@ class DesktopAccountPanel extends StatelessWidget {
       if (state.selectedSchedule is SelectedGroupSchedule) {
         final selectedSchedule = state.selectedSchedule as SelectedGroupSchedule;
         scheduleTitle = selectedSchedule.group.name;
-        scheduleSubtitle = 'Группа';
+        scheduleSubtitle = 'Grupo';
         iconData = HugeIcons.strokeRoundedUserGroup;
         iconColor = colors.colorful01;
       } else if (state.selectedSchedule is SelectedTeacherSchedule) {
         final selectedSchedule = state.selectedSchedule as SelectedTeacherSchedule;
         scheduleTitle = selectedSchedule.teacher.name;
-        scheduleSubtitle = 'Преподаватель';
+        scheduleSubtitle = 'Docente';
         iconData = HugeIcons.strokeRoundedTeacher;
         iconColor = colors.colorful02;
       } else if (state.selectedSchedule is SelectedClassroomSchedule) {
         final selectedSchedule = state.selectedSchedule as SelectedClassroomSchedule;
         final campus = selectedSchedule.classroom.campus?.shortName ?? '';
         scheduleTitle = selectedSchedule.classroom.name;
-        scheduleSubtitle = campus.isNotEmpty ? 'Аудитория ($campus)' : 'Аудитория';
+        scheduleSubtitle = campus.isNotEmpty ? 'Aula ($campus)' : 'Aula';
         iconData = HugeIcons.strokeRoundedBuilding04;
         iconColor = colors.colorful03;
       }

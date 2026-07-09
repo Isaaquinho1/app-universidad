@@ -515,7 +515,7 @@ class _EventsPageView extends StatelessWidget {
   int _toMinutes(TimeOfDay t) => t.hour * 60 + t.minute;
 
   String _pluralizeWindow(int count) {
-    return Intl.plural(count, one: '$count пару', few: '$count пары', many: '$count пар', other: '$count пар');
+    return Intl.plural(count, one: '$count clase', few: '$count clases', many: '$count clases', other: '$count clases');
   }
 
   @override
@@ -529,7 +529,7 @@ class _EventsPageView extends StatelessWidget {
         final lessonsForDay = Calendar.getSchedulePartsByDay(schedule: schedule, day: day);
         final holiday = lessonsForDay.firstWhereOrNull((element) => element is HolidaySchedulePart);
         if (holiday != null) return HolidayPage(title: (holiday as HolidaySchedulePart).title);
-        if (day.weekday == DateTime.sunday) return const HolidayPage(title: 'Выходной');
+        if (day.weekday == DateTime.sunday) return const HolidayPage(title: 'Día libre');
         final allLessons = lessonsForDay.whereType<LessonSchedulePart>().toList();
         final numberedLessons = allLessons.where((l) => l.lessonBells.number != null).toList();
         final unnumberedLessons = allLessons.where((l) => l.lessonBells.number == null).toList();
@@ -670,7 +670,7 @@ class _ComparisonModeView extends StatelessWidget {
     final state = context.select((ScheduleBloc bloc) => bloc.state);
     final comparisonSchedules = state.comparisonSchedules;
     if (comparisonSchedules.isEmpty) {
-      return Center(child: Text('Добавьте расписания для сравнения', style: AppTextStyle.body));
+      return Center(child: Text('Agrega horarios para comparar', style: AppTextStyle.body));
     }
     final allLessons =
         comparisonSchedules.expand((schedule) => schedule.schedule.whereType<LessonSchedulePart>()).toList();

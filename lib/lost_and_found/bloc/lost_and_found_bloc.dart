@@ -25,7 +25,7 @@ class LostFoundBloc extends Bloc<LostFoundEvent, LostFoundState> {
     emit(LostFoundLoading());
     try {
       await repository.updateItemStatus(itemId: event.item.id!, newStatus: event.newStatus);
-      emit(LostFoundOperationSuccess('Статус объявления успешно обновлен'));
+      emit(LostFoundOperationSuccess('Estado del anuncio actualizado correctamente'));
     } catch (e) {
       emit(LostFoundError(e.toString()));
     }
@@ -55,7 +55,7 @@ class LostFoundBloc extends Bloc<LostFoundEvent, LostFoundState> {
         status: event.status,
         images: event.images,
       );
-      emit(LostFoundOperationSuccess('Объявление успешно создано'));
+      emit(LostFoundOperationSuccess('Anuncio creado correctamente'));
     } catch (e) {
       emit(LostFoundError(e.toString()));
     }
@@ -66,11 +66,11 @@ class LostFoundBloc extends Bloc<LostFoundEvent, LostFoundState> {
     try {
       final user = await userRepository.user.first;
       if (user.id != event.item.authorId) {
-        throw Exception('У вас нет прав на редактирование этого объявления');
+        throw Exception('No tienes permisos para editar este anuncio');
       }
 
       await repository.updateItem(item: event.item);
-      emit(LostFoundOperationSuccess('Объявление успешно обновлено'));
+      emit(LostFoundOperationSuccess('Anuncio actualizado correctamente'));
     } catch (e) {
       emit(LostFoundError(e.toString()));
     }
@@ -81,11 +81,11 @@ class LostFoundBloc extends Bloc<LostFoundEvent, LostFoundState> {
     try {
       final user = await userRepository.user.first;
       if (user.id != event.item.authorId) {
-        throw Exception('У вас нет прав на удаление этого объявления');
+        throw Exception('No tienes permisos para eliminar este anuncio');
       }
 
       await repository.deleteItem(itemId: event.item.id!);
-      emit(LostFoundOperationSuccess('Объявление успешно удалено'));
+      emit(LostFoundOperationSuccess('Anuncio eliminado correctamente'));
     } catch (e) {
       emit(LostFoundError(e.toString()));
     }

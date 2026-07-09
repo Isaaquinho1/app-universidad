@@ -38,10 +38,10 @@ abstract class CalendarUtils {
     // Понедельник недели начала семестра
     var firstDayOfWeek = semStart.subtract(Duration(days: semStart.weekday - 1));
 
-    // Прибавляем сколько дней прошло с начала семестра
+    // Прибавляем сколько días прошло с начала семестра
     var firstDayOfChosenWeek = firstDayOfWeek.add(Duration(days: (week - 1) * 7));
 
-    // Добавляем дни в массив, увеличивая счётчик на 1 день
+    // Добавляем дни в массив, увеличивая счётчик на 1 día
     for (int i = 0; i < 7; ++i) {
       daysInWeek.add(firstDayOfChosenWeek);
       firstDayOfChosenWeek = firstDayOfChosenWeek.add(const Duration(days: 1));

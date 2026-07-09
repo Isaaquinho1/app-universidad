@@ -19,7 +19,7 @@ enum Category {
   group,
 }
 
-const visibleCategoryNames = {Category.announcements: 'Объявления', Category.scheduleUpdates: 'Обновления расписания'};
+const visibleCategoryNames = {Category.announcements: 'Comunicados', Category.scheduleUpdates: 'Actualizaciones de horario'};
 
 /// Транслитерирует название группы для использования в качестве названия
 /// категории уведомлений.
@@ -105,9 +105,9 @@ class Topic extends Equatable {
 
   static Topic fromVisibleName(String name, String? groupName) {
     switch (name) {
-      case 'Объявления':
+      case 'Comunicados':
         return Topic(topic: Category.announcements);
-      case 'Обновления расписания':
+      case 'Actualizaciones de horario':
         return Topic(topic: Category.scheduleUpdates, groupName: groupName);
       default:
         return Topic(topic: Category.group, groupName: name);

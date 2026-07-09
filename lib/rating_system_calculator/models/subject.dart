@@ -21,22 +21,22 @@ class Subject extends Equatable {
   /// {@macro to_json}
   Map<String, dynamic> toJson() => _$SubjectToJson(this);
 
-  /// Название предмета.
+  /// Nombre de la materia.
   final String name;
 
-  /// Даты занятия.
+  /// Fechas de clase.
   final List<DateTime> dates;
 
-  /// Основные баллы.
+  /// Puntos principales.
   final double? mainScore;
 
-  /// Дополнительные баллы.
+  /// Puntos adicionales.
   final double? additionalScore;
 
-  /// Баллы за работу на занятиях.
+  /// Puntos por trabajo en clase.
   final double? classScore;
 
-  /// Посещенные дни.
+  /// Días asistidos.
   final List<DateTime>? visitedDays;
 
   Subject copyWith({

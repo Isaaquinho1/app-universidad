@@ -17,7 +17,7 @@ class ScheduleManagementPage extends StatefulWidget {
 
 class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
   int _selectedTabIndex = 0;
-  final List<String> _tabs = ['Группы', 'Преподаватели', 'Аудитории'];
+  final List<String> _tabs = ['Grupos', 'Docentes', 'Aulas'];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Расписания'),
+        title: const Text('Horarios'),
         centerTitle: true,
         elevation: 0,
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -34,7 +34,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
           IconButton(
             onPressed: () => context.push('/schedule/search'),
             icon: const Icon(Icons.add),
-            tooltip: 'Добавить расписание',
+            tooltip: 'Agregar horario',
           ),
         ],
       ),
@@ -95,7 +95,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        'Активное расписание',
+                                        'Horario activo',
                                         style: AppTextStyle.bodyBold.copyWith(color: appColors.primary, fontSize: 14),
                                       ),
                                       Text(
@@ -114,7 +114,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
                                   onPressed: () => context.go('/schedule'),
                                   icon: Icon(Icons.visibility, color: appColors.primary, size: 18),
                                   visualDensity: VisualDensity.compact,
-                                  tooltip: 'Перейти к просмотру',
+                                  tooltip: 'Ir a la vista',
                                 ),
                               ],
                             ),
@@ -175,7 +175,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
     }
 
     if (state.groupsSchedule.isEmpty) {
-      return _buildEmptyTabContent(context, 'Нет добавленных групп', 'Добавьте группу, чтобы видеть её расписание');
+      return _buildEmptyTabContent(context, 'No hay grupos agregados', 'Agrega un grupo para ver su horario');
     }
 
     return ListView.separated(
@@ -206,8 +206,8 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
     if (state.teachersSchedule.isEmpty) {
       return _buildEmptyTabContent(
         context,
-        'Нет добавленных преподавателей',
-        'Добавьте преподавателя, чтобы видеть его расписание',
+        'No hay docentes agregados',
+        'Agrega un docente para ver su horario',
       );
     }
 
@@ -239,8 +239,8 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
     if (state.classroomsSchedule.isEmpty) {
       return _buildEmptyTabContent(
         context,
-        'Нет добавленных аудиторий',
-        'Добавьте аудиторию, чтобы видеть её расписание',
+        'No hay aulas agregadas',
+        'Agrega un aula para ver su horario',
       );
     }
 
@@ -265,7 +265,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
       title: title,
       description: subtitle,
       icon: HugeIcons.strokeRoundedCalendar04,
-      buttonText: 'Добавить',
+      buttonText: 'Agregar',
       onButtonPressed: () => context.push('/schedule/search'),
       iconSize: 64,
     ).animate().fadeIn(duration: 500.ms).slide(begin: const Offset(0, 0.1), end: Offset.zero, duration: 500.ms);
@@ -278,7 +278,7 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 16),
-          Text('Загрузка расписаний...', style: Theme.of(context).textTheme.bodyLarge),
+          Text('Cargando horarios...', style: Theme.of(context).textTheme.bodyLarge),
         ],
       ).animate().fadeIn(duration: 400.ms),
     );
@@ -286,12 +286,12 @@ class _ScheduleManagementPageState extends State<ScheduleManagementPage> {
 
   Widget _buildErrorState(BuildContext context) {
     return FailureScreen(
-      title: 'Не удалось загрузить расписания',
-      description: 'Проверьте подключение к интернету',
+      title: 'No se pudieron cargar los horarios',
+      description: 'Verifica tu conexión a internet',
       icon: Icons.error_outline_rounded,
       iconSize: 64,
       iconColor: Theme.of(context).colorScheme.error,
-      buttonText: 'Повторить',
+      buttonText: 'Reintentar',
       buttonIcon: Icons.refresh,
       onButtonPressed: () => context.read<ScheduleBloc>().add(const RefreshSelectedScheduleData()),
     ).animate().fadeIn(duration: 400.ms);

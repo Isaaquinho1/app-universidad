@@ -69,7 +69,7 @@ class _MyLostFoundItemsPageState extends State<MyLostFoundItemsPage> {
         backgroundColor: appColors.surface,
         elevation: 0,
         title: Text(
-          'Мои объявления',
+          'Mis anuncios',
           style: AppTextStyle.titleM.copyWith(fontWeight: FontWeight.w600, color: appColors.active),
         ),
         actions: [
@@ -81,7 +81,7 @@ class _MyLostFoundItemsPageState extends State<MyLostFoundItemsPage> {
               ).then((_) => _loadMyItems(status: _filters[_selectedFilterIndex]));
             },
             icon: Icon(Icons.add_circle_outline_rounded, color: appColors.primary),
-            tooltip: 'Создать объявление',
+            tooltip: 'Crear anuncio',
           ),
         ],
       ),
@@ -110,11 +110,11 @@ class _MyLostFoundItemsPageState extends State<MyLostFoundItemsPage> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            _buildFilterChip(0, 'Все'),
+            _buildFilterChip(0, 'Todos'),
             const SizedBox(width: 8),
-            _buildFilterChip(1, 'Потеряно'),
+            _buildFilterChip(1, 'Perdido'),
             const SizedBox(width: 8),
-            _buildFilterChip(2, 'Найдено'),
+            _buildFilterChip(2, 'Encontrado'),
           ],
         ),
       ),
@@ -151,7 +151,7 @@ class _MyLostFoundItemsPageState extends State<MyLostFoundItemsPage> {
 
     if (_error != null) {
       return ErrorStateWidget(
-        message: 'Ошибка: $_error',
+        message: 'Error: $_error',
         onRetry: () => _loadMyItems(status: _filters[_selectedFilterIndex]),
       );
     }
@@ -163,21 +163,21 @@ class _MyLostFoundItemsPageState extends State<MyLostFoundItemsPage> {
       switch (_selectedFilterIndex) {
         case 1:
           emptyIcon = Icons.search_off;
-          emptyMessage = 'У вас нет объявлений о потерянных вещах';
+          emptyMessage = 'No tienes anuncios de objetos perdidos';
           break;
         case 2:
           emptyIcon = Icons.check_circle_outline;
-          emptyMessage = 'У вас нет объявлений о найденных вещах';
+          emptyMessage = 'No tienes anuncios de objetos encontrados';
           break;
         default:
           emptyIcon = Icons.article_outlined;
-          emptyMessage = 'У вас нет объявлений';
+          emptyMessage = 'No tienes anuncios';
       }
 
       return EmptyStateWidget(
         message: emptyMessage,
         icon: emptyIcon,
-        buttonText: 'Создать объявление',
+        buttonText: 'Crear anuncio',
         onButtonPressed: () {
           Navigator.push(
             context,

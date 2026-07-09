@@ -20,7 +20,7 @@ class ConsecutiveBreakWidget extends StatelessWidget {
         return Row(
           children: [
             Text(
-              'Перерыв',
+              'Descanso',
               style: AppTextStyle.captionL.copyWith(color: colors.deactive.withAlpha(150), fontWeight: FontWeight.w500),
             ),
             const Spacer(),
@@ -36,7 +36,7 @@ class ConsecutiveBreakWidget extends StatelessWidget {
     final currentMax = currentLessons.map((l) => _toMinutes(l.lessonBells.endTime)).reduce((a, b) => a > b ? a : b);
     final nextMin = nextLessons.map((l) => _toMinutes(l.lessonBells.startTime)).reduce((a, b) => a < b ? a : b);
     final breakDuration = nextMin - currentMax;
-    final breakText = breakDuration > 0 ? '$breakDuration мин' : 'отсутствует';
+    final breakText = breakDuration > 0 ? '$breakDuration min' : 'no disponible';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 4.0),
@@ -51,7 +51,7 @@ class WindowBreakWidget extends StatelessWidget {
   const WindowBreakWidget({super.key, required this.windowCount});
 
   String _pluralizeWindow(int count) {
-    return Intl.plural(count, one: '$count пару', few: '$count пары', many: '$count пар', other: '$count пар');
+    return Intl.plural(count, one: '$count clase', few: '$count clases', many: '$count clases', other: '$count clases');
   }
 
   @override
@@ -71,7 +71,7 @@ class WindowBreakWidget extends StatelessWidget {
               HugeIcon(icon: HugeIcons.strokeRoundedCalendar02, size: 16, color: colors.deactive),
               const SizedBox(width: 6),
               Text(
-                'Окно в $windowText',
+                'Ventana de $windowText',
                 style: AppTextStyle.captionL.copyWith(color: colors.deactive, fontWeight: FontWeight.w500),
               ),
             ],

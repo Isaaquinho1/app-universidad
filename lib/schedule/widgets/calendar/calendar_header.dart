@@ -221,7 +221,7 @@ class _CalendarHeaderState extends State<CalendarHeader>
                   ),
                 ),
                 Text(
-                  "Поиск",
+                  "Buscar",
                   style: AppTextStyle.body.copyWith(color: colors.deactive),
                 ),
               ],
@@ -234,18 +234,18 @@ class _CalendarHeaderState extends State<CalendarHeader>
 
   Widget _buildMonthSelector(AppColors colors) {
     final months = [
-      'Янв',
-      'Фев',
-      'Мар',
-      'Апр',
-      'Май',
-      'Июн',
-      'Июл',
-      'Авг',
-      'Сен',
-      'Окт',
-      'Ноя',
-      'Дек',
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
     ];
     const itemWidth = 55.0;
     final selectedIndex = widget.day.month - 1;
@@ -341,7 +341,7 @@ class _CalendarHeaderState extends State<CalendarHeader>
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '${widget.week} неделя',
+                  '${widget.week} semana',
                   style: AppTextStyle.body.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colors.active,
@@ -489,7 +489,7 @@ class _CalendarWeeksHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '$week неделя',
+                  '$week semana',
                   style: AppTextStyle.body.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colors.active,

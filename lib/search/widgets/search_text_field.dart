@@ -34,7 +34,7 @@ class SearchTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            hintText: 'Поиск',
+            hintText: 'Buscar',
             hintStyle: AppTextStyle.titleS.copyWith(
               color: Theme.of(context).extension<AppColors>()!.deactive,
             ),

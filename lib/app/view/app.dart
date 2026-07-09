@@ -173,7 +173,6 @@ class _AppViewState extends State<_AppView> {
                             ],
                             supportedLocales: const [
                               Locale('en'),
-                              Locale('ru'),
                               Locale('es'),
                             ],
                             localeResolutionCallback: (deviceLocale, supportedLocales) {

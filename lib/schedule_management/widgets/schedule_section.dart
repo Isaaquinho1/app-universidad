@@ -74,7 +74,7 @@ class ScheduleSection<T> extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              'Нет доступных расписаний',
+              'No hay horarios disponibles',
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.6)),

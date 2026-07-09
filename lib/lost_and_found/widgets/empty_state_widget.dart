@@ -32,8 +32,8 @@ class EmptyStateWidget extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               isLoggedIn
-                  ? 'Объявлений пока нет. Вы можете создать первое объявление прямо сейчас.'
-                  : 'Объявлений пока нет. Авторизуйтесь, чтобы создать объявление.',
+                  ? 'Aún no hay anuncios. Puedes crear el primero ahora.'
+                  : 'Aún no hay anuncios. Inicia sesión para crear uno.',
               style: AppTextStyle.body.copyWith(color: appColors.deactive),
               textAlign: TextAlign.center,
             ),

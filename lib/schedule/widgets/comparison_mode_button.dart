@@ -25,7 +25,7 @@ class ComparisonModeButton extends StatelessWidget {
             size: 24,
             color: isComparisonModeEnabled ? colors.colorful01 : colors.active,
           ),
-          tooltip: isComparisonModeEnabled ? 'Выключить режим сравнения' : 'Сравнить расписания',
+          tooltip: isComparisonModeEnabled ? 'Desactivar modo comparación' : 'Comparar horarios',
           style: IconButton.styleFrom(
             backgroundColor: isComparisonModeEnabled ? colors.colorful01.withOpacity(0.2) : Colors.transparent,
             padding: const EdgeInsets.all(8.0),

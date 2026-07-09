@@ -11,7 +11,7 @@ class MapPageView extends StatefulWidget {
   static final campuses = [
     CampusModel(
       id: 'v-78',
-      displayName: 'В-78',
+      displayName: 'Edificio principal',
       floors: [
         FloorModel(id: 'v-78-floor0', number: 0, svgPath: Assets.maps.v78.floor0.keyName),
         FloorModel(id: 'v-78-floor1', number: 1, svgPath: Assets.maps.v78.floor1.keyName),
@@ -22,7 +22,7 @@ class MapPageView extends StatefulWidget {
     ),
     CampusModel(
       id: 's-20',
-      displayName: 'С-20',
+      displayName: 'Servicios escolares',
       floors: [
         FloorModel(id: 's-20-floor0', number: 1, svgPath: Assets.maps.s20.floor1.keyName),
         FloorModel(id: 's-20-floor1', number: 2, svgPath: Assets.maps.s20.floor2.keyName),
@@ -31,7 +31,7 @@ class MapPageView extends StatefulWidget {
       ],
     ),
     CampusModel(
-      displayName: 'МП-1',
+      displayName: 'Laboratorios',
       id: 'mp-1',
       floors: [
         FloorModel(id: 'mp-1-floor0', number: -1, svgPath: Assets.maps.mp1.a1Svg_.keyName),
@@ -75,7 +75,7 @@ class _MapPageViewState extends State<MapPageView> {
           (_) =>
               MapBloc(availableCampuses: MapPageView.campuses, objectsService: ObjectsService())..add(MapInitialized()),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Карта')),
+        appBar: AppBar(title: const Text('Mapa')),
         body: BlocBuilder<MapBloc, MapState>(
           builder: (context, state) {
             if (state is! MapLoaded) {

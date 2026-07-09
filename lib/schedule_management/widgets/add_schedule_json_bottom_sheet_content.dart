@@ -23,7 +23,7 @@ class _AddScheduleJsonBottomSheetContentState extends State<AddScheduleJsonBotto
   void _addScheduleFromJson() {
     if (_jsonController.text.isEmpty) {
       setState(() {
-        _jsonErrorText = 'Пожалуйста, введите JSON строку';
+        _jsonErrorText = 'Ingresa una cadena JSON';
       });
     } else {
       widget.onConfirm(_jsonController.text);
@@ -38,14 +38,14 @@ class _AddScheduleJsonBottomSheetContentState extends State<AddScheduleJsonBotto
       mainAxisSize: MainAxisSize.min,
       children: [
         TextInput(
-          hintText: 'Введите JSON строку...',
+          hintText: 'Ingresa una cadena JSON...',
           controller: _jsonController,
           errorText: _jsonErrorText,
           keyboardType: TextInputType.multiline,
           maxLines: 8,
         ),
         const SizedBox(height: 24),
-        PrimaryButton(onPressed: _addScheduleFromJson, text: 'Добавить'),
+        PrimaryButton(onPressed: _addScheduleFromJson, text: 'Agregar'),
         const SizedBox(height: 16),
       ],
     );

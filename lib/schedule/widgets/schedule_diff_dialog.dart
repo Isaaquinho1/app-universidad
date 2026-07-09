@@ -37,7 +37,7 @@ class ScheduleDiffPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Изменения в расписании'),
+        title: const Text('Cambios en el horario'),
         actions: [IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop())],
       ),
       body: Padding(
@@ -70,7 +70,7 @@ class ScheduleDiffPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   ...change.fieldDiffs.map((fieldDiff) {
-                    if (fieldDiff.fieldName == 'Даты' && fieldDiff.addedDates != null) {
+                    if (fieldDiff.fieldName == 'Fechas' && fieldDiff.addedDates != null) {
                       List<Widget> dateWidgets = [];
                       // Removed dates
                       if ((fieldDiff.removedDates?.isNotEmpty ?? false)) {

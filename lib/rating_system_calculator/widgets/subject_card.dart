@@ -27,7 +27,7 @@ import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
 //                   const SizedBox(width: 16),
 //                   Expanded(
 //                     child: Text(
-//                       "Линейная алгебра",
+//                       "Álgebra lineal",
 //                       style: AppTextStyle.buttonL.copyWith(),
 //                     ),
 //                   ),

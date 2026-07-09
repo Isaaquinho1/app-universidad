@@ -16,7 +16,7 @@ class ViewToggleButton extends StatelessWidget {
       onPressed: onPressed,
       material:
           (_, __) =>
-              MaterialIconButtonData(iconSize: 24, padding: const EdgeInsets.all(16.0), tooltip: 'Переключить вид'),
+              MaterialIconButtonData(iconSize: 24, padding: const EdgeInsets.all(16.0), tooltip: 'Cambiar vista'),
       cupertino: (_, __) => CupertinoIconButtonData(padding: const EdgeInsets.all(16.0)),
       icon: AnimatedSwitcher(
         duration: 300.ms,

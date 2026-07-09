@@ -16,7 +16,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   Future<void> _onMapInitialized(MapInitialized event, Emitter<MapState> emit) async {
     if (availableCampuses.isEmpty) {
-      emit(const MapError('Нет доступных кампусов.'));
+      emit(const MapError('No hay campus disponibles.'));
       return;
     }
     emit(const MapLoading());
@@ -28,7 +28,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       final (rooms, rect) = await _parseFloor(floor);
       emit(MapLoaded(selectedCampus: campus, selectedFloor: floor, rooms: rooms, boundingRect: rect));
     } catch (e) {
-      emit(MapError('Ошибка инициализации карты: $e'));
+      emit(MapError('Error al inicializar el mapa: $e'));
     }
   }
 
@@ -39,7 +39,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       final (rooms, rect) = await _parseFloor(floor);
       emit(MapLoaded(selectedCampus: event.selectedCampus, selectedFloor: floor, rooms: rooms, boundingRect: rect));
     } catch (e) {
-      emit(MapError('Ошибка загрузки кампуса: $e'));
+      emit(MapError('Error al cargar el campus: $e'));
     }
   }
 
@@ -56,7 +56,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         ),
       );
     } catch (e) {
-      emit(MapError('Ошибка загрузки этажа: $e'));
+      emit(MapError('Error al cargar el piso: $e'));
     }
   }
 

@@ -35,7 +35,7 @@ class ScheduleCard extends StatelessWidget {
                   ),
                 ),
               );
-              _showFeedbackSnackBar(context, 'Расписание удалено', isError: false);
+              _showFeedbackSnackBar(context, 'Horario eliminado', isError: false);
             }
           },
           confirmDismiss: (_) async {
@@ -44,14 +44,14 @@ class ScheduleCard extends StatelessWidget {
               context: context,
               builder:
                   (context) => AlertDialog(
-                    title: const Text('Удаление расписания'),
-                    content: const Text('Вы уверены, что хотите удалить это расписание?'),
+                    title: const Text('Eliminar horario'),
+                    content: const Text('¿Seguro que deseas eliminar este horario?'),
                     actions: [
-                      TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Отмена')),
+                      TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(true),
                         style: TextButton.styleFrom(foregroundColor: Colors.red),
-                        child: const Text('Удалить'),
+                        child: const Text('Eliminar'),
                       ),
                     ],
                   ),
@@ -64,7 +64,7 @@ class ScheduleCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Удалить', style: AppTextStyle.body.copyWith(color: Colors.white, fontWeight: FontWeight.w500)),
+                Text('Eliminar', style: AppTextStyle.body.copyWith(color: Colors.white, fontWeight: FontWeight.w500)),
                 const SizedBox(width: 8),
                 const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 20),
               ],
@@ -139,7 +139,7 @@ class ScheduleCard extends StatelessWidget {
                                           Icon(Icons.check_circle, size: 12, color: appColors.primary),
                                           const SizedBox(width: 4),
                                           Text(
-                                            'Активно',
+                                            'Activo',
                                             style: AppTextStyle.captionL.copyWith(
                                               color: appColors.primary,
                                               fontWeight: FontWeight.w600,
@@ -215,7 +215,7 @@ class ScheduleCard extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    hasComments ? 'Комментарии' : 'Комментарий',
+                                    hasComments ? 'Comentarios' : 'Comentario',
                                     style: AppTextStyle.captionL.copyWith(
                                       fontSize: 12,
                                       color: hasComments ? appColors.primary : appColors.deactive,
@@ -245,7 +245,7 @@ class ScheduleCard extends StatelessWidget {
                                   Icon(Icons.visibility_outlined, size: 14, color: appColors.active),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Активировать',
+                                    'Activar',
                                     style: AppTextStyle.captionL.copyWith(fontSize: 12, color: appColors.active),
                                   ),
                                 ],
@@ -316,13 +316,13 @@ class ScheduleCard extends StatelessWidget {
   String _getTypeName() {
     switch (scheduleType) {
       case 'group':
-        return 'Группа';
+        return 'Grupo';
       case 'teacher':
-        return 'Преподаватель';
+        return 'Docente';
       case 'classroom':
-        return 'Аудитория';
+        return 'Aula';
       default:
-        return 'Расписание';
+        return 'Horario';
     }
   }
 
@@ -345,15 +345,15 @@ class ScheduleCard extends StatelessWidget {
 
           if (text == null || text.isEmpty) {
             scheduleBloc.add(RemoveScheduleComment(uniqueKey));
-            _showFeedbackSnackBar(context, 'Комментарий удален');
+            _showFeedbackSnackBar(context, 'Comentario eliminado');
           } else {
             scheduleBloc.add(SetScheduleComment(comment));
-            _showFeedbackSnackBar(context, 'Комментарий сохранен');
+            _showFeedbackSnackBar(context, 'Comentario guardado');
           }
         },
       ),
-      title: 'Комментарий к расписанию',
-      description: 'Добавьте или отредактируйте заметку к расписанию',
+      title: 'Comentario del horario',
+      description: 'Agrega o edita una nota del horario',
     );
   }
 
@@ -370,7 +370,7 @@ class ScheduleCard extends StatelessWidget {
             children: [
               ListTile(
                 leading: Icon(Icons.visibility, color: appColors.primary),
-                title: const Text('Сделать активным'),
+                title: const Text('Hacer activo'),
                 onTap: () {
                   Navigator.pop(context);
                   context.read<ScheduleBloc>().add(
@@ -382,7 +382,7 @@ class ScheduleCard extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.chat_bubble_outline, color: appColors.active),
-                title: Text(_hasComments(context) ? 'Редактировать комментарий' : 'Добавить комментарий'),
+                title: Text(_hasComments(context) ? 'Editar comentario' : 'Agregar comentario'),
                 onTap: () {
                   Navigator.pop(context);
                   _showSetCommentBottomSheet(
@@ -395,21 +395,21 @@ class ScheduleCard extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.delete_outline, color: appColors.error),
-                title: const Text('Удалить расписание'),
+                title: const Text('Eliminar horario'),
                 onTap: () async {
                   Navigator.pop(context);
                   final shouldDelete = await showDialog<bool>(
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: const Text('Удаление расписания'),
-                          content: const Text('Вы уверены, что хотите удалить это расписание?'),
+                          title: const Text('Eliminar horario'),
+                          content: const Text('¿Seguro que deseas eliminar este horario?'),
                           actions: [
-                            TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Отмена')),
+                            TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(true),
                               style: TextButton.styleFrom(foregroundColor: Colors.red),
-                              child: const Text('Удалить'),
+                              child: const Text('Eliminar'),
                             ),
                           ],
                         ),
@@ -425,7 +425,7 @@ class ScheduleCard extends StatelessWidget {
                           ),
                         ),
                       );
-                      _showFeedbackSnackBar(context, 'Расписание удалено', isError: false);
+                      _showFeedbackSnackBar(context, 'Horario eliminado', isError: false);
                     }
                   }
                 },

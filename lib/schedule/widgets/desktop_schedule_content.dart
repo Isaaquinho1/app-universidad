@@ -335,7 +335,7 @@ class _EventsPageView extends StatelessWidget {
 
     return ElevatedButton.icon(
       onPressed: () {
-        // Найти следующий день с занятиями можно было бы, но это потребует дополнительного анализа
+        // Se podría buscar el siguiente día con clases, pero requiere análisis adicional
         final todayIndex = Calendar.getPageIndex(Calendar.getNowWithoutTime());
         pageController.animateToPage(todayIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
       },

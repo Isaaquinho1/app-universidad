@@ -113,18 +113,18 @@ class _ComparisonScheduleListTileState extends State<ComparisonScheduleListTile>
     } else if (schedule is SelectedCustomSchedule) {
       return schedule.name;
     }
-    return 'Неизвестно';
+    return 'No especificado';
   }
 
   String _getScheduleType(SelectedSchedule schedule) {
     if (schedule is SelectedGroupSchedule) {
-      return 'Группа';
+      return 'Grupo';
     } else if (schedule is SelectedTeacherSchedule) {
-      return 'Преподаватель';
+      return 'Docente';
     } else if (schedule is SelectedClassroomSchedule) {
-      return 'Аудитория';
+      return 'Aula';
     } else if (schedule is SelectedCustomSchedule) {
-      return 'Мое расписание';
+      return 'Mi horario';
     }
     return '';
   }
@@ -144,7 +144,7 @@ class _ComparisonScheduleListTileState extends State<ComparisonScheduleListTile>
           context.read<ScheduleBloc>().add(AddScheduleToComparison(widget.schedule));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Максимум 3 расписания для сравнения'), duration: Duration(seconds: 1)),
+            const SnackBar(content: Text('Máximo 3 horarios para comparar'), duration: Duration(seconds: 1)),
           );
         }
       }

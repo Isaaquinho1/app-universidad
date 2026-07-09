@@ -41,7 +41,7 @@ class CommentSection extends StatelessWidget {
                   Icon(Icons.comment_outlined, size: 16, color: theme.colorScheme.primary.withOpacity(0.7)),
                   const SizedBox(width: 8),
                   Text(
-                    'Комментарий',
+                    'Comentario',
                     style: AppTextStyle.body.copyWith(
                       color: theme.colorScheme.primary.withOpacity(0.7),
                       fontWeight: FontWeight.w500,

@@ -25,7 +25,7 @@ class EmptyLessonCard extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              '$lessonNumber пара',
+              '$lessonNumber clase',
               style: AppTextStyle.captionL.copyWith(
                 color: Theme.of(context).extension<AppColors>()!.deactive.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
@@ -33,7 +33,7 @@ class EmptyLessonCard extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              'Свободно',
+              'Libre',
               style: AppTextStyle.captionL.copyWith(
                 color: Theme.of(context).extension<AppColors>()!.deactive.withOpacity(0.6),
                 fontWeight: FontWeight.w400,

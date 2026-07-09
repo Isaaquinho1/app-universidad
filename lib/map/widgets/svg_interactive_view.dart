@@ -267,8 +267,8 @@ class _SvgInteractiveMapState extends State<SvgInteractiveMap> with TickerProvid
     BottomModalSheet.show(
       context,
       child: _buildBottomSheetSelectedRoomContent(roomName: selected.name),
-      title: 'Аудитория ${selected.name}',
-      description: 'Вы можете быстро найти расписание для этой аудитории, используя поиск по расписанию.',
+      title: 'Aula ${selected.name}',
+      description: 'Puedes consultar rápidamente información relacionada con esta aula desde la búsqueda de horarios.',
     );
   }
 
@@ -283,7 +283,7 @@ class _SvgInteractiveMapState extends State<SvgInteractiveMap> with TickerProvid
             context.go('/schedule/search', extra: roomName);
             context.pop();
           },
-          text: 'Поиск',
+          text: 'Buscar',
         ),
         const SizedBox(height: 16),
       ],

@@ -37,10 +37,10 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
   int _currentStep = 0;
 
-  // Предпросмотр пары
+  // Vista previa de la clase
   LessonSchedulePart? _previewLesson;
 
-  // Добавляем переменные
+  // Se agregan variables
   late PageController _pageController;
 
   @override
@@ -50,13 +50,13 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_handleTabChange);
 
-    // Инициализация PageController
+    // Inicialización de PageController
     _pageController = PageController();
 
-    // Инициализация списка групп
+    // Inicialización de la lista de grupos
     _selectedGroups = [];
 
-    // Если это редактирование существующего урока
+    // Si se está editando una clase existente
     if (widget.lesson != null) {
       _subjectController.text = widget.lesson!.subject;
       _lessonType = widget.lesson!.lessonType;
@@ -73,10 +73,10 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
         _onlineUrlController.text = widget.lesson!.classrooms.first.url ?? '';
       }
 
-      // Создаем предпросмотр
+      // Se crea la vista previa
       _updatePreview();
     } else {
-      // Установим хотя бы одну дату для нового урока (сегодня)
+      // Se establece al menos una fecha para la nueva clase
       _selectedDates = [DateTime.now()];
     }
   }
@@ -84,13 +84,13 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
   void _handleTabChange() {
     setState(() {
       _currentStep = _tabController.index;
-      // Обновляем предпросмотр при переходе между вкладками
+      // Se actualiza la vista previa al cambiar de pestaña
       _updatePreview();
     });
   }
 
   void _updatePreview() {
-    // Создаем предпросмотр урока на основе текущих данных
+    // Se crea la vista previa de la clase con los datos actuales
     final lessonBells = LessonBells(startTime: _startTime, endTime: _endTime, number: _lessonNumber);
 
     final List<Classroom> classrooms;
@@ -172,11 +172,11 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
   bool _validateCurrentStep() {
     switch (_currentStep) {
-      case 0: // Основная информация
+      case 0: // Información principal
         return _subjectController.text.isNotEmpty;
-      case 1: // Даты
+      case 1: // Fechas
         return _selectedDates.isNotEmpty;
-      case 2: // Место
+      case 2: // Lugar
         return _isOnline || _selectedClassrooms.isNotEmpty;
       default:
         return true;
@@ -390,17 +390,17 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
   Widget _buildLessonTypeSelector() {
     final lessonTypeMap = {
-      LessonType.practice: 'Практика',
-      LessonType.lecture: 'Лекция',
-      LessonType.laboratoryWork: 'Лабораторная',
-      LessonType.individualWork: 'Индивидуальная',
-      LessonType.physicalEducation: 'Физкультура',
-      LessonType.consultation: 'Консультация',
-      LessonType.exam: 'Экзамен',
-      LessonType.credit: 'Зачет',
-      LessonType.courseWork: 'Курсовая работа',
-      LessonType.courseProject: 'Курсовой проект',
-      LessonType.unknown: 'Неизвестно',
+      LessonType.practice: 'Práctica',
+      LessonType.lecture: 'Clase teórica',
+      LessonType.laboratoryWork: 'Laboratorio',
+      LessonType.individualWork: 'Individual',
+      LessonType.physicalEducation: 'Educación física',
+      LessonType.consultation: 'Asesoría',
+      LessonType.exam: 'Examen',
+      LessonType.credit: 'Evaluación',
+      LessonType.courseWork: 'Trabajo de curso',
+      LessonType.courseProject: 'Proyecto de curso',
+      LessonType.unknown: 'No especificado',
     };
 
     return Wrap(
@@ -441,7 +441,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     if (_selectedTeachers.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text('Преподаватели не выбраны', style: AppTextStyle.body.copyWith(color: colors.deactive)),
+        child: Text('No se seleccionaron docentes', style: AppTextStyle.body.copyWith(color: colors.deactive)),
       );
     }
 
@@ -471,23 +471,23 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Добавить преподавателя'),
+            title: const Text('Agregar docente'),
             content: Form(
               key: formKey,
               child: TextInput(
                 controller: teacherController,
-                labelText: 'ФИО преподавателя',
-                hintText: 'Например: Иванов Иван Иванович',
+                labelText: 'Nombre completo del docente',
+                hintText: 'Ejemplo: Juan Pérez López',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите ФИО преподавателя';
+                    return 'Ingresa el nombre completo del docente';
                   }
                   return null;
                 },
               ),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
@@ -499,7 +499,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Добавить'),
+                child: const Text('Agregar'),
               ),
             ],
           ),
@@ -511,14 +511,14 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
       if (_selectedDates.isEmpty) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Выберите хотя бы одну дату проведения')));
+        ).showSnackBar(const SnackBar(content: Text('Selecciona al menos una fecha')));
         return;
       }
 
       if (!_isOnline && _selectedClassrooms.isEmpty) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Добавьте хотя бы одну аудиторию или сделайте занятие онлайн')));
+        ).showSnackBar(const SnackBar(content: Text('Agrega al menos un aula o marca la clase como en línea')));
         return;
       }
 
@@ -542,10 +542,10 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
       );
 
       if (widget.lesson == null) {
-        // Создаем новую пару
+        // Se crea una nueva clase
         context.read<ScheduleBloc>().add(AddLessonToCustomSchedule(scheduleId: widget.scheduleId, lesson: lesson));
       } else {
-        // Удаляем старую пару и добавляем новую (обновление)
+        // Se elimina la clase anterior y se agrega la nueva
         context.read<ScheduleBloc>().add(
           RemoveLessonFromCustomSchedule(scheduleId: widget.scheduleId, lesson: widget.lesson!),
         );
@@ -564,7 +564,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Виджет календаря с возможностью выбора дат
+        // Widget de calendario con selección de fechas
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -579,13 +579,13 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Выберите даты проведения',
+                    'Selecciona las fechas',
                     style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
                   ),
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () => _selectDates(context),
-                    tooltip: 'Добавить дату',
+                    tooltip: 'Agregar fecha',
                   ),
                 ],
               ),
@@ -599,12 +599,12 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                     children: [
                       Icon(Icons.calendar_today, size: 48, color: colors.deactive),
                       const SizedBox(height: 16),
-                      Text('Нет выбранных дат', style: AppTextStyle.body.copyWith(color: colors.deactive)),
+                      Text('No hay fechas seleccionadas', style: AppTextStyle.body.copyWith(color: colors.deactive)),
                       const SizedBox(height: 8),
                       OutlinedButton.icon(
                         onPressed: () => _selectDates(context),
                         icon: const Icon(Icons.calendar_today),
-                        label: const Text('Выбрать даты'),
+                        label: const Text('Seleccionar fechas'),
                       ),
                     ],
                   ),
@@ -635,7 +635,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Секция с повторяющимися событиями (опционально для будущего расширения)
+        // Sección de eventos recurrentes
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -647,13 +647,13 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Повторение',
+                'Repetición',
                 style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 16),
-              // TODO: Будущая функциональность
+              // TODO: Funcionalidad futura
               Text(
-                'Функция настройки повторений будет доступна в будущих версиях.',
+                'La configuración de repeticiones estará disponible en futuras versiones.',
                 style: AppTextStyle.body.copyWith(color: colors.deactive, fontStyle: FontStyle.italic),
               ),
             ],
@@ -669,7 +669,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Переключатель онлайн/оффлайн
+        // Selector en línea/presencial
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -684,7 +684,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                 children: [
                   Expanded(
                     child: Text(
-                      'Тип проведения занятия',
+                      'Modalidad de la clase',
                       style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -695,7 +695,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildLocationOption(
-                    title: 'Оффлайн',
+                    title: 'Presencial',
                     icon: Icons.location_on,
                     isSelected: !_isOnline,
                     onTap: () {
@@ -706,7 +706,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                     },
                   ),
                   _buildLocationOption(
-                    title: 'Онлайн',
+                    title: 'En línea',
                     icon: Icons.video_call,
                     isSelected: _isOnline,
                     onTap: () {
@@ -724,17 +724,17 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Если онлайн - поле для ссылки
+        // Si es en línea, se muestra el campo de enlace
         if (_isOnline)
           TextInput(
             controller: _onlineUrlController,
-            labelText: 'Ссылка на онлайн занятие',
-            hintText: 'Введите URL для подключения',
+            labelText: 'Enlace de la clase en línea',
+            hintText: 'Ingresa la URL de conexión',
             onChanged: (_) => _updatePreview(),
             keyboardType: TextInputType.url,
           )
         else
-          // Аудитории
+          // Aulas
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -749,13 +749,13 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Аудитории',
+                      'Aulas',
                       style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
                     ),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () => _addClassroom(context),
-                      tooltip: 'Добавить аудиторию',
+                      tooltip: 'Agregar aula',
                     ),
                   ],
                 ),
@@ -769,12 +769,12 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                       children: [
                         Icon(Icons.location_on, size: 48, color: colors.deactive),
                         const SizedBox(height: 16),
-                        Text('Нет выбранных аудиторий', style: AppTextStyle.body.copyWith(color: colors.deactive)),
+                        Text('No hay aulas seleccionadas', style: AppTextStyle.body.copyWith(color: colors.deactive)),
                         const SizedBox(height: 8),
                         OutlinedButton.icon(
                           onPressed: () => _addClassroom(context),
                           icon: const Icon(Icons.location_on),
-                          label: const Text('Добавить аудиторию'),
+                          label: const Text('Agregar aula'),
                         ),
                       ],
                     ),
@@ -910,7 +910,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Предпросмотр пары',
+                'Vista previa de la clase',
                 style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 16),
@@ -919,7 +919,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
               else
                 Center(
                   child: Text(
-                    'Заполните данные для предпросмотра',
+                    'Completa los datos para la vista previa',
                     style: AppTextStyle.body.copyWith(color: colors.deactive, fontStyle: FontStyle.italic),
                   ),
                 ),
@@ -929,7 +929,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
 
         const SizedBox(height: 24),
 
-        // Сводка информации
+        // Resumen de información
         if (_previewLesson != null)
           Container(
             padding: const EdgeInsets.all(16),
@@ -942,32 +942,32 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Сводка информации',
+                  'Resumen de información',
                   style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 16),
-                _buildInfoRow('Название', _previewLesson!.subject),
-                _buildInfoRow('Тип занятия', LessonCard.getLessonTypeName(_previewLesson!.lessonType)),
+                _buildInfoRow('Nombre', _previewLesson!.subject),
+                _buildInfoRow('Tipo de clase', LessonCard.getLessonTypeName(_previewLesson!.lessonType)),
                 _buildInfoRow(
-                  'Время',
+                  'Hora',
                   '${_previewLesson!.lessonBells.startTime} - ${_previewLesson!.lessonBells.endTime}',
                 ),
                 if (_previewLesson!.lessonBells.number != null)
-                  _buildInfoRow('Номер пары', '${_previewLesson!.lessonBells.number}'),
+                  _buildInfoRow('Número de clase', '${_previewLesson!.lessonBells.number}'),
                 _buildInfoRow(
-                  'Количество дат',
-                  '${_previewLesson!.dates.length} (${_previewLesson!.dates.isNotEmpty ? DateFormat('dd.MM.yyyy').format(_previewLesson!.dates.first) : "нет"}${_previewLesson!.dates.length > 1 ? " и др." : ""})',
+                  'Cantidad de fechas',
+                  '${_previewLesson!.dates.length} (${_previewLesson!.dates.isNotEmpty ? DateFormat('dd.MM.yyyy').format(_previewLesson!.dates.first) : "ninguna"}${_previewLesson!.dates.length > 1 ? " y más" : ""})',
                 ),
                 _buildInfoRow(
-                  'Место проведения',
+                  'Lugar de impartición',
                   _isOnline
-                      ? 'Онлайн${_onlineUrlController.text.isNotEmpty ? " (ссылка указана)" : ""}'
+                      ? 'En línea${_onlineUrlController.text.isNotEmpty ? " (enlace indicado)" : ""}'
                       : _previewLesson!.classrooms.map((e) => e.name).join(', '),
                 ),
                 _buildInfoRow(
-                  'Преподаватели',
+                  'Docentes',
                   _previewLesson!.teachers.isEmpty
-                      ? 'Не указаны'
+                      ? 'No especificadas'
                       : _previewLesson!.teachers.map((e) => e.name).join(', '),
                 ),
               ],
@@ -992,7 +992,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     );
   }
 
-  // Выбор дат проведения занятия
+  // Selección de fechas de la clase
   Future<void> _selectDates(BuildContext context) async {
     final colors = Theme.of(context).extension<AppColors>()!;
     final picker = DateRangePicker(
@@ -1000,7 +1000,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
           _selectedDates.isNotEmpty ? DateTimeRange(start: _selectedDates.first, end: _selectedDates.last) : null,
       selectedDates: _selectedDates,
       selectableDayPredicate: (day) {
-        // Исключаем даты до текущей
+        // Se excluyen fechas anteriores a la actual
         return !day.isBefore(DateTime.now().subtract(const Duration(days: 1)));
       },
     );
@@ -1026,7 +1026,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     }
   }
 
-  // Добавление аудитории
+  // Agregar aula
   Future<void> _addClassroom(BuildContext context) async {
     final colors = Theme.of(context).extension<AppColors>()!;
     final classroomController = TextEditingController();
@@ -1037,7 +1037,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Добавить аудиторию'),
+            title: const Text('Agregar aula'),
             content: Form(
               key: formKey,
               child: Column(
@@ -1045,11 +1045,11 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                 children: [
                   TextInput(
                     controller: classroomController,
-                    labelText: 'Номер аудитории',
-                    hintText: 'Например: А-123',
+                    labelText: 'Número de aula',
+                    hintText: 'Ejemplo: A-123',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Введите номер аудитории';
+                        return 'Ingresa el número de aula';
                       }
                       return null;
                     },
@@ -1057,14 +1057,14 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                   const SizedBox(height: 16),
                   TextInput(
                     controller: campusController,
-                    labelText: 'Название кампуса (опционально)',
-                    hintText: 'Например: В-78',
+                    labelText: 'Nombre del campus (opcional)',
+                    hintText: 'Ejemplo: Campus Tlalpan',
                   ),
                 ],
               ),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
@@ -1075,7 +1075,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                     Navigator.pop(context, classroom);
                   }
                 },
-                child: const Text('Добавить'),
+                child: const Text('Agregar'),
               ),
             ],
           ),
@@ -1095,7 +1095,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     if (_selectedGroups.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text('Группы не выбраны', style: AppTextStyle.body.copyWith(color: colors.deactive)),
+        child: Text('No se seleccionaron grupos', style: AppTextStyle.body.copyWith(color: colors.deactive)),
       );
     }
 
@@ -1126,23 +1126,23 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Добавить группу'),
+            title: const Text('Agregar grupo'),
             content: Form(
               key: formKey,
               child: TextInput(
                 controller: groupController,
-                labelText: 'Название группы',
-                hintText: 'Например: ИКБО-01-21',
+                labelText: 'Nombre del grupo',
+                hintText: 'Ejemplo: TIC-901',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите название группы';
+                    return 'Ingresa el nombre del grupo';
                   }
                   return null;
                 },
               ),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Отмена')),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
               FilledButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
@@ -1153,14 +1153,14 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Добавить'),
+                child: const Text('Agregar'),
               ),
             ],
           ),
     );
   }
 
-  // Helper-метод для отображения диалога выбора времени
+  // Método auxiliar para mostrar el selector de hora
   Future<TimeOfDay?> _showTimePickerDialog(BuildContext context, TimeOfDay initialTime) async {
     final res = await showTimePicker(
       context: context,
@@ -1185,10 +1185,10 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     return null;
   }
 
-  // Индикатор шагов с прогрессом
+  // Indicador de pasos con progreso
   Widget _buildStepsIndicator() {
     final colors = Theme.of(context).extension<AppColors>()!;
-    final steps = ['Основное', 'Даты', 'Место', 'Превью'];
+    final steps = ['General', 'Fechas', 'Lugar', 'Vista previa'];
 
     return Row(
       children: List.generate(steps.length, (index) {
@@ -1251,7 +1251,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     );
   }
 
-  // Кнопки навигации
+  // Botones de navegación
   Widget _buildNavButtons() {
     final colors = Theme.of(context).extension<AppColors>()!;
 
@@ -1282,7 +1282,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                       Icon(Icons.arrow_back, size: 20, color: colors.active),
                       const SizedBox(width: 8),
                       Text(
-                        'Назад',
+                        'Atrás',
                         style: AppTextStyle.body.copyWith(color: colors.active, fontWeight: FontWeight.w500),
                       ),
                     ],
@@ -1322,10 +1322,10 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
                   children: [
                     Text(
                       _currentStep < 3
-                          ? 'Далее'
+                          ? 'Siguiente'
                           : widget.lesson == null
-                          ? 'Создать'
-                          : 'Сохранить',
+                          ? 'Crear'
+                          : 'Guardar',
                       style: AppTextStyle.body.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     if (_currentStep < 3) ...[
@@ -1342,7 +1342,7 @@ class _CustomLessonEditorPageState extends State<CustomLessonEditorPage> with Si
     );
   }
 
-  // Анимированный переход к определённому шагу
+  // Transición animada a un paso específico
   void _navigateToStep(int step) {
     if (step < 0 || step > 3) return;
 

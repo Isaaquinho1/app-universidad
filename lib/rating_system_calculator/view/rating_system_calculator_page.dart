@@ -20,7 +20,7 @@ class RatingSystemCalculatorPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.dark.background01,
         elevation: 0,
-        title: const Text("Бально-рейтинговая система"),
+        title: const Text("Sistema de evaluación por puntos"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -102,7 +102,7 @@ class _RatingSystemCalculatorViewState extends State<RatingSystemCalculatorView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Бально-рейтинговая система",
+                    "Sistema de evaluación por puntos",
                     style: AppTextStyle.titleM.copyWith(
                       color: AppColors.dark.activeLightMode,
                       fontWeight: FontWeight.w700,
@@ -114,7 +114,7 @@ class _RatingSystemCalculatorViewState extends State<RatingSystemCalculatorView>
                     children: [
                       Expanded(
                         child: Text(
-                          "📖  Перейдите, чтобы узнать, как это устроено",
+                          "📖  Entra para conocer cómo funciona",
                           style: AppTextStyle.bodyL.copyWith(color: AppColors.dark.activeLightMode, fontSize: 16),
                           maxLines: 2,
                         ),
@@ -123,7 +123,7 @@ class _RatingSystemCalculatorViewState extends State<RatingSystemCalculatorView>
                   ),
                   const SizedBox(height: 16),
                   PrimaryButton(
-                    text: "Подробнее",
+                    text: "Más información",
                     onPressed: () {
                       context.go('/services/rating-system-calculator/about');
                     },
@@ -171,12 +171,12 @@ class SubjectsListView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("У вас не выбрано расписание Группы!", style: AppTextStyle.titleM),
+            Text("No tienes seleccionado un horario de grupo", style: AppTextStyle.titleM),
             const SizedBox(height: 16),
-            Text("Выберите расписание, на основе которого мы отобразим для вас предметы", style: AppTextStyle.body),
+            Text("Selecciona un horario para mostrar tus materias", style: AppTextStyle.body),
             const SizedBox(height: 24),
             TextOutlinedButton(
-              content: "Выбрать расписание",
+              content: "Seleccionar horario",
               onPressed: () {
                 context.go('/schedule');
               },

@@ -106,7 +106,7 @@ class LostFoundItemCard extends StatelessWidget {
                         if (item.telegramContactInfo != null && item.telegramContactInfo!.isNotEmpty)
                           _buildContactChip(context, item.telegramContactInfo!, Icons.telegram),
                         if (item.phoneNumberContactInfo != null && item.phoneNumberContactInfo!.isNotEmpty)
-                          _buildContactChip(context, "Телефон", Icons.phone),
+                          _buildContactChip(context, "Teléfono", Icons.phone),
                       ],
                     ),
                   ],
@@ -203,7 +203,7 @@ class LostFoundItemCard extends StatelessWidget {
           Icon(isLost ? Icons.search : Icons.check_circle_outline, color: Colors.white, size: 14),
           const SizedBox(width: 4),
           Text(
-            isLost ? 'Потеряно' : 'Найдено',
+            isLost ? 'Perdido' : 'Encontrado',
             style: AppTextStyle.captionL.copyWith(color: Colors.white, fontWeight: FontWeight.w600, letterSpacing: 0.3),
           ),
         ],
@@ -224,7 +224,7 @@ class LostFoundItemCard extends StatelessWidget {
           Icon(icon, size: 14, color: icon == Icons.telegram ? appColors.colorful03 : appColors.colorful04),
           const SizedBox(width: 4),
           Text(
-            icon == Icons.telegram ? label : "Телефон",
+            icon == Icons.telegram ? label : "Teléfono",
             style: AppTextStyle.captionL.copyWith(color: appColors.active, fontWeight: FontWeight.w500),
           ),
         ],
@@ -237,19 +237,19 @@ class LostFoundItemCard extends StatelessWidget {
     final diff = now.difference(dateTime);
 
     if (diff.inDays == 0) {
-      return 'Сегодня';
+      return 'Hoy';
     } else if (diff.inDays == 1) {
-      return 'Вчера';
+      return 'Ayer';
     } else if (diff.inDays < 7) {
-      return '${diff.inDays} ${_getDaysText(diff.inDays)} назад';
+      return '${diff.inDays} ${_getDaysText(diff.inDays)} atrás';
     } else {
       return DateFormat('d MMM', 'ru_RU').format(dateTime);
     }
   }
 
   String _getDaysText(int days) {
-    if (days == 1) return 'день';
-    if (days >= 2 && days <= 4) return 'дня';
-    return 'дней';
+    if (days == 1) return 'día';
+    if (days >= 2 && days <= 4) return 'días';
+    return 'días';
   }
 }

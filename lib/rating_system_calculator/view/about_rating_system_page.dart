@@ -10,7 +10,7 @@ class AboutRatingSystemPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.dark.background01,
-      appBar: AppBar(backgroundColor: AppColors.dark.background01, title: const Text("О БРС")),
+      appBar: AppBar(backgroundColor: AppColors.dark.background01, title: const Text("Sistema de evaluación")),
       body: const SafeArea(child: Padding(padding: EdgeInsets.all(24), child: RatingSystemCalculatorView())),
     );
   }
@@ -40,103 +40,64 @@ class _RatingSystemCalculatorViewState extends State<RatingSystemCalculatorView>
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
-            Text("Баллы", style: AppTextStyle.h4),
-            const SizedBox(height: 16),
-            Text(
-              "Баллы — это единица измерения успеваемости студента. Они начисляются за выполнение академических требований в рамках учебного плана.",
-              style: AppTextStyle.body,
-            ),
-            const ShortDescriptionCard(icon: UniconsSolid.check_circle, text: 'Максимальное количество баллов - 90'),
-            const ShortDescriptionCard(
-              icon: UniconsSolid.exclamation_circle,
-              text: 'Полученные баллы можно будет увидеть в СДО по каждой дисциплине',
-            ),
-            const SizedBox(height: 24),
-            Text("Основные баллы", style: AppTextStyle.h6),
-            Text("максимум 30", style: AppTextStyle.body.copyWith(color: AppColors.dark.primary)),
-            const SizedBox(height: 16),
-            RichText(
-              text: TextSpan(
-                style: AppTextStyle.body.copyWith(color: AppColors.dark.active),
-                children: [
-                  const TextSpan(text: 'Выставляются за выполненеие '),
-                  TextSpan(
-                    text: 'обязательных заданий на аудиторных практических занятиях',
-                    style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
-                  ),
-                  const TextSpan(
-                    text:
-                        ' (контрольные работы, лабораторные и т.д.)\n\nВыставляет преподаватель, ведущий практические занятия.\n\nВ начале семестра преподаватель должен объявить за что и сколько основных баллов можно будет получить в течение семестра.',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text("Баллы за работу на занятиях", style: AppTextStyle.h6),
-            Text("максимум 30", style: AppTextStyle.body.copyWith(color: AppColors.dark.primary)),
-            const SizedBox(height: 16),
-            RichText(
-              text: TextSpan(
-                style: AppTextStyle.body.copyWith(color: AppColors.dark.active),
-                children: [
-                  const TextSpan(text: 'Выставляются за '),
-                  TextSpan(
-                    text: 'посещаемость и активность на занятиях',
-                    style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
-                  ),
-                  const TextSpan(
-                    text:
-                        '.\n\nВыставляет лектор или преподаватель, ведущий практические занятия.\n\nВ начале семестра лектор и семинарист должны объявить за что и сколько баллов можно будет получить в течение семестра.',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text("Дополнительные баллы", style: AppTextStyle.h6),
-            Text("максимум 30", style: AppTextStyle.body.copyWith(color: AppColors.dark.primary)),
-            const SizedBox(height: 16),
-            RichText(
-              text: TextSpan(
-                style: AppTextStyle.body.copyWith(color: AppColors.dark.active),
-                children: [
-                  const TextSpan(text: 'Выставляются за выполнение '),
-                  TextSpan(
-                    text: 'тестовых заданий в СДО',
-                    style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
-                  ),
-                  const TextSpan(
-                    text:
-                        '.\n\nВыставляет преподаватель, ведущий практические занятия.\n\nВ начале семестра преподаватель должен объявить за что и сколько дополнительных баллов можно будет получить в течение семестра.',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text("Что дают баллы", style: AppTextStyle.h6),
-            const SizedBox(height: 16),
-            RichText(
-              text: TextSpan(
-                style: AppTextStyle.body.copyWith(color: AppColors.dark.active),
-                children: [
-                  const TextSpan(text: '1. Если общая '),
-                  TextSpan(
-                    text: 'сумма баллов 60 и более',
-                    style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
-                  ),
-                  const TextSpan(
-                    text: ', можно автоматически получить зачет или оценку «удовлетворительно» на экзамене.\n\n',
-                  ),
-                  const TextSpan(
-                    text:
-                        '2. На экзамене можно получить оценки выше, чем «удовлетворительно», однако из баллов, полученных в течение семестра, учитываются только основные баллы (макс. 30 баллов), а ещё 60 баллов можно получить за ответы на экзамене.\n\n',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text("Таблица баллов", style: AppTextStyle.h6),
-            const SizedBox(height: 16),
-            const ScoresTable(),
+            Text("Sistema de evaluación por puntos", style: AppTextStyle.h4),
+const SizedBox(height: 16),
+Text(
+  "Esta sección permite consultar y dar seguimiento a los puntos obtenidos por el estudiante en sus actividades académicas.",
+  style: AppTextStyle.body,
+),
+const ShortDescriptionCard(
+  icon: UniconsSolid.check_circle,
+  text: 'Registro de puntos por materia',
+),
+const ShortDescriptionCard(
+  icon: UniconsSolid.exclamation_circle,
+  text: 'La información mostrada deberá ajustarse a los criterios de evaluación definidos por cada docente.',
+),
+const SizedBox(height: 24),
+Text("Puntos principales", style: AppTextStyle.h6),
+Text(
+  "Actividades base de la materia",
+  style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
+),
+const SizedBox(height: 16),
+Text(
+  "Corresponden a las actividades principales definidas por el docente, como tareas, prácticas, proyectos, exámenes parciales o evidencias académicas.",
+  style: AppTextStyle.body,
+),
+const SizedBox(height: 24),
+Text("Participación y trabajo en clase", style: AppTextStyle.h6),
+Text(
+  "Seguimiento académico",
+  style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
+),
+const SizedBox(height: 16),
+Text(
+  "Este apartado puede utilizarse para registrar participación, asistencia, prácticas en clase o actividades desarrolladas durante las sesiones.",
+  style: AppTextStyle.body,
+),
+const SizedBox(height: 24),
+Text("Puntos adicionales", style: AppTextStyle.h6),
+Text(
+  "Actividades complementarias",
+  style: AppTextStyle.body.copyWith(color: AppColors.dark.primary),
+),
+const SizedBox(height: 16),
+Text(
+  "Incluye actividades extra, entregas complementarias o criterios adicionales que el docente considere dentro de la evaluación.",
+  style: AppTextStyle.body,
+),
+const SizedBox(height: 24),
+Text("Uso de la calculadora", style: AppTextStyle.h6),
+const SizedBox(height: 16),
+Text(
+  "La calculadora funciona como una herramienta de apoyo para que el estudiante pueda estimar su avance académico. Los resultados son informativos y no sustituyen la calificación oficial registrada por la institución.",
+  style: AppTextStyle.body,
+),
+const SizedBox(height: 24),
+Text("Tabla de referencia", style: AppTextStyle.h6),
+const SizedBox(height: 16),
+const ScoresTable(),
           ]),
         ),
       ],

@@ -57,7 +57,7 @@ class ScheduleWidgetUpdater {
     for (final part in scheduleParts) {
       if (part is LessonSchedulePart) {
         // Format classroom information
-        String classroom = 'Неизвестно';
+        String classroom = 'No especificado';
         if (part.classrooms.isNotEmpty) {
           final firstClassroom = part.classrooms.first;
           classroom = firstClassroom.name;
@@ -139,7 +139,7 @@ class ScheduleWidgetUpdater {
     for (final part in scheduleParts) {
       if (part is LessonSchedulePart) {
         // Format classroom information
-        String classroom = 'Неизвестно';
+        String classroom = 'No especificado';
         if (part.classrooms.isNotEmpty) {
           final firstClassroom = part.classrooms.first;
           classroom = firstClassroom.name;

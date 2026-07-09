@@ -80,9 +80,9 @@ class _SetCommentBottomSheetContentState<T> extends State<SetCommentBottomSheetC
             ),
           ),
           const SizedBox(height: 16),
-          Text('Комментарий', style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.primary)),
+          Text('Comentario', style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.primary)),
           const SizedBox(height: 8),
-          TextInput(controller: _commentController, hintText: 'Введите текст комментария...', maxLines: 4),
+          TextInput(controller: _commentController, hintText: 'Escribe el comentario...', maxLines: 4),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +93,7 @@ class _SetCommentBottomSheetContentState<T> extends State<SetCommentBottomSheetC
                     _commentController.clear();
                   },
                   icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
-                  label: Text('Удалить', style: TextStyle(color: theme.colorScheme.error)),
+                  label: Text('Eliminar', style: TextStyle(color: theme.colorScheme.error)),
                 ),
               if (!_hasComment()) const SizedBox.shrink(),
               Animate(
@@ -108,7 +108,7 @@ class _SetCommentBottomSheetContentState<T> extends State<SetCommentBottomSheetC
                           }
                           : null,
                   icon: const Icon(Icons.check_rounded),
-                  label: const Text('Сохранить'),
+                  label: const Text('Guardar'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: theme.colorScheme.onPrimary,
                     backgroundColor: appColors.primary,

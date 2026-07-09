@@ -81,7 +81,7 @@ class DesktopScheduleSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Настройки отображения',
+            'Configuración de visualización',
             style: AppTextStyle.captionL.copyWith(
               color: colors.deactive,
               fontWeight: FontWeight.w600,
@@ -91,7 +91,7 @@ class DesktopScheduleSidebar extends StatelessWidget {
           const SizedBox(height: 12),
           _buildSettingsSwitch(
             context,
-            title: 'Показывать пустые пары',
+            title: 'Mostrar clases vacías',
             value: state.showEmptyLessons,
             onChanged: (value) {
               context.read<ScheduleBloc>().add(ScheduleSetEmptyLessonsDisplaying(showEmptyLessons: value));
@@ -99,7 +99,7 @@ class DesktopScheduleSidebar extends StatelessWidget {
           ),
           _buildSettingsSwitch(
             context,
-            title: 'Показывать индикаторы комментариев',
+            title: 'Mostrar indicadores de comentarios',
             value: state.showCommentsIndicators,
             onChanged: (value) {
               context.read<ScheduleBloc>().add(SetShowCommentsIndicator(showCommentsIndicators: value));
@@ -107,7 +107,7 @@ class DesktopScheduleSidebar extends StatelessWidget {
           ),
           _buildSettingsSwitch(
             context,
-            title: 'Компактный режим карточек',
+            title: 'Modo compacto de tarjetas',
             value: state.isMiniature,
             onChanged: (value) {
               context.read<ScheduleBloc>().add(ScheduleSetDisplayMode(isMiniature: value));

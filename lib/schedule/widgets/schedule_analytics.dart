@@ -378,7 +378,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
       (sum, count) => sum + count,
     );
 
-    final weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    final weekdayNames = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     final barGroups = List.generate(7, (index) {
       final day = index + 1; // 1-indexed (Monday is 1)
       final value = lessonsByDay[day] ?? 0;
@@ -407,13 +407,13 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
     });
 
     final Map<int, String> weekdayFullNames = {
-      1: 'Понедельник',
-      2: 'Вторник',
-      3: 'Среда',
-      4: 'Четверг',
-      5: 'Пятница',
-      6: 'Суббота',
-      7: 'Воскресенье',
+      1: 'Lunes',
+      2: 'Martes',
+      3: 'Miércoles',
+      4: 'Jueves',
+      5: 'Viernes',
+      6: 'Sábado',
+      7: 'Domingo',
     };
 
     // Improved way to find the day with the most lessons:
@@ -548,7 +548,7 @@ class _ScheduleAnalyticsState extends State<ScheduleAnalytics>
                     value: '${lessonsByDay.values.maxOrNull ?? 0}',
                     icon: HugeIcons.strokeRoundedChartBubble01,
                     color: colors.colorful03,
-                    subtitle: 'Самый загруженный день',
+                    subtitle: 'Día con mayor carga',
                   ),
                 ),
               ],

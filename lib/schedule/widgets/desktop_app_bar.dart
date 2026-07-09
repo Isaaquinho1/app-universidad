@@ -87,7 +87,7 @@ class DesktopAppBar extends StatelessWidget {
                    HugeIcon(icon: HugeIcons.strokeRoundedCalendar04, size: 18, color: colors.colorful04),
                   const SizedBox(width: 8),
                   Text(
-                    '$weekNumber неделя',
+                    '$weekNumber semana',
                     style: AppTextStyle.body.copyWith(fontWeight: FontWeight.w500, color: colors.active),
                   ),
                   const SizedBox(width: 4),
@@ -105,14 +105,14 @@ class DesktopAppBar extends StatelessWidget {
               _buildNavButton(
                 context,
                 icon: HugeIcons.strokeRoundedArrowLeft01,
-                tooltip: 'Предыдущий день',
+                tooltip: 'Día anterior',
                 onPressed: onPreviousDay ?? () {},
               ),
               const SizedBox(width: 8),
               _buildNavButton(
                 context,
                 icon: HugeIcons.strokeRoundedArrowRight01,
-                tooltip: 'Следующий день',
+                tooltip: 'Día siguiente',
                 onPressed: onNextDay ?? () {},
               ),
               const SizedBox(width: 16),
@@ -131,7 +131,7 @@ class DesktopAppBar extends StatelessWidget {
                   size: 16,
                 ),
                 label: Text(
-                  'Сегодня',
+                  'Hoy',
                   style: AppTextStyle.captionL.copyWith(
                     color: isToday ? colors.deactive : colors.primary,
                     fontWeight: FontWeight.w500,
@@ -204,7 +204,7 @@ class DesktopAppBar extends StatelessWidget {
         _buildActionIconButton(
           context,
           icon: HugeIcons.strokeRoundedRefresh,
-          tooltip: 'Обновить данные',
+          tooltip: 'Actualizar datos',
           onPressed: onRefreshData,
         ),
 
@@ -214,7 +214,7 @@ class DesktopAppBar extends StatelessWidget {
         _buildActionIconButton(
           context,
           icon: HugeIcons.strokeRoundedGitCompare,
-          tooltip: 'Сравнение расписаний',
+          tooltip: 'Comparación de horarios',
           onPressed: () => context.read<ScheduleBloc>().add(const ToggleComparisonMode()),
           isActive: state.isComparisonModeEnabled,
         ),
@@ -225,7 +225,7 @@ class DesktopAppBar extends StatelessWidget {
         _buildActionIconButton(
           context,
           icon: HugeIcons.strokeRoundedChart,
-          tooltip: 'Аналитика расписания',
+          tooltip: 'Analítica del horario',
           onPressed:
               () => context.read<ScheduleBloc>().add(SetAnalyticsVisibility(showAnalytics: !state.showAnalytics)),
           isActive: state.showAnalytics,
@@ -237,7 +237,7 @@ class DesktopAppBar extends StatelessWidget {
         _buildActionIconButton(
           context,
           icon: HugeIcons.strokeRoundedListView,
-          tooltip: 'Список всех пар',
+          tooltip: 'Lista de todas las clases',
           onPressed: () => context.read<ScheduleBloc>().add(const ToggleListMode()),
           isActive: state.isListModeEnabled,
         ),

@@ -81,8 +81,8 @@ class Calendar extends StatefulWidget {
     final colors = Theme.of(context).extension<AppColors>()!;
     return BottomModalSheet.show(
       context,
-      title: 'Выберите неделю',
-      description: 'Быстрый способ перейти к определённой неделе',
+      title: 'Selecciona la semana',
+      description: 'Acceso rápido a una semana específica',
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.36,
         child: GridView.builder(
@@ -374,9 +374,9 @@ class _CalendarState extends State<Calendar>
           rowHeight: _calendarFormat == CalendarFormat.month ? 36 : 42,
           focusedDay: _focusedDay,
           availableCalendarFormats: const {
-            CalendarFormat.month: 'Месяц',
-            CalendarFormat.twoWeeks: '2 недели',
-            CalendarFormat.week: 'Неделя',
+            CalendarFormat.month: 'Mes',
+            CalendarFormat.twoWeeks: '2 semanas',
+            CalendarFormat.week: 'Semana',
           },
           eventLoader: (day) {
             final events =
@@ -450,7 +450,7 @@ class _CalendarState extends State<Calendar>
     DateTime day,
     AppColors colors,
   ) {
-    final weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    final weekdayNames = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     final weekday = (day.weekday - 1) % 7;
     final isWeekend = day.weekday == DateTime.sunday;
 

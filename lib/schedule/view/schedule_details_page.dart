@@ -97,7 +97,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage>
     _textController.addListener(() {
       if (_textController.text.length > 500 && _textErrorText == null) {
         setState(() {
-          _textErrorText = 'Слишком длинный комментарий';
+          _textErrorText = 'Comentario demasiado largo';
         });
       } else if (_textController.text.length <= 500 && _textErrorText != null) {
         setState(() {
@@ -173,11 +173,11 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage>
 
     final shareText =
         '''
-Занятие: ${widget.lesson.subject}
-Тип: $lessonType
-Дата: $date
-Время: $time
-${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.isNotEmpty ? 'Преподаватель: $teachers\n' : ''}${groups.isNotEmpty ? 'Группы: $groups\n' : ''}
+Clase: ${widget.lesson.subject}
+Tipo: $lessonType
+Fecha: $date
+Hora: $time
+${classrooms.isNotEmpty ? 'Aula: $classrooms\n' : ''}${teachers.isNotEmpty ? 'Docente: $teachers\n' : ''}${groups.isNotEmpty ? 'Grupos: $groups\n' : ''}
     '''.trim();
 
     Share.share(shareText);
@@ -199,7 +199,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // SliverAppBar с эффектом как в iOS
+          // SliverAppBar con efecto similar a iOS
           SliverAppBar(
             expandedHeight: 240,
             pinned: true,
@@ -235,7 +235,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
                       ),
                       const SizedBox(height: 20),
 
-                      // Информационные чипы
+                      // Chips informativos
                       Row(
                         children: [
                           Expanded(
@@ -374,7 +374,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
     BottomModalSheet.show(
       context,
       child: CustomScheduleSelector(lesson: widget.lesson),
-      title: 'Добавить в расписание',
+      title: 'Agregar al horario',
       showFullScreen: true,
       sheetHeight: MediaQuery.of(context).size.height,
       isExpandable: true,
@@ -393,7 +393,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Аудитория',
+                    'Aula',
                     style: AppTextStyle.captionL.copyWith(
                       color: Theme.of(context).extension<AppColors>()!.deactive,
                       fontWeight: FontWeight.w500,
@@ -466,7 +466,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
                         );
                       },
                       icon: const Icon(Icons.directions, size: 18),
-                      label: const Text('Построить маршрут'),
+                      label: const Text('Trazar ruta'),
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         alignment: Alignment.centerLeft,
@@ -487,7 +487,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Группы',
+            'Grupos',
             style: AppTextStyle.captionL.copyWith(
               color: Theme.of(context).extension<AppColors>()!.deactive,
               fontWeight: FontWeight.w500,
@@ -520,7 +520,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Преподаватели',
+            'Docentes',
             style: AppTextStyle.captionL.copyWith(
               color: Theme.of(context).extension<AppColors>()!.deactive,
               fontWeight: FontWeight.w500,
@@ -605,7 +605,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Комментарий',
+            'Comentario',
             style: AppTextStyle.captionL.copyWith(
               color: colors.deactive,
               fontWeight: FontWeight.w500,
@@ -613,7 +613,7 @@ ${classrooms.isNotEmpty ? 'Аудитория: $classrooms\n' : ''}${teachers.is
           ),
           const SizedBox(height: 8),
           TextInput(
-            hintText: 'Введите комментарий к занятию...',
+            hintText: 'Escribe un comentario para la clase...',
             controller: _textController,
             errorText: _textErrorText,
             maxLines: 5,

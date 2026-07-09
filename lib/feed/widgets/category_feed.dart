@@ -38,10 +38,10 @@ class CategoryFeed extends StatelessWidget {
               builder:
                   (context) => Scaffold(
                     body: FailureScreen(
-                      title: 'Ошибка загрузки',
-                      description: 'Не удалось загрузить ленту новостей',
+                      title: 'Error de carga',
+                      description: 'No se pudo cargar el feed de noticias',
                       icon: Icons.error_outline,
-                      buttonText: 'Повторить',
+                      buttonText: 'Reintentar',
                       onButtonPressed: () {
                         context.read<FeedBloc>().add(
                           FeedRefreshRequested(category: category),
@@ -89,10 +89,10 @@ class CategoryFeed extends StatelessWidget {
       if (index == categoryFeed.length) {
         if (isFailure) {
           result = FailureScreen(
-            title: 'Ошибка загрузки',
-            description: 'Не удалось загрузить больше новостей',
+            title: 'Error de carga',
+            description: 'No se pudieron cargar más noticias',
             icon: Icons.error_outline,
-            buttonText: 'Повторить',
+            buttonText: 'Reintentar',
             onButtonPressed: () {
               context.read<FeedBloc>().add(
                 FeedRefreshRequested(category: category),

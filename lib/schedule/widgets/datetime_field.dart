@@ -43,15 +43,15 @@ class DateTimeField extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
-    // Определяем формат даты или времени
+    // Se define el formato de fecha u hora
     final formatter = dateFormat ?? (isTime ? DateFormat('HH:mm') : DateFormat('dd.MM.yyyy (EEE)', 'ru'));
 
     final displayText =
         value != null
             ? formatter.format(value!)
             : isTime
-            ? 'Выберите время'
-            : 'Выберите дату';
+            ? 'Selecciona la hora'
+            : 'Selecciona la fecha';
 
     final defaultIcon = isTime ? HugeIcons.strokeRoundedClock01 : HugeIcons.strokeRoundedCalendar01;
 
@@ -163,7 +163,7 @@ class DateTimeField extends StatelessWidget {
         initialDate: initialDate,
         firstDate: firstDate,
         lastDate: lastDate,
-        locale: const Locale('ru', 'RU'),
+        locale: const Locale('es', 'MX'),
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(

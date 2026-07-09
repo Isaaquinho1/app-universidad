@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart'; // Импортируем flutter_animate
+import 'package:flutter_animate/flutter_animate.dart'; // Se importa flutter_animate
 import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
 
