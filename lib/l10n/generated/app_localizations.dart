@@ -1897,7 +1897,7 @@ abstract class AppLocalizations {
   /// Cloud storage service description
   ///
   /// In en, this message translates to:
-  /// **'On cloud.mirea.ninja you can store up to 10 GB for free (quota can be expanded in the telegram bot), as well as share files and edit documents online together with classmates.'**
+  /// **'Store and share academic files, notes, and documents with your classmates from one place.'**
   String get cloudStorageDescription;
 
   /// Search input placeholder

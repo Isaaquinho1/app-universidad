@@ -1241,7 +1241,7 @@
   "@createAccountDescription": {
     "description": "Create account dialog description"
   },
-  "cloudStorageDescription": "On cloud.mirea.ninja you can store up to 10 GB for free (quota can be expanded in the telegram bot), as well as share files and edit documents online together with classmates.",
+  "cloudStorageDescription": "Store and share academic files, notes, and documents with your classmates from one place.",
   "@cloudStorageDescription": {
     "description": "Cloud storage service description"
   },

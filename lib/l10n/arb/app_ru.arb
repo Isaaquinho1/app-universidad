@@ -1241,7 +1241,7 @@
   "@createAccountDescription": {
     "description": "Описание диалога создания аккаунта"
   },
-  "cloudStorageDescription": "На cloud.mirea.ninja вы можете хранить до 10 ГБ бесплатно (квоту можно расширить в телеграм боте), а также делиться файлами и онлайн редактировать документы вместе с одногруппниками.",
+  "cloudStorageDescription": "Guarda y comparte archivos académicos, apuntes y documentos con tus compañeros desde un solo lugar.",
   "@cloudStorageDescription": {
     "description": "Описание облачного хранилища"
   },

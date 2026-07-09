@@ -948,7 +948,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cloudStorageDescription =>
-      'On cloud.mirea.ninja you can store up to 10 GB for free (quota can be expanded in the telegram bot), as well as share files and edit documents online together with classmates.';
+      'Store and share academic files, notes, and documents with your classmates from one place.';
 
   @override
   String get searchPlaceholder => 'Search';

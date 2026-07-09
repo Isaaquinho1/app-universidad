@@ -1,13 +1,11 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
 
 import 'package:rtu_mirea_app/profile/widgets/widgets.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
 
 enum ThemeOption { light, dark, system }
@@ -89,8 +87,12 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
   }
 
   void _onFeedbackTap(BuildContext context) {
-    launchUrlString('https://t.me/mirea_ninja_chat/473603', mode: LaunchMode.externalApplication);
-  }
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Soporte de la aplicación próximamente.'),
+    ),
+  );
+}
 
   Widget _buildThemeOption(ThemeOption option, String title, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;

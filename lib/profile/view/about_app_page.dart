@@ -94,9 +94,10 @@ class AboutAppPage extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface,
             ),
             onClick: () {
-              launchUrlString(
-                'https://t.me/mirea_ninja_chat/1',
-                mode: LaunchMode.externalApplication,
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                content: Text('Comunidad de la aplicación próximamente.'),
+                ),
               );
             },
           ),
@@ -145,9 +146,10 @@ class AboutAppPage extends StatelessWidget {
             context,
           ).extension<AppColors>()!.colorful07.withBlue(180),
           onClick: () {
-            launchUrlString(
-              'https://t.me/mirea_ninja_chat/473603',
-              mode: LaunchMode.externalApplication,
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+              content: Text('Soporte de la aplicación próximamente.'),
+              ),
             );
           },
         ),

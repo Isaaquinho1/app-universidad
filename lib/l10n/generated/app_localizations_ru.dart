@@ -959,7 +959,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cloudStorageDescription =>
-      'На cloud.mirea.ninja вы можете хранить до 10 ГБ бесплатно (квоту можно расширить в телеграм боте), а также делиться файлами и онлайн редактировать документы вместе с одногруппниками.';
+      'Guarda y comparte archivos académicos, apuntes y documentos con tus compañeros desde un solo lugar.';
 
   @override
   String get searchPlaceholder => 'Поиск';
