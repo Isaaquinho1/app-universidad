@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:news_blocks/news_blocks.dart';
 import 'package:news_blocks_ui/news_blocks_ui.dart';
 import 'package:rtu_mirea_app/categories/categories.dart';
-import 'package:rtu_mirea_app/l10n/l10n.dart';
 
 class CategoryFeedItem extends StatelessWidget {
   const CategoryFeedItem({required this.block, super.key});
