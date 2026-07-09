@@ -77,18 +77,12 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }
 
   Future<void> _onRecieveInteractedMessage(
-    RecieveInteractedMessage event,
-    Emitter<AppState> emit,
-  ) async {
-    final data = event.message.data;
-    Logger().i('Handling message: $data');
-    final discoursePostId = data['discourse_post_id'] as String?;
-    emit(
-      state.copyWith(
-        discoursePostIdToOpen: int.tryParse(discoursePostId ?? ''),
-      ),
-    );
-  }
+  RecieveInteractedMessage event,
+  Emitter<AppState> _,
+) async {
+  final data = event.message.data;
+  Logger().i('Handling message: $data');
+}
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await setupInteractedMessage(emit);
