@@ -34,7 +34,7 @@ class _ServicesViewState extends State<ServicesView>
   bool _isUserInteracting = false;
   bool _isScreenInFocus = true;
 
-  final List<String> _categories = ["Inicio", "Universidad digital"];
+  final List<String> _categories = ["Campus", "Servicios digitales"];
   int _selectedIndex = 0;
   int _currentBannerIndex = 0;
 
@@ -249,11 +249,7 @@ class _ServicesViewState extends State<ServicesView>
         const SizedBox(height: AppSpacing.xlg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: const SectionHeaderWithButton(
-            title: "Comunidades",
-            buttonText: "Ver todo",
-            onPressed: _dummy,
-          ),
+          child: const SectionHeader(title: "Canales oficiales"),
         ),
         const SizedBox(height: AppSpacing.md),
         Padding(
@@ -271,11 +267,8 @@ class _ServicesViewState extends State<ServicesView>
                     url: community.url,
                     logo: CircleAvatar(
                       backgroundColor: colors.background03,
-                        child: Icon(
-                          Icons.school_rounded,
-                            color: colors.active,
-                               ),
-                            ),
+                      child: Icon(Icons.school_rounded, color: colors.active),
+                    ),
                     launchMode: LaunchMode.externalApplication,
                     description: community.description,
                   ),
@@ -290,8 +283,6 @@ class _ServicesViewState extends State<ServicesView>
       ],
     );
   }
-
-  static void _dummy() {}
 
   Widget _buildDigitalUniversityTab() {
     return ListView(

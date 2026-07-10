@@ -7,13 +7,16 @@ class ServicesConfig {
   static const _campusBaseUrl = 'https://www.tlalpan.tecnm.mx/';
 
   /// Get important services for the main tab
-  static List<ImportantServiceModel> getImportantServices(BuildContext context) {
+  static List<ImportantServiceModel> getImportantServices(
+    BuildContext context,
+  ) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     return [
       ImportantServiceModel(
         title: 'Mapa del campus',
-        description: 'Ubica edificios, aulas, áreas administrativas y espacios del TecNM Campus Tlalpan.',
+        description:
+            'Ubica edificios, aulas, áreas administrativas y espacios del TecNM Campus Tlalpan.',
         iconData: Icons.map,
         color: colors.colorful07,
         isExternal: false,
@@ -21,7 +24,8 @@ class ServicesConfig {
       ),
       ImportantServiceModel(
         title: 'Horario de clases',
-        description: 'Consulta y administra tu horario académico desde la aplicación.',
+        description:
+            'Consulta y administra tu horario académico desde la aplicación.',
         iconData: Icons.calendar_month_rounded,
         color: colors.colorful04,
         isExternal: false,
@@ -29,7 +33,8 @@ class ServicesConfig {
       ),
       ImportantServiceModel(
         title: 'Objetos perdidos',
-        description: 'Consulta o reporta objetos extraviados dentro del campus.',
+        description:
+            'Consulta o reporta objetos extraviados dentro del campus.',
         iconData: Icons.search_rounded,
         color: colors.colorful01,
         isExternal: false,
@@ -69,23 +74,25 @@ class ServicesConfig {
     return [
       BannerModel(
         title: 'SII Tlalpan',
-        description: 'Accede al sistema institucional de información del campus.',
+        description:
+            'Accede al sistema institucional de información del campus.',
         iconData: Icons.account_circle_rounded,
         color: colors.colorful03,
         url: 'https://siitlalpan.appspot.com/',
         action: 'Abrir',
       ),
       BannerModel(
-        title: 'Estudiantes',
-        description: 'Consulta información y recursos dirigidos a estudiantes.',
+        title: 'Portal estudiantil',
+        description:
+            'Accede a recursos e información útil para estudiantes del campus.',
         iconData: Icons.school_rounded,
         color: colors.colorful05,
         url: _campusBaseUrl,
         action: 'Consultar',
       ),
       BannerModel(
-        title: 'Calendario escolar',
-        description: 'Revisa fechas académicas relevantes del TecNM.',
+        title: 'Calendario académico',
+        description: 'Consulta fechas importantes del periodo escolar.',
         iconData: Icons.event_note_rounded,
         color: colors.colorful01,
         url: _campusBaseUrl,
@@ -152,7 +159,9 @@ class ServicesConfig {
   }
 
   /// Get student life services
-  static List<HorizontalServiceModel> getStudentLifeServices(BuildContext context) {
+  static List<HorizontalServiceModel> getStudentLifeServices(
+    BuildContext context,
+  ) {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     return [
@@ -187,7 +196,8 @@ class ServicesConfig {
     return [
       WideServiceModel(
         title: 'Directorio institucional',
-        description: 'Consulta áreas administrativas y datos de contacto del campus.',
+        description:
+            'Consulta áreas administrativas y datos de contacto del campus.',
         iconData: Icons.contact_phone_rounded,
         color: colors.colorful01,
         url: _campusBaseUrl,
@@ -201,7 +211,8 @@ class ServicesConfig {
       ),
       WideServiceModel(
         title: 'Contacto del campus',
-        description: 'Cerrada Santa Cruz #4, Predio Tetenco, Topilejo, Tlalpan, CDMX.',
+        description:
+            'Cerrada Santa Cruz #4, Predio Tetenco, Topilejo, Tlalpan, CDMX.',
         iconData: Icons.location_on_rounded,
         color: colors.colorful06,
         url: _campusBaseUrl,
