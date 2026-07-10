@@ -1053,17 +1053,9 @@
   "@addToSelectedSchedule": {
     "description": "Texto del botón para añadir clase al horario seleccionado"
   },
-  "mireaMap": "Mapa del Campus Tlalpan",
-  "@mireaMap": {
-    "description": "Título del servicio Mapa Campus Tlalpan"
-  },
   "findNeededClassroom": "Encuentra el aula necesaria",
   "@findNeededClassroom": {
     "description": "Descripción del servicio Mapa Campus Tlalpan"
-  },
-  "nfcPass": "Pase NFC",
-  "@nfcPass": {
-    "description": "Título del servicio Pase NFC"
   },
   "passForUniversityEntry": "Pase para la entrada a la universidad",
   "@passForUniversityEntry": {
@@ -1072,10 +1064,6 @@
   "cloudMireaNinja": "Cloud Campus Tlalpan",
   "@cloudMireaNinja": {
     "description": "Título del servicio en la nube"
-  },
-  "mireaNinja": "Portal estudiantil",
-  "@mireaNinja": {
-    "description": "Título de la comunidad Campus Tlalpan"
   },
   "mostPopularUnofficialChat": "El chat no oficial más popular",
   "@mostPopularUnofficialChat": {
@@ -1096,14 +1084,6 @@
   "instrumentalAndAppliedSoftware": "Departamento de Software Instrumental y Aplicado",
   "@instrumentalAndAppliedSoftware": {
     "description": "Descripción del Departamento IPPO"
-  },
-  "competitiveProgrammingMirea": "Programación Competitiva",
-  "@competitiveProgrammingMirea": {
-    "description": "Título de programación competitiva"
-  },
-  "competitiveProgrammingDescription": "Espacio para noticias, actividades y recursos relacionados con programación competitiva y tecnología.",
-  "@competitiveProgrammingDescription": {
-    "description": "Descripción de programación competitiva"
   },
   "personalAccount": "Cuenta Personal",
   "@personalAccount": {
@@ -1132,10 +1112,6 @@
   "electronicJournal": "Diario Electrónico",
   "@electronicJournal": {
     "description": "Título del diario electrónico"
-  },
-  "attendanceCheckSchedule": "Control de asistencia, horario",
-  "@attendanceCheckSchedule": {
-    "description": "Descripción del diario electrónico"
   },
   "library": "Biblioteca",
   "@library": {
@@ -1189,21 +1165,9 @@
   "@ideasAndSuggestions": {
     "description": "Descripción del servicio de iniciativas"
   },
-  "virtualTour": "Recorrido Virtual",
-  "@virtualTour": {
-    "description": "Título del servicio de recorrido virtual"
-  },
   "interactiveUniversityTour": "Recorrido interactivo por los edificios de la universidad",
   "@interactiveUniversityTour": {
     "description": "Descripción del recorrido virtual"
-  },
-  "startupAccelerator": "Aceleradora de Startups",
-  "@startupAccelerator": {
-    "description": "Título del servicio de aceleradora de startups"
-  },
-  "startupSupport": "Apoyo a startups e ideas emprendedoras",
-  "@startupSupport": {
-    "description": "Descripción de la aceleradora de startups"
   },
   "corporatePortal": "Portal Corporativo",
   "@corporatePortal": {

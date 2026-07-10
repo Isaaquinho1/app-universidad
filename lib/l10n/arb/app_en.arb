@@ -1053,17 +1053,9 @@
   "@addToSelectedSchedule": {
     "description": "Button text to add class to selected schedule"
   },
-  "mireaMap": "MIREA Map",
-  "@mireaMap": {
-    "description": "MIREA Map service title"
-  },
   "findNeededClassroom": "Find the needed classroom",
   "@findNeededClassroom": {
     "description": "MIREA Map service description"
-  },
-  "nfcPass": "NFC Pass",
-  "@nfcPass": {
-    "description": "NFC Pass service title"
   },
   "passForUniversityEntry": "Pass for university entry",
   "@passForUniversityEntry": {
@@ -1072,10 +1064,6 @@
   "cloudMireaNinja": "Cloud Mirea Ninja",
   "@cloudMireaNinja": {
     "description": "Cloud service title"
-  },
-  "mireaNinja": "Mirea Ninja",
-  "@mireaNinja": {
-    "description": "Mirea Ninja community title"
   },
   "mostPopularUnofficialChat": "Most popular unofficial chat",
   "@mostPopularUnofficialChat": {
@@ -1096,14 +1084,6 @@
   "instrumentalAndAppliedSoftware": "Instrumental and Applied Software Department",
   "@instrumentalAndAppliedSoftware": {
     "description": "IPPO Department description"
-  },
-  "competitiveProgrammingMirea": "Competitive Programming MIREA",
-  "@competitiveProgrammingMirea": {
-    "description": "Competitive programming title"
-  },
-  "competitiveProgrammingDescription": "Various news and updates on competitive programming at MIREA are published here",
-  "@competitiveProgrammingDescription": {
-    "description": "Competitive programming description"
   },
   "personalAccount": "Personal Account",
   "@personalAccount": {
@@ -1132,10 +1112,6 @@
   "electronicJournal": "Electronic Journal",
   "@electronicJournal": {
     "description": "Electronic journal title"
-  },
-  "attendanceCheckSchedule": "Attendance check, schedule",
-  "@attendanceCheckSchedule": {
-    "description": "Electronic journal description"
   },
   "library": "Library",
   "@library": {
@@ -1189,21 +1165,9 @@
   "@ideasAndSuggestions": {
     "description": "Initiative service description"
   },
-  "virtualTour": "Virtual Tour",
-  "@virtualTour": {
-    "description": "Virtual tour service title"
-  },
   "interactiveUniversityTour": "Interactive tour of university buildings",
   "@interactiveUniversityTour": {
     "description": "Virtual tour description"
-  },
-  "startupAccelerator": "Startup Accelerator",
-  "@startupAccelerator": {
-    "description": "Startup accelerator service title"
-  },
-  "startupSupport": "Startup and entrepreneurial ideas support",
-  "@startupSupport": {
-    "description": "Startup accelerator description"
   },
   "corporatePortal": "Corporate Portal",
   "@corporatePortal": {

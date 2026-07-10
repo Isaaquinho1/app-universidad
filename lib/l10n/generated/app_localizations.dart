@@ -1610,23 +1610,11 @@ abstract class AppLocalizations {
   /// **'Add to selected schedule'**
   String get addToSelectedSchedule;
 
-  /// MIREA Map service title
-  ///
-  /// In en, this message translates to:
-  /// **'MIREA Map'**
-  String get mireaMap;
-
   /// MIREA Map service description
   ///
   /// In en, this message translates to:
   /// **'Find the needed classroom'**
   String get findNeededClassroom;
-
-  /// NFC Pass service title
-  ///
-  /// In en, this message translates to:
-  /// **'NFC Pass'**
-  String get nfcPass;
 
   /// NFC Pass service description
   ///
@@ -1639,12 +1627,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cloud Mirea Ninja'**
   String get cloudMireaNinja;
-
-  /// Mirea Ninja community title
-  ///
-  /// In en, this message translates to:
-  /// **'Mirea Ninja'**
-  String get mireaNinja;
 
   /// Mirea Ninja community description
   ///
@@ -1675,18 +1657,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Instrumental and Applied Software Department'**
   String get instrumentalAndAppliedSoftware;
-
-  /// Competitive programming title
-  ///
-  /// In en, this message translates to:
-  /// **'Competitive Programming MIREA'**
-  String get competitiveProgrammingMirea;
-
-  /// Competitive programming description
-  ///
-  /// In en, this message translates to:
-  /// **'Various news and updates on competitive programming at MIREA are published here'**
-  String get competitiveProgrammingDescription;
 
   /// Personal account service title
   ///
@@ -1729,12 +1699,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Electronic Journal'**
   String get electronicJournal;
-
-  /// Electronic journal description
-  ///
-  /// In en, this message translates to:
-  /// **'Attendance check, schedule'**
-  String get attendanceCheckSchedule;
 
   /// Library service title
   ///
@@ -1814,29 +1778,11 @@ abstract class AppLocalizations {
   /// **'Ideas and suggestions'**
   String get ideasAndSuggestions;
 
-  /// Virtual tour service title
-  ///
-  /// In en, this message translates to:
-  /// **'Virtual Tour'**
-  String get virtualTour;
-
   /// Virtual tour description
   ///
   /// In en, this message translates to:
   /// **'Interactive tour of university buildings'**
   String get interactiveUniversityTour;
-
-  /// Startup accelerator service title
-  ///
-  /// In en, this message translates to:
-  /// **'Startup Accelerator'**
-  String get startupAccelerator;
-
-  /// Startup accelerator description
-  ///
-  /// In en, this message translates to:
-  /// **'Startup and entrepreneurial ideas support'**
-  String get startupSupport;
 
   /// Corporate portal service title
   ///

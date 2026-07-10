@@ -799,22 +799,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToSelectedSchedule => 'Add to selected schedule';
 
   @override
-  String get mireaMap => 'MIREA Map';
-
-  @override
   String get findNeededClassroom => 'Find the needed classroom';
-
-  @override
-  String get nfcPass => 'NFC Pass';
 
   @override
   String get passForUniversityEntry => 'Pass for university entry';
 
   @override
   String get cloudMireaNinja => 'Cloud Mirea Ninja';
-
-  @override
-  String get mireaNinja => 'Mirea Ninja';
 
   @override
   String get mostPopularUnofficialChat => 'Most popular unofficial chat';
@@ -832,13 +823,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get instrumentalAndAppliedSoftware =>
       'Instrumental and Applied Software Department';
-
-  @override
-  String get competitiveProgrammingMirea => 'Competitive Programming MIREA';
-
-  @override
-  String get competitiveProgrammingDescription =>
-      'Various news and updates on competitive programming at MIREA are published here';
 
   @override
   String get personalAccount => 'Personal Account';
@@ -861,9 +845,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get electronicJournal => 'Electronic Journal';
-
-  @override
-  String get attendanceCheckSchedule => 'Attendance check, schedule';
 
   @override
   String get library => 'Library';
@@ -906,17 +887,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ideasAndSuggestions => 'Ideas and suggestions';
 
   @override
-  String get virtualTour => 'Virtual Tour';
-
-  @override
   String get interactiveUniversityTour =>
       'Interactive tour of university buildings';
-
-  @override
-  String get startupAccelerator => 'Startup Accelerator';
-
-  @override
-  String get startupSupport => 'Startup and entrepreneurial ideas support';
 
   @override
   String get corporatePortal => 'Corporate Portal';

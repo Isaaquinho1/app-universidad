@@ -806,22 +806,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addToSelectedSchedule => 'Añadir al horario seleccionado';
 
   @override
-  String get mireaMap => 'Mapa del Campus Tlalpan';
-
-  @override
   String get findNeededClassroom => 'Encuentra el aula necesaria';
-
-  @override
-  String get nfcPass => 'Pase NFC';
 
   @override
   String get passForUniversityEntry => 'Pase para la entrada a la universidad';
 
   @override
   String get cloudMireaNinja => 'Cloud Campus Tlalpan';
-
-  @override
-  String get mireaNinja => 'Portal estudiantil';
 
   @override
   String get mostPopularUnofficialChat => 'El chat no oficial más popular';
@@ -839,13 +830,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get instrumentalAndAppliedSoftware =>
       'Departamento de Software Instrumental y Aplicado';
-
-  @override
-  String get competitiveProgrammingMirea => 'Programación Competitiva';
-
-  @override
-  String get competitiveProgrammingDescription =>
-      'Espacio para noticias, actividades y recursos relacionados con programación competitiva y tecnología.';
 
   @override
   String get personalAccount => 'Cuenta Personal';
@@ -868,9 +852,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get electronicJournal => 'Diario Electrónico';
-
-  @override
-  String get attendanceCheckSchedule => 'Control de asistencia, horario';
 
   @override
   String get library => 'Biblioteca';
@@ -913,17 +894,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ideasAndSuggestions => 'Ideas y sugerencias';
 
   @override
-  String get virtualTour => 'Recorrido Virtual';
-
-  @override
   String get interactiveUniversityTour =>
       'Recorrido interactivo por los edificios de la universidad';
-
-  @override
-  String get startupAccelerator => 'Aceleradora de Startups';
-
-  @override
-  String get startupSupport => 'Apoyo a startups e ideas emprendedoras';
 
   @override
   String get corporatePortal => 'Portal Corporativo';
