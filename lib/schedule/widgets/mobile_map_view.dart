@@ -14,13 +14,15 @@ Widget createMapView({required double latitude, required double longitude}) {
       initialCenter: markerLocation,
       initialZoom: 16.0,
       onTap: (tapPosition, tapPoint) {
-        launchUrlString('https://www.openstreetmap.org/?mlat=${tapPoint.latitude}&mlon=${tapPoint.longitude}&zoom=16');
+        launchUrlString(
+          'https://www.openstreetmap.org/?mlat=${tapPoint.latitude}&mlon=${tapPoint.longitude}&zoom=16',
+        );
       },
     ),
     children: [
       TileLayer(
         urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        userAgentPackageName: 'ru.mirea.app',
+        userAgentPackageName: 'mx.tecnm.tlalpan.app',
         maxZoom: 19,
       ),
       MarkerLayer(

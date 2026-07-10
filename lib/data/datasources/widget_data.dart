@@ -7,7 +7,8 @@ import 'package:home_widget/home_widget.dart';
 class HomeScreenWidgetService {
   static const String _scheduleKey = 'schedule';
   static const String _widgetName = 'ScheduleWidgetReceiver';
-  static const String _widgetAndroidPackage = 'ninja.mirea.mireaapp.glance';
+  static const String _widgetAndroidPackage =
+      'mx.tecnm.tlalpan.conectaitt.glance';
 
   /// Sets schedule data for the widget
   Future<void> setSchedule(String scheduleJson) async {
@@ -22,7 +23,10 @@ class HomeScreenWidgetService {
       debugPrint('Setting schedule data: ${scheduleJson.length} bytes');
 
       // Save widget data
-      final result = await HomeWidget.saveWidgetData(_scheduleKey, scheduleJson);
+      final result = await HomeWidget.saveWidgetData(
+        _scheduleKey,
+        scheduleJson,
+      );
       debugPrint('Widget data save result: $result');
 
       // Update the widget
