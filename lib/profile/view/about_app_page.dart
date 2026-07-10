@@ -1,4 +1,3 @@
-import 'package:rtu_mirea_app/sponsors/view/sponsors_view.dart';
 import 'package:unicons/unicons.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ui/app_ui.dart';
@@ -18,8 +17,6 @@ class AboutAppPage extends StatelessWidget {
             SliverList(
               delegate: SliverChildListDelegate([
                 _buildHeader(context),
-                const SizedBox(height: 24),
-                _buildSponsorsSection(),
                 const SizedBox(height: 24),
                 _buildContributorsSection(),
                 const SizedBox(height: 24),
@@ -77,7 +74,7 @@ class AboutAppPage extends StatelessWidget {
             ),
             onClick: () {
               launchUrlString(
-                'https://github.com/0niel/university-app',
+                'https://github.com/Isaaquinho1/app-universidad',
                 mode: LaunchMode.externalApplication,
               );
             },
@@ -105,19 +102,6 @@ class AboutAppPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSponsorsSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Colaboradores 💙', style: AppTextStyle.h6),
-          const SizedBox(height: 16),
-          const SponsorsView(),
-        ],
-      ),
-    );
-  }
 
   Widget _buildContributorsSection() {
   return Padding(
@@ -138,12 +122,12 @@ class AboutAppPage extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Jessica Viannney Sánchez Díaz',
+          'Jessica Vianney Sánchez Díaz',
           style: AppTextStyle.bodyBold,
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Colaborador del proyecto.',
+          'Colaboradora del proyecto.',
           style: AppTextStyle.body,
         ),
         const SizedBox(height: AppSpacing.md),
