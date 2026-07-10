@@ -770,9 +770,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorLoadingPost => 'Error al cargar la publicación';
 
   @override
-  String get errorLoadingContributors => 'Error al cargar los colaboradores';
-
-  @override
   String get relatedArticles => 'Artículos relacionados';
 
   @override

@@ -20,7 +20,7 @@
   "@selectDates": {
     "description": "Texto del botón para seleccionar un rango de fechas"
   },
- "enableComparisonMode": "Activar modo comparación",
+  "enableComparisonMode": "Activar modo comparación",
   "@enableComparisonMode": {
     "description": "Texto emergente para activar el modo comparación"
   },
@@ -60,7 +60,7 @@
   "@previousDay": {
     "description": "Texto emergente para el botón de día anterior"
   },
- "nextDay": "Día siguiente",
+  "nextDay": "Día siguiente",
   "@nextDay": {
     "description": "Texto emergente para el botón de día siguiente"
   },
@@ -124,7 +124,7 @@
   "@canRestOrStudy": {
     "description": "Sugerencia para el tiempo libre"
   },
- "goToAnotherDay": "Ir a otro día",
+  "goToAnotherDay": "Ir a otro día",
   "@goToAnotherDay": {
     "description": "Texto del botón para navegar a otro día"
   },
@@ -349,7 +349,7 @@
   "@deleteSchedule": {
     "description": "Título del diálogo para eliminar el horario"
   },
- "deleteScheduleConfirmation": "¿Estás seguro de que quieres eliminar el horario \"{scheduleName}\"?",
+  "deleteScheduleConfirmation": "¿Estás seguro de que quieres eliminar el horario \"{scheduleName}\"?",
   "@deleteScheduleConfirmation": {
     "description": "Mensaje de confirmación para eliminar un horario",
     "placeholders": {
@@ -411,7 +411,7 @@
   "@addTeacher": {
     "description": "Título del diálogo para añadir un profesor"
   },
- "add": "Añadir",
+  "add": "Añadir",
   "@add": {
     "description": "Texto del botón para añadir"
   },
@@ -665,7 +665,7 @@
   "@addClassroomToSeeSchedule": {
     "description": "Instrucción para añadir un aula"
   },
- "failedToLoadSchedules": "Error al cargar los horarios",
+  "failedToLoadSchedules": "Error al cargar los horarios",
   "@failedToLoadSchedules": {
     "description": "Mensaje de error cuando fallan al cargar los horarios"
   },
@@ -890,7 +890,7 @@
   "@selectAtLeastOneDateError": {
     "description": "Error de selección de fecha"
   },
- "addAtLeastOneClassroomError": "Añade al menos un aula o marca la clase como online",
+  "addAtLeastOneClassroomError": "Añade al menos un aula o marca la clase como online",
   "@addAtLeastOneClassroomError": {
     "description": "Error de selección de aula"
   },
@@ -1004,10 +1004,6 @@
   "errorLoadingPost": "Error al cargar la publicación",
   "@errorLoadingPost": {
     "description": "Mensaje de error al cargar la publicación"
-  },
-  "errorLoadingContributors": "Error al cargar los colaboradores",
-  "@errorLoadingContributors": {
-    "description": "Mensaje de error al cargar los colaboradores"
   },
   "relatedArticles": "Artículos relacionados",
   "@relatedArticles": {

@@ -1538,12 +1538,6 @@ abstract class AppLocalizations {
   /// **'Error loading post'**
   String get errorLoadingPost;
 
-  /// Error loading contributors message
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading contributors'**
-  String get errorLoadingContributors;
-
   /// Section title for related articles
   ///
   /// In en, this message translates to:

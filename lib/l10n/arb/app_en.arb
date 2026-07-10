@@ -1005,10 +1005,6 @@
   "@errorLoadingPost": {
     "description": "Error loading post message"
   },
-  "errorLoadingContributors": "Error loading contributors",
-  "@errorLoadingContributors": {
-    "description": "Error loading contributors message"
-  },
   "relatedArticles": "Related articles",
   "@relatedArticles": {
     "description": "Section title for related articles"

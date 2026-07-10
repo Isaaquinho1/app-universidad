@@ -763,9 +763,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLoadingPost => 'Error loading post';
 
   @override
-  String get errorLoadingContributors => 'Error loading contributors';
-
-  @override
   String get relatedArticles => 'Related articles';
 
   @override
