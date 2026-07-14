@@ -77,12 +77,12 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }
 
   Future<void> _onRecieveInteractedMessage(
-  RecieveInteractedMessage event,
-  Emitter<AppState> _,
-) async {
-  final data = event.message.data;
-  Logger().i('Handling message: $data');
-}
+    RecieveInteractedMessage event,
+    Emitter<AppState> _,
+  ) async {
+    final data = event.message.data;
+    Logger().i('Handling message: $data');
+  }
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await setupInteractedMessage(emit);

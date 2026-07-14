@@ -175,8 +175,11 @@ class _AppViewState extends State<_AppView> {
                               Locale('en'),
                               Locale('es'),
                             ],
-                            localeResolutionCallback: (deviceLocale, supportedLocales) {
-                            return const Locale('es');
+                            localeResolutionCallback: (
+                              deviceLocale,
+                              supportedLocales,
+                            ) {
+                              return const Locale('es');
                             },
                             debugShowCheckedModeBanner: false,
                             title: 'ITTlapan',
