@@ -9,6 +9,7 @@ import 'package:news_repository/news_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:rtu_mirea_app/common/utils/logger.dart';
+import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
 import 'package:rtu_mirea_app/main/bootstrap/bloc_observer_initializer.dart';
 import 'package:rtu_mirea_app/main/bootstrap/firebase_initializer.dart';
 import 'package:rtu_mirea_app/main/bootstrap/supabase_initializer.dart';
@@ -37,6 +38,7 @@ abstract class AppScope implements Scope {
   ArticleRepository get articleRepository;
   LostFoundRepository get lostFoundRepository;
   UserRepository get userRepository;
+  AppUserProfileRepository get appUserProfileRepository;
   SupabaseClient get supabaseClient;
   ApiClient get apiClient;
 }
@@ -135,6 +137,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
       storage: _userStorageDep.get,
     ),
   );
+  late final _appUserProfileRepositoryDep = dep(
+    () => const AppUserProfileRepository(),
+  );
   late final _scheduleRepositoryDep = dep(
     () => ScheduleRepository(apiClient: _apiClientDep.get),
   );
@@ -204,6 +209,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   LostFoundRepository get lostFoundRepository => _lostFoundRepositoryDep.get;
   @override
   UserRepository get userRepository => _userRepositoryDep.get;
+  @override
+  AppUserProfileRepository get appUserProfileRepository =>
+      _appUserProfileRepositoryDep.get;
   @override
   SupabaseClient get supabaseClient => _supabaseClientDep.get;
   @override
