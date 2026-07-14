@@ -75,6 +75,8 @@ class App extends StatelessWidget {
                     (_) => AppBloc(
                       firebaseMessaging: FirebaseMessaging.instance,
                       userRepository: appScope.userRepository,
+                      appUserProfileRepository:
+                          appScope.appUserProfileRepository,
                       user: _user,
                     )..add(const AppOpened()),
               ),

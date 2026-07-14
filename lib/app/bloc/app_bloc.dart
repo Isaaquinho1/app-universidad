@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
+import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'app_event.dart';
@@ -13,9 +14,11 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   AppBloc({
     required FirebaseMessaging firebaseMessaging,
     required UserRepository userRepository,
+    required AppUserProfileRepository appUserProfileRepository,
     required User user,
   }) : _firebaseMessaging = firebaseMessaging,
        _userRepository = userRepository,
+       _appUserProfileRepository = appUserProfileRepository,
        super(
          user == User.anonymous
              ? const AppState.unauthenticated()
@@ -31,13 +34,25 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
   final UserRepository _userRepository;
   final FirebaseMessaging _firebaseMessaging;
+  final AppUserProfileRepository _appUserProfileRepository;
 
   late StreamSubscription<User> _userSubscription;
 
   void _userChanged(User user) => add(AppUserChanged(user));
 
-  void _onUserChanged(AppUserChanged event, Emitter<AppState> emit) {
+  Future<void> _onUserChanged(
+    AppUserChanged event,
+    Emitter<AppState> emit,
+  ) async {
     final user = event.user;
+
+    if (user != User.anonymous) {
+      await _appUserProfileRepository.ensureStudentProfile(
+        uid: user.id,
+        email: user.email,
+        displayName: user.name,
+      );
+    }
 
     switch (state.status) {
       case AppStatus.onboardingRequired:
