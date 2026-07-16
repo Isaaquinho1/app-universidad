@@ -8,6 +8,7 @@ import 'package:lost_and_found_repository/lost_and_found_repository.dart';
 import 'package:news_repository/news_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:persistent_storage/persistent_storage.dart';
+import 'package:rtu_mirea_app/announcements/announcements.dart';
 import 'package:rtu_mirea_app/common/utils/logger.dart';
 import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
 import 'package:rtu_mirea_app/main/bootstrap/bloc_observer_initializer.dart';
@@ -39,6 +40,7 @@ abstract class AppScope implements Scope {
   LostFoundRepository get lostFoundRepository;
   UserRepository get userRepository;
   AppUserProfileRepository get appUserProfileRepository;
+  AnnouncementRepository get announcementRepository;
   SupabaseClient get supabaseClient;
   ApiClient get apiClient;
 }
@@ -94,9 +96,7 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
     () => PersistentStorage(sharedPreferences: _sharedPreferencesDep.get),
   );
   late final _flutterSecureStorageDep = dep(
-    () => const FlutterSecureStorage(
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    ),
+    () => const FlutterSecureStorage(aOptions: AndroidOptions()),
   );
   late final _secureStorageDep = dep(
     () => SecureStorage(_flutterSecureStorageDep.get),
@@ -138,7 +138,10 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
     ),
   );
   late final _appUserProfileRepositoryDep = dep(
-    () => const AppUserProfileRepository(),
+    () => AppUserProfileRepository(supabaseClient: _supabaseClientDep.get),
+  );
+  late final _announcementRepositoryDep = dep(
+    () => AnnouncementRepository(supabaseClient: _supabaseClientDep.get),
   );
   late final _scheduleRepositoryDep = dep(
     () => ScheduleRepository(apiClient: _apiClientDep.get),
@@ -212,6 +215,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   AppUserProfileRepository get appUserProfileRepository =>
       _appUserProfileRepositoryDep.get;
+  @override
+  AnnouncementRepository get announcementRepository =>
+      _announcementRepositoryDep.get;
   @override
   SupabaseClient get supabaseClient => _supabaseClientDep.get;
   @override

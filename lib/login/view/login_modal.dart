@@ -6,7 +6,8 @@ import 'package:rtu_mirea_app/login/login.dart';
 class LoginModal extends StatelessWidget {
   const LoginModal({super.key});
 
-  static Route<void> route() => MaterialPageRoute<void>(builder: (_) => const LoginModal());
+  static Route<void> route() =>
+      MaterialPageRoute<void>(builder: (_) => const LoginModal());
 
   static const String name = '/loginModal';
 

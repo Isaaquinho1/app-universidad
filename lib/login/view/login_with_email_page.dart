@@ -7,7 +7,8 @@ import 'package:user_repository/user_repository.dart';
 class LoginWithEmailPage extends StatelessWidget {
   const LoginWithEmailPage({super.key});
 
-  static Route<void> route() => MaterialPageRoute<void>(builder: (_) => const LoginWithEmailPage());
+  static Route<void> route() =>
+      MaterialPageRoute<void>(builder: (_) => const LoginWithEmailPage());
 
   @override
   Widget build(BuildContext context) {

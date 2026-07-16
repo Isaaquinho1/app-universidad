@@ -1,37 +1,39 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+import 'dart:async';
 
-/// Repository that manages institutional user profiles in Firestore.
+import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+/// Repository that manages institutional profiles in Supabase.
 class AppUserProfileRepository {
   /// Creates an [AppUserProfileRepository].
-  const AppUserProfileRepository({FirebaseFirestore? firestore})
-    : _firestore = firestore;
+  const AppUserProfileRepository({required SupabaseClient supabaseClient})
+    : _supabaseClient = supabaseClient;
 
-  final FirebaseFirestore? _firestore;
+  final SupabaseClient _supabaseClient;
 
-  FirebaseFirestore get _db => _firestore ?? FirebaseFirestore.instance;
-
-  CollectionReference<Map<String, dynamic>> get _usersCollection =>
-      _db.collection('users');
-
-  /// Returns the Firestore document reference for a user profile.
-  DocumentReference<Map<String, dynamic>> userDocument(String uid) {
-    return _usersCollection.doc(uid);
-  }
+  static const _profilesTable = 'profiles';
+  static const _fcmTokensTable = 'user_fcm_tokens';
 
   /// Watches the institutional profile for the provided [uid].
+  ///
+  /// The initial profile is emitted immediately. Further database updates
+  /// require Realtime to be enabled for the `profiles` table.
   Stream<AppUserProfile?> watchProfile(String uid) {
     if (uid.isEmpty) {
       return Stream.value(null);
     }
 
-    return userDocument(uid).snapshots().map((snapshot) {
-      if (!snapshot.exists) {
-        return null;
-      }
+    return _supabaseClient
+        .from(_profilesTable)
+        .stream(primaryKey: const ['id'])
+        .eq('id', uid)
+        .map((rows) {
+          if (rows.isEmpty) {
+            return null;
+          }
 
-      return AppUserProfile.fromFirestore(snapshot);
-    });
+          return AppUserProfile.fromSupabase(rows.first);
+        });
   }
 
   /// Fetches the institutional profile for the provided [uid].
@@ -40,52 +42,60 @@ class AppUserProfileRepository {
       return null;
     }
 
-    final snapshot = await userDocument(uid).get();
+    final row =
+        await _supabaseClient
+            .from(_profilesTable)
+            .select()
+            .eq('id', uid)
+            .maybeSingle();
 
-    if (!snapshot.exists) {
+    if (row == null) {
       return null;
     }
 
-    return AppUserProfile.fromFirestore(snapshot);
+    return AppUserProfile.fromSupabase(row);
   }
 
-  /// Creates a basic student profile if the user document does not exist.
+  /// Returns the profile created by the `auth.users` database trigger.
+  ///
+  /// Profile creation is intentionally performed by the database. Flutter
+  /// must not insert profiles directly because role and account classification
+  /// are protected server-side.
   Future<AppUserProfile> ensureStudentProfile({
     required String uid,
     String? email,
     String? displayName,
   }) async {
-    final document = userDocument(uid);
-    final snapshot = await document.get();
-
-    if (snapshot.exists) {
-      return AppUserProfile.fromFirestore(snapshot);
+    if (uid.isEmpty) {
+      throw ArgumentError.value(uid, 'uid', 'UID cannot be empty.');
     }
 
-    final data = <String, dynamic>{
-      'uid': uid,
-      'email': email,
-      'displayName': displayName,
-      'role': AppUserRole.student.value,
-      'careerId': null,
-      'semester': null,
-      'groupId': null,
-      'controlNumber': null,
-      'fcmTokens': <String, String>{},
-      'profileCompleted': false,
-      'active': true,
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
+    final authenticatedUser = _supabaseClient.auth.currentUser;
 
-    await document.set(data);
+    if (authenticatedUser == null || authenticatedUser.id != uid) {
+      throw StateError(
+        'The authenticated Supabase user does not match the requested profile.',
+      );
+    }
 
-    final createdSnapshot = await document.get();
+    // The auth trigger is synchronous, but a short retry also protects the app
+    // against transient network or replication delays.
+    for (var attempt = 0; attempt < 4; attempt++) {
+      final profile = await fetchProfile(uid);
 
-    return AppUserProfile.fromFirestore(createdSnapshot);
+      if (profile != null) {
+        return profile;
+      }
+
+      await Future<void>.delayed(Duration(milliseconds: 200 * (attempt + 1)));
+    }
+
+    throw StateError(
+      'No institutional profile exists for the authenticated user.',
+    );
   }
 
-  /// Updates institutional profile fields for the provided [uid].
+  /// Updates academic fields through the protected database function.
   Future<void> updateProfile({
     required String uid,
     String? displayName,
@@ -95,41 +105,96 @@ class AppUserProfileRepository {
     String? controlNumber,
     bool? profileCompleted,
   }) async {
-    final data = <String, dynamic>{
-      if (displayName != null) 'displayName': displayName,
-      if (careerId != null) 'careerId': careerId,
-      if (semester != null) 'semester': semester,
-      if (groupId != null) 'groupId': groupId,
-      if (controlNumber != null) 'controlNumber': controlNumber,
-      if (profileCompleted != null) 'profileCompleted': profileCompleted,
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
+    _validateCurrentUser(uid);
 
-    await userDocument(uid).set(data, SetOptions(merge: true));
+    if (controlNumber != null) {
+      throw UnsupportedError(
+        'The control number is generated from the institutional email '
+        'and cannot be updated from the client.',
+      );
+    }
+
+    await _supabaseClient.rpc(
+      'update_own_profile',
+      params: {
+        'p_display_name': displayName,
+        'p_career_id': careerId,
+        'p_semester': semester,
+        'p_group_id': groupId,
+        'p_profile_completed': profileCompleted,
+      },
+    );
   }
 
   /// Updates the role of a user.
   ///
-  /// This must only be called from trusted admin flows.
+  /// Roles cannot be changed directly from the mobile client. A dedicated
+  /// superAdmin RPC or trusted backend flow will be implemented later.
   Future<void> updateRole({
     required String uid,
     required AppUserRole role,
   }) async {
-    await userDocument(uid).set({
-      'role': role.value,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    throw UnsupportedError(
+      'Institutional roles must be changed through a trusted admin flow.',
+    );
   }
 
-  /// Stores or updates a Firebase Cloud Messaging token for the user.
+  /// Stores or updates an FCM token for one user device.
   Future<void> updateFcmToken({
     required String uid,
     required String deviceId,
     required String token,
   }) async {
-    await userDocument(uid).set({
-      'fcmTokens.$deviceId': token,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    _validateCurrentUser(uid);
+
+    if (deviceId.trim().isEmpty) {
+      throw ArgumentError.value(
+        deviceId,
+        'deviceId',
+        'Device ID cannot be empty.',
+      );
+    }
+
+    if (token.trim().isEmpty) {
+      throw ArgumentError.value(token, 'token', 'FCM token cannot be empty.');
+    }
+
+    final existingRow =
+        await _supabaseClient
+            .from(_fcmTokensTable)
+            .select('id')
+            .eq('user_id', uid)
+            .eq('device_id', deviceId)
+            .maybeSingle();
+
+    final values = <String, dynamic>{
+      'user_id': uid,
+      'device_id': deviceId,
+      'token': token,
+      'active': true,
+      'last_seen_at': DateTime.now().toUtc().toIso8601String(),
+    };
+
+    if (existingRow == null) {
+      await _supabaseClient.from(_fcmTokensTable).insert(values);
+      return;
+    }
+
+    await _supabaseClient
+        .from(_fcmTokensTable)
+        .update(values)
+        .eq('id', existingRow['id']!);
+  }
+
+  void _validateCurrentUser(String uid) {
+    final authenticatedUser = _supabaseClient.auth.currentUser;
+
+    if (authenticatedUser == null) {
+      throw StateError('An authenticated Supabase user is required.');
+    }
+
+    if (authenticatedUser.id != uid) {
+      throw StateError('The authenticated user cannot modify another profile.');
+    }
   }
 }

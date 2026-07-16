@@ -12,18 +12,18 @@ class AppOpened extends AppEvent {
 }
 
 class RecieveInteractedMessage extends AppEvent {
-  final RemoteMessage message;
-
   const RecieveInteractedMessage(this.message);
+
+  final RemoteMessage message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class ThemeChanged extends AppEvent {
-  final bool isAmoled;
-
   const ThemeChanged(this.isAmoled);
+
+  final bool isAmoled;
 
   @override
   List<Object?> get props => [isAmoled];
@@ -36,6 +36,16 @@ class AppUserChanged extends AppEvent {
 
   @override
   List<Object> get props => [user];
+}
+
+/// Emitted whenever the institutional Firestore profile changes.
+class AppInstitutionalProfileChanged extends AppEvent {
+  const AppInstitutionalProfileChanged(this.profile);
+
+  final AppUserProfile? profile;
+
+  @override
+  List<Object?> get props => [profile];
 }
 
 class AppLogoutRequested extends AppEvent {

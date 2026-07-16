@@ -8,7 +8,8 @@ import 'package:user_repository/user_repository.dart';
 part 'login_with_email_link_event.dart';
 part 'login_with_email_link_state.dart';
 
-class LoginWithEmailLinkBloc extends Bloc<LoginWithEmailLinkEvent, LoginWithEmailLinkState> {
+class LoginWithEmailLinkBloc
+    extends Bloc<LoginWithEmailLinkEvent, LoginWithEmailLinkState> {
   LoginWithEmailLinkBloc({required UserRepository userRepository})
     : _userRepository = userRepository,
       super(const LoginWithEmailLinkState()) {
@@ -32,18 +33,26 @@ class LoginWithEmailLinkBloc extends Bloc<LoginWithEmailLinkEvent, LoginWithEmai
 
       final currentUser = await _userRepository.user.first;
       if (!currentUser.isAnonymous) {
-        throw LogInWithEmailLinkFailure(Exception('The user is already logged in'));
+        throw LogInWithEmailLinkFailure(
+          Exception('The user is already logged in'),
+        );
       }
 
       final emailLink = event.emailLink;
       if (!emailLink.queryParameters.containsKey('code')) {
-        throw LogInWithEmailLinkFailure(Exception('No `code` parameter found in the received email link'));
+        throw LogInWithEmailLinkFailure(
+          Exception('No `code` parameter found in the received email link'),
+        );
       }
 
-      final redirectUrl = Uri.tryParse(emailLink.queryParameters['continueUrl']!);
+      final redirectUrl = Uri.tryParse(
+        emailLink.queryParameters['continueUrl']!,
+      );
 
       if (!(redirectUrl?.queryParameters.containsKey('email') ?? false)) {
-        throw LogInWithEmailLinkFailure(Exception('No `email` parameter found in the received email link'));
+        throw LogInWithEmailLinkFailure(
+          Exception('No `email` parameter found in the received email link'),
+        );
       }
 
       await _userRepository.logInWithEmailLink(

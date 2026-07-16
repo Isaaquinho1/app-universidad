@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'app_user_role.dart';
 
+/// Institutional and academic profile associated with an authenticated user.
 class AppUserProfile {
   const AppUserProfile({
     required this.uid,
@@ -35,6 +34,8 @@ class AppUserProfile {
 
   bool get isStudent => role == AppUserRole.student;
 
+  bool get isTeacher => role == AppUserRole.teacher;
+
   bool get isAdmin => role == AppUserRole.admin;
 
   bool get isSuperAdmin => role == AppUserRole.superAdmin;
@@ -43,32 +44,45 @@ class AppUserProfile {
 
   bool get canManageAdmins => role.canManageAdmins;
 
-  factory AppUserProfile.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-  ) {
-    final data = snapshot.data() ?? <String, dynamic>{};
-
-    return AppUserProfile.fromJson({
-      ...data,
-      'uid': data['uid'] ?? snapshot.id,
-    });
+  /// Creates a profile from a Supabase/PostgREST row.
+  factory AppUserProfile.fromSupabase(Map<String, dynamic> row) {
+    return AppUserProfile(
+      uid: row['id'] as String? ?? '',
+      email: row['email'] as String?,
+      displayName: row['display_name'] as String?,
+      role: AppUserRole.fromValue(row['role'] as String?),
+      careerId: row['career_id'] as String?,
+      semester: _readInt(row['semester']),
+      groupId: row['group_id'] as String?,
+      controlNumber: row['control_number'] as String?,
+      profileCompleted: row['profile_completed'] as bool? ?? false,
+      active: row['active'] as bool? ?? true,
+      createdAt: _readDateTime(row['created_at']),
+      updatedAt: _readDateTime(row['updated_at']),
+    );
   }
 
+  /// Creates a profile from either legacy camelCase data or Supabase data.
   factory AppUserProfile.fromJson(Map<String, dynamic> json) {
     return AppUserProfile(
-      uid: json['uid'] as String? ?? '',
+      uid: json['uid'] as String? ?? json['id'] as String? ?? '',
       email: json['email'] as String?,
-      displayName: json['displayName'] as String?,
+      displayName:
+          json['displayName'] as String? ?? json['display_name'] as String?,
       role: AppUserRole.fromValue(json['role'] as String?),
-      careerId: json['careerId'] as String?,
-      semester: json['semester'] as int?,
-      groupId: json['groupId'] as String?,
-      controlNumber: json['controlNumber'] as String?,
+      careerId: json['careerId'] as String? ?? json['career_id'] as String?,
+      semester: _readInt(json['semester']),
+      groupId: json['groupId'] as String? ?? json['group_id'] as String?,
+      controlNumber:
+          json['controlNumber'] as String? ?? json['control_number'] as String?,
       fcmTokens: _readStringMap(json['fcmTokens']),
-      profileCompleted: json['profileCompleted'] as bool? ?? false,
+      profileCompleted:
+          json['profileCompleted'] as bool? ??
+          json['profile_completed'] as bool? ??
+          false,
       active: json['active'] as bool? ?? true,
-      createdAt: _readDateTime(json['createdAt']),
-      updatedAt: _readDateTime(json['updatedAt']),
+      createdAt: _readDateTime(json['createdAt'] ?? json['created_at']),
+      updatedAt: _readDateTime(json['updatedAt'] ?? json['updated_at']),
     );
   }
 
@@ -122,6 +136,18 @@ class AppUserProfile {
     );
   }
 
+  static int? _readInt(Object? value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '');
+  }
+
   static Map<String, String> _readStringMap(Object? value) {
     if (value is! Map) {
       return const {};
@@ -133,12 +159,12 @@ class AppUserProfile {
   }
 
   static DateTime? _readDateTime(Object? value) {
-    if (value is Timestamp) {
-      return value.toDate();
-    }
-
     if (value is DateTime) {
       return value;
+    }
+
+    if (value is String) {
+      return DateTime.tryParse(value);
     }
 
     return null;

@@ -3,98 +3,135 @@ import 'dart:async';
 import 'package:auth_client/auth_client.dart';
 
 /// {@template authentication_exception}
-/// Exceptions from the authentication client.
+/// Base exception thrown by the authentication client.
 /// {@endtemplate}
 abstract class AuthenticationException implements Exception {
   /// {@macro authentication_exception}
   const AuthenticationException(this.error);
 
-  /// The error which was caught.
+  /// Original error caught by the authentication provider.
   final Object error;
 }
 
-/// {@template send_login_email_link_failure}
-/// Thrown during the sending login email link process if a failure occurs.
-/// {@endtemplate}
+/// Thrown when registration with email and password fails.
+class SignUpWithPasswordFailure extends AuthenticationException {
+  /// Creates a [SignUpWithPasswordFailure].
+  const SignUpWithPasswordFailure(super.error);
+  @override
+  String toString() {
+    return error.toString();
+  }
+}
+
+/// Thrown when sign-in with email and password fails.
+class SignInWithPasswordFailure extends AuthenticationException {
+  /// Creates a [SignInWithPasswordFailure].
+  const SignInWithPasswordFailure(super.error);
+}
+
+/// Thrown when sending a password recovery email fails.
+class SendPasswordResetEmailFailure extends AuthenticationException {
+  /// Creates a [SendPasswordResetEmailFailure].
+  const SendPasswordResetEmailFailure(super.error);
+}
+
+/// Thrown when resending a signup confirmation email fails.
+class ResendSignUpConfirmationFailure extends AuthenticationException {
+  /// Creates a [ResendSignUpConfirmationFailure].
+  const ResendSignUpConfirmationFailure(super.error);
+}
+
+/// Thrown when sending a login email link fails.
+///
+/// Kept temporarily while the legacy Magic Link flow is migrated.
 class SendLoginEmailLinkFailure extends AuthenticationException {
-  /// {@macro send_login_email_link_failure}
+  /// Creates a [SendLoginEmailLinkFailure].
   const SendLoginEmailLinkFailure(super.error);
 }
 
-/// {@template is_log_in_email_link_failure}
-/// Thrown during the validation of the email link process if a failure occurs.
-/// {@endtemplate}
+/// Thrown when validating a login email link fails.
+///
+/// Kept temporarily while the legacy Magic Link flow is migrated.
 class IsLogInWithEmailLinkFailure extends AuthenticationException {
-  /// {@macro is_log_in_email_link_failure}
+  /// Creates an [IsLogInWithEmailLinkFailure].
   const IsLogInWithEmailLinkFailure(super.error);
 }
 
-/// {@template log_in_with_email_link_failure}
-/// Thrown during the sign in with email link process if a failure occurs.
-/// {@endtemplate}
+/// Thrown when signing in with an email link fails.
+///
+/// Kept temporarily while the legacy Magic Link flow is migrated.
 class LogInWithEmailLinkFailure extends AuthenticationException {
-  /// {@macro log_in_with_email_link_failure}
+  /// Creates a [LogInWithEmailLinkFailure].
   const LogInWithEmailLinkFailure(super.error);
 }
 
-/// {@template log_out_failure}
-/// Thrown during the logout process if a failure occurs.
-/// {@endtemplate}
+/// Thrown when logout fails.
 class LogOutFailure extends AuthenticationException {
-  /// {@macro log_out_failure}
+  /// Creates a [LogOutFailure].
   const LogOutFailure(super.error);
 }
 
-/// {@template delete_account_failure}
-/// Thrown during the delete account process if a failure occurs.
-/// {@endtemplate}
+/// Thrown when account deletion fails.
 class DeleteAccountFailure extends AuthenticationException {
-  /// {@macro delete_account_failure}
+  /// Creates a [DeleteAccountFailure].
   const DeleteAccountFailure(super.error);
 }
 
-/// A generic Authentication Client Interface.
+/// Generic authentication client contract.
 abstract class AuthenticationClient {
-  /// Stream of [AuthenticationUser] which will emit the current user when
-  /// the authentication state changes.
+  /// Emits the current authenticated user.
   ///
-  /// Emits [AuthenticationUser.anonymous] if the user is not authenticated.
+  /// Emits [AuthenticationUser.anonymous] when no session exists.
   Stream<AuthenticationUser> get user;
 
-  /// Sends an authentication link to the provided [email].
+  /// Registers a user using email and password.
   ///
-  /// Opening the link should redirect to the app with [appPackageName]
-  /// and authenticate the user based on the provided email link.
+  /// [emailRedirectTo] is used by the email confirmation link.
+  Future<void> signUpWithPassword({
+    required String email,
+    required String password,
+    String? emailRedirectTo,
+    Map<String, dynamic>? data,
+  });
+
+  /// Signs in an existing user using email and password.
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  });
+
+  /// Sends a password recovery email.
+  Future<void> sendPasswordResetEmail({
+    required String email,
+    String? redirectTo,
+  });
+
+  /// Resends the signup confirmation email.
+  Future<void> resendSignUpConfirmation({
+    required String email,
+    String? emailRedirectTo,
+  });
+
+  /// Sends a legacy Magic Link.
   ///
-  /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
+  /// This method will be removed after the new authentication UI is complete.
   Future<void> sendLoginEmailLink({
     required String email,
     required String appPackageName,
   });
 
-  /// Checks if an incoming [emailLink] is a sign-in with email link.
-  ///
-  /// Throws a [IsLogInWithEmailLinkFailure] if an exception occurs.
-  bool isLogInWithEmailLink({
-    required String emailLink,
-  });
+  /// Checks whether an incoming URI is a legacy Magic Link.
+  bool isLogInWithEmailLink({required String emailLink});
 
-  /// Signs in with the provided [email] and [emailLink].
-  ///
-  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
+  /// Completes legacy Magic Link authentication.
   Future<void> logInWithEmailLink({
     required String email,
     required String emailLink,
   });
 
-  /// Signs out the current user which will emit
-  /// [AuthenticationUser.anonymous] from the [user] Stream.
-  ///
-  /// Throws a [LogOutFailure] if an exception occurs.
+  /// Signs out the current user.
   Future<void> logOut();
 
   /// Deletes the current user account.
-  ///
-  /// Throws a [DeleteAccountFailure] if an exception occurs.
   Future<void> deleteAccount();
 }

@@ -6,6 +6,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:rtu_mirea_app/announcements/announcements.dart';
 import 'package:rtu_mirea_app/app/app.dart';
 import 'package:rtu_mirea_app/categories/categories.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
@@ -49,6 +50,9 @@ class App extends StatelessWidget {
             ),
             RepositoryProvider.value(value: appScope.lostFoundRepository),
             RepositoryProvider.value(value: appScope.userRepository),
+            RepositoryProvider<AnnouncementRepository>.value(
+              value: appScope.announcementRepository,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [

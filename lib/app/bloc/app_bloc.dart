@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -28,6 +29,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<RecieveInteractedMessage>(_onRecieveInteractedMessage);
     on<ThemeChanged>(_onThemeChanged);
     on<AppUserChanged>(_onUserChanged);
+    on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
+    on<AppLogoutRequested>(_onLogoutRequested);
 
     _userSubscription = _userRepository.user.listen(_userChanged);
   }
@@ -36,7 +39,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   final FirebaseMessaging _firebaseMessaging;
   final AppUserProfileRepository _appUserProfileRepository;
 
-  late StreamSubscription<User> _userSubscription;
+  late final StreamSubscription<User> _userSubscription;
+  StreamSubscription<AppUserProfile?>? _institutionalProfileSubscription;
 
   void _userChanged(User user) => add(AppUserChanged(user));
 
@@ -46,24 +50,57 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   ) async {
     final user = event.user;
 
-    if (user != User.anonymous) {
-      await _appUserProfileRepository.ensureStudentProfile(
-        uid: user.id,
-        email: user.email,
-        displayName: user.name,
-      );
+    await _institutionalProfileSubscription?.cancel();
+    _institutionalProfileSubscription = null;
+
+    if (user == User.anonymous) {
+      emit(AppState.unauthenticated(isAmoled: state.isAmoled));
+      return;
     }
 
-    switch (state.status) {
-      case AppStatus.onboardingRequired:
-      case AppStatus.authenticated:
-      case AppStatus.unauthenticated:
-        return user != User.anonymous && user.isNewUser
-            ? emit(AppState.onboardingRequired(user))
-            : user == User.anonymous
-            ? emit(const AppState.unauthenticated())
-            : emit(AppState.authenticated(user));
+    final profile = await _appUserProfileRepository.ensureStudentProfile(
+      uid: user.id,
+      email: user.email,
+      displayName: user.name,
+    );
+
+    final nextStatus =
+        user.isNewUser ? AppStatus.onboardingRequired : AppStatus.authenticated;
+
+    emit(
+      state.copyWith(
+        status: nextStatus,
+        user: user,
+        institutionalProfile: profile,
+      ),
+    );
+
+    _institutionalProfileSubscription = _appUserProfileRepository
+        .watchProfile(user.id)
+        .listen(
+          (profile) {
+            add(AppInstitutionalProfileChanged(profile));
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            addError(error, stackTrace);
+          },
+        );
+  }
+
+  void _onInstitutionalProfileChanged(
+    AppInstitutionalProfileChanged event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn) {
+      return;
     }
+
+    emit(
+      state.copyWith(
+        institutionalProfile: event.profile,
+        clearInstitutionalProfile: event.profile == null,
+      ),
+    );
   }
 
   void _onLogoutRequested(AppLogoutRequested event, Emitter<AppState> emit) {
@@ -71,18 +108,20 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }
 
   @override
-  Future<void> close() {
-    _userSubscription.cancel();
+  Future<void> close() async {
+    await _institutionalProfileSubscription?.cancel();
+    await _userSubscription.cancel();
     return super.close();
   }
 
   Future<void> setupInteractedMessage(Emitter<AppState> emit) async {
-    RemoteMessage? initialMessage =
-        await _firebaseMessaging.getInitialMessage();
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
+
     if (initialMessage != null) {
       _handleMessage(emit, initialMessage);
     }
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _handleMessage(emit, message);
     });
   }

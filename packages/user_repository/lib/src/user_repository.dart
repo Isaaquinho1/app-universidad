@@ -49,10 +49,10 @@ class UserRepository {
     required PackageInfoClient packageInfoClient,
     required DeepLinkService deepLinkService,
     required UserStorage storage,
-  })  : _authenticationClient = authenticationClient,
-        _deepLinkService = deepLinkService,
-        _packageInfoClient = packageInfoClient,
-        _storage = storage;
+  }) : _authenticationClient = authenticationClient,
+       _deepLinkService = deepLinkService,
+       _packageInfoClient = packageInfoClient,
+       _storage = storage;
 
   final AuthenticationClient _authenticationClient;
   final UserStorage _storage;
@@ -63,30 +63,103 @@ class UserRepository {
   /// the authentication state.
   ///
   Stream<User> get user => _authenticationClient.user.map((authenticationUser) {
-        if (authenticationUser.isAnonymous) {
-          return User.anonymous;
-        }
-        return User.fromAuthenticationUser(
-          authenticationUser: authenticationUser,
-        );
-      });
+    if (authenticationUser.isAnonymous) {
+      return User.anonymous;
+    }
+    return User.fromAuthenticationUser(authenticationUser: authenticationUser);
+  });
 
   /// A stream of incoming email links used to authenticate the user.
   ///
   /// Emits when a new email link is emitted on [DeepLinkClient.deepLinkStream],
   /// which is validated using [AuthenticationClient.isLogInWithEmailLink].
   Stream<Uri> get incomingEmailLinks => _deepLinkService.deepLinkStream.where(
-        (deepLink) => _authenticationClient.isLogInWithEmailLink(
-          emailLink: deepLink.toString(),
-        ),
-      );
+    (deepLink) => _authenticationClient.isLogInWithEmailLink(
+      emailLink: deepLink.toString(),
+    ),
+  );
 
   /// Sends an authentication link to the provided [email].
   ///
   /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
-  Future<void> sendLoginEmailLink({
+
+  /// Registers a user with email and password.
+  ///
+  /// The confirmation link redirects back to the application.
+  Future<void> signUpWithPassword({
     required String email,
+    required String password,
+    Map<String, dynamic>? data,
   }) async {
+    try {
+      await _authenticationClient.signUpWithPassword(
+        email: email.trim().toLowerCase(),
+        password: password,
+        emailRedirectTo:
+            '${_packageInfoClient.packageName}://email-confirmation',
+        data: data,
+      );
+    } on SignUpWithPasswordFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SignUpWithPasswordFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in a user with email and password.
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authenticationClient.signInWithPassword(
+        email: email.trim().toLowerCase(),
+        password: password,
+      );
+    } on SignInWithPasswordFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SignInWithPasswordFailure(error), stackTrace);
+    }
+  }
+
+  /// Sends a password recovery email.
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _authenticationClient.sendPasswordResetEmail(
+        email: email.trim().toLowerCase(),
+        redirectTo: '${_packageInfoClient.packageName}://password-recovery',
+      );
+    } on SendPasswordResetEmailFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        SendPasswordResetEmailFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Resends the signup confirmation email.
+  Future<void> resendSignUpConfirmation({required String email}) async {
+    try {
+      await _authenticationClient.resendSignUpConfirmation(
+        email: email.trim().toLowerCase(),
+        emailRedirectTo:
+            '${_packageInfoClient.packageName}://email-confirmation',
+      );
+    } on ResendSignUpConfirmationFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ResendSignUpConfirmationFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Sends the email login link.
+  Future<void> sendLoginEmailLink({required String email}) async {
     try {
       await _authenticationClient.sendLoginEmailLink(
         email: email,
@@ -148,10 +221,7 @@ class UserRepository {
     try {
       return await _storage.fetchAppOpenedCount();
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(
-        FetchAppOpenedCountFailure(error),
-        stackTrace,
-      );
+      Error.throwWithStackTrace(FetchAppOpenedCountFailure(error), stackTrace);
     }
   }
 

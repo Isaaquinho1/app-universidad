@@ -9,56 +9,93 @@ class LoginWithEmailForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final email = context.select((LoginBloc bloc) => bloc.state.email.value);
     return BlocListener<LoginBloc, LoginState>(
+      listenWhen:
+          (previous, current) =>
+              previous.status != current.status ||
+              previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.status.isSuccess) {
-          // Navigator.of(context).push<void>(
-          //   MagicLinkPromptPage.route(email: email),
-          // );
-        } else if (state.status.isFailure) {
+          Navigator.of(context).pop();
+          return;
+        }
+
+        if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text('Login failed')));
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.errorMessage ?? 'No fue posible iniciar sesión.',
+                ),
+              ),
+            );
         }
       },
-      child: const CustomScrollView(
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(AppSpacing.xlg, AppSpacing.lg, AppSpacing.xlg, AppSpacing.xxlg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _HeaderTitle(),
-                  SizedBox(height: AppSpacing.xxxlg),
-                  _EmailInput(),
-                  SizedBox(height: AppSpacing.lg),
-                  _TermsAndPrivacyPolicyLinkTexts(),
-                  Spacer(),
-                  _NextButton(),
-                ],
+      child: const SafeArea(
+        child: AutofillGroup(
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.xlg,
+                    AppSpacing.lg,
+                    AppSpacing.xlg,
+                    AppSpacing.xxlg,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _Header(),
+                      SizedBox(height: AppSpacing.xxxlg),
+                      _EmailInput(),
+                      SizedBox(height: AppSpacing.lg),
+                      _PasswordInput(),
+                      SizedBox(height: AppSpacing.sm),
+                      _ForgotPasswordButton(),
+                      Spacer(),
+                      _LoginButton(),
+                      SizedBox(height: AppSpacing.md),
+                      _RegisterButton(),
+                      SizedBox(height: AppSpacing.lg),
+                      _InstitutionalAccessNotice(),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _HeaderTitle extends StatelessWidget {
-  const _HeaderTitle();
+class _Header extends StatelessWidget {
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Text(
-      'Inicia sesión para continuar',
-      key: const Key('loginWithEmailForm_header_title'),
-      style: AppTextStyle.h4.copyWith(color: theme.colorScheme.onSurface),
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Iniciar sesión',
+          key: const Key('loginWithEmailForm_header_title'),
+          style: AppTextStyle.h4.copyWith(color: theme.colorScheme.onSurface),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          'Accede con tu correo institucional del TecNM Campus Tlalpan.',
+          style: AppTextStyle.body.copyWith(
+            color: theme.extension<AppColors>()!.deactive,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -75,15 +112,21 @@ class _EmailInputState extends State<_EmailInput> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<LoginBloc>().state;
+    final email = context.select((LoginBloc bloc) => bloc.state.email);
 
     return LabelledInput(
       key: const Key('loginWithEmailForm_emailInput_textField'),
       controller: _controller,
-      label: 'Tu correo electrónico',
-      placeholder: 'correo@ejemplo.com',
-      onChanged: (email) => context.read<LoginBloc>().add(LoginEmailChanged(email)),
-      errorText: !state.email.isValid ? 'Correo electrónico no válido' : null,
+      label: 'Correo institucional',
+      placeholder: 'correo@tlalpan.tecnm.mx',
+      keyboardType: TextInputType.emailAddress,
+      autofillHints: const [AutofillHints.username, AutofillHints.email],
+      onChanged:
+          (value) => context.read<LoginBloc>().add(LoginEmailChanged(value)),
+      errorText:
+          email.isPure || email.isValid
+              ? null
+              : 'Ingresa un correo institucional válido.',
     );
   }
 
@@ -94,67 +137,128 @@ class _EmailInputState extends State<_EmailInput> {
   }
 }
 
-class _TermsAndPrivacyPolicyLinkTexts extends StatelessWidget {
-  const _TermsAndPrivacyPolicyLinkTexts();
+class _PasswordInput extends StatefulWidget {
+  const _PasswordInput();
+
+  @override
+  State<_PasswordInput> createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<_PasswordInput> {
+  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<AppColors>()!;
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.sm),
-      child: RichText(
-        key: const Key('loginWithEmailForm_terms_and_privacy_policy'),
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-              text: 'Puedes usar cualquier correo electrónico válido para registrarte o iniciar sesión.',
-              style: AppTextStyle.body.copyWith(color: theme.deactive),
-            ),
-          ],
-        ),
+    final password = context.select((LoginBloc bloc) => bloc.state.password);
+
+    return LabelledInput(
+      key: const Key('loginWithEmailForm_passwordInput_textField'),
+      controller: _controller,
+      label: 'Contraseña',
+      placeholder: 'Mínimo 8 caracteres',
+      obscureText: true,
+      showPasswordToggle: true,
+      autofillHints: const [AutofillHints.password],
+      onChanged:
+          (value) => context.read<LoginBloc>().add(LoginPasswordChanged(value)),
+      errorText:
+          password.isPure || password.isValid
+              ? null
+              : 'La contraseña debe tener al menos 8 caracteres.',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class _ForgotPasswordButton extends StatelessWidget {
+  const _ForgotPasswordButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        key: const Key('loginWithEmailForm_forgotPasswordButton'),
+        onPressed: () {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'La recuperación de contraseña se habilitará enseguida.',
+                ),
+              ),
+            );
+        },
+        child: const Text('¿Olvidaste tu contraseña?'),
       ),
     );
   }
 }
 
-class _NextButton extends StatelessWidget {
-  const _NextButton();
+class _LoginButton extends StatelessWidget {
+  const _LoginButton();
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<LoginBloc>().state;
+    final loading = state.status.isInProgress;
 
-    return TextButton(
-      key: const Key('loginWithEmailForm_nextButton'),
-      onPressed: !state.valid ? null : () => context.read<LoginBloc>().add(SendEmailLinkSubmitted()),
-      child:
-          state.status.isInProgress
-              ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator())
-              : Text('Continuar'),
+    return PrimaryButton(
+      key: const Key('loginWithEmailForm_loginButton'),
+      text: loading ? 'Iniciando sesión...' : 'Iniciar sesión',
+      enabled: state.valid && !loading,
+      icon:
+          loading
+              ? const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+              : null,
+      onPressed:
+          loading
+              ? null
+              : () => context.read<LoginBloc>().add(const LoginSubmitted()),
     );
   }
 }
 
-@visibleForTesting
-class ClearIconButton extends StatelessWidget {
-  const ClearIconButton({required this.onPressed, super.key});
-
-  final VoidCallback? onPressed;
+class _RegisterButton extends StatelessWidget {
+  const _RegisterButton();
 
   @override
   Widget build(BuildContext context) {
-    final suffixVisible = context.select((LoginBloc bloc) => bloc.state.email.value.isNotEmpty);
+    return TextButton(
+      key: const Key('loginWithEmailForm_registerButton'),
+      onPressed: () {
+        Navigator.of(context).push<void>(RegisterPage.route());
+      },
+      child: const Text('Crear una cuenta institucional'),
+    );
+  }
+}
 
-    return Padding(
-      key: const Key('loginWithEmailForm_clearIconButton'),
-      padding: const EdgeInsets.only(right: AppSpacing.md),
-      child: Visibility(
-        visible: suffixVisible,
-        child: GestureDetector(
-          onTap: onPressed,
-          child: Icon(Icons.clear, size: 24, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-        ),
-      ),
+class _InstitutionalAccessNotice extends StatelessWidget {
+  const _InstitutionalAccessNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
+    return Text(
+      'Se aceptan cuentas institucionales @tlalpan.tecnm.mx y cuentas '
+      'autorizadas @tecnm.mx. Los permisos administrativos no se asignan '
+      'automáticamente por el correo.',
+      textAlign: TextAlign.center,
+      style: AppTextStyle.captionL.copyWith(color: colors.deactive),
     );
   }
 }

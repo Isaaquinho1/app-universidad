@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_blocks/news_blocks.dart';
+import 'package:rtu_mirea_app/announcements/announcements.dart';
 import 'package:rtu_mirea_app/categories/categories.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -182,9 +183,15 @@ class _FeedViewPopulatedState extends State<FeedViewPopulated>
                         (category) => CategoryTab(
                           categoryName: category.name,
                           onDoubleTap: () {
-                            _controllers[category]?.animateTo(
-                              0,
-                              duration: _categoryScrollToTopDuration,
+                            final controller = _controllers[category];
+
+                              if (controller == null || !controller.hasClients) {
+                              return;
+                                }
+
+                                controller.animateTo(
+                                0,
+                                duration: _categoryScrollToTopDuration,
                               curve: Curves.easeOutCubic,
                             );
                           },
@@ -198,11 +205,19 @@ class _FeedViewPopulatedState extends State<FeedViewPopulated>
                 children:
                     widget.categories
                         .map(
-                          (category) => CategoryFeed(
-                            key: PageStorageKey(category),
-                            category: category,
-                            scrollController: _controllers[category],
-                          ),
+                          (category) =>
+    category.id == 'comunicados'
+        ? AnnouncementCategoryFeed(
+          key: PageStorageKey(
+            'announcements-${category.id}',
+          ),
+          scrollController: _controllers[category],
+        )
+        : CategoryFeed(
+          key: PageStorageKey(category),
+          category: category,
+          scrollController: _controllers[category],
+        ),
                         )
                         .toList(),
               ),

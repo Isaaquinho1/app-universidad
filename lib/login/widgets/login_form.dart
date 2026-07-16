@@ -1,4 +1,4 @@
-import 'package:app_ui/app_ui.dart' show AppSpacing, Assets, PrimaryButton;
+import 'package:app_ui/app_ui.dart' show AppSpacing, PrimaryButton;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -21,7 +21,9 @@ class LoginForm extends StatelessWidget {
           if (state.status.isFailure) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text('Login failed')));
+              ..showSnackBar(
+                SnackBar(content: Text('No fue posible iniciar sesión.')),
+              );
           }
         },
         child: const _LoginContent(),
@@ -35,13 +37,17 @@ class _LoginContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
           constraints: BoxConstraints(maxHeight: constraints.maxHeight * .75),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xxlg),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.xxlg,
+            ),
             children: [
               const _LoginTitleAndCloseButton(),
               const SizedBox(height: AppSpacing.sm),
@@ -67,7 +73,10 @@ class _LoginTitleAndCloseButton extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: AppSpacing.sm),
-          child: Text('Login', style: Theme.of(context).textTheme.displaySmall),
+          child: Text(
+            'Acceso institucional',
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
         ),
         IconButton(
           key: const Key('loginForm_closeModal_iconButton'),
@@ -86,7 +95,10 @@ class _LoginSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Login to continue', style: Theme.of(context).textTheme.titleMedium);
+    return Text(
+      'Inicia sesión para acceder a las funciones personalizadas.',
+      style: Theme.of(context).textTheme.titleMedium,
+    );
   }
 }
 
@@ -95,8 +107,9 @@ class _ContinueWithEmailLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PrimaryButton(
       key: const Key('loginForm_emailLogin_appButton'),
-      onPressed: () => Navigator.of(context).push<void>(LoginWithEmailPage.route()),
-      text: 'Continue with email',
+      onPressed:
+          () => Navigator.of(context).push<void>(LoginWithEmailPage.route()),
+      text: 'Continuar con correo institucional',
     );
   }
 }

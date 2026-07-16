@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rtu_mirea_app/app/app.dart';
+import 'package:rtu_mirea_app/login/login.dart';
 import 'package:rtu_mirea_app/profile/widgets/widgets.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
 
@@ -16,7 +18,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.profile)),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).profile)),
       body: SafeArea(
         bottom: false,
         child: LayoutBuilder(
@@ -40,7 +42,8 @@ class _InitialProfileStatePage extends StatefulWidget {
   const _InitialProfileStatePage();
 
   @override
-  State<_InitialProfileStatePage> createState() => _InitialProfileStatePageState();
+  State<_InitialProfileStatePage> createState() =>
+      _InitialProfileStatePageState();
 }
 
 class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
@@ -87,12 +90,10 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
   }
 
   void _onFeedbackTap(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Soporte de la aplicación próximamente.'),
-    ),
-  );
-}
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Soporte de la aplicación próximamente.')),
+    );
+  }
 
   Widget _buildThemeOption(ThemeOption option, String title, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -104,13 +105,23 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? colors.primary.withOpacity(0.1) : colors.background03,
+          color:
+              isSelected
+                  ? colors.primary.withValues(alpha: 0.1)
+                  : colors.background03,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? colors.primary : colors.background03, width: 2),
+          border: Border.all(
+            color: isSelected ? colors.primary : colors.background03,
+            width: 2,
+          ),
         ),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? colors.primary : colors.active, size: 24),
+            Icon(
+              icon,
+              color: isSelected ? colors.primary : colors.active,
+              size: 24,
+            ),
             const SizedBox(height: 8),
             Text(
               title,
@@ -129,13 +140,89 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
+    final appState = context.watch<AppBloc>().state;
+    final profile = appState.institutionalProfile;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (!appState.status.isLoggedIn) ...[
+          SettingsSection(
+            title: 'Acceso institucional',
+            children: [
+              SettingsItem(
+                text: 'Iniciar sesión',
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedUserAccount,
+                  color: colors.active,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push<void>(LoginWithEmailPage.route());
+                },
+                trailing: Icon(Icons.chevron_right, color: colors.deactive),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'Usa tu correo institucional y contraseña para consultar '
+                  'comunicados personalizados y completar tu perfil académico.',
+                  style: AppTextStyle.captionL.copyWith(color: colors.deactive),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ] else ...[
+          SettingsSection(
+            title: 'Cuenta institucional',
+            children: [
+              SettingsItem(
+                text: profile?.displayName ?? appState.user.name ?? 'Usuario',
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedUserCircle,
+                  color: colors.active,
+                ),
+                onPressed: null,
+                trailing: const SizedBox.shrink(),
+              ),
+              const Divider(height: 24, thickness: 0.5),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  appState.user.email ?? 'Correo institucional no disponible',
+                  style: AppTextStyle.body.copyWith(color: colors.active),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'Rol: ${profile?.role.value ?? 'cargando perfil...'}',
+                  style: AppTextStyle.captionL.copyWith(color: colors.deactive),
+                ),
+              ),
+              const Divider(height: 24, thickness: 0.5),
+              SettingsItem(
+                text: 'Cerrar sesión',
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedLogout03,
+                  color: colors.active,
+                ),
+                onPressed: () {
+                  context.read<AppBloc>().add(const AppLogoutRequested());
+                },
+                trailing: const SizedBox.shrink(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
         ScheduleSectionWrapper(
           title: "Gestión de horarios",
-          scheduleSection: ScheduleManagementSection(onFeedbackTap: _onFeedbackTap),
+          scheduleSection: ScheduleManagementSection(
+            onFeedbackTap: _onFeedbackTap,
+          ),
         ),
         const SizedBox(height: 24),
         SettingsSection(
@@ -143,7 +230,10 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
           children: [
             SettingsItem(
               text: 'Sobre la aplicación',
-              icon: HugeIcon(icon: HugeIcons.strokeRoundedCoffee02, color: colors.active),
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedCoffee02,
+                color: colors.active,
+              ),
               onPressed: () => context.go('/profile/about'),
               trailing: Icon(Icons.chevron_right, color: colors.deactive),
             ),
@@ -155,18 +245,37 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
                     'Tema de la aplicación',
-                    style: AppTextStyle.titleM.copyWith(color: colors.active, fontWeight: FontWeight.w500),
+                    style: AppTextStyle.titleM.copyWith(
+                      color: colors.active,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildThemeOption(ThemeOption.light, 'Claro', Icons.wb_sunny_outlined)),
-                    const SizedBox(width: 8),
-                    Expanded(child: _buildThemeOption(ThemeOption.dark, 'Oscuro', Icons.nightlight_outlined)),
+                    Expanded(
+                      child: _buildThemeOption(
+                        ThemeOption.light,
+                        'Claro',
+                        Icons.wb_sunny_outlined,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: _buildThemeOption(ThemeOption.system, 'Sistema', Icons.settings_suggest_outlined),
+                      child: _buildThemeOption(
+                        ThemeOption.dark,
+                        'Oscuro',
+                        Icons.nightlight_outlined,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildThemeOption(
+                        ThemeOption.system,
+                        'Sistema',
+                        Icons.settings_suggest_outlined,
+                      ),
                     ),
                   ],
                 ),
