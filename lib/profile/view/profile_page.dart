@@ -218,6 +218,24 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
           ),
           const SizedBox(height: 24),
         ],
+        if (profile?.canManageAnnouncements ?? false) ...[
+          SettingsSection(
+            title: 'Administración',
+            children: [
+              SettingsItem(
+                text: 'Crear comunicado',
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedMegaphone01,
+                  color: colors.active,
+                ),
+                onPressed:
+                    () => context.go('/profile/announcement-management/create'),
+                trailing: Icon(Icons.chevron_right, color: colors.deactive),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
         ScheduleSectionWrapper(
           title: "Gestión de horarios",
           scheduleSection: ScheduleManagementSection(

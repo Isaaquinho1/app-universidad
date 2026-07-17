@@ -85,8 +85,12 @@ class AnnouncementFeedView extends StatelessWidget {
                     sliver: SliverList.separated(
                       itemCount: state.announcements.length,
                       itemBuilder: (context, index) {
+                        final announcement = state.announcements[index];
+
                         return AnnouncementCard(
-                          announcement: state.announcements[index],
+                          announcement: announcement,
+                          receipt:
+                              state.receiptsByAnnouncementId[announcement.id],
                         );
                       },
                       separatorBuilder:
@@ -103,9 +107,10 @@ class AnnouncementFeedView extends StatelessWidget {
 }
 
 class AnnouncementCard extends StatelessWidget {
-  const AnnouncementCard({required this.announcement, super.key});
+  const AnnouncementCard({required this.announcement, this.receipt, super.key});
 
   final Announcement announcement;
+  final AnnouncementReceipt? receipt;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +123,7 @@ class AnnouncementCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           final appState = context.read<AppBloc>().state;
           final profile = appState.institutionalProfile;
 
@@ -128,7 +133,7 @@ class AnnouncementCard extends StatelessWidget {
 
           final repository = context.read<AnnouncementRepository>();
 
-          Navigator.of(context).push(
+          await Navigator.of(context).push<void>(
             MaterialPageRoute<void>(
               builder:
                   (_) => BlocProvider(
@@ -142,6 +147,12 @@ class AnnouncementCard extends StatelessWidget {
                   ),
             ),
           );
+
+          if (!context.mounted) {
+            return;
+          }
+
+          context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
         },
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -170,6 +181,11 @@ class AnnouncementCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium,
               ),
+              const SizedBox(height: AppSpacing.sm),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _ReceiptBadge(receipt: receipt),
+              ),
               const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
@@ -192,6 +208,72 @@ class AnnouncementCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ReceiptBadge extends StatelessWidget {
+  const _ReceiptBadge({required this.receipt});
+
+  final AnnouncementReceipt? receipt;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final status = receipt?.status;
+
+    final (label, icon, backgroundColor, foregroundColor) = switch (status) {
+      null || AnnouncementReceiptStatus.delivered => (
+        'Nuevo',
+        Icons.fiber_new_outlined,
+        theme.colorScheme.primaryContainer,
+        theme.colorScheme.onPrimaryContainer,
+      ),
+      AnnouncementReceiptStatus.seen => (
+        'Visto',
+        Icons.visibility_outlined,
+        theme.colorScheme.secondaryContainer,
+        theme.colorScheme.onSecondaryContainer,
+      ),
+      AnnouncementReceiptStatus.read => (
+        'Leído',
+        Icons.done_all,
+        theme.colorScheme.tertiaryContainer,
+        theme.colorScheme.onTertiaryContainer,
+      ),
+      AnnouncementReceiptStatus.confirmed => (
+        'Confirmado',
+        Icons.verified_outlined,
+        theme.colorScheme.primaryContainer,
+        theme.colorScheme.onPrimaryContainer,
+      ),
+    };
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: foregroundColor),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: foregroundColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rtu_mirea_app/announcements/announcements.dart';
 import 'package:rtu_mirea_app/article/view/article_page.dart';
 import 'package:rtu_mirea_app/home/view/home_page.dart';
 import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
@@ -92,6 +93,9 @@ class OnboardingRoute extends GoRouteData {
           path: '/profile',
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<ScheduleManagementRoute>(path: 'schedule-management'),
+            TypedGoRoute<AdminAnnouncementCreateRoute>(
+              path: 'announcement-management/create',
+            ),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
             TypedGoRoute<ProfileSettingsRoute>(
               path: 'settings',
@@ -301,6 +305,15 @@ class ScheduleManagementRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ScheduleManagementPage();
+  }
+}
+
+class AdminAnnouncementCreateRoute extends GoRouteData {
+  const AdminAnnouncementCreateRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminAnnouncementCreatePage();
   }
 }
 

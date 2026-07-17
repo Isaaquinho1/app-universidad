@@ -30,7 +30,9 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
     AnnouncementsStarted event,
     Emitter<AnnouncementState> emit,
   ) async {
-    emit(state.copyWith(status: AnnouncementsStatus.loading));
+    if (state.announcements.isEmpty) {
+      emit(state.copyWith(status: AnnouncementsStatus.loading));
+    }
 
     await _subscription?.cancel();
 
@@ -46,17 +48,50 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
         );
   }
 
-  void _onChanged(AnnouncementsChanged event, Emitter<AnnouncementState> emit) {
-    emit(
-      state.copyWith(
-        status: AnnouncementsStatus.populated,
-        announcements: event.announcements,
-      ),
-    );
+  Future<void> _onChanged(
+    AnnouncementsChanged event,
+    Emitter<AnnouncementState> emit,
+  ) async {
+    try {
+      final receiptsByAnnouncementId = await _repository
+          .fetchReceiptsForAnnouncements(
+            announcementIds: event.announcements.map(
+              (announcement) => announcement.id,
+            ),
+            userUid: _profile.uid,
+          );
+
+      emit(
+        state.copyWith(
+          status: AnnouncementsStatus.populated,
+          announcements: event.announcements,
+          receiptsByAnnouncementId: receiptsByAnnouncementId,
+        ),
+      );
+    } catch (error, stackTrace) {
+      emit(
+        state.copyWith(
+          status:
+              event.announcements.isEmpty
+                  ? AnnouncementsStatus.failure
+                  : AnnouncementsStatus.populated,
+          announcements: event.announcements,
+        ),
+      );
+
+      addError(error, stackTrace);
+    }
   }
 
   void _onFailed(AnnouncementsFailed event, Emitter<AnnouncementState> emit) {
-    emit(state.copyWith(status: AnnouncementsStatus.failure));
+    emit(
+      state.copyWith(
+        status:
+            state.announcements.isEmpty
+                ? AnnouncementsStatus.failure
+                : AnnouncementsStatus.populated,
+      ),
+    );
 
     addError(event.error, event.stackTrace);
   }

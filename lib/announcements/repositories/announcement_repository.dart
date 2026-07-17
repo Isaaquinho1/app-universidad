@@ -220,6 +220,43 @@ class AnnouncementRepository {
     return AnnouncementReceipt.fromSupabase(row);
   }
 
+  /// Fetches the authenticated user's receipts for several announcements.
+  Future<Map<String, AnnouncementReceipt>> fetchReceiptsForAnnouncements({
+    required Iterable<String> announcementIds,
+    required String userUid,
+  }) async {
+    final ids = announcementIds
+        .where((id) => id.trim().isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+
+    if (ids.isEmpty || userUid.isEmpty) {
+      return const {};
+    }
+
+    _validateCurrentUser(userUid);
+
+    final rows = await _supabaseClient
+        .from(_receiptsTable)
+        .select()
+        .eq('user_id', userUid)
+        .inFilter('announcement_id', ids);
+
+    final receipts = <String, AnnouncementReceipt>{};
+
+    for (final row in rows) {
+      final announcementId = row['announcement_id'] as String?;
+
+      if (announcementId == null || announcementId.isEmpty) {
+        continue;
+      }
+
+      receipts[announcementId] = AnnouncementReceipt.fromSupabase(row);
+    }
+
+    return receipts;
+  }
+
   /// Advances a receipt without allowing status regression.
   Future<void> updateReceiptStatus({
     required String announcementId,
