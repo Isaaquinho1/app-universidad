@@ -119,7 +119,29 @@ class AnnouncementCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // La navegación al detalle se implementará en el siguiente subbloque.
+          final appState = context.read<AppBloc>().state;
+          final profile = appState.institutionalProfile;
+
+          if (profile == null) {
+            return;
+          }
+
+          final repository = context.read<AnnouncementRepository>();
+
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder:
+                  (_) => BlocProvider(
+                    create:
+                        (_) => AnnouncementReceiptCubit(
+                          repository: repository,
+                          announcementId: announcement.id,
+                          userUid: profile.uid,
+                        )..started(),
+                    child: AnnouncementDetailView(announcement: announcement),
+                  ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
