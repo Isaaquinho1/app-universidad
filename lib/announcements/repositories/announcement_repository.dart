@@ -13,7 +13,6 @@ class AnnouncementRepository {
   final SupabaseClient _supabaseClient;
 
   static const _announcementsTable = 'announcements';
-  static const _targetsTable = 'announcement_targets';
   static const _receiptsTable = 'announcement_receipts';
 
   /// Watches published announcements for the authenticated profile.
@@ -91,7 +90,7 @@ class AnnouncementRepository {
     return null;
   }
 
-  /// Creates an announcement and its audience targets.
+  /// Creates an announcement and its audience targets atomically.
   Future<String> createAnnouncement(Announcement announcement) async {
     _requireAnnouncementManager();
 
@@ -106,21 +105,34 @@ class AnnouncementRepository {
       values['published_at'] = DateTime.now().toUtc().toIso8601String();
     }
 
-    final row =
-        await _supabaseClient
-            .from(_announcementsTable)
-            .insert(values)
-            .select('id')
-            .single();
+    final target = announcement.target;
 
-    final id = row['id'] as String;
+    final response = await _supabaseClient.rpc(
+      'create_announcement_with_targets',
+      params: {
+        'p_announcement': values,
+        'p_target': {
+          'roles': target.roles
+              .map((role) => role.value)
+              .toList(growable: false),
+          'career_ids': target.careerIds.toList(growable: false),
+          'semesters': target.semesters.toList(growable: false),
+          'group_ids': target.groupIds.toList(growable: false),
+          'user_ids': target.userUids.toList(growable: false),
+        },
+      },
+    );
 
-    await _replaceTargets(announcementId: id, target: announcement.target);
+    if (response is! String || response.isEmpty) {
+      throw StateError(
+        'The transactional announcement RPC did not return an identifier.',
+      );
+    }
 
-    return id;
+    return response;
   }
 
-  /// Updates the editable fields of an existing announcement.
+  /// Updates an announcement and its audience targets atomically.
   Future<void> updateAnnouncement(Announcement announcement) async {
     _requireAnnouncementManager();
 
@@ -132,15 +144,32 @@ class AnnouncementRepository {
       );
     }
 
-    await _supabaseClient
-        .from(_announcementsTable)
-        .update(announcement.toSupabase())
-        .eq('id', announcement.id);
+    final target = announcement.target;
 
-    await _replaceTargets(
-      announcementId: announcement.id,
-      target: announcement.target,
+    final response = await _supabaseClient.rpc(
+      'update_announcement_with_targets',
+      params: {
+        'p_announcement_id': announcement.id,
+        'p_announcement': announcement.toSupabase(),
+        'p_target': {
+          'roles': target.roles
+              .map((role) => role.value)
+              .toList(growable: false),
+          'career_ids': target.careerIds.toList(growable: false),
+          'semesters': target.semesters.toList(growable: false),
+          'group_ids': target.groupIds.toList(growable: false),
+          'user_ids': target.userUids.toList(growable: false),
+        },
+      },
     );
+
+    if (response is! String ||
+        response.isEmpty ||
+        response != announcement.id) {
+      throw StateError(
+        'The transactional update RPC returned an invalid identifier.',
+      );
+    }
   }
 
   /// Publishes an announcement immediately.
@@ -328,47 +357,6 @@ class AnnouncementRepository {
         )
         .where((recipient) => recipient.uid.isNotEmpty)
         .toList(growable: false);
-  }
-
-  Future<void> _replaceTargets({
-    required String announcementId,
-    required AnnouncementTarget target,
-  }) async {
-    await _supabaseClient
-        .from(_targetsTable)
-        .delete()
-        .eq('announcement_id', announcementId);
-
-    if (target.allUsers) {
-      return;
-    }
-
-    final rows = <Map<String, dynamic>>[
-      ...target.roles.map(
-        (role) => {'announcement_id': announcementId, 'role': role.value},
-      ),
-      ...target.careerIds.map(
-        (careerId) => {
-          'announcement_id': announcementId,
-          'career_id': careerId,
-        },
-      ),
-      ...target.semesters.map(
-        (semester) => {'announcement_id': announcementId, 'semester': semester},
-      ),
-      ...target.groupIds.map(
-        (groupId) => {'announcement_id': announcementId, 'group_id': groupId},
-      ),
-      ...target.userUids.map(
-        (userUid) => {'announcement_id': announcementId, 'user_id': userUid},
-      ),
-    ];
-
-    if (rows.isEmpty) {
-      return;
-    }
-
-    await _supabaseClient.from(_targetsTable).insert(rows);
   }
 
   void _requireAnnouncementManager() {
