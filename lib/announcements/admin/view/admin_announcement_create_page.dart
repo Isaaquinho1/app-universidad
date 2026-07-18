@@ -20,12 +20,17 @@ class _AdminAnnouncementCreatePageState
   final _summaryController = TextEditingController();
   final _bodyController = TextEditingController();
   final _groupsController = TextEditingController();
+  final _recipientSearchController = TextEditingController();
 
   AnnouncementPriority _priority = AnnouncementPriority.normal;
   bool _allUsers = true;
   final Set<AppUserRole> _selectedRoles = {};
   final Set<String> _selectedCareerIds = {};
   final Set<int> _selectedSemesters = {};
+  final Map<String, AnnouncementRecipient> _selectedRecipients = {};
+  List<AnnouncementRecipient> _recipientSearchResults = const [];
+  bool _isSearchingRecipients = false;
+  String? _recipientSearchError;
   bool _isSubmitting = false;
 
   @override
@@ -34,6 +39,7 @@ class _AdminAnnouncementCreatePageState
     _summaryController.dispose();
     _bodyController.dispose();
     _groupsController.dispose();
+    _recipientSearchController.dispose();
     super.dispose();
   }
 
@@ -313,6 +319,10 @@ class _AdminAnnouncementCreatePageState
                             _selectedCareerIds.clear();
                             _selectedSemesters.clear();
                             _groupsController.clear();
+                            _selectedRecipients.clear();
+                            _recipientSearchResults = const [];
+                            _recipientSearchController.clear();
+                            _recipientSearchError = null;
                           }
                         });
                       },
@@ -424,6 +434,8 @@ class _AdminAnnouncementCreatePageState
                   border: OutlineInputBorder(),
                 ),
               ),
+              const SizedBox(height: AppSpacing.lg),
+              _buildDirectRecipientsSection(context),
               const SizedBox(height: AppSpacing.md),
               Text(
                 _audienceSummary(),
@@ -438,6 +450,231 @@ class _AdminAnnouncementCreatePageState
     );
   }
 
+  Widget _buildDirectRecipientsSection(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Estudiantes específicos',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Busca por matrícula, correo institucional o nombre. '
+          'Los estudiantes seleccionados se incluirán aunque pertenezcan '
+          'a carreras, semestres o grupos distintos.',
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        TextField(
+          controller: _recipientSearchController,
+          enabled: !_isSubmitting && !_isSearchingRecipients,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            labelText: 'Buscar estudiante',
+            hintText: 'Ej. L191200038 o correo institucional',
+            border: const OutlineInputBorder(),
+            suffixIcon:
+                _isSearchingRecipients
+                    ? const Padding(
+                      padding: EdgeInsets.all(AppSpacing.md),
+                      child: SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                    : IconButton(
+                      tooltip: 'Buscar',
+                      onPressed: _isSubmitting ? null : _searchRecipients,
+                      icon: const Icon(Icons.search),
+                    ),
+          ),
+          onSubmitted: _isSubmitting ? null : (_) => _searchRecipients(),
+        ),
+        if (_recipientSearchError != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            _recipientSearchError!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+        if (_recipientSearchResults.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text('Resultados', style: theme.textTheme.labelLarge),
+          const SizedBox(height: AppSpacing.xs),
+          ..._recipientSearchResults.map((recipient) {
+            final selected = _selectedRecipients.containsKey(recipient.uid);
+
+            return Card(
+              margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: ListTile(
+                leading: CircleAvatar(
+                  child: Text(_recipientInitials(recipient)),
+                ),
+                title: Text(
+                  recipient.displayName?.trim().isNotEmpty ?? false
+                      ? recipient.displayName!
+                      : 'Estudiante sin nombre',
+                ),
+                subtitle: Text(_recipientDescription(recipient)),
+                trailing: IconButton(
+                  tooltip:
+                      selected ? 'Quitar destinatario' : 'Agregar destinatario',
+                  onPressed:
+                      _isSubmitting ? null : () => _toggleRecipient(recipient),
+                  icon: Icon(
+                    selected ? Icons.check_circle : Icons.add_circle_outline,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ],
+        if (_selectedRecipients.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Destinatarios seleccionados '
+            '(${_selectedRecipients.length})',
+            style: theme.textTheme.labelLarge,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          ..._selectedRecipients.values.map(
+            (recipient) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.person_outline),
+              title: Text(
+                recipient.displayName?.trim().isNotEmpty ?? false
+                    ? recipient.displayName!
+                    : recipient.controlNumber ??
+                        recipient.email ??
+                        'Usuario seleccionado',
+              ),
+              subtitle: Text(_recipientDescription(recipient)),
+              trailing: IconButton(
+                tooltip: 'Quitar',
+                onPressed:
+                    _isSubmitting ? null : () => _toggleRecipient(recipient),
+                icon: const Icon(Icons.close),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _searchRecipients() async {
+    final query = _recipientSearchController.text.trim();
+
+    if (query.length < 2) {
+      setState(() {
+        _recipientSearchResults = const [];
+        _recipientSearchError = 'Escribe al menos 2 caracteres para buscar.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isSearchingRecipients = true;
+      _recipientSearchError = null;
+    });
+
+    try {
+      final results = await context
+          .read<AnnouncementRepository>()
+          .searchRecipients(query: query);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _recipientSearchResults = results;
+        _recipientSearchError =
+            results.isEmpty ? 'No se encontraron perfiles activos.' : null;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _recipientSearchResults = const [];
+        _recipientSearchError = 'No se pudo realizar la búsqueda: $error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isSearchingRecipients = false);
+      }
+    }
+  }
+
+  void _toggleRecipient(AnnouncementRecipient recipient) {
+    setState(() {
+      if (_selectedRecipients.containsKey(recipient.uid)) {
+        _selectedRecipients.remove(recipient.uid);
+      } else {
+        _selectedRecipients[recipient.uid] = recipient;
+      }
+    });
+  }
+
+  String _recipientDescription(AnnouncementRecipient recipient) {
+    final parts = <String>[];
+
+    final controlNumber = recipient.controlNumber?.trim();
+    if (controlNumber != null && controlNumber.isNotEmpty) {
+      parts.add(controlNumber);
+    }
+
+    final email = recipient.email?.trim();
+    if (email != null && email.isNotEmpty) {
+      parts.add(email);
+    }
+
+    if (recipient.careerId != null) {
+      parts.add(InstitutionalCareers.labelFor(recipient.careerId!));
+    }
+
+    if (recipient.semester != null) {
+      parts.add('${recipient.semester}.º semestre');
+    }
+
+    if (recipient.groupId != null) {
+      parts.add(recipient.groupId!.toUpperCase());
+    }
+
+    return parts.isEmpty ? _roleLabel(recipient.role) : parts.join(' · ');
+  }
+
+  String _recipientInitials(AnnouncementRecipient recipient) {
+    final name = recipient.displayName?.trim();
+
+    if (name != null && name.isNotEmpty) {
+      final words = name
+          .split(RegExp(r'\s+'))
+          .where((word) => word.isNotEmpty)
+          .take(2)
+          .toList(growable: false);
+
+      return words.map((word) => word.substring(0, 1).toUpperCase()).join();
+    }
+
+    final controlNumber = recipient.controlNumber?.trim();
+
+    if (controlNumber != null && controlNumber.isNotEmpty) {
+      return controlNumber.substring(0, 1).toUpperCase();
+    }
+
+    return '?';
+  }
+
   AnnouncementTarget _buildTarget() {
     if (_allUsers) {
       return const AnnouncementTarget.all();
@@ -448,6 +685,7 @@ class _AdminAnnouncementCreatePageState
       careerIds: Set<String>.unmodifiable(_selectedCareerIds),
       semesters: Set<int>.unmodifiable(_selectedSemesters),
       groupIds: Set<String>.unmodifiable(_parsedGroups()),
+      userUids: Set<String>.unmodifiable(_selectedRecipients.keys),
     );
   }
 
@@ -478,6 +716,10 @@ class _AdminAnnouncementCreatePageState
 
     if (groups.isNotEmpty) {
       parts.add('${groups.length} grupo(s)');
+    }
+
+    if (_selectedRecipients.isNotEmpty) {
+      parts.add('${_selectedRecipients.length} destinatario(s) directo(s)');
     }
 
     if (parts.isEmpty) {

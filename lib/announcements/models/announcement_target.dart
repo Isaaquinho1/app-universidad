@@ -8,6 +8,7 @@ class AnnouncementTarget {
     this.careerIds = const {},
     this.semesters = const {},
     this.groupIds = const {},
+    this.userUids = const {},
   });
 
   /// Creates a target that includes every active user.
@@ -16,7 +17,8 @@ class AnnouncementTarget {
       roles = const {},
       careerIds = const {},
       semesters = const {},
-      groupIds = const {};
+      groupIds = const {},
+      userUids = const {};
 
   /// Whether the announcement is intended for every active user.
   final bool allUsers;
@@ -33,13 +35,17 @@ class AnnouncementTarget {
   /// Institutional group identifiers included in the audience.
   final Set<String> groupIds;
 
+  /// Specific authenticated users included directly in the audience.
+  final Set<String> userUids;
+
   /// Whether this target contains no effective audience.
   bool get isEmpty =>
       !allUsers &&
       roles.isEmpty &&
       careerIds.isEmpty &&
       semesters.isEmpty &&
-      groupIds.isEmpty;
+      groupIds.isEmpty &&
+      userUids.isEmpty;
 
   /// Whether at least one audience criterion is configured.
   bool get isNotEmpty => !isEmpty;
@@ -87,6 +93,7 @@ class AnnouncementTarget {
       careerIds: _readStringSet(json['careerIds'] ?? json['career_ids']),
       semesters: _readIntSet(json['semesters']),
       groupIds: _readStringSet(json['groupIds'] ?? json['group_ids']),
+      userUids: _readStringSet(json['userUids'] ?? json['user_ids']),
     );
   }
 
@@ -97,6 +104,7 @@ class AnnouncementTarget {
       'careerIds': careerIds.toList(growable: false),
       'semesters': semesters.toList(growable: false),
       'groupIds': groupIds.toList(growable: false),
+      'userUids': userUids.toList(growable: false),
     };
   }
 
@@ -106,6 +114,7 @@ class AnnouncementTarget {
     Set<String>? careerIds,
     Set<int>? semesters,
     Set<String>? groupIds,
+    Set<String>? userUids,
   }) {
     return AnnouncementTarget(
       allUsers: allUsers ?? this.allUsers,
@@ -113,6 +122,7 @@ class AnnouncementTarget {
       careerIds: careerIds ?? this.careerIds,
       semesters: semesters ?? this.semesters,
       groupIds: groupIds ?? this.groupIds,
+      userUids: userUids ?? this.userUids,
     );
   }
 

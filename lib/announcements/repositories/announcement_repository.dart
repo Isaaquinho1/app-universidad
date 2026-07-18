@@ -297,6 +297,39 @@ class AnnouncementRepository {
         .toList(growable: false);
   }
 
+  /// Searches active profiles for direct announcement recipients.
+  Future<List<AnnouncementRecipient>> searchRecipients({
+    required String query,
+    int limit = 20,
+  }) async {
+    _requireAnnouncementManager();
+
+    final normalizedQuery = query.trim();
+
+    if (normalizedQuery.length < 2) {
+      return const [];
+    }
+
+    final response = await _supabaseClient.rpc(
+      'search_announcement_recipients',
+      params: {'p_query': normalizedQuery, 'p_limit': limit.clamp(1, 50)},
+    );
+
+    if (response is! List) {
+      return const [];
+    }
+
+    return response
+        .whereType<Map>()
+        .map(
+          (row) => AnnouncementRecipient.fromSupabase(
+            row.map((key, value) => MapEntry(key.toString(), value)),
+          ),
+        )
+        .where((recipient) => recipient.uid.isNotEmpty)
+        .toList(growable: false);
+  }
+
   Future<void> _replaceTargets({
     required String announcementId,
     required AnnouncementTarget target,
@@ -325,6 +358,9 @@ class AnnouncementRepository {
       ),
       ...target.groupIds.map(
         (groupId) => {'announcement_id': announcementId, 'group_id': groupId},
+      ),
+      ...target.userUids.map(
+        (userUid) => {'announcement_id': announcementId, 'user_id': userUid},
       ),
     ];
 
