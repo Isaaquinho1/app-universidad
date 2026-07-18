@@ -24,6 +24,7 @@ class _AdminAnnouncementCreatePageState
 
   AnnouncementPriority _priority = AnnouncementPriority.normal;
   bool _allUsers = true;
+  bool _allSemesters = true;
   final Set<AppUserRole> _selectedRoles = {};
   final Set<String> _selectedCareerIds = {};
   final Set<int> _selectedSemesters = {};
@@ -45,6 +46,14 @@ class _AdminAnnouncementCreatePageState
 
   Future<void> _submit({required bool publish}) async {
     if (_isSubmitting || !_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (!_allUsers && !_allSemesters && _selectedSemesters.isEmpty) {
+      _showMessage(
+        'Selecciona al menos un semestre o activa '
+        '"Todos los semestres".',
+      );
       return;
     }
 
@@ -318,6 +327,7 @@ class _AdminAnnouncementCreatePageState
                             _selectedRoles.clear();
                             _selectedCareerIds.clear();
                             _selectedSemesters.clear();
+                            _allSemesters = true;
                             _groupsController.clear();
                             _selectedRecipients.clear();
                             _recipientSearchResults = const [];
@@ -398,30 +408,50 @@ class _AdminAnnouncementCreatePageState
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: List<int>.generate(14, (index) => index + 1)
-                    .map(
-                      (semester) => FilterChip(
-                        label: Text('$semester.º'),
-                        selected: _selectedSemesters.contains(semester),
-                        onSelected:
-                            _isSubmitting
-                                ? null
-                                : (selected) {
-                                  setState(() {
-                                    if (selected) {
-                                      _selectedSemesters.add(semester);
-                                    } else {
-                                      _selectedSemesters.remove(semester);
-                                    }
-                                  });
-                                },
-                      ),
-                    )
-                    .toList(growable: false),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: const Text('Todos los semestres'),
+                subtitle: const Text('No se aplicará un filtro por semestre.'),
+                value: _allSemesters,
+                onChanged:
+                    _isSubmitting
+                        ? null
+                        : (selected) {
+                          setState(() {
+                            _allSemesters = selected ?? true;
+
+                            if (_allSemesters) {
+                              _selectedSemesters.clear();
+                            }
+                          });
+                        },
               ),
+              if (!_allSemesters)
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: List<int>.generate(14, (index) => index + 1)
+                      .map(
+                        (semester) => FilterChip(
+                          label: Text('$semester.º'),
+                          selected: _selectedSemesters.contains(semester),
+                          onSelected:
+                              _isSubmitting
+                                  ? null
+                                  : (selected) {
+                                    setState(() {
+                                      if (selected) {
+                                        _selectedSemesters.add(semester);
+                                      } else {
+                                        _selectedSemesters.remove(semester);
+                                      }
+                                    });
+                                  },
+                        ),
+                      )
+                      .toList(growable: false),
+                ),
               const SizedBox(height: AppSpacing.lg),
               TextFormField(
                 controller: _groupsController,
@@ -683,7 +713,10 @@ class _AdminAnnouncementCreatePageState
     return AnnouncementTarget(
       roles: Set<AppUserRole>.unmodifiable(_selectedRoles),
       careerIds: Set<String>.unmodifiable(_selectedCareerIds),
-      semesters: Set<int>.unmodifiable(_selectedSemesters),
+      semesters:
+          _allSemesters
+              ? const <int>{}
+              : Set<int>.unmodifiable(_selectedSemesters),
       groupIds: Set<String>.unmodifiable(_parsedGroups()),
       userUids: Set<String>.unmodifiable(_selectedRecipients.keys),
     );
@@ -708,7 +741,9 @@ class _AdminAnnouncementCreatePageState
       parts.add('${_selectedCareerIds.length} carrera(s)');
     }
 
-    if (_selectedSemesters.isNotEmpty) {
+    if (_allSemesters && _selectedCareerIds.isNotEmpty) {
+      parts.add('todos los semestres');
+    } else if (_selectedSemesters.isNotEmpty) {
       parts.add('${_selectedSemesters.length} semestre(s)');
     }
 
