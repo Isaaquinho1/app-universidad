@@ -93,8 +93,14 @@ class OnboardingRoute extends GoRouteData {
           path: '/profile',
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<ScheduleManagementRoute>(path: 'schedule-management'),
-            TypedGoRoute<AdminAnnouncementCreateRoute>(
-              path: 'announcement-management/create',
+            TypedGoRoute<AdminAnnouncementManagementRoute>(
+              path: 'announcement-management',
+              routes: <TypedRoute<RouteData>>[
+                TypedGoRoute<AdminAnnouncementCreateRoute>(path: 'create'),
+                TypedGoRoute<AdminAnnouncementEditRoute>(
+                  path: ':announcementId/edit',
+                ),
+              ],
             ),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
             TypedGoRoute<ProfileSettingsRoute>(
@@ -308,12 +314,32 @@ class ScheduleManagementRoute extends GoRouteData {
   }
 }
 
+class AdminAnnouncementManagementRoute extends GoRouteData {
+  const AdminAnnouncementManagementRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminAnnouncementManagementPage();
+  }
+}
+
 class AdminAnnouncementCreateRoute extends GoRouteData {
   const AdminAnnouncementCreateRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const AdminAnnouncementCreatePage();
+  }
+}
+
+class AdminAnnouncementEditRoute extends GoRouteData {
+  const AdminAnnouncementEditRoute({required this.announcementId});
+
+  final String announcementId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AdminAnnouncementEditPage(announcementId: announcementId);
   }
 }
 

@@ -41,6 +41,7 @@ class AnnouncementDetailView extends StatelessWidget {
                   _AnnouncementStatusHeader(
                     priority: announcement.priority,
                     receipt: state.receipt,
+                    contentVersion: announcement.contentVersion,
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
@@ -159,10 +160,12 @@ class _AnnouncementStatusHeader extends StatelessWidget {
   const _AnnouncementStatusHeader({
     required this.priority,
     required this.receipt,
+    required this.contentVersion,
   });
 
   final AnnouncementPriority priority;
   final AnnouncementReceipt? receipt;
+  final int contentVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -173,13 +176,19 @@ class _AnnouncementStatusHeader extends StatelessWidget {
       AnnouncementPriority.urgent => 'Urgente',
     };
 
-    final statusLabel = switch (receipt?.status) {
-      AnnouncementReceiptStatus.delivered => 'Entregado',
-      AnnouncementReceiptStatus.seen => 'Visto',
-      AnnouncementReceiptStatus.read => 'Leído',
-      AnnouncementReceiptStatus.confirmed => 'Confirmado',
-      null => 'Registrando apertura',
-    };
+    final isEdited =
+        receipt != null && receipt!.receiptVersion < contentVersion;
+
+    final statusLabel =
+        isEdited
+            ? 'Editado'
+            : switch (receipt?.status) {
+              AnnouncementReceiptStatus.delivered => 'Entregado',
+              AnnouncementReceiptStatus.seen => 'Visto',
+              AnnouncementReceiptStatus.read => 'Leído',
+              AnnouncementReceiptStatus.confirmed => 'Confirmado',
+              null => 'Registrando apertura',
+            };
 
     return Wrap(
       spacing: AppSpacing.sm,
@@ -191,7 +200,7 @@ class _AnnouncementStatusHeader extends StatelessWidget {
         ),
         Chip(
           avatar: Icon(
-            receipt?.isConfirmed ?? false
+            !isEdited && (receipt?.isConfirmed ?? false)
                 ? Icons.verified_outlined
                 : Icons.visibility_outlined,
             size: 18,

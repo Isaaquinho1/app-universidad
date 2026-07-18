@@ -6,7 +6,9 @@ import 'package:rtu_mirea_app/app/app.dart';
 import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
 
 class AdminAnnouncementCreatePage extends StatefulWidget {
-  const AdminAnnouncementCreatePage({super.key});
+  const AdminAnnouncementCreatePage({super.key, this.initialAnnouncement});
+
+  final Announcement? initialAnnouncement;
 
   @override
   State<AdminAnnouncementCreatePage> createState() =>
@@ -33,6 +35,73 @@ class _AdminAnnouncementCreatePageState
   bool _isSearchingRecipients = false;
   String? _recipientSearchError;
   bool _isSubmitting = false;
+  bool _isLoadingInitialRecipients = false;
+
+  bool get _isEditing => widget.initialAnnouncement != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final announcement = widget.initialAnnouncement;
+
+    if (announcement == null) {
+      return;
+    }
+
+    _titleController.text = announcement.title;
+    _summaryController.text = announcement.summary ?? '';
+    _bodyController.text = announcement.body;
+    _groupsController.text = announcement.target.groupIds.join(', ');
+
+    _priority = announcement.priority;
+    _allUsers = announcement.target.allUsers;
+    _allSemesters = announcement.target.semesters.isEmpty;
+
+    _selectedRoles.addAll(announcement.target.roles);
+    _selectedCareerIds.addAll(announcement.target.careerIds);
+    _selectedSemesters.addAll(announcement.target.semesters);
+
+    if (announcement.target.userUids.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadInitialRecipients(announcement.target.userUids);
+      });
+    }
+  }
+
+  Future<void> _loadInitialRecipients(Set<String> userUids) async {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _isLoadingInitialRecipients = true);
+
+    try {
+      final recipients = await context
+          .read<AnnouncementRepository>()
+          .fetchRecipientsByIds(userUids);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        for (final recipient in recipients) {
+          _selectedRecipients[recipient.uid] = recipient;
+        }
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      _showMessage('No se pudieron cargar algunos destinatarios: $error');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingInitialRecipients = false);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -78,38 +147,51 @@ class _AdminAnnouncementCreatePageState
       final now = DateTime.now().toUtc();
       final authorName = profile.displayName?.trim();
 
+      final existingAnnouncement = widget.initialAnnouncement;
+
       final announcement = Announcement(
-        id: '',
+        id: existingAnnouncement?.id ?? '',
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
         summary:
             _summaryController.text.trim().isEmpty
                 ? null
                 : _summaryController.text.trim(),
-        authorUid: profile.uid,
+        authorUid: existingAnnouncement?.authorUid ?? profile.uid,
         authorName:
-            authorName == null || authorName.isEmpty
+            existingAnnouncement?.authorName ??
+            (authorName == null || authorName.isEmpty
                 ? 'Administración Conecta ITT'
-                : authorName,
+                : authorName),
         target: target,
         status:
-            publish ? AnnouncementStatus.published : AnnouncementStatus.draft,
+            existingAnnouncement?.status ??
+            (publish ? AnnouncementStatus.published : AnnouncementStatus.draft),
         priority: _priority,
-        createdAt: now,
+        createdAt: existingAnnouncement?.createdAt ?? now,
         updatedAt: now,
-        publishedAt: publish ? now : null,
+        publishedAt:
+            existingAnnouncement?.publishedAt ?? (publish ? now : null),
+        expiresAt: existingAnnouncement?.expiresAt,
+        attachmentUrls: existingAnnouncement?.attachmentUrls ?? const [],
       );
 
-      await context.read<AnnouncementRepository>().createAnnouncement(
-        announcement,
-      );
+      final repository = context.read<AnnouncementRepository>();
+
+      if (_isEditing) {
+        await repository.updateAnnouncement(announcement);
+      } else {
+        await repository.createAnnouncement(announcement);
+      }
 
       if (!mounted) {
         return;
       }
 
       _showMessage(
-        publish
+        _isEditing
+            ? 'Comunicado actualizado correctamente.'
+            : publish
             ? 'Comunicado publicado correctamente.'
             : 'Comunicado guardado como borrador.',
       );
@@ -144,7 +226,9 @@ class _AdminAnnouncementCreatePageState
 
     if (!profile.canManageAnnouncements) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Crear comunicado')),
+        appBar: AppBar(
+          title: Text(_isEditing ? 'Editar comunicado' : 'Crear comunicado'),
+        ),
         body: const Center(
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.xlg),
@@ -165,7 +249,9 @@ class _AdminAnnouncementCreatePageState
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear comunicado')),
+      appBar: AppBar(
+        title: Text(_isEditing ? 'Editar comunicado' : 'Crear comunicado'),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -261,25 +347,46 @@ class _AdminAnnouncementCreatePageState
               const SizedBox(height: AppSpacing.lg),
               _buildAudienceSection(context),
               const SizedBox(height: AppSpacing.xlg),
-              OutlinedButton.icon(
-                onPressed: _isSubmitting ? null : () => _submit(publish: false),
-                icon: const Icon(Icons.save_outlined),
-                label: const Text('Guardar borrador'),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              FilledButton.icon(
-                onPressed: _isSubmitting ? null : () => _submit(publish: true),
-                icon:
-                    _isSubmitting
-                        ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        : const Icon(Icons.publish_outlined),
-                label: Text(
-                  _isSubmitting ? 'Publicando…' : 'Publicar comunicado',
+              if (_isEditing)
+                FilledButton.icon(
+                  onPressed:
+                      _isSubmitting || _isLoadingInitialRecipients
+                          ? null
+                          : () => _submit(publish: false),
+                  icon:
+                      _isSubmitting
+                          ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.save_outlined),
+                  label: Text(
+                    _isSubmitting ? 'Guardando cambios…' : 'Guardar cambios',
+                  ),
+                )
+              else ...[
+                OutlinedButton.icon(
+                  onPressed:
+                      _isSubmitting ? null : () => _submit(publish: false),
+                  icon: const Icon(Icons.save_outlined),
+                  label: const Text('Guardar borrador'),
                 ),
-              ),
+                const SizedBox(height: AppSpacing.md),
+                FilledButton.icon(
+                  onPressed:
+                      _isSubmitting ? null : () => _submit(publish: true),
+                  icon:
+                      _isSubmitting
+                          ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.publish_outlined),
+                  label: Text(
+                    _isSubmitting ? 'Publicando…' : 'Publicar comunicado',
+                  ),
+                ),
+              ],
             ],
           ),
         ),

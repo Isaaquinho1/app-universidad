@@ -5,6 +5,7 @@ class AnnouncementReceipt {
   const AnnouncementReceipt({
     required this.userUid,
     required this.status,
+    this.receiptVersion = 1,
     this.deliveredAt,
     this.seenAt,
     this.readAt,
@@ -14,6 +15,7 @@ class AnnouncementReceipt {
 
   final String userUid;
   final AnnouncementReceiptStatus status;
+  final int receiptVersion;
   final DateTime? deliveredAt;
   final DateTime? seenAt;
   final DateTime? readAt;
@@ -32,6 +34,7 @@ class AnnouncementReceipt {
     return AnnouncementReceipt(
       userUid: row['user_id'] as String? ?? '',
       status: AnnouncementReceiptStatus.fromValue(row['status'] as String?),
+      receiptVersion: _readInt(row['receipt_version']) ?? 1,
       deliveredAt: _readDateTime(row['delivered_at']),
       seenAt: _readDateTime(row['seen_at']),
       readAt: _readDateTime(row['read_at']),
@@ -44,6 +47,8 @@ class AnnouncementReceipt {
     return AnnouncementReceipt(
       userUid: json['userUid'] as String? ?? json['user_id'] as String? ?? '',
       status: AnnouncementReceiptStatus.fromValue(json['status'] as String?),
+      receiptVersion:
+          _readInt(json['receiptVersion'] ?? json['receipt_version']) ?? 1,
       deliveredAt: _readDateTime(json['deliveredAt'] ?? json['delivered_at']),
       seenAt: _readDateTime(json['seenAt'] ?? json['seen_at']),
       readAt: _readDateTime(json['readAt'] ?? json['read_at']),
@@ -56,6 +61,7 @@ class AnnouncementReceipt {
     return {
       'userUid': userUid,
       'status': status.value,
+      'receiptVersion': receiptVersion,
       'deliveredAt': deliveredAt,
       'seenAt': seenAt,
       'readAt': readAt,
@@ -67,6 +73,7 @@ class AnnouncementReceipt {
   AnnouncementReceipt copyWith({
     String? userUid,
     AnnouncementReceiptStatus? status,
+    int? receiptVersion,
     DateTime? deliveredAt,
     DateTime? seenAt,
     DateTime? readAt,
@@ -76,12 +83,25 @@ class AnnouncementReceipt {
     return AnnouncementReceipt(
       userUid: userUid ?? this.userUid,
       status: status ?? this.status,
+      receiptVersion: receiptVersion ?? this.receiptVersion,
       deliveredAt: deliveredAt ?? this.deliveredAt,
       seenAt: seenAt ?? this.seenAt,
       readAt: readAt ?? this.readAt,
       confirmedAt: confirmedAt ?? this.confirmedAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  static int? _readInt(Object? value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '');
   }
 
   static DateTime? _readDateTime(Object? value) {

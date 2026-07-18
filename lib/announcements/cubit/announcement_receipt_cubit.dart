@@ -12,14 +12,17 @@ class AnnouncementReceiptCubit extends Cubit<AnnouncementReceiptState> {
     required AnnouncementRepository repository,
     required String announcementId,
     required String userUid,
+    required int contentVersion,
   }) : _repository = repository,
        _announcementId = announcementId,
        _userUid = userUid,
+       _contentVersion = contentVersion,
        super(const AnnouncementReceiptState());
 
   final AnnouncementRepository _repository;
   final String _announcementId;
   final String _userUid;
+  final int _contentVersion;
 
   StreamSubscription<AnnouncementReceipt?>? _receiptSubscription;
   Timer? _readTimer;
@@ -42,6 +45,7 @@ class AnnouncementReceiptCubit extends Cubit<AnnouncementReceiptState> {
               state.copyWith(
                 status: AnnouncementReceiptOperationStatus.ready,
                 receipt: receipt,
+                contentVersion: _contentVersion,
                 clearError: true,
               ),
             );
@@ -150,6 +154,7 @@ class AnnouncementReceiptCubit extends Cubit<AnnouncementReceiptState> {
       state.copyWith(
         status: AnnouncementReceiptOperationStatus.ready,
         receipt: receipt,
+        contentVersion: _contentVersion,
         clearError: true,
       ),
     );

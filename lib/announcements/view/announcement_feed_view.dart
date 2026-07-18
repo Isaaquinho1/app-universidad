@@ -142,6 +142,7 @@ class AnnouncementCard extends StatelessWidget {
                           repository: repository,
                           announcementId: announcement.id,
                           userUid: profile.uid,
+                          contentVersion: announcement.contentVersion,
                         )..started(),
                     child: AnnouncementDetailView(announcement: announcement),
                   ),
@@ -184,7 +185,10 @@ class AnnouncementCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Align(
                 alignment: Alignment.centerLeft,
-                child: _ReceiptBadge(receipt: receipt),
+                child: _ReceiptBadge(
+                  receipt: receipt,
+                  contentVersion: announcement.contentVersion,
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
               Row(
@@ -215,41 +219,52 @@ class AnnouncementCard extends StatelessWidget {
 }
 
 class _ReceiptBadge extends StatelessWidget {
-  const _ReceiptBadge({required this.receipt});
+  const _ReceiptBadge({required this.receipt, required this.contentVersion});
 
   final AnnouncementReceipt? receipt;
+  final int contentVersion;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final status = receipt?.status;
+    final isEdited =
+        receipt != null && receipt!.receiptVersion < contentVersion;
 
-    final (label, icon, backgroundColor, foregroundColor) = switch (status) {
-      null || AnnouncementReceiptStatus.delivered => (
-        'Nuevo',
-        Icons.fiber_new_outlined,
-        theme.colorScheme.primaryContainer,
-        theme.colorScheme.onPrimaryContainer,
-      ),
-      AnnouncementReceiptStatus.seen => (
-        'Visto',
-        Icons.visibility_outlined,
-        theme.colorScheme.secondaryContainer,
-        theme.colorScheme.onSecondaryContainer,
-      ),
-      AnnouncementReceiptStatus.read => (
-        'Leído',
-        Icons.done_all,
-        theme.colorScheme.tertiaryContainer,
-        theme.colorScheme.onTertiaryContainer,
-      ),
-      AnnouncementReceiptStatus.confirmed => (
-        'Confirmado',
-        Icons.verified_outlined,
-        theme.colorScheme.primaryContainer,
-        theme.colorScheme.onPrimaryContainer,
-      ),
-    };
+    final (label, icon, backgroundColor, foregroundColor) =
+        isEdited
+            ? (
+              'Editado',
+              Icons.edit_notifications_outlined,
+              theme.colorScheme.errorContainer,
+              theme.colorScheme.onErrorContainer,
+            )
+            : switch (status) {
+              null || AnnouncementReceiptStatus.delivered => (
+                'Nuevo',
+                Icons.fiber_new_outlined,
+                theme.colorScheme.primaryContainer,
+                theme.colorScheme.onPrimaryContainer,
+              ),
+              AnnouncementReceiptStatus.seen => (
+                'Visto',
+                Icons.visibility_outlined,
+                theme.colorScheme.secondaryContainer,
+                theme.colorScheme.onSecondaryContainer,
+              ),
+              AnnouncementReceiptStatus.read => (
+                'Leído',
+                Icons.done_all,
+                theme.colorScheme.tertiaryContainer,
+                theme.colorScheme.onTertiaryContainer,
+              ),
+              AnnouncementReceiptStatus.confirmed => (
+                'Confirmado',
+                Icons.verified_outlined,
+                theme.colorScheme.primaryContainer,
+                theme.colorScheme.onPrimaryContainer,
+              ),
+            };
 
     return DecoratedBox(
       decoration: BoxDecoration(

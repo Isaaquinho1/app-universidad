@@ -223,13 +223,12 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
             title: 'Administración',
             children: [
               SettingsItem(
-                text: 'Crear comunicado',
+                text: 'Gestión de comunicados',
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedMegaphone01,
                   color: colors.active,
                 ),
-                onPressed:
-                    () => context.go('/profile/announcement-management/create'),
+                onPressed: () => context.go('/profile/announcement-management'),
                 trailing: Icon(Icons.chevron_right, color: colors.deactive),
               ),
             ],

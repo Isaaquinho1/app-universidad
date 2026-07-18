@@ -14,6 +14,7 @@ class Announcement {
     required this.priority,
     required this.createdAt,
     required this.updatedAt,
+    this.contentVersion = 1,
     this.summary,
     this.authorName,
     this.publishedAt,
@@ -32,6 +33,7 @@ class Announcement {
   final AnnouncementPriority priority;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int contentVersion;
   final DateTime? publishedAt;
   final DateTime? expiresAt;
   final List<String> attachmentUrls;
@@ -71,6 +73,7 @@ class Announcement {
       updatedAt:
           _readDateTime(row['updated_at']) ??
           DateTime.fromMillisecondsSinceEpoch(0),
+      contentVersion: _readInt(row['content_version']) ?? 1,
       publishedAt: _readDateTime(row['published_at']),
       expiresAt: _readDateTime(row['expires_at']),
       attachmentUrls: _readStringList(row['attachment_urls']),
@@ -96,6 +99,8 @@ class Announcement {
       updatedAt:
           _readDateTime(json['updatedAt'] ?? json['updated_at']) ??
           DateTime.fromMillisecondsSinceEpoch(0),
+      contentVersion:
+          _readInt(json['contentVersion'] ?? json['content_version']) ?? 1,
       publishedAt: _readDateTime(json['publishedAt'] ?? json['published_at']),
       expiresAt: _readDateTime(json['expiresAt'] ?? json['expires_at']),
       attachmentUrls: _readStringList(
@@ -133,6 +138,7 @@ class Announcement {
       'priority': priority.value,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'contentVersion': contentVersion,
       'publishedAt': publishedAt,
       'expiresAt': expiresAt,
       'attachmentUrls': attachmentUrls,
@@ -151,6 +157,7 @@ class Announcement {
     AnnouncementPriority? priority,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? contentVersion,
     DateTime? publishedAt,
     DateTime? expiresAt,
     List<String>? attachmentUrls,
@@ -167,6 +174,7 @@ class Announcement {
       priority: priority ?? this.priority,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      contentVersion: contentVersion ?? this.contentVersion,
       publishedAt: publishedAt ?? this.publishedAt,
       expiresAt: expiresAt ?? this.expiresAt,
       attachmentUrls: attachmentUrls ?? this.attachmentUrls,
@@ -195,6 +203,18 @@ class Announcement {
         .map((item) => item.toString())
         .where((item) => item.isNotEmpty)
         .toList(growable: false);
+  }
+
+  static int? _readInt(Object? value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '');
   }
 
   static DateTime? _readDateTime(Object? value) {

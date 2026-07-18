@@ -90,6 +90,74 @@ class AnnouncementRepository {
     return null;
   }
 
+  /// Lists announcements available to administrators.
+  Future<List<Announcement>> fetchAdminAnnouncements({
+    AnnouncementStatus? status,
+    int limit = 200,
+  }) async {
+    _requireAnnouncementManager();
+
+    final response = await _supabaseClient.rpc(
+      'get_admin_announcements',
+      params: {'p_status': status?.value, 'p_limit': limit.clamp(1, 500)},
+    );
+
+    if (response is! List) {
+      return const [];
+    }
+
+    return response
+        .whereType<Map>()
+        .map(
+          (row) => Announcement.fromSupabase(
+            row.map((key, value) => MapEntry(key.toString(), value)),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  /// Watches administrative announcements and refreshes on changes.
+  Stream<List<Announcement>> watchAdminAnnouncements({
+    AnnouncementStatus? status,
+    int limit = 200,
+  }) {
+    late final StreamController<List<Announcement>> controller;
+    StreamSubscription<List<Map<String, dynamic>>>? subscription;
+
+    Future<void> refresh() async {
+      try {
+        final announcements = await fetchAdminAnnouncements(
+          status: status,
+          limit: limit,
+        );
+
+        if (!controller.isClosed) {
+          controller.add(announcements);
+        }
+      } catch (error, stackTrace) {
+        if (!controller.isClosed) {
+          controller.addError(error, stackTrace);
+        }
+      }
+    }
+
+    controller = StreamController<List<Announcement>>(
+      onListen: () {
+        unawaited(refresh());
+
+        subscription = _supabaseClient
+            .from(_announcementsTable)
+            .stream(primaryKey: const ['id'])
+            .listen((_) => unawaited(refresh()), onError: controller.addError);
+      },
+      onCancel: () async {
+        await subscription?.cancel();
+      },
+    );
+
+    return controller.stream;
+  }
+
   /// Creates an announcement and its audience targets atomically.
   Future<String> createAnnouncement(Announcement announcement) async {
     _requireAnnouncementManager();
@@ -323,6 +391,58 @@ class AnnouncementRepository {
             row.map((key, value) => MapEntry(key.toString(), value)),
           ),
         )
+        .toList(growable: false);
+  }
+
+  /// Fetches one announcement from the administrative collection.
+  Future<Announcement?> fetchAdminAnnouncement(String announcementId) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final announcements = await fetchAdminAnnouncements(limit: 500);
+
+    for (final announcement in announcements) {
+      if (announcement.id == announcementId) {
+        return announcement;
+      }
+    }
+
+    return null;
+  }
+
+  /// Resolves direct recipient identifiers into active profile data.
+  Future<List<AnnouncementRecipient>> fetchRecipientsByIds(
+    Iterable<String> userUids,
+  ) async {
+    _requireAnnouncementManager();
+
+    final ids = userUids
+        .map((uid) => uid.trim())
+        .where((uid) => uid.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+
+    if (ids.isEmpty) {
+      return const [];
+    }
+
+    final response = await _supabaseClient.rpc(
+      'get_announcement_recipients_by_ids',
+      params: {'p_user_ids': ids},
+    );
+
+    if (response is! List) {
+      return const [];
+    }
+
+    return response
+        .whereType<Map>()
+        .map(
+          (row) => AnnouncementRecipient.fromSupabase(
+            row.map((key, value) => MapEntry(key.toString(), value)),
+          ),
+        )
+        .where((recipient) => recipient.uid.isNotEmpty)
         .toList(growable: false);
   }
 
