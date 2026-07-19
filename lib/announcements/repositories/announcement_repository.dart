@@ -240,8 +240,39 @@ class AnnouncementRepository {
     }
   }
 
-  /// Publishes an announcement immediately.
-  Future<void> publishAnnouncement(String announcementId) async {
+  /// Sends the FCM notification for one published announcement version.
+  Future<Map<String, dynamic>> sendAnnouncementNotification(
+    String announcementId,
+  ) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final response = await _supabaseClient.functions.invoke(
+      'send-announcement-notification',
+      body: {'announcement_id': announcementId},
+    );
+
+    final data = response.data;
+
+    if (response.status < 200 || response.status >= 300) {
+      throw StateError(
+        'The notification function returned HTTP ${response.status}: $data',
+      );
+    }
+
+    if (data is! Map) {
+      throw StateError(
+        'The notification function returned an invalid response.',
+      );
+    }
+
+    return data.map((key, value) => MapEntry(key.toString(), value));
+  }
+
+  /// Publishes an announcement and sends its segmented notification.
+  Future<Map<String, dynamic>> publishAnnouncement(
+    String announcementId,
+  ) async {
     _requireAnnouncementManager();
     _validateAnnouncementId(announcementId);
 
@@ -252,6 +283,8 @@ class AnnouncementRepository {
           'published_at': DateTime.now().toUtc().toIso8601String(),
         })
         .eq('id', announcementId);
+
+    return sendAnnouncementNotification(announcementId);
   }
 
   /// Archives an announcement.

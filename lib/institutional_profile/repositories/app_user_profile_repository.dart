@@ -144,6 +144,7 @@ class AppUserProfileRepository {
     required String uid,
     required String deviceId,
     required String token,
+    required String platform,
   }) async {
     _validateCurrentUser(uid);
 
@@ -159,6 +160,16 @@ class AppUserProfileRepository {
       throw ArgumentError.value(token, 'token', 'FCM token cannot be empty.');
     }
 
+    const supportedPlatforms = {'android', 'ios', 'web', 'macos', 'windows'};
+
+    if (!supportedPlatforms.contains(platform)) {
+      throw ArgumentError.value(
+        platform,
+        'platform',
+        'Unsupported notification platform.',
+      );
+    }
+
     final existingRow =
         await _supabaseClient
             .from(_fcmTokensTable)
@@ -171,6 +182,7 @@ class AppUserProfileRepository {
       'user_id': uid,
       'device_id': deviceId,
       'token': token,
+      'platform': platform,
       'active': true,
       'last_seen_at': DateTime.now().toUtc().toIso8601String(),
     };
