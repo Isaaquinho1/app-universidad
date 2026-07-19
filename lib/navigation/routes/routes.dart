@@ -100,6 +100,9 @@ class OnboardingRoute extends GoRouteData {
                 TypedGoRoute<AdminAnnouncementEditRoute>(
                   path: ':announcementId/edit',
                 ),
+                TypedGoRoute<AdminAnnouncementResultsRoute>(
+                  path: ':announcementId/results',
+                ),
               ],
             ),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
@@ -340,6 +343,17 @@ class AdminAnnouncementEditRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AdminAnnouncementEditPage(announcementId: announcementId);
+  }
+}
+
+class AdminAnnouncementResultsRoute extends GoRouteData {
+  const AdminAnnouncementResultsRoute({required this.announcementId});
+
+  final String announcementId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AdminAnnouncementResultsPage(announcementId: announcementId);
   }
 }
 

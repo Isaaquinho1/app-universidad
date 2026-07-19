@@ -394,6 +394,29 @@ class AnnouncementRepository {
         .toList(growable: false);
   }
 
+  /// Fetches recipient metrics for one institutional announcement.
+  Future<AnnouncementResults> fetchAnnouncementResults(
+    String announcementId,
+  ) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final response = await _supabaseClient.rpc(
+      'get_announcement_results',
+      params: {'p_announcement_id': announcementId},
+    );
+
+    if (response is! Map) {
+      throw StateError(
+        'The announcement results RPC returned an invalid response.',
+      );
+    }
+
+    return AnnouncementResults.fromJson(
+      response.map((key, value) => MapEntry(key.toString(), value)),
+    );
+  }
+
   /// Fetches one announcement from the administrative collection.
   Future<Announcement?> fetchAdminAnnouncement(String announcementId) async {
     _requireAnnouncementManager();

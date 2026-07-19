@@ -381,6 +381,24 @@ class _AnnouncementAdminCard extends StatelessWidget {
                   ),
               ],
             ),
+            if (announcement.status == AnnouncementStatus.published ||
+                announcement.status == AnnouncementStatus.archived) ...[
+              const SizedBox(height: AppSpacing.sm),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.tonalIcon(
+                  onPressed:
+                      isProcessing
+                          ? null
+                          : () => context.go(
+                            '/profile/announcement-management/'
+                            '${announcement.id}/results',
+                          ),
+                  icon: const Icon(Icons.analytics_outlined),
+                  label: const Text('Ver resultados'),
+                ),
+              ),
+            ],
           ],
         ),
       ),
