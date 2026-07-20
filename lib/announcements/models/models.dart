@@ -6,3 +6,4 @@ export 'announcement_status.dart';
 export 'announcement_target.dart';
 export 'announcement_recipient.dart';
 export 'announcement_results.dart';
+export 'announcement_notification_metrics.dart';

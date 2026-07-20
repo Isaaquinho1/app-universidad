@@ -431,6 +431,30 @@ class AnnouncementRepository {
         .toList(growable: false);
   }
 
+  /// Fetches server-side FCM dispatch metrics for one announcement.
+  Future<AnnouncementNotificationMetrics> fetchAnnouncementNotificationMetrics(
+    String announcementId,
+  ) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final response = await _supabaseClient.rpc(
+      'get_announcement_notification_metrics',
+      params: {'p_announcement_id': announcementId},
+    );
+
+    if (response is! Map) {
+      throw StateError(
+        'The announcement notification metrics RPC returned '
+        'an invalid response.',
+      );
+    }
+
+    return AnnouncementNotificationMetrics.fromJson(
+      response.map((key, value) => MapEntry(key.toString(), value)),
+    );
+  }
+
   /// Fetches recipient metrics for one institutional announcement.
   Future<AnnouncementResults> fetchAnnouncementResults(
     String announcementId,
