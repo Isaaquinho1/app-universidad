@@ -53,6 +53,9 @@ class OnboardingRoute extends GoRouteData {
           path: '/feed',
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<ArticleRoute>(path: 'article/:articleId'),
+            TypedGoRoute<AnnouncementDetailRoute>(
+              path: 'announcement/:announcementId',
+            ),
           ],
         ),
       ],
@@ -158,6 +161,17 @@ class FeedRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const FeedView();
+  }
+}
+
+class AnnouncementDetailRoute extends GoRouteData {
+  const AnnouncementDetailRoute({required this.announcementId});
+
+  final String announcementId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AnnouncementDetailPage(announcementId: announcementId);
   }
 }
 

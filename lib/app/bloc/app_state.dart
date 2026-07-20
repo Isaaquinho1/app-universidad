@@ -15,6 +15,7 @@ class AppState extends Equatable {
     this.isAmoled = false,
     this.user = User.anonymous,
     this.institutionalProfile,
+    this.pendingAnnouncementId,
   });
 
   const AppState.authenticated(
@@ -49,6 +50,11 @@ class AppState extends Equatable {
   /// Institutional Firestore profile used for roles and segmentation.
   final AppUserProfile? institutionalProfile;
 
+  /// Announcement waiting to be opened from a notification interaction.
+  ///
+  /// This value is intentionally not persisted by HydratedBloc.
+  final String? pendingAnnouncementId;
+
   bool get hasInstitutionalProfile => institutionalProfile != null;
 
   AppState copyWith({
@@ -57,6 +63,8 @@ class AppState extends Equatable {
     User? user,
     AppUserProfile? institutionalProfile,
     bool clearInstitutionalProfile = false,
+    String? pendingAnnouncementId,
+    bool clearPendingAnnouncementId = false,
   }) {
     return AppState(
       isAmoled: isAmoled ?? this.isAmoled,
@@ -66,9 +74,19 @@ class AppState extends Equatable {
           clearInstitutionalProfile
               ? null
               : institutionalProfile ?? this.institutionalProfile,
+      pendingAnnouncementId:
+          clearPendingAnnouncementId
+              ? null
+              : pendingAnnouncementId ?? this.pendingAnnouncementId,
     );
   }
 
   @override
-  List<Object?> get props => [isAmoled, status, user, institutionalProfile];
+  List<Object?> get props => [
+    isAmoled,
+    status,
+    user,
+    institutionalProfile,
+    pendingAnnouncementId,
+  ];
 }

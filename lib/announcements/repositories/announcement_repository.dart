@@ -197,6 +197,10 @@ class AnnouncementRepository {
       );
     }
 
+    if (announcement.status == AnnouncementStatus.published) {
+      await sendAnnouncementNotification(response);
+    }
+
     return response;
   }
 

@@ -31,6 +31,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
        ) {
     on<AppOpened>(_onAppOpened);
     on<RecieveInteractedMessage>(_onRecieveInteractedMessage);
+    on<AnnouncementNotificationOpened>(_onAnnouncementNotificationOpened);
+    on<AnnouncementNavigationConsumed>(_onAnnouncementNavigationConsumed);
     on<ThemeChanged>(_onThemeChanged);
     on<AppUserChanged>(_onUserChanged);
     on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
@@ -289,12 +291,31 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     add(RecieveInteractedMessage(message));
   }
 
-  Future<void> _onRecieveInteractedMessage(
+  void _onRecieveInteractedMessage(
     RecieveInteractedMessage event,
     Emitter<AppState> _,
-  ) async {
+  ) {
     final data = event.message.data;
     Logger().i('Handling message: $data');
+    _queueAnnouncementNavigation(data);
+  }
+
+  void _onAnnouncementNotificationOpened(
+    AnnouncementNotificationOpened event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn || event.announcementId.isEmpty) {
+      return;
+    }
+
+    emit(state.copyWith(pendingAnnouncementId: event.announcementId));
+  }
+
+  void _onAnnouncementNavigationConsumed(
+    AnnouncementNavigationConsumed event,
+    Emitter<AppState> emit,
+  ) {
+    emit(state.copyWith(clearPendingAnnouncementId: true));
   }
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
@@ -326,14 +347,20 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
   void _handleNotificationData(Map<String, dynamic> data) {
     Logger().i('Handling local notification tap: $data');
+    _queueAnnouncementNavigation(data);
+  }
 
-    final announcementId = data['announcement_id']?.toString();
+  void _queueAnnouncementNavigation(Map<String, dynamic> data) {
+    final announcementId = data['announcement_id']?.toString().trim();
 
     if (announcementId == null || announcementId.isEmpty) {
+      Logger().w(
+        'Notification interaction did not contain an announcement_id.',
+      );
       return;
     }
 
-    // Navigation to the announcement detail will be connected next.
+    add(AnnouncementNotificationOpened(announcementId));
   }
 
   Future<void> _onThemeChanged(

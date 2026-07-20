@@ -20,6 +20,19 @@ class RecieveInteractedMessage extends AppEvent {
   List<Object?> get props => [message];
 }
 
+class AnnouncementNotificationOpened extends AppEvent {
+  const AnnouncementNotificationOpened(this.announcementId);
+
+  final String announcementId;
+
+  @override
+  List<Object?> get props => [announcementId];
+}
+
+class AnnouncementNavigationConsumed extends AppEvent {
+  const AnnouncementNavigationConsumed();
+}
+
 class ThemeChanged extends AppEvent {
   const ThemeChanged(this.isAmoled);
 
