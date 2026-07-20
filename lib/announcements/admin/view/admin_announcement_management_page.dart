@@ -18,6 +18,18 @@ class _AdminAnnouncementManagementPageState
   AnnouncementStatus? _selectedStatus;
   bool _isProcessing = false;
 
+  Future<void> _openEdit(Announcement announcement) async {
+    final updated = await context.push<bool>(
+      '/profile/announcement-management/'
+      '${announcement.id}/edit',
+    );
+
+    if (updated == true && mounted) {
+      setState(() {});
+      _showMessage('Comunicado actualizado correctamente.');
+    }
+  }
+
   Future<void> _publish(Announcement announcement) async {
     final confirmed = await _confirmAction(
       title: 'Publicar comunicado',
@@ -236,6 +248,7 @@ class _AdminAnnouncementManagementPageState
                       return _AnnouncementAdminCard(
                         announcement: announcement,
                         isProcessing: _isProcessing,
+                        onEdit: () => _openEdit(announcement),
                         onPublish: () => _publish(announcement),
                         onArchive: () => _archive(announcement),
                       );
@@ -291,12 +304,14 @@ class _AnnouncementAdminCard extends StatelessWidget {
   const _AnnouncementAdminCard({
     required this.announcement,
     required this.isProcessing,
+    required this.onEdit,
     required this.onPublish,
     required this.onArchive,
   });
 
   final Announcement announcement;
   final bool isProcessing;
+  final VoidCallback onEdit;
   final VoidCallback onPublish;
   final VoidCallback onArchive;
 
@@ -351,13 +366,7 @@ class _AnnouncementAdminCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextButton.icon(
-                    onPressed:
-                        isProcessing
-                            ? null
-                            : () => context.go(
-                              '/profile/announcement-management/'
-                              '${announcement.id}/edit',
-                            ),
+                    onPressed: isProcessing ? null : onEdit,
                     icon: const Icon(Icons.edit_outlined),
                     label: const Text('Editar'),
                   ),

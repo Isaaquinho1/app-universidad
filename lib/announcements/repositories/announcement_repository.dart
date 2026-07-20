@@ -242,6 +242,10 @@ class AnnouncementRepository {
         'The transactional update RPC returned an invalid identifier.',
       );
     }
+
+    if (announcement.status == AnnouncementStatus.published) {
+      await sendAnnouncementNotification(announcement.id);
+    }
   }
 
   /// Sends the FCM notification for one published announcement version.

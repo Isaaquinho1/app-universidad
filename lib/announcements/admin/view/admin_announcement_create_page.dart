@@ -37,12 +37,19 @@ class _AdminAnnouncementCreatePageState
   String? _recipientSearchError;
   bool _isSubmitting = false;
   bool _isLoadingInitialRecipients = false;
+  bool _hasChanges = false;
+  bool _initialStateReady = false;
 
   bool get _isEditing => widget.initialAnnouncement != null;
 
   @override
   void initState() {
     super.initState();
+
+    _titleController.addListener(_evaluateChanges);
+    _summaryController.addListener(_evaluateChanges);
+    _bodyController.addListener(_evaluateChanges);
+    _groupsController.addListener(_evaluateChanges);
 
     final announcement = widget.initialAnnouncement;
 
@@ -65,9 +72,20 @@ class _AdminAnnouncementCreatePageState
     _selectedSemesters.addAll(announcement.target.semesters);
 
     if (announcement.target.userUids.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _loadInitialRecipients(announcement.target.userUids);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _loadInitialRecipients(announcement.target.userUids);
+
+        if (!mounted) {
+          return;
+        }
+
+        setState(() {
+          _initialStateReady = true;
+          _hasChanges = false;
+        });
       });
+    } else {
+      _initialStateReady = true;
     }
   }
 
@@ -115,6 +133,99 @@ class _AdminAnnouncementCreatePageState
     super.dispose();
   }
 
+  void _setFormState(VoidCallback mutation) {
+    setState(mutation);
+    _evaluateChanges();
+  }
+
+  void _evaluateChanges() {
+    if (!_isEditing || !_initialStateReady || !mounted) {
+      return;
+    }
+
+    final changed = !_matchesInitialAnnouncement();
+
+    if (changed == _hasChanges) {
+      return;
+    }
+
+    setState(() {
+      _hasChanges = changed;
+    });
+  }
+
+  bool _matchesInitialAnnouncement() {
+    final initial = widget.initialAnnouncement;
+
+    if (initial == null) {
+      return false;
+    }
+
+    final currentSummary = _summaryController.text.trim();
+
+    return _titleController.text.trim() == initial.title.trim() &&
+        _bodyController.text.trim() == initial.body.trim() &&
+        (currentSummary.isEmpty ? null : currentSummary) ==
+            initial.summary?.trim() &&
+        _priority == initial.priority &&
+        _targetsAreEqual(_buildTarget(), initial.target);
+  }
+
+  bool _targetsAreEqual(
+    AnnouncementTarget current,
+    AnnouncementTarget initial,
+  ) {
+    return current.allUsers == initial.allUsers &&
+        _setsAreEqual(current.roles, initial.roles) &&
+        _setsAreEqual(current.careerIds, initial.careerIds) &&
+        _setsAreEqual(current.semesters, initial.semesters) &&
+        _setsAreEqual(current.groupIds, initial.groupIds) &&
+        _setsAreEqual(current.userUids, initial.userUids);
+  }
+
+  bool _setsAreEqual<T>(Set<T> first, Set<T> second) {
+    return first.length == second.length && first.containsAll(second);
+  }
+
+  Future<bool> _confirmUpdate() async {
+    final initial = widget.initialAnnouncement;
+
+    if (initial == null) {
+      return true;
+    }
+
+    final isPublished = initial.status == AnnouncementStatus.published;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmar actualización'),
+          content: Text(
+            isPublished
+                ? 'Se creará una nueva versión del comunicado y se '
+                    'enviará otra notificación push a los destinatarios.'
+                : 'Se guardarán los cambios del comunicado. '
+                    'No se enviará una notificación mientras no esté '
+                    'publicado.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Actualizar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false;
+  }
+
   Future<void> _submit({required bool publish}) async {
     if (_isSubmitting || !_formKey.currentState!.validate()) {
       return;
@@ -149,6 +260,18 @@ class _AdminAnnouncementCreatePageState
     if (profile == null || !profile.canManageAnnouncements) {
       _showMessage('No tienes permisos para crear comunicados.');
       return;
+    }
+
+    if (_isEditing) {
+      if (!_hasChanges) {
+        return;
+      }
+
+      final confirmed = await _confirmUpdate();
+
+      if (!confirmed || !mounted) {
+        return;
+      }
     }
 
     setState(() => _isSubmitting = true);
@@ -350,7 +473,7 @@ class _AdminAnnouncementCreatePageState
                         ? null
                         : (priority) {
                           if (priority != null) {
-                            setState(() => _priority = priority);
+                            _setFormState(() => _priority = priority);
                           }
                         },
               ),
@@ -360,7 +483,10 @@ class _AdminAnnouncementCreatePageState
               if (_isEditing)
                 FilledButton.icon(
                   onPressed:
-                      _isSubmitting || _isLoadingInitialRecipients
+                      _isSubmitting ||
+                              _isLoadingInitialRecipients ||
+                              !_initialStateReady ||
+                              !_hasChanges
                           ? null
                           : () => _submit(publish: false),
                   icon:
@@ -437,7 +563,7 @@ class _AdminAnnouncementCreatePageState
                   _isSubmitting
                       ? null
                       : (value) {
-                        setState(() {
+                        _setFormState(() {
                           _allUsers = value;
 
                           if (value) {
@@ -469,7 +595,7 @@ class _AdminAnnouncementCreatePageState
                     _isSubmitting
                         ? null
                         : (value) {
-                          setState(() {
+                          _setFormState(() {
                             _specificRecipients = value;
 
                             if (value) {
@@ -509,7 +635,7 @@ class _AdminAnnouncementCreatePageState
                               _isSubmitting
                                   ? null
                                   : (selected) {
-                                    setState(() {
+                                    _setFormState(() {
                                       if (selected) {
                                         _selectedRoles.add(role);
                                       } else {
@@ -540,7 +666,7 @@ class _AdminAnnouncementCreatePageState
                         _isSubmitting
                             ? null
                             : (selected) {
-                              setState(() {
+                              _setFormState(() {
                                 if (selected ?? false) {
                                   _selectedCareerIds.add(career.id);
                                 } else {
@@ -570,7 +696,7 @@ class _AdminAnnouncementCreatePageState
                       _isSubmitting
                           ? null
                           : (selected) {
-                            setState(() {
+                            _setFormState(() {
                               _allSemesters = selected ?? true;
 
                               if (_allSemesters) {
@@ -592,7 +718,7 @@ class _AdminAnnouncementCreatePageState
                                 _isSubmitting
                                     ? null
                                     : (selected) {
-                                      setState(() {
+                                      _setFormState(() {
                                         if (selected) {
                                           _selectedSemesters.add(semester);
                                         } else {
@@ -801,7 +927,7 @@ class _AdminAnnouncementCreatePageState
   }
 
   void _toggleRecipient(AnnouncementRecipient recipient) {
-    setState(() {
+    _setFormState(() {
       if (_selectedRecipients.containsKey(recipient.uid)) {
         _selectedRecipients.remove(recipient.uid);
       } else {
