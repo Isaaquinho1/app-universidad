@@ -26,6 +26,7 @@ class _AdminAnnouncementCreatePageState
 
   AnnouncementPriority _priority = AnnouncementPriority.normal;
   bool _allUsers = true;
+  bool _specificRecipients = false;
   bool _allSemesters = true;
   final Set<AppUserRole> _selectedRoles = {};
   final Set<String> _selectedCareerIds = {};
@@ -56,6 +57,7 @@ class _AdminAnnouncementCreatePageState
 
     _priority = announcement.priority;
     _allUsers = announcement.target.allUsers;
+    _specificRecipients = !_allUsers && announcement.target.userUids.isNotEmpty;
     _allSemesters = announcement.target.semesters.isEmpty;
 
     _selectedRoles.addAll(announcement.target.roles);
@@ -118,11 +120,19 @@ class _AdminAnnouncementCreatePageState
       return;
     }
 
-    if (!_allUsers && !_allSemesters && _selectedSemesters.isEmpty) {
+    if (!_allUsers &&
+        !_specificRecipients &&
+        !_allSemesters &&
+        _selectedSemesters.isEmpty) {
       _showMessage(
         'Selecciona al menos un semestre o activa '
         '"Todos los semestres".',
       );
+      return;
+    }
+
+    if (_specificRecipients && _selectedRecipients.isEmpty) {
+      _showMessage('Selecciona al menos una persona específica.');
       return;
     }
 
@@ -431,6 +441,7 @@ class _AdminAnnouncementCreatePageState
                           _allUsers = value;
 
                           if (value) {
+                            _specificRecipients = false;
                             _selectedRoles.clear();
                             _selectedCareerIds.clear();
                             _selectedSemesters.clear();
@@ -446,112 +457,63 @@ class _AdminAnnouncementCreatePageState
             ),
             if (!_allUsers) ...[
               const Divider(),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Roles',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: AppUserRole.values
-                    .map(
-                      (role) => FilterChip(
-                        label: Text(_roleLabel(role)),
-                        selected: _selectedRoles.contains(role),
-                        onSelected:
-                            _isSubmitting
-                                ? null
-                                : (selected) {
-                                  setState(() {
-                                    if (selected) {
-                                      _selectedRoles.add(role);
-                                    } else {
-                                      _selectedRoles.remove(role);
-                                    }
-                                  });
-                                },
-                      ),
-                    )
-                    .toList(growable: false),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                'Carreras',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              ...InstitutionalCareers.values.map(
-                (career) => CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(career.name),
-                  subtitle: Text(career.id),
-                  value: _selectedCareerIds.contains(career.id),
-                  onChanged:
-                      _isSubmitting
-                          ? null
-                          : (selected) {
-                            setState(() {
-                              if (selected ?? false) {
-                                _selectedCareerIds.add(career.id);
-                              } else {
-                                _selectedCareerIds.remove(career.id);
-                              }
-                            });
-                          },
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                'Semestres',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              CheckboxListTile(
+              SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('Todos los semestres'),
-                subtitle: const Text('No se aplicará un filtro por semestre.'),
-                value: _allSemesters,
+                title: const Text('Personas específicas'),
+                subtitle: const Text(
+                  'Busca y selecciona destinatarios por matrícula, '
+                  'correo institucional o nombre.',
+                ),
+                value: _specificRecipients,
                 onChanged:
                     _isSubmitting
                         ? null
-                        : (selected) {
+                        : (value) {
                           setState(() {
-                            _allSemesters = selected ?? true;
+                            _specificRecipients = value;
 
-                            if (_allSemesters) {
+                            if (value) {
+                              _selectedRoles.clear();
+                              _selectedCareerIds.clear();
                               _selectedSemesters.clear();
+                              _allSemesters = true;
+                              _groupsController.clear();
+                            } else {
+                              _selectedRecipients.clear();
+                              _recipientSearchResults = const [];
+                              _recipientSearchController.clear();
+                              _recipientSearchError = null;
                             }
                           });
                         },
               ),
-              if (!_allSemesters)
+              const Divider(),
+              if (!_specificRecipients) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Roles',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: AppSpacing.sm,
                   runSpacing: AppSpacing.sm,
-                  children: List<int>.generate(14, (index) => index + 1)
+                  children: AppUserRole.values
                       .map(
-                        (semester) => FilterChip(
-                          label: Text('$semester.º'),
-                          selected: _selectedSemesters.contains(semester),
+                        (role) => FilterChip(
+                          label: Text(_roleLabel(role)),
+                          selected: _selectedRoles.contains(role),
                           onSelected:
                               _isSubmitting
                                   ? null
                                   : (selected) {
                                     setState(() {
                                       if (selected) {
-                                        _selectedSemesters.add(semester);
+                                        _selectedRoles.add(role);
                                       } else {
-                                        _selectedSemesters.remove(semester);
+                                        _selectedRoles.remove(role);
                                       }
                                     });
                                   },
@@ -559,20 +521,106 @@ class _AdminAnnouncementCreatePageState
                       )
                       .toList(growable: false),
                 ),
-              const SizedBox(height: AppSpacing.lg),
-              TextFormField(
-                controller: _groupsController,
-                enabled: !_isSubmitting,
-                textCapitalization: TextCapitalization.characters,
-                decoration: const InputDecoration(
-                  labelText: 'Grupos',
-                  hintText: 'Ej. T51, T52, T91',
-                  helperText: 'Separa varios grupos con comas.',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  'Carreras',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              _buildDirectRecipientsSection(context),
+                const SizedBox(height: AppSpacing.sm),
+                ...InstitutionalCareers.values.map(
+                  (career) => CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(career.name),
+                    subtitle: Text(career.id),
+                    value: _selectedCareerIds.contains(career.id),
+                    onChanged:
+                        _isSubmitting
+                            ? null
+                            : (selected) {
+                              setState(() {
+                                if (selected ?? false) {
+                                  _selectedCareerIds.add(career.id);
+                                } else {
+                                  _selectedCareerIds.remove(career.id);
+                                }
+                              });
+                            },
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'Semestres',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text('Todos los semestres'),
+                  subtitle: const Text(
+                    'No se aplicará un filtro por semestre.',
+                  ),
+                  value: _allSemesters,
+                  onChanged:
+                      _isSubmitting
+                          ? null
+                          : (selected) {
+                            setState(() {
+                              _allSemesters = selected ?? true;
+
+                              if (_allSemesters) {
+                                _selectedSemesters.clear();
+                              }
+                            });
+                          },
+                ),
+                if (!_allSemesters)
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: List<int>.generate(14, (index) => index + 1)
+                        .map(
+                          (semester) => FilterChip(
+                            label: Text('$semester.º'),
+                            selected: _selectedSemesters.contains(semester),
+                            onSelected:
+                                _isSubmitting
+                                    ? null
+                                    : (selected) {
+                                      setState(() {
+                                        if (selected) {
+                                          _selectedSemesters.add(semester);
+                                        } else {
+                                          _selectedSemesters.remove(semester);
+                                        }
+                                      });
+                                    },
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
+                  controller: _groupsController,
+                  enabled: !_isSubmitting,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: const InputDecoration(
+                    labelText: 'Grupos',
+                    hintText: 'Ej. T51, T52, T91',
+                    helperText: 'Separa varios grupos con comas.',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+              if (_specificRecipients) ...[
+                const SizedBox(height: AppSpacing.sm),
+                _buildDirectRecipientsSection(context),
+              ],
               const SizedBox(height: AppSpacing.md),
               Text(
                 _audienceSummary(),
@@ -817,6 +865,12 @@ class _AdminAnnouncementCreatePageState
       return const AnnouncementTarget.all();
     }
 
+    if (_specificRecipients) {
+      return AnnouncementTarget(
+        userUids: Set<String>.unmodifiable(_selectedRecipients.keys),
+      );
+    }
+
     return AnnouncementTarget(
       roles: Set<AppUserRole>.unmodifiable(_selectedRoles),
       careerIds: Set<String>.unmodifiable(_selectedCareerIds),
@@ -825,7 +879,6 @@ class _AdminAnnouncementCreatePageState
               ? const <int>{}
               : Set<int>.unmodifiable(_selectedSemesters),
       groupIds: Set<String>.unmodifiable(_parsedGroups()),
-      userUids: Set<String>.unmodifiable(_selectedRecipients.keys),
     );
   }
 
@@ -838,6 +891,22 @@ class _AdminAnnouncementCreatePageState
   }
 
   String _audienceSummary() {
+    if (_allUsers) {
+      return 'El comunicado se enviará a toda la comunidad activa.';
+    }
+
+    if (_specificRecipients) {
+      final count = _selectedRecipients.length;
+
+      if (count == 0) {
+        return 'Todavía no hay personas seleccionadas.';
+      }
+
+      return count == 1
+          ? 'El comunicado se enviará a 1 persona específica.'
+          : 'El comunicado se enviará a $count personas específicas.';
+    }
+
     final parts = <String>[];
 
     if (_selectedRoles.isNotEmpty) {
@@ -858,10 +927,6 @@ class _AdminAnnouncementCreatePageState
 
     if (groups.isNotEmpty) {
       parts.add('${groups.length} grupo(s)');
-    }
-
-    if (_selectedRecipients.isNotEmpty) {
-      parts.add('${_selectedRecipients.length} destinatario(s) directo(s)');
     }
 
     if (parts.isEmpty) {
