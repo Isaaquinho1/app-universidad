@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:rtu_mirea_app/announcements/models/models.dart';
 import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 /// Repository that manages institutional announcements and user receipts.
 class AnnouncementRepository {
@@ -246,6 +247,67 @@ class AnnouncementRepository {
     if (announcement.status == AnnouncementStatus.published) {
       await sendAnnouncementNotification(announcement.id);
     }
+  }
+
+  /// Resolves the recipients eligible for an announcement reminder.
+  Future<AnnouncementReminderPreview> fetchAnnouncementReminderPreview({
+    required String announcementId,
+    required AnnouncementReminderCriterion criterion,
+  }) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final response = await _supabaseClient.rpc(
+      'get_announcement_reminder_recipients',
+      params: {
+        'p_announcement_id': announcementId,
+        'p_criterion': criterion.value,
+      },
+    );
+
+    if (response is! Map) {
+      throw StateError(
+        'The reminder recipients RPC returned an invalid response.',
+      );
+    }
+
+    return AnnouncementReminderPreview.fromJson(
+      response.map((key, value) => MapEntry(key.toString(), value)),
+    );
+  }
+
+  /// Sends a segmented reminder to eligible announcement recipients.
+  Future<Map<String, dynamic>> sendAnnouncementReminder({
+    required String announcementId,
+    required AnnouncementReminderCriterion criterion,
+  }) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcementId);
+
+    final requestKey = const Uuid().v4();
+
+    final response = await _supabaseClient.functions.invoke(
+      'send-announcement-reminder',
+      body: {
+        'announcement_id': announcementId,
+        'criterion': criterion.value,
+        'request_key': requestKey,
+      },
+    );
+
+    final data = response.data;
+
+    if (response.status < 200 || response.status >= 300) {
+      throw StateError(
+        'The reminder function returned HTTP ${response.status}: $data',
+      );
+    }
+
+    if (data is! Map) {
+      throw StateError('The reminder function returned an invalid response.');
+    }
+
+    return data.map((key, value) => MapEntry(key.toString(), value));
   }
 
   /// Sends the FCM notification for one published announcement version.

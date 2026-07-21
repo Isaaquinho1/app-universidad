@@ -23,8 +23,14 @@ class _AdminAnnouncementResultsPageState
   final TextEditingController _searchController = TextEditingController();
 
   _RecipientFilter _selectedFilter = _RecipientFilter.all;
+  AnnouncementReminderCriterion _selectedReminderCriterion =
+      AnnouncementReminderCriterion.notConfirmed;
+  AnnouncementReminderPreview? _reminderPreview;
   String _searchQuery = '';
+  String? _reminderPreviewError;
   bool _isExporting = false;
+  bool _isLoadingReminderPreview = false;
+  bool _isSendingReminder = false;
 
   @override
   void initState() {
@@ -62,6 +68,8 @@ class _AdminAnnouncementResultsPageState
 
     setState(() {
       _dataFuture = future;
+      _reminderPreview = null;
+      _reminderPreviewError = null;
     });
 
     await future;
@@ -136,6 +144,170 @@ class _AdminAnnouncementResultsPageState
     setState(() {
       _searchQuery = '';
     });
+  }
+
+  Future<void> _prepareReminderPreview() async {
+    if (_isLoadingReminderPreview) {
+      return;
+    }
+
+    setState(() {
+      _isLoadingReminderPreview = true;
+      _reminderPreview = null;
+      _reminderPreviewError = null;
+    });
+
+    try {
+      final preview = await context
+          .read<AnnouncementRepository>()
+          .fetchAnnouncementReminderPreview(
+            announcementId: widget.announcementId,
+            criterion: _selectedReminderCriterion,
+          );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _reminderPreview = preview;
+      });
+    } on Object catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _reminderPreviewError = 'No se pudo preparar el recordatorio.\n$error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingReminderPreview = false;
+        });
+      }
+    }
+  }
+
+  void _setReminderCriterion(AnnouncementReminderCriterion criterion) {
+    if (_selectedReminderCriterion == criterion) {
+      return;
+    }
+
+    setState(() {
+      _selectedReminderCriterion = criterion;
+      _reminderPreview = null;
+      _reminderPreviewError = null;
+    });
+  }
+
+  Future<bool> _confirmReminderSend(AnnouncementReminderPreview preview) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Enviar recordatorio'),
+          content: Text(
+            preview.eligibleCount == 1
+                ? 'Se enviará un recordatorio a 1 destinatario '
+                    'que cumple el criterio seleccionado.'
+                : 'Se enviará un recordatorio a '
+                    '${preview.eligibleCount} destinatarios '
+                    'que cumplen el criterio seleccionado.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Enviar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false;
+  }
+
+  Future<void> _sendReminder() async {
+    final preview = _reminderPreview;
+
+    if (preview == null || preview.eligibleCount == 0 || _isSendingReminder) {
+      return;
+    }
+
+    final confirmed = await _confirmReminderSend(preview);
+
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _isSendingReminder = true;
+      _reminderPreviewError = null;
+    });
+
+    try {
+      final result = await context
+          .read<AnnouncementRepository>()
+          .sendAnnouncementReminder(
+            announcementId: widget.announcementId,
+            criterion: _selectedReminderCriterion,
+          );
+
+      if (!mounted) {
+        return;
+      }
+
+      final sentCount = _readResponseInt(result['sent_count']);
+      final failedCount = _readResponseInt(result['failed_count']);
+      final noTokenCount = _readResponseInt(result['no_token_count']);
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              'Recordatorio procesado. '
+              'Enviados: $sentCount · '
+              'Fallidos: $failedCount · '
+              'Sin token: $noTokenCount',
+            ),
+          ),
+        );
+
+      await _refresh();
+      await _prepareReminderPreview();
+    } on Object catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _reminderPreviewError = 'No se pudo enviar el recordatorio.\n$error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSendingReminder = false;
+        });
+      }
+    }
+  }
+
+  int _readResponseInt(Object? value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 
   Future<void> _exportResults({
@@ -320,6 +492,18 @@ class _AdminAnnouncementResultsPageState
                 _ProgressSection(summary: results.summary),
                 const SizedBox(height: AppSpacing.lg),
                 _NotificationDeliverySection(metrics: notificationMetrics),
+                const SizedBox(height: AppSpacing.lg),
+                _ReminderPreviewSection(
+                  announcementStatus: results.status,
+                  selectedCriterion: _selectedReminderCriterion,
+                  preview: _reminderPreview,
+                  errorMessage: _reminderPreviewError,
+                  isLoading: _isLoadingReminderPreview,
+                  isSending: _isSendingReminder,
+                  onCriterionChanged: _setReminderCriterion,
+                  onPrepare: _prepareReminderPreview,
+                  onSend: _sendReminder,
+                ),
                 const SizedBox(height: AppSpacing.xlg),
                 Text(
                   'Destinatarios',
@@ -384,6 +568,227 @@ class _AdminAnnouncementResultsPageState
       ),
     );
   }
+}
+
+class _ReminderPreviewSection extends StatelessWidget {
+  const _ReminderPreviewSection({
+    required this.announcementStatus,
+    required this.selectedCriterion,
+    required this.preview,
+    required this.errorMessage,
+    required this.isLoading,
+    required this.isSending,
+    required this.onCriterionChanged,
+    required this.onPrepare,
+    required this.onSend,
+  });
+
+  final String announcementStatus;
+  final AnnouncementReminderCriterion selectedCriterion;
+  final AnnouncementReminderPreview? preview;
+  final String? errorMessage;
+  final bool isLoading;
+  final bool isSending;
+  final ValueChanged<AnnouncementReminderCriterion> onCriterionChanged;
+  final VoidCallback onPrepare;
+  final VoidCallback onSend;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isPublished = announcementStatus == 'published';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.notifications_active_outlined),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Recordatorio segmentado',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Selecciona quiénes todavía requieren atención, '
+              'revisa la audiencia y envía un recordatorio segmentado.',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            DropdownButtonFormField<AnnouncementReminderCriterion>(
+              key: ValueKey(selectedCriterion),
+              initialValue: selectedCriterion,
+              decoration: const InputDecoration(
+                labelText: 'Criterio del recordatorio',
+                border: OutlineInputBorder(),
+              ),
+              items: AnnouncementReminderCriterion.values
+                  .map(
+                    (criterion) => DropdownMenuItem(
+                      value: criterion,
+                      child: Text(_reminderCriterionLabel(criterion)),
+                    ),
+                  )
+                  .toList(growable: false),
+              onChanged:
+                  !isPublished || isLoading
+                      ? null
+                      : (criterion) {
+                        if (criterion != null) {
+                          onCriterionChanged(criterion);
+                        }
+                      },
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: !isPublished || isLoading ? null : onPrepare,
+                icon:
+                    isLoading
+                        ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Icon(Icons.preview_outlined),
+                label: Text(
+                  isLoading ? 'Preparando…' : 'Preparar recordatorio',
+                ),
+              ),
+            ),
+            if (!isPublished) ...[
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Solo los comunicados publicados pueden enviar '
+                'recordatorios.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (errorMessage != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                errorMessage!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (preview != null) ...[
+              const SizedBox(height: AppSpacing.lg),
+              const Divider(),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                preview!.eligibleCount == 1
+                    ? '1 destinatario elegible'
+                    : '${preview!.eligibleCount} destinatarios elegibles',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Versión actual: ${preview!.contentVersion}',
+                style: theme.textTheme.bodySmall,
+              ),
+              if (preview!.recipients.isEmpty) ...[
+                const SizedBox(height: AppSpacing.md),
+                const Text('No hay usuarios que cumplan este criterio.'),
+              ] else ...[
+                const SizedBox(height: AppSpacing.md),
+                ...preview!.recipients
+                    .take(5)
+                    .map(
+                      (recipient) => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        leading: const Icon(Icons.person_outline),
+                        title: Text(
+                          recipient.displayName?.trim().isNotEmpty ?? false
+                              ? recipient.displayName!
+                              : recipient.controlNumber ??
+                                  recipient.email ??
+                                  'Usuario institucional',
+                        ),
+                        subtitle: Text(
+                          recipient.email ??
+                              recipient.controlNumber ??
+                              _resultStatusLabel(recipient.status),
+                        ),
+                        trailing: Chip(
+                          label: Text(_resultStatusLabel(recipient.status)),
+                        ),
+                      ),
+                    ),
+                if (preview!.recipients.length > 5)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: Text(
+                      'Y ${preview!.recipients.length - 5} '
+                      'destinatario(s) más.',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+              ],
+              const SizedBox(height: AppSpacing.lg),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed:
+                      preview!.eligibleCount == 0 || isSending ? null : onSend,
+                  icon:
+                      isSending
+                          ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.send_outlined),
+                  label: Text(
+                    isSending
+                        ? 'Enviando recordatorio…'
+                        : 'Enviar recordatorio',
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _reminderCriterionLabel(AnnouncementReminderCriterion criterion) {
+  return switch (criterion) {
+    AnnouncementReminderCriterion.pending => 'Solo pendientes',
+    AnnouncementReminderCriterion.edited => 'Versión anterior',
+    AnnouncementReminderCriterion.notSeen => 'Aún no visto',
+    AnnouncementReminderCriterion.notRead => 'Aún no leído',
+    AnnouncementReminderCriterion.notConfirmed => 'Aún no confirmado',
+  };
+}
+
+String _resultStatusLabel(String status) {
+  return switch (status) {
+    'pending' => 'Pendiente',
+    'edited' => 'Editado',
+    'delivered' => 'Entregado',
+    'seen' => 'Visto',
+    'read' => 'Leído',
+    'confirmed' => 'Confirmado',
+    _ => status,
+  };
 }
 
 class _AnnouncementHeader extends StatelessWidget {

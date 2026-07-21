@@ -7,3 +7,5 @@ export 'announcement_target.dart';
 export 'announcement_recipient.dart';
 export 'announcement_results.dart';
 export 'announcement_notification_metrics.dart';
+export 'announcement_reminder_criterion.dart';
+export 'announcement_reminder_preview.dart';
