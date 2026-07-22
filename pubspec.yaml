@@ -8,13 +8,7 @@ environment:
   sdk: ">=3.7.0"
 
 workspace:
-  - api
-  - api/packages/github
-  - api/packages/news_blocks
-  - api/packages/rtu_mirea_schedule_api_client
-  - api/packages/schedule
   - packages/academic_calendar
-  - packages/ads_ui
   - packages/analytics_repository
   - packages/app_ui
   - packages/auth_client/auth_client
@@ -22,7 +16,6 @@ workspace:
   - packages/auth_client/token_storage
   - packages/deep_link_client
   - packages/mini_app
-  - packages/news_blocks_ui
   - packages/notifications_client/firebase_notifications_client
   - packages/notifications_client/notifications_client
   - packages/notifications_repository
@@ -168,10 +161,6 @@ dependencies:
   # mini_app:
   #   path: packages/mini_app
   yandex_mobileads: ^7.9.0
-  news_blocks:
-    path: api/packages/news_blocks
-  ads_ui:
-    path: packages/ads_ui
   syncfusion_flutter_calendar: ^32.1.23
   syncfusion_localizations: ^32.2.3
   flutter_native_splash: ^2.4.3
@@ -197,8 +186,6 @@ dependencies:
   smooth_sheets: ^0.16.0
   flutter_layout_grid: ^2.0.8
   skeletonizer: ^2.1.0+1
-  news_blocks_ui:
-    path: packages/news_blocks_ui
   yx_scope: ^1.1.2
   yx_scope_flutter: ^1.1.2
   tutorial_coach_mark: ^1.3.3

@@ -14,9 +14,6 @@ import 'package:rtu_mirea_app/profile/view/profile_settings_page.dart';
 
 import 'package:rtu_mirea_app/services/view/view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:news_blocks/news_blocks.dart';
-import 'package:news_blocks_ui/news_blocks_ui.dart';
-import 'package:rtu_mirea_app/l10n/l10n.dart';
 
 part 'routes.g.dart';
 
@@ -127,26 +124,6 @@ class AnnouncementDetailRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AnnouncementDetailPage(announcementId: announcementId);
-  }
-}
-
-class SlideshowRoute extends GoRouteData {
-  const SlideshowRoute({this.$extra});
-
-  final Map<String, dynamic>? $extra;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    final extra = (state.extra as Map<String, dynamic>?) ?? $extra ?? const {};
-    final slideshow = extra['slideshow'] as SlideshowBlock?;
-    if (slideshow == null) {
-      return const Scaffold(body: SizedBox());
-    }
-    return Slideshow(
-      block: slideshow,
-      categoryTitle: context.l10n.slideshow,
-      navigationLabel: '/',
-    );
   }
 }
 
