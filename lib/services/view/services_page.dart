@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rtu_mirea_app/l10n/l10n.dart';
-import 'package:rtu_mirea_app/services/services.dart';
+import 'package:conecta_itt/l10n/l10n.dart';
+import 'package:conecta_itt/services/services.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';

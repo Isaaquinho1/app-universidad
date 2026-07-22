@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
+import 'package:conecta_itt/app/theme/theme_mode.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/login/login.dart';
-import 'package:rtu_mirea_app/profile/widgets/widgets.dart';
-import 'package:rtu_mirea_app/l10n/l10n.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/login/login.dart';
+import 'package:conecta_itt/profile/widgets/widgets.dart';
+import 'package:conecta_itt/l10n/l10n.dart';
 
 enum ThemeOption { light, dark, system }
 

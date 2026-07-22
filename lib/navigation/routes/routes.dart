@@ -2,17 +2,17 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rtu_mirea_app/announcements/announcements.dart';
-import 'package:rtu_mirea_app/home/view/home_page.dart';
-import 'package:rtu_mirea_app/map/view/map_page_view.dart';
-import 'package:rtu_mirea_app/profile/profile.dart';
-import 'package:rtu_mirea_app/profile/view/notifications_settings_page.dart';
-import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
-import 'package:rtu_mirea_app/feed/feed.dart';
-import 'package:rtu_mirea_app/onboarding/view/onboarding_page.dart';
-import 'package:rtu_mirea_app/profile/view/profile_settings_page.dart';
+import 'package:conecta_itt/announcements/announcements.dart';
+import 'package:conecta_itt/home/view/home_page.dart';
+import 'package:conecta_itt/map/view/map_page_view.dart';
+import 'package:conecta_itt/profile/profile.dart';
+import 'package:conecta_itt/profile/view/notifications_settings_page.dart';
+import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
+import 'package:conecta_itt/feed/feed.dart';
+import 'package:conecta_itt/onboarding/view/onboarding_page.dart';
+import 'package:conecta_itt/profile/view/profile_settings_page.dart';
 
-import 'package:rtu_mirea_app/services/view/view.dart';
+import 'package:conecta_itt/services/view/view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 part 'routes.g.dart';

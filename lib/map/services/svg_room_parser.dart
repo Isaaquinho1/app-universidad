@@ -4,7 +4,7 @@ import 'package:xml/xml.dart' as xml;
 import 'package:path_drawing/path_drawing.dart';
 import 'dart:math' as math;
 import 'dart:developer' as developer;
-import 'package:rtu_mirea_app/map/models/models.dart';
+import 'package:conecta_itt/map/models/models.dart';
 import 'package:flutter/material.dart';
 
 class SvgRoomsParser {

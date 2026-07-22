@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+import 'package:conecta_itt/institutional_profile/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Repository that manages institutional profiles in Supabase.

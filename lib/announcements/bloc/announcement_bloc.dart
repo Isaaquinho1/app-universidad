@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/announcements/models/models.dart';
-import 'package:rtu_mirea_app/announcements/repositories/repositories.dart';
-import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+import 'package:conecta_itt/announcements/models/models.dart';
+import 'package:conecta_itt/announcements/repositories/repositories.dart';
+import 'package:conecta_itt/institutional_profile/models/models.dart';
 
 part 'announcement_event.dart';
 part 'announcement_state.dart';

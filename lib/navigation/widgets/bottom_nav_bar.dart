@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
+import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
 
 /// Animates the bottom navigation bar to slide up/down based on scroll direction
 class AnimatedBottomNavigationBar extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/map/map.dart';
-import 'package:rtu_mirea_app/presentation/constants.dart';
+import 'package:conecta_itt/map/map.dart';
+import 'package:conecta_itt/presentation/constants.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/services.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:rtu_mirea_app/map/map.dart';
+import 'package:conecta_itt/map/map.dart';
 
 class CampusSelector extends StatelessWidget {
   final List<CampusModel> campuses;

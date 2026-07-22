@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:rtu_mirea_app/services/models/service_model.dart';
+import 'package:conecta_itt/services/models/service_model.dart';
 
 /// Services configuration for TecNM Campus Tlalpan.
 class ServicesConfig {

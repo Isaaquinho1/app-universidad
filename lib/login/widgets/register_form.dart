@@ -2,8 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:rtu_mirea_app/institutional_auth/institutional_auth.dart';
-import 'package:rtu_mirea_app/login/login.dart';
+import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
+import 'package:conecta_itt/login/login.dart';
 
 /// Institutional account registration form.
 class RegisterForm extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:rtu_mirea_app/common/utils/calendar_utils.dart' as m_cal;
+import 'package:conecta_itt/common/utils/calendar_utils.dart' as m_cal;
 
 /// Calendar util testing
 void main() {

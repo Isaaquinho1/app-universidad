@@ -1,7 +1,7 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:rtu_mirea_app/domain/entities/app_settings.dart';
+import 'package:conecta_itt/domain/entities/app_settings.dart';
 part 'home_state.dart';
 
 class HomeCubit extends HydratedBloc<HomeEvent, HomeState> {

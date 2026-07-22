@@ -6,20 +6,20 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:rtu_mirea_app/announcements/announcements.dart';
-import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/navigation/navigation.dart';
+import 'package:conecta_itt/announcements/announcements.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/navigation/navigation.dart';
 import 'package:flutter/services.dart';
-import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
+import 'package:conecta_itt/analytics/bloc/analytics_bloc.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
-import 'package:rtu_mirea_app/l10n/l10n.dart';
+import 'package:conecta_itt/home/cubit/home_cubit.dart';
+import 'package:conecta_itt/l10n/l10n.dart';
 import 'package:app_ui/app_ui.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:rtu_mirea_app/di/app_scope.dart';
+import 'package:conecta_itt/di/app_scope.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 

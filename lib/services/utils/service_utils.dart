@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:rtu_mirea_app/services/models/service_model.dart';
+import 'package:conecta_itt/services/models/service_model.dart';
 
 /// Utilities for working with services
 class ServiceUtils {

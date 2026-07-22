@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rtu_mirea_app/app/app.dart';
+import 'package:conecta_itt/app/app.dart';
 
 class FirebaseInteractedMessageListener extends StatefulWidget {
   const FirebaseInteractedMessageListener({

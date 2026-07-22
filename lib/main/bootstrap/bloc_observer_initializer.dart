@@ -1,5 +1,5 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:rtu_mirea_app/main/bootstrap/app_bloc_observer.dart';
+import 'package:conecta_itt/main/bootstrap/app_bloc_observer.dart';
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:yx_scope/yx_scope.dart';
 

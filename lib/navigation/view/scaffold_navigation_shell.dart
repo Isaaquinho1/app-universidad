@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rtu_mirea_app/navigation/navigation.dart';
-import 'package:rtu_mirea_app/presentation/constants.dart';
+import 'package:conecta_itt/navigation/navigation.dart';
+import 'package:conecta_itt/presentation/constants.dart';
 import 'package:app_ui/app_ui.dart';
 
 /// Controller to manage bottom navigation bar visibility

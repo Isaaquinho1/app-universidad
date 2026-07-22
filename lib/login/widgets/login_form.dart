@@ -2,8 +2,8 @@ import 'package:app_ui/app_ui.dart' show AppSpacing, PrimaryButton;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/login/login.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/login/login.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});

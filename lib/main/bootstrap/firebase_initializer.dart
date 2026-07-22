@@ -1,5 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rtu_mirea_app/firebase_options.dart';
+import 'package:conecta_itt/firebase_options.dart';
 import 'package:yx_scope/yx_scope.dart';
 
 class FirebaseInitializer implements AsyncLifecycle {

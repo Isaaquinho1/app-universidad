@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
-import 'package:rtu_mirea_app/map/map.dart';
+import 'package:conecta_itt/map/map.dart';
 
 abstract class MapState extends Equatable {
   const MapState();

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
-import 'package:rtu_mirea_app/map/map.dart';
+import 'package:conecta_itt/map/map.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
   final List<CampusModel> availableCampuses;

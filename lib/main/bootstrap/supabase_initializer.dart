@@ -1,4 +1,4 @@
-import 'package:rtu_mirea_app/env/env.dart';
+import 'package:conecta_itt/env/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yx_scope/yx_scope.dart';
 

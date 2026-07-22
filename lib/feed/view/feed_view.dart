@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rtu_mirea_app/announcements/announcements.dart';
+import 'package:conecta_itt/announcements/announcements.dart';
 
 /// Main institutional feed for Conecta ITT.
 ///

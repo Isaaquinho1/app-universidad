@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:rtu_mirea_app/map/models/models.dart';
+import 'package:conecta_itt/map/models/models.dart';
 
 class CampusModel extends Equatable {
   final String id;

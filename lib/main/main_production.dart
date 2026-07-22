@@ -1,6 +1,6 @@
-import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/di/app_scope.dart';
-import 'package:rtu_mirea_app/main/bootstrap/bootstrap.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/di/app_scope.dart';
+import 'package:conecta_itt/main/bootstrap/bootstrap.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
 

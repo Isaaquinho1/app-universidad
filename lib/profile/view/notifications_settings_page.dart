@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/presentation/bloc/notification_preferences/notification_preferences_bloc.dart';
+import 'package:conecta_itt/presentation/bloc/notification_preferences/notification_preferences_bloc.dart';
 import 'package:app_ui/app_ui.dart';
 
 class NotificationsSettingsPage extends StatelessWidget {

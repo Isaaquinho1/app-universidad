@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
-import 'package:rtu_mirea_app/onboarding/widgets/widgets.dart';
+import 'package:conecta_itt/home/cubit/home_cubit.dart';
+import 'package:conecta_itt/onboarding/widgets/widgets.dart';
 import 'package:app_ui/app_ui.dart';
 
 /// OnBoarding screen that greets new users

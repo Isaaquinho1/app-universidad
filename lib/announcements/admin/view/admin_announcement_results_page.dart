@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:rtu_mirea_app/announcements/announcements.dart';
-import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/announcements/announcements.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 
 class AdminAnnouncementResultsPage extends StatefulWidget {
   const AdminAnnouncementResultsPage({required this.announcementId, super.key});

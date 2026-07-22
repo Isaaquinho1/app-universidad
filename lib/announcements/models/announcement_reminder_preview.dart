@@ -1,4 +1,4 @@
-import 'package:rtu_mirea_app/announcements/models/announcement_results.dart';
+import 'package:conecta_itt/announcements/models/announcement_results.dart';
 
 class AnnouncementReminderPreview {
   const AnnouncementReminderPreview({

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/map/map.dart';
+import 'package:conecta_itt/map/map.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:go_router/go_router.dart';
 

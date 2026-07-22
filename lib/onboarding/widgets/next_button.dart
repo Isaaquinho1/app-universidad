@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/src/provider.dart';
-import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
+import 'package:conecta_itt/home/cubit/home_cubit.dart';
 import 'package:app_ui/app_ui.dart';
 
 /// Get next button to open next page

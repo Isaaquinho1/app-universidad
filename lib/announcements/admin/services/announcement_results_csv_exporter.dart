@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rtu_mirea_app/announcements/announcements.dart';
-import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/announcements/announcements.dart';
+import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 
 class AnnouncementResultsCsvExporter {
   const AnnouncementResultsCsvExporter();

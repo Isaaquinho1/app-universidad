@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:rtu_mirea_app/announcements/models/models.dart';
-import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+import 'package:conecta_itt/announcements/models/models.dart';
+import 'package:conecta_itt/institutional_profile/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
