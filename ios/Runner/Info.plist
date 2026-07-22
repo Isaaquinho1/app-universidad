@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>IT University</string>
+	<string>Conecta ITT</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>IT University</string>
+	<string>Conecta ITT</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,7 +29,7 @@
 			<string>Viewer</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ninja.mirea.mireaapp</string>
+				<string>com.ituniversity.app</string>
 			</array>
 		</dict>
 	</array>
@@ -46,16 +46,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Мы используем ваш календарь для добавления событий.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Мы используем ваш календарь для добавления событий.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Приложение запрашивает доступ к камере</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Приложение запрашивает доступ к галерее</string>
 	<key>PermissionGroupNotification</key>
-	<string>Приложение запрашивает разрешение на отправку уведомлений</string>
+	<string>Conecta ITT requiere permiso para enviarte comunicados y notificaciones institucionales.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
