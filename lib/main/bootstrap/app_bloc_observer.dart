@@ -11,16 +11,38 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    if (kDebugMode) {
-      debugPrint('${bloc.runtimeType} $change');
+
+    if (!kDebugMode) return;
+
+    if (_containsSensitiveAuthenticationData(bloc)) {
+      debugPrint(
+        '${bloc.runtimeType} Change '
+        '{ currentState: ${change.currentState.runtimeType}, '
+        'nextState: ${change.nextState.runtimeType}, redacted: true }',
+      );
+      return;
     }
+
+    debugPrint('${bloc.runtimeType} $change');
+  }
+
+  bool _containsSensitiveAuthenticationData(BlocBase<dynamic> bloc) {
+    return const {
+      'LoginBloc',
+      'RegisterBloc',
+      'LoginWithEmailLinkBloc',
+      'AppBloc',
+      'AnnouncementBloc',
+    }.contains(bloc.runtimeType.toString());
   }
 
   @override
   void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
     super.onEvent(bloc, event);
     if (event != null) {
-      _analyticsRepository.track(AnalyticsEvent('${bloc.runtimeType}_${event.runtimeType}'));
+      _analyticsRepository.track(
+        AnalyticsEvent('${bloc.runtimeType}_${event.runtimeType}'),
+      );
     }
   }
 

@@ -8,11 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:rtu_mirea_app/announcements/announcements.dart';
 import 'package:rtu_mirea_app/app/app.dart';
-import 'package:rtu_mirea_app/categories/categories.dart';
-import 'package:rtu_mirea_app/feed/feed.dart';
-import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
 import 'package:rtu_mirea_app/navigation/navigation.dart';
-import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
 
@@ -20,8 +16,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
 import 'package:app_ui/app_ui.dart';
-
-import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:user_repository/user_repository.dart';
@@ -41,14 +35,6 @@ class App extends StatelessWidget {
         return MultiRepositoryProvider(
           providers: [
             RepositoryProvider.value(value: appScope.analyticsRepository),
-            RepositoryProvider.value(value: appScope.scheduleRepository),
-            RepositoryProvider.value(value: appScope.communityRepository),
-            RepositoryProvider.value(value: appScope.newsRepository),
-            RepositoryProvider.value(value: appScope.articleRepository),
-            RepositoryProvider.value(
-              value: appScope.scheduleExporterRepository,
-            ),
-            RepositoryProvider.value(value: appScope.lostFoundRepository),
             RepositoryProvider.value(value: appScope.userRepository),
             RepositoryProvider<AnnouncementRepository>.value(
               value: appScope.announcementRepository,
@@ -58,22 +44,6 @@ class App extends StatelessWidget {
             providers: [
               BlocProvider(create: (_) => HomeCubit()),
 
-              BlocProvider(
-                create:
-                    (_) =>
-                        CategoriesBloc(newsRepository: appScope.newsRepository)
-                          ..add(const CategoriesRequested()),
-              ),
-              BlocProvider(
-                create:
-                    (_) => FeedBloc(newsRepository: appScope.newsRepository),
-              ),
-              BlocProvider(
-                create:
-                    (_) => ScheduleExporterCubit(
-                      appScope.scheduleExporterRepository,
-                    ),
-              ),
               BlocProvider(
                 create:
                     (_) => AppBloc(
@@ -90,19 +60,6 @@ class App extends StatelessWidget {
                       analyticsRepository: appScope.analyticsRepository,
                     ),
                 lazy: false,
-              ),
-              BlocProvider<ScheduleBloc>(
-                create:
-                    (_) => ScheduleBloc(
-                      scheduleRepository: appScope.scheduleRepository,
-                    )..add(const RefreshSelectedScheduleData()),
-              ),
-              BlocProvider(
-                create:
-                    (_) => LostFoundBloc(
-                      repository: appScope.lostFoundRepository,
-                      userRepository: appScope.userRepository,
-                    ),
               ),
             ],
             child: _AppView(),
@@ -188,7 +145,7 @@ class _AppViewState extends State<_AppView> {
                               return const Locale('es');
                             },
                             debugShowCheckedModeBanner: false,
-                            title: 'ITTlapan',
+                            title: 'Conecta ITT',
                             routerConfig: _router,
                             builder:
                                 (context, child) =>

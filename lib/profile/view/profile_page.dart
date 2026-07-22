@@ -89,12 +89,6 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
     }
   }
 
-  void _onFeedbackTap(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Soporte de la aplicación próximamente.')),
-    );
-  }
-
   Widget _buildThemeOption(ThemeOption option, String title, dynamic icon) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final isSelected = _selectedTheme == option;
@@ -235,13 +229,6 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
           ),
           const SizedBox(height: 24),
         ],
-        ScheduleSectionWrapper(
-          title: "Gestión de horarios",
-          scheduleSection: ScheduleManagementSection(
-            onFeedbackTap: _onFeedbackTap,
-          ),
-        ),
-        const SizedBox(height: 24),
         SettingsSection(
           title: "General",
           children: [

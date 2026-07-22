@@ -120,7 +120,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     final Widget pageIndicator = PageIndicators(
       key: pageStateKey,
       onClick: () {
-        _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
       },
       dotsNum: _numPages,
     );
@@ -152,7 +155,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 }
 
 class PageIndicators extends StatefulWidget {
-  const PageIndicators({super.key, required this.onClick, required this.dotsNum});
+  const PageIndicators({
+    super.key,
+    required this.onClick,
+    required this.dotsNum,
+  });
 
   final VoidCallback onClick;
   final int dotsNum;
@@ -166,7 +173,11 @@ class _PageIndicatorsState extends State<PageIndicators> {
   List<Widget> _buildPageIndicators(int currentPage) {
     List<Widget> list = [];
     for (int i = 0; i < widget.dotsNum; i++) {
-      list.add(i == currentPage ? const PageViewIndicator(isActive: true) : const PageViewIndicator(isActive: false));
+      list.add(
+        i == currentPage
+            ? const PageViewIndicator(isActive: true)
+            : const PageViewIndicator(isActive: false),
+      );
     }
     return list;
   }
@@ -192,7 +203,11 @@ class _PageIndicatorsState extends State<PageIndicators> {
             transitionBuilder: (Widget child, Animation<double> animation) {
               return FadeTransition(
                 opacity: animation,
-                child: SizeTransition(sizeFactor: animation, axis: Axis.horizontal, child: child),
+                child: SizeTransition(
+                  sizeFactor: animation,
+                  axis: Axis.horizontal,
+                  child: child,
+                ),
               );
             },
             child:
@@ -202,16 +217,22 @@ class _PageIndicatorsState extends State<PageIndicators> {
                       key: const ValueKey("skipButton"),
                       onPressed: () {
                         context.read<HomeCubit>().closeOnboarding();
-                        context.go('/schedule');
+                        context.go('/feed');
                       },
                       child: Text(
                         "Omitir",
-                        style: AppTextStyle.buttonS.copyWith(color: Theme.of(context).extension<AppColors>()!.active),
+                        style: AppTextStyle.buttonS.copyWith(
+                          color:
+                              Theme.of(context).extension<AppColors>()!.active,
+                        ),
                       ),
                     ),
           ),
           Row(children: _buildPageIndicators(_currentPage)),
-          NextButton(isLastPage: widget.dotsNum - 1 == _currentPage, onClick: widget.onClick),
+          NextButton(
+            isLastPage: widget.dotsNum - 1 == _currentPage,
+            onClick: widget.onClick,
+          ),
         ],
       ),
     );

@@ -7,7 +7,12 @@ class ResponsiveLayout extends StatelessWidget {
   final Widget? tablet;
   final Widget? desktop;
 
-  const ResponsiveLayout({super.key, required this.mobile, this.tablet, this.desktop});
+  const ResponsiveLayout({
+    super.key,
+    required this.mobile,
+    this.tablet,
+    this.desktop,
+  });
 
   static ScreenType getScreenType(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -19,11 +24,14 @@ class ResponsiveLayout extends StatelessWidget {
     return ScreenType.mobile;
   }
 
-  static bool isDesktop(BuildContext context) => getScreenType(context) == ScreenType.desktop;
+  static bool isDesktop(BuildContext context) =>
+      getScreenType(context) == ScreenType.desktop;
 
-  static bool isTablet(BuildContext context) => getScreenType(context) == ScreenType.tablet;
+  static bool isTablet(BuildContext context) =>
+      getScreenType(context) == ScreenType.tablet;
 
-  static bool isMobile(BuildContext context) => getScreenType(context) == ScreenType.mobile;
+  static bool isMobile(BuildContext context) =>
+      getScreenType(context) == ScreenType.mobile;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +43,6 @@ class ResponsiveLayout extends StatelessWidget {
       case ScreenType.tablet:
         return tablet ?? mobile;
       case ScreenType.mobile:
-        return mobile;
-      default:
         return mobile;
     }
   }

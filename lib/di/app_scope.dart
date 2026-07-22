@@ -1,11 +1,6 @@
 import 'package:analytics_repository/analytics_repository.dart';
-import 'package:article_repository/article_repository.dart';
-import 'package:community_repository/community_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:lost_and_found_repository/lost_and_found_repository.dart';
-import 'package:news_repository/news_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:rtu_mirea_app/announcements/announcements.dart';
@@ -17,13 +12,9 @@ import 'package:rtu_mirea_app/main/bootstrap/supabase_initializer.dart';
 import 'package:rtu_mirea_app/main/bootstrap/hydrated_storage_initializer.dart';
 import 'package:rtu_mirea_app/main/bootstrap/shared_preferences_initializer.dart';
 import 'package:rtu_mirea_app/main/bootstrap/package_info_initializer.dart';
-import 'package:schedule_exporter_repository/schedule_exporter_repository.dart';
-import 'package:schedule_repository/schedule_repository.dart';
-import 'package:secure_storage/secure_storage.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:token_storage/token_storage.dart';
-import 'package:university_app_server_api/client.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:yx_scope/yx_scope.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -32,24 +23,15 @@ import 'package:sentry_flutter/sentry_flutter.dart' hide Scope;
 /// Public interface for the root application scope.
 abstract class AppScope implements Scope {
   AnalyticsRepository get analyticsRepository;
-  ScheduleExporterRepository get scheduleExporterRepository;
-  ScheduleRepository get scheduleRepository;
-  CommunityRepository get communityRepository;
-  NewsRepository get newsRepository;
-  ArticleRepository get articleRepository;
-  LostFoundRepository get lostFoundRepository;
   UserRepository get userRepository;
   AppUserProfileRepository get appUserProfileRepository;
   AnnouncementRepository get announcementRepository;
   SupabaseClient get supabaseClient;
-  ApiClient get apiClient;
 }
 
 /// Root scope container. Holds all long-living dependencies.
 class AppScopeContainer extends ScopeContainer implements AppScope {
-  AppScopeContainer({required bool dev}) : _dev = dev;
-
-  final bool _dev;
+  AppScopeContainer({required bool dev});
 
   // Async initializers - first wave
   late final _sharedPreferencesInitializerDep = asyncDep(
@@ -77,29 +59,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   );
   late final _supabaseClientDep = dep(() => Supabase.instance.client);
 
-  // Networking/API
-  late final _apiClientDep = dep(() {
-    tokenProvider() async {
-      final session = _supabaseClientDep.get.auth.currentSession;
-      return session?.accessToken;
-    }
-
-    if (_dev) {
-      logger.d('Using localhost API client (dev mode).');
-      return ApiClient.localhostFromEmulator(tokenProvider: tokenProvider);
-    }
-    return ApiClient(tokenProvider: tokenProvider);
-  });
-
   // Storage layer
   late final _persistentStorageDep = dep(
     () => PersistentStorage(sharedPreferences: _sharedPreferencesDep.get),
-  );
-  late final _flutterSecureStorageDep = dep(
-    () => const FlutterSecureStorage(aOptions: AndroidOptions()),
-  );
-  late final _secureStorageDep = dep(
-    () => SecureStorage(_flutterSecureStorageDep.get),
   );
   late final _tokenStorageDep = dep(() => InMemoryTokenStorage());
 
@@ -143,30 +105,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   late final _announcementRepositoryDep = dep(
     () => AnnouncementRepository(supabaseClient: _supabaseClientDep.get),
   );
-  late final _scheduleRepositoryDep = dep(
-    () => ScheduleRepository(apiClient: _apiClientDep.get),
-  );
-  late final _scheduleExporterRepositoryDep = dep(
-    () => ScheduleExporterRepository(),
-  );
-  late final _communityRepositoryDep = dep(
-    () => CommunityRepository(apiClient: _apiClientDep.get),
-  );
-  late final _newsRepositoryDep = dep(
-    () => NewsRepository(apiClient: _apiClientDep.get),
-  );
-  late final _articleStorageDep = dep(
-    () => ArticleStorage(storage: _secureStorageDep.get),
-  );
-  late final _articleRepositoryDep = dep(
-    () => ArticleRepository(
-      apiClient: _apiClientDep.get,
-      storage: _articleStorageDep.get,
-    ),
-  );
-  late final _lostFoundRepositoryDep = dep(
-    () => LostFoundRepository(apiClient: _apiClientDep.get),
-  );
   late final _analyticsRepositoryDep = dep(() {
     try {
       return AnalyticsRepository(FirebaseAnalytics.instance);
@@ -198,19 +136,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   AnalyticsRepository get analyticsRepository => _analyticsRepositoryDep.get;
   @override
-  ScheduleRepository get scheduleRepository => _scheduleRepositoryDep.get;
-  @override
-  CommunityRepository get communityRepository => _communityRepositoryDep.get;
-  @override
-  NewsRepository get newsRepository => _newsRepositoryDep.get;
-  @override
-  ArticleRepository get articleRepository => _articleRepositoryDep.get;
-  @override
-  ScheduleExporterRepository get scheduleExporterRepository =>
-      _scheduleExporterRepositoryDep.get;
-  @override
-  LostFoundRepository get lostFoundRepository => _lostFoundRepositoryDep.get;
-  @override
   UserRepository get userRepository => _userRepositoryDep.get;
   @override
   AppUserProfileRepository get appUserProfileRepository =>
@@ -220,8 +145,6 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
       _announcementRepositoryDep.get;
   @override
   SupabaseClient get supabaseClient => _supabaseClientDep.get;
-  @override
-  ApiClient get apiClient => _apiClientDep.get;
 }
 
 /// Holder for the [AppScopeContainer].

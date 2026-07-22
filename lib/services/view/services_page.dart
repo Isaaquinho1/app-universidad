@@ -339,9 +339,10 @@ class _ServicesViewState extends State<ServicesView>
                     color:
                         index == _currentBannerIndex
                             ? Theme.of(context).extension<AppColors>()!.primary
-                            : Theme.of(
-                              context,
-                            ).extension<AppColors>()!.deactive.withOpacity(0.3),
+                            : Theme.of(context)
+                                .extension<AppColors>()!
+                                .deactive
+                                .withValues(alpha: 0.3),
                   ),
                 ),
               ),

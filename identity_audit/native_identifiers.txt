@@ -1,0 +1,42 @@
+android/app/build.gradle:28:    namespace "mx.tecnm.tlalpan.conectaitt"
+android/app/build.gradle:33:        applicationId "mx.tecnm.tlalpan.conectaitt"
+android/app/src/main/res/xml/schedule_glance_widget_info.xml:13:    android:label="Расписание МИРЭА">
+android/app/src/main/AndroidManifest.xml:23:        android:label="${appName}"
+android/app/src/main/AndroidManifest.xml:118:            android:label="Schedule Widget">
+Binary file android/.gradle/8.11.1/executionHistory/executionHistory.bin matches
+ios/HomeWidget/HomeWidget.intentdefinition:9:	<key>INIntentDefinitionNamespace</key>
+ios/HomeWidget/Info.plist:7:	<key>CFBundleDisplayName</key>
+ios/HomeWidget/Info.plist:12:	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+ios/HomeWidget/Info.plist:15:	<key>CFBundleName</key>
+ios/HomeWidget/Info.plist:16:	<string>$(PRODUCT_NAME)</string>
+ios/Runner/Info.plist:9:	<key>CFBundleDisplayName</key>
+ios/Runner/Info.plist:14:	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+ios/Runner/Info.plist:17:	<key>CFBundleName</key>
+ios/Runner.xcodeproj/project.pbxproj:517:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app;
+ios/Runner.xcodeproj/project.pbxproj:518:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Runner.xcodeproj/project.pbxproj:549:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app.HomeWidget;
+ios/Runner.xcodeproj/project.pbxproj:550:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Runner.xcodeproj/project.pbxproj:582:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app.HomeWidget;
+ios/Runner.xcodeproj/project.pbxproj:583:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Runner.xcodeproj/project.pbxproj:613:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app.HomeWidget;
+ios/Runner.xcodeproj/project.pbxproj:614:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Runner.xcodeproj/project.pbxproj:747:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app;
+ios/Runner.xcodeproj/project.pbxproj:748:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Runner.xcodeproj/project.pbxproj:773:				PRODUCT_BUNDLE_IDENTIFIER = com.ituniversity.app;
+ios/Runner.xcodeproj/project.pbxproj:774:				PRODUCT_NAME = "$(TARGET_NAME)";
+ios/Flutter/AppFrameworkInfo.plist:13:  <key>CFBundleName</key>
+macos/Runner/Configs/AppInfo.xcconfig:8:PRODUCT_NAME = rtu_mirea_mobile
+macos/Runner/Configs/AppInfo.xcconfig:11:PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile
+macos/Runner/Info.plist:12:	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+macos/Runner/Info.plist:15:	<key>CFBundleName</key>
+macos/Runner/Info.plist:16:	<string>$(PRODUCT_NAME)</string>
+macos/Runner.xcodeproj/project.pbxproj:309:			shellScript = "echo \"$PRODUCT_NAME.app\" > \"$PROJECT_DIR\"/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed\n";
+macos/Runner.xcodeproj/project.pbxproj:387:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:388:				PRODUCT_NAME = "$(TARGET_NAME)";
+macos/Runner.xcodeproj/project.pbxproj:401:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:402:				PRODUCT_NAME = "$(TARGET_NAME)";
+macos/Runner.xcodeproj/project.pbxproj:415:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:416:				PRODUCT_NAME = "$(TARGET_NAME)";
+macos/Runner.xcodeproj/project.pbxproj:491:				PRODUCT_NAME = "$(TARGET_NAME)";
+macos/Runner.xcodeproj/project.pbxproj:637:				PRODUCT_NAME = "$(TARGET_NAME)";
+macos/Runner.xcodeproj/project.pbxproj:645:				PRODUCT_NAME = "$(TARGET_NAME)";

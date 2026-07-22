@@ -29,6 +29,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - "reference/**"
     - "packages/enough_platform_widgets/**"               # <-- Excluye tu paquete local de los lints
     - "**/.pub-cache/hosted/pub.dev/font_awesome_flutter/**" # <-- Excluye la caché global de FontAwesome
   errors:

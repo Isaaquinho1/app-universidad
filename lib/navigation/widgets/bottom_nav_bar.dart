@@ -76,7 +76,7 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
     return DotNavigationBar(
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           spreadRadius: 1,
           blurRadius: 12,
           offset: const Offset(0, 4),
@@ -98,25 +98,28 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
         _buildNavBarItem(
           0,
           Assets.icons.hugeicons.news.svg(
-            color: Theme.of(context).extension<AppColors>()!.active,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).extension<AppColors>()!.active,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         _buildNavBarItem(
           1,
-          Assets.icons.hugeicons.calendar03.svg(
-            color: Theme.of(context).extension<AppColors>()!.active,
+          Assets.icons.hugeicons.dashboardSquare01.svg(
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).extension<AppColors>()!.active,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         _buildNavBarItem(
           2,
-          Assets.icons.hugeicons.dashboardSquare01.svg(
-            color: Theme.of(context).extension<AppColors>()!.active,
-          ),
-        ),
-        _buildNavBarItem(
-          3,
           Assets.icons.hugeicons.userAccount.svg(
-            color: Theme.of(context).extension<AppColors>()!.active,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).extension<AppColors>()!.active,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ],

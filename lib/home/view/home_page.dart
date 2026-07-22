@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
             // replace to avoid display bottom nav bar
             context.replace('/onboarding');
           } else {
-            context.go('/schedule');
+            context.go('/feed');
           }
         },
       ),

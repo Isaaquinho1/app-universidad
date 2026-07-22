@@ -3,9 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtu_mirea_app/announcements/announcements.dart';
-import 'package:rtu_mirea_app/article/view/article_page.dart';
 import 'package:rtu_mirea_app/home/view/home_page.dart';
-import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
 import 'package:rtu_mirea_app/map/view/map_page_view.dart';
 import 'package:rtu_mirea_app/profile/profile.dart';
 import 'package:rtu_mirea_app/profile/view/notifications_settings_page.dart';
@@ -13,17 +11,9 @@ import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
 import 'package:rtu_mirea_app/feed/feed.dart';
 import 'package:rtu_mirea_app/onboarding/view/onboarding_page.dart';
 import 'package:rtu_mirea_app/profile/view/profile_settings_page.dart';
-import 'package:rtu_mirea_app/rating_system_calculator/models/subject.dart';
-import 'package:rtu_mirea_app/rating_system_calculator/view/about_rating_system_page.dart';
-import 'package:rtu_mirea_app/rating_system_calculator/view/rating_system_calculator_page.dart';
-import 'package:rtu_mirea_app/rating_system_calculator/view/subject_page.dart';
-import 'package:rtu_mirea_app/schedule/schedule.dart';
 
-import 'package:rtu_mirea_app/schedule_management/schedule_management.dart';
-import 'package:rtu_mirea_app/search/view/search_page.dart';
 import 'package:rtu_mirea_app/services/view/view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:university_app_server_api/client.dart';
 import 'package:news_blocks/news_blocks.dart';
 import 'package:news_blocks_ui/news_blocks_ui.dart';
 import 'package:rtu_mirea_app/l10n/l10n.dart';
@@ -52,22 +42,9 @@ class OnboardingRoute extends GoRouteData {
         TypedGoRoute<FeedRoute>(
           path: '/feed',
           routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<ArticleRoute>(path: 'article/:articleId'),
             TypedGoRoute<AnnouncementDetailRoute>(
               path: 'announcement/:announcementId',
             ),
-          ],
-        ),
-      ],
-    ),
-    TypedStatefulShellBranch<ScheduleBranchData>(
-      routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ScheduleRoute>(
-          path: '/schedule',
-          routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<CustomScheduleRoute>(path: 'custom'),
-            TypedGoRoute<ScheduleSearchRoute>(path: 'search'),
-            TypedGoRoute<ScheduleDetailsRoute>(path: 'details'),
           ],
         ),
       ],
@@ -76,17 +53,7 @@ class OnboardingRoute extends GoRouteData {
       routes: <TypedRoute<RouteData>>[
         TypedGoRoute<ServicesRoute>(
           path: '/services',
-          routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<MapRoute>(path: 'map'),
-            TypedGoRoute<RatingSystemCalculatorRoute>(
-              path: 'rating-system-calculator',
-              routes: <TypedRoute<RouteData>>[
-                TypedGoRoute<AboutRatingSystemRoute>(path: 'about'),
-                TypedGoRoute<SubjectRoute>(path: 'subject'),
-              ],
-            ),
-            TypedGoRoute<LostAndFoundRoute>(path: 'lost-and-found'),
-          ],
+          routes: <TypedRoute<RouteData>>[TypedGoRoute<MapRoute>(path: 'map')],
         ),
       ],
     ),
@@ -95,7 +62,6 @@ class OnboardingRoute extends GoRouteData {
         TypedGoRoute<ProfileRoute>(
           path: '/profile',
           routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<ScheduleManagementRoute>(path: 'schedule-management'),
             TypedGoRoute<AdminAnnouncementManagementRoute>(
               path: 'announcement-management',
               routes: <TypedRoute<RouteData>>[
@@ -119,9 +85,6 @@ class OnboardingRoute extends GoRouteData {
         ),
       ],
     ),
-    TypedStatefulShellBranch<InfoBranchData>(
-      routes: <TypedRoute<RouteData>>[TypedGoRoute<InfoRoute>(path: '/info')],
-    ),
   ],
 )
 class ShellRouteData extends StatefulShellRouteData {
@@ -140,20 +103,12 @@ class FeedBranchData extends StatefulShellBranchData {
   const FeedBranchData();
 }
 
-class ScheduleBranchData extends StatefulShellBranchData {
-  const ScheduleBranchData();
-}
-
 class ServicesBranchData extends StatefulShellBranchData {
   const ServicesBranchData();
 }
 
 class ProfileBranchData extends StatefulShellBranchData {
   const ProfileBranchData();
-}
-
-class InfoBranchData extends StatefulShellBranchData {
-  const InfoBranchData();
 }
 
 class FeedRoute extends GoRouteData {
@@ -175,28 +130,6 @@ class AnnouncementDetailRoute extends GoRouteData {
   }
 }
 
-class ArticleRoute extends GoRouteData {
-  const ArticleRoute({
-    required this.articleId,
-    this.isVideo = false,
-    this.adBehavior = InterstitialAdBehavior.onOpen,
-  });
-
-  final String articleId;
-  final bool isVideo;
-  final InterstitialAdBehavior adBehavior;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return ArticlePage(
-      id: articleId,
-      isVideoArticle: isVideo,
-      interstitialAdBehavior: adBehavior,
-    );
-  }
-}
-
-@TypedGoRoute<SlideshowRoute>(path: '/slideshow')
 class SlideshowRoute extends GoRouteData {
   const SlideshowRoute({this.$extra});
 
@@ -214,46 +147,6 @@ class SlideshowRoute extends GoRouteData {
       categoryTitle: context.l10n.slideshow,
       navigationLabel: '/',
     );
-  }
-}
-
-class ScheduleRoute extends GoRouteData {
-  const ScheduleRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const SchedulePage();
-  }
-}
-
-class CustomScheduleRoute extends GoRouteData {
-  const CustomScheduleRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const CustomSchedulesPage();
-  }
-}
-
-class ScheduleSearchRoute extends GoRouteData {
-  const ScheduleSearchRoute({this.query});
-
-  final String? query;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return SearchPage(query: query);
-  }
-}
-
-class ScheduleDetailsRoute extends GoRouteData {
-  const ScheduleDetailsRoute({required this.$extra});
-
-  final (LessonSchedulePart, DateTime) $extra;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return ScheduleDetailsPage(lesson: $extra.$1, selectedDate: $extra.$2);
   }
 }
 
@@ -275,59 +168,12 @@ class MapRoute extends GoRouteData {
   }
 }
 
-class RatingSystemCalculatorRoute extends GoRouteData {
-  const RatingSystemCalculatorRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const RatingSystemCalculatorPage();
-  }
-}
-
-class AboutRatingSystemRoute extends GoRouteData {
-  const AboutRatingSystemRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const AboutRatingSystemPage();
-  }
-}
-
-class SubjectRoute extends GoRouteData {
-  const SubjectRoute({required this.$extra});
-
-  final Subject $extra;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return SubjectPage(subject: $extra);
-  }
-}
-
-class LostAndFoundRoute extends GoRouteData {
-  const LostAndFoundRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const LostFoundPage();
-  }
-}
-
 class ProfileRoute extends GoRouteData {
   const ProfileRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ProfilePage();
-  }
-}
-
-class ScheduleManagementRoute extends GoRouteData {
-  const ScheduleManagementRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const ScheduleManagementPage();
   }
 }
 
@@ -395,15 +241,6 @@ class NotificationsSettingsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const NotificationsSettingsPage();
-  }
-}
-
-class InfoRoute extends GoRouteData {
-  const InfoRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const AboutAppPage();
   }
 }
 

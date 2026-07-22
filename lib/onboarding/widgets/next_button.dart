@@ -7,7 +7,11 @@ import 'package:app_ui/app_ui.dart';
 /// Get next button to open next page
 /// or to close onboarding and start main app
 class NextButton extends StatelessWidget {
-  const NextButton({super.key, required this.isLastPage, required this.onClick});
+  const NextButton({
+    super.key,
+    required this.isLastPage,
+    required this.onClick,
+  });
 
   final bool isLastPage;
   final Function onClick;
@@ -18,13 +22,15 @@ class NextButton extends StatelessWidget {
       onPressed: () {
         if (isLastPage) {
           context.read<HomeCubit>().closeOnboarding();
-          context.go('/schedule');
+          context.go('/feed');
         } else {
           onClick();
         }
       },
       style: ElevatedButton.styleFrom(
-        foregroundColor: Theme.of(context).extension<AppColors>()!.primary.withOpacity(0.25),
+        foregroundColor: Theme.of(
+          context,
+        ).extension<AppColors>()!.primary.withOpacity(0.25),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         backgroundColor: Theme.of(context).extension<AppColors>()!.primary,
         shadowColor: const Color(0x7f000000),
@@ -40,9 +46,14 @@ class NextButton extends StatelessWidget {
             isLastPage
                 ? Text(
                   "¡Empezar!",
-                  style: AppTextStyle.buttonS.copyWith(color: Theme.of(context).extension<AppColors>()!.white),
+                  style: AppTextStyle.buttonS.copyWith(
+                    color: Theme.of(context).extension<AppColors>()!.white,
+                  ),
                 )
-                : Icon(Icons.arrow_forward_ios, color: Theme.of(context).extension<AppColors>()!.active),
+                : Icon(
+                  Icons.arrow_forward_ios,
+                  color: Theme.of(context).extension<AppColors>()!.active,
+                ),
       ),
     );
   }

@@ -22,24 +22,6 @@ class ServicesConfig {
         isExternal: false,
         routePath: '/services/map',
       ),
-      ImportantServiceModel(
-        title: 'Horario de clases',
-        description:
-            'Consulta y administra tu horario académico desde la aplicación.',
-        iconData: Icons.calendar_month_rounded,
-        color: colors.colorful04,
-        isExternal: false,
-        routePath: '/schedule',
-      ),
-      ImportantServiceModel(
-        title: 'Objetos perdidos',
-        description:
-            'Consulta o reporta objetos extraviados dentro del campus.',
-        iconData: Icons.search_rounded,
-        color: colors.colorful01,
-        isExternal: false,
-        routePath: '/services/lost-and-found',
-      ),
     ];
   }
 
@@ -106,13 +88,6 @@ class ServicesConfig {
     final colors = Theme.of(context).extension<AppColors>()!;
 
     return [
-      ServiceTileModel(
-        title: 'Horario',
-        iconData: Icons.calendar_month_rounded,
-        color: colors.colorful01,
-        isExternal: false,
-        routePath: '/schedule',
-      ),
       ServiceTileModel(
         title: 'SII',
         iconData: Icons.person_rounded,

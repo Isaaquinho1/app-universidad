@@ -1,0 +1,401 @@
+lib/home/cubit/home_cubit.dart:4:import 'package:rtu_mirea_app/domain/entities/app_settings.dart';
+lib/home/view/home_page.dart:4:import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
+lib/l10n/generated/app_localizations.dart:1613:  /// MIREA Map service description
+lib/l10n/generated/app_localizations.dart:1628:  /// **'Cloud Mirea Ninja'**
+lib/l10n/generated/app_localizations.dart:1629:  String get cloudMireaNinja;
+lib/l10n/generated/app_localizations.dart:1631:  /// Mirea Ninja community description
+lib/l10n/generated/app_localizations_es.dart:815:  String get cloudMireaNinja => 'Cloud Campus Tlalpan';
+lib/l10n/generated/app_localizations_en.dart:808:  String get cloudMireaNinja => 'Cloud Mirea Ninja';
+lib/l10n/arb/app_es.arb:1064:  "cloudMireaNinja": "Cloud Campus Tlalpan",
+lib/l10n/arb/app_es.arb:1065:  "@cloudMireaNinja": {
+lib/l10n/arb/app_en.arb:1058:    "description": "MIREA Map service description"
+lib/l10n/arb/app_en.arb:1064:  "cloudMireaNinja": "Cloud Mirea Ninja",
+lib/l10n/arb/app_en.arb:1065:  "@cloudMireaNinja": {
+lib/l10n/arb/app_en.arb:1070:    "description": "Mirea Ninja community description"
+lib/schedule/utils/schedule_widget_updater.dart:5:import 'package:rtu_mirea_app/data/datasources/widget_data.dart';
+lib/schedule/utils/schedule_widget_updater.dart:6:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/models/selected_custom_schedule.dart:1:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/view/schedule_details_page.dart:10:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/view/schedule_details_page.dart:11:import 'package:rtu_mirea_app/schedule/widgets/custom_schedule_selector.dart';
+lib/schedule/view/schedule_details_page.dart:15:import 'package:rtu_mirea_app/schedule/widgets/map_view.dart';
+lib/schedule/view/custom_lesson_editor_page.dart:7:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/view/schedule_page.dart:11:import 'package:rtu_mirea_app/common/utils/calendar_utils.dart';
+lib/schedule/view/schedule_page.dart:12:import 'package:rtu_mirea_app/presentation/constants.dart';
+lib/schedule/view/schedule_page.dart:14:import 'package:rtu_mirea_app/common/widgets/responsive_layout.dart';
+lib/schedule/view/schedule_page.dart:15:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/view/schedule_page.dart:16:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/view/schedule_page.dart:18:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/view/schedule_page.dart:23:import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
+lib/schedule/view/schedule_page.dart:24:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/view/syncfusion_calendar_screen.dart:3:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/view/syncfusion_calendar_screen.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/view/syncfusion_calendar_view.dart:3:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/view/custom_schedules_page.dart:8:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/view/custom_schedules_page.dart:9:import 'package:rtu_mirea_app/schedule/models/custom_schedule.dart';
+lib/schedule/view/custom_schedules_page.dart:10:import 'package:rtu_mirea_app/schedule/view/custom_lesson_editor_page.dart';
+lib/schedule/view/custom_schedules_page.dart:11:import 'package:rtu_mirea_app/schedule/widgets/lesson_card.dart';
+lib/schedule/widgets/comparison_manager.dart:6:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/comparison_manager.dart:7:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/comparison_manager.dart:9:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/custom_lesson_editor_widgets.dart:7:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/sticky_header.dart:7:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/widgets/reaction_celebration.dart:3:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/custom_schedule_selector.dart:5:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/custom_schedule_selector.dart:6:import 'package:rtu_mirea_app/schedule/models/custom_schedule.dart';
+lib/schedule/widgets/custom_schedule_selector.dart:7:import 'package:rtu_mirea_app/schedule/widgets/lesson_card.dart';
+lib/schedule/widgets/custom_schedule_selector.dart:9:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/map_view.dart:3:import 'package:rtu_mirea_app/schedule/widgets/mobile_map_view.dart'
+lib/schedule/widgets/map_view.dart:4:    if (dart.library.html) 'package:rtu_mirea_app/schedule/widgets/web_map_view.dart';
+lib/schedule/widgets/calendar/calendar.dart:5:import 'package:rtu_mirea_app/common/utils/calendar_utils.dart';
+lib/schedule/widgets/calendar/calendar.dart:7:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/calendar/calendar.dart:8:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/calendar/calendar_header.dart:9:import 'package:rtu_mirea_app/common/widgets/responsive_layout.dart';
+lib/schedule/widgets/lesson_reaction_display.dart:4:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/desktop_no_schedule_view.dart:5:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/loading_error_message.dart:2:import 'package:rtu_mirea_app/presentation/constants.dart';
+lib/schedule/widgets/loading_error_message.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/desktop_account_panel.dart:5:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/desktop_account_panel.dart:6:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/comparison_mode_button.dart:5:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/comparison_sticky_header.dart:6:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/comparison_sticky_header.dart:7:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/widgets/comparison_sticky_header.dart:8:import 'package:rtu_mirea_app/schedule/widgets/comparison_lessons_table.dart';
+lib/schedule/widgets/lesson_reaction_picker.dart:4:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/schedules_list.dart:4:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/widgets/holiday_page.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/schedule_diff_dialog.dart:4:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/comparison_lesson_card.dart:5:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/widgets/desktop_calendar_panel.dart:5:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/desktop_calendar_panel.dart:6:import 'package:rtu_mirea_app/schedule/widgets/calendar/format_toggle.dart';
+lib/schedule/widgets/desktop_calendar_panel.dart:7:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/desktop_calendar_panel.dart:10:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/schedule_analytics.dart:7:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/widgets/schedule_analytics.dart:8:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/comparison_lessons_table.dart:6:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule/widgets/desktop_schedule_sidebar.dart:4:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/desktop_schedule_sidebar.dart:5:import 'package:rtu_mirea_app/schedule/widgets/calendar/format_toggle.dart';
+lib/schedule/widgets/desktop_schedule_sidebar.dart:6:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/no_selected_schedule_message.dart:3:import 'package:rtu_mirea_app/presentation/constants.dart';
+lib/schedule/widgets/desktop_app_bar.dart:6:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/desktop_app_bar.dart:7:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/widgets/desktop_schedule_content.dart:7:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule/widgets/desktop_schedule_content.dart:8:import 'package:rtu_mirea_app/schedule/widgets/widgets.dart';
+lib/schedule/widgets/desktop_schedule_content.dart:9:import 'package:rtu_mirea_app/schedule/widgets/schedule_analytics.dart';
+lib/schedule/widgets/desktop_schedule_content.dart:12:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/schedule/bloc/schedule_bloc.dart:11:import 'package:rtu_mirea_app/data/datasources/widget_data.dart';
+lib/schedule/bloc/schedule_bloc.dart:12:import 'package:rtu_mirea_app/schedule/bloc/calculate_schedule_diff.dart';
+lib/schedule/bloc/schedule_bloc.dart:13:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule/bloc/schedule_bloc.dart:14:import 'package:rtu_mirea_app/schedule/utils/schedule_widget_updater.dart';
+lib/schedule/bloc/calculate_schedule_diff.dart:1:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/di/app_scope.dart:11:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/di/app_scope.dart:12:import 'package:rtu_mirea_app/common/utils/logger.dart';
+lib/di/app_scope.dart:13:import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+lib/di/app_scope.dart:14:import 'package:rtu_mirea_app/main/bootstrap/bloc_observer_initializer.dart';
+lib/di/app_scope.dart:15:import 'package:rtu_mirea_app/main/bootstrap/firebase_initializer.dart';
+lib/di/app_scope.dart:16:import 'package:rtu_mirea_app/main/bootstrap/supabase_initializer.dart';
+lib/di/app_scope.dart:17:import 'package:rtu_mirea_app/main/bootstrap/hydrated_storage_initializer.dart';
+lib/di/app_scope.dart:18:import 'package:rtu_mirea_app/main/bootstrap/shared_preferences_initializer.dart';
+lib/di/app_scope.dart:19:import 'package:rtu_mirea_app/main/bootstrap/package_info_initializer.dart';
+lib/schedule_management/view/schedule_management_page.dart:7:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule_management/view/schedule_management_page.dart:8:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule_management/view/schedule_management_page.dart:9:import 'package:rtu_mirea_app/schedule_management/widgets/widgets.dart';
+lib/schedule_management/widgets/set_comment_bottom_sheet_content.dart:5:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/schedule_management/widgets/set_comment_bottom_sheet_content.dart:7:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/schedule_management/widgets/schedule_section.dart:3:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule_management/widgets/schedule_section.dart:4:import 'package:rtu_mirea_app/schedule_management/widgets/widgets.dart';
+lib/schedule_management/widgets/schedule_section.dart:5:import 'package:rtu_mirea_app/search/search.dart';
+lib/schedule_management/widgets/comment_section.dart:4:import 'package:rtu_mirea_app/schedule/models/schedule_comment.dart';
+lib/schedule_management/widgets/comment_section.dart:5:import 'package:rtu_mirea_app/schedule/schedule.dart' show ScheduleState, UID;
+lib/schedule_management/widgets/schedule_body.dart:3:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule_management/widgets/schedule_body.dart:4:import 'package:rtu_mirea_app/schedule_management/widgets/widgets.dart';
+lib/schedule_management/widgets/schedule_card.dart:7:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/schedule_management/widgets/schedule_card.dart:8:import 'package:rtu_mirea_app/schedule_management/widgets/widgets.dart';
+lib/app/view/app.dart:9:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/app/view/app.dart:10:import 'package:rtu_mirea_app/app/app.dart';
+lib/app/view/app.dart:11:import 'package:rtu_mirea_app/categories/categories.dart';
+lib/app/view/app.dart:12:import 'package:rtu_mirea_app/feed/feed.dart';
+lib/app/view/app.dart:13:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/app/view/app.dart:14:import 'package:rtu_mirea_app/navigation/navigation.dart';
+lib/app/view/app.dart:15:import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
+lib/app/view/app.dart:17:import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
+lib/app/view/app.dart:20:import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
+lib/app/view/app.dart:21:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/app/view/app.dart:24:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/app/view/app.dart:28:import 'package:rtu_mirea_app/di/app_scope.dart';
+lib/app/widgets/firebase_interacted_message_listener.dart:4:import 'package:rtu_mirea_app/app/app.dart';
+lib/app/bloc/app_bloc.dart:8:import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
+lib/app/bloc/app_bloc.dart:9:import 'package:rtu_mirea_app/app/services/services.dart';
+lib/app/bloc/app_bloc.dart:10:import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+lib/lost_and_found/view/lost_found_details_page.dart:6:import 'package:rtu_mirea_app/app/app.dart';
+lib/lost_and_found/view/lost_found_details_page.dart:7:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/lost_and_found/view/lost_found_details_page.dart:8:import 'package:rtu_mirea_app/lost_and_found/widgets/widgets.dart';
+lib/lost_and_found/view/my_lost_found_items_page.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/lost_and_found/view/my_lost_found_items_page.dart:6:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/lost_and_found/view/my_lost_found_items_page.dart:7:import 'package:rtu_mirea_app/lost_and_found/widgets/loading_state_widget.dart';
+lib/lost_and_found/view/my_lost_found_items_page.dart:8:import 'package:rtu_mirea_app/lost_and_found/widgets/widgets.dart';
+lib/lost_and_found/view/lost_found_page.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/lost_and_found/view/lost_found_page.dart:6:import 'package:rtu_mirea_app/login/login.dart';
+lib/lost_and_found/view/lost_found_page.dart:7:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/lost_and_found/view/lost_found_page.dart:8:import 'package:rtu_mirea_app/lost_and_found/widgets/loading_state_widget.dart';
+lib/lost_and_found/view/lost_found_page.dart:9:import 'package:rtu_mirea_app/lost_and_found/widgets/widgets.dart';
+lib/lost_and_found/view/create_lost_found_page.dart:8:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/lost_and_found/widgets/error_state_widget.dart:3:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/lost_and_found/widgets/empty_state_widget.dart:4:import 'package:rtu_mirea_app/app/app.dart';
+lib/navigation/view/scaffold_navigation_shell.dart:4:import 'package:rtu_mirea_app/navigation/navigation.dart';
+lib/navigation/view/scaffold_navigation_shell.dart:5:import 'package:rtu_mirea_app/presentation/constants.dart';
+lib/navigation/routes/routes.dart:5:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/navigation/routes/routes.dart:6:import 'package:rtu_mirea_app/article/view/article_page.dart';
+lib/navigation/routes/routes.dart:7:import 'package:rtu_mirea_app/home/view/home_page.dart';
+lib/navigation/routes/routes.dart:8:import 'package:rtu_mirea_app/lost_and_found/lost_and_found.dart';
+lib/navigation/routes/routes.dart:9:import 'package:rtu_mirea_app/map/view/map_page_view.dart';
+lib/navigation/routes/routes.dart:10:import 'package:rtu_mirea_app/profile/profile.dart';
+lib/navigation/routes/routes.dart:11:import 'package:rtu_mirea_app/profile/view/notifications_settings_page.dart';
+lib/navigation/routes/routes.dart:12:import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
+lib/navigation/routes/routes.dart:13:import 'package:rtu_mirea_app/feed/feed.dart';
+lib/navigation/routes/routes.dart:14:import 'package:rtu_mirea_app/onboarding/view/onboarding_page.dart';
+lib/navigation/routes/routes.dart:15:import 'package:rtu_mirea_app/profile/view/profile_settings_page.dart';
+lib/navigation/routes/routes.dart:16:import 'package:rtu_mirea_app/rating_system_calculator/models/subject.dart';
+lib/navigation/routes/routes.dart:17:import 'package:rtu_mirea_app/rating_system_calculator/view/about_rating_system_page.dart';
+lib/navigation/routes/routes.dart:18:import 'package:rtu_mirea_app/rating_system_calculator/view/rating_system_calculator_page.dart';
+lib/navigation/routes/routes.dart:19:import 'package:rtu_mirea_app/rating_system_calculator/view/subject_page.dart';
+lib/navigation/routes/routes.dart:20:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/navigation/routes/routes.dart:22:import 'package:rtu_mirea_app/schedule_management/schedule_management.dart';
+lib/navigation/routes/routes.dart:23:import 'package:rtu_mirea_app/search/view/search_page.dart';
+lib/navigation/routes/routes.dart:24:import 'package:rtu_mirea_app/services/view/view.dart';
+lib/navigation/routes/routes.dart:29:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/navigation/widgets/bottom_nav_bar.dart:6:import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
+lib/announcements/cubit/announcement_receipt_cubit.dart:5:import 'package:rtu_mirea_app/announcements/models/models.dart';
+lib/announcements/cubit/announcement_receipt_cubit.dart:6:import 'package:rtu_mirea_app/announcements/repositories/repositories.dart';
+lib/announcements/admin/view/admin_announcement_management_page.dart:5:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/admin/view/admin_announcement_management_page.dart:6:import 'package:rtu_mirea_app/app/app.dart';
+lib/announcements/admin/view/admin_announcement_edit_page.dart:4:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/admin/view/admin_announcement_create_page.dart:4:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/admin/view/admin_announcement_create_page.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/announcements/admin/view/admin_announcement_create_page.dart:6:import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+lib/announcements/admin/view/admin_announcement_results_page.dart:6:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/admin/view/admin_announcement_results_page.dart:7:import 'package:rtu_mirea_app/app/app.dart';
+lib/announcements/admin/view/admin_announcement_results_page.dart:8:import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+lib/announcements/admin/services/announcement_results_csv_exporter.dart:6:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/admin/services/announcement_results_csv_exporter.dart:7:import 'package:rtu_mirea_app/institutional_profile/institutional_profile.dart';
+lib/announcements/repositories/announcement_repository.dart:3:import 'package:rtu_mirea_app/announcements/models/models.dart';
+lib/announcements/repositories/announcement_repository.dart:4:import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+lib/announcements/models/announcement_recipient.dart:1:import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+lib/announcements/models/announcement_target.dart:1:import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+lib/announcements/models/announcement_reminder_preview.dart:1:import 'package:rtu_mirea_app/announcements/models/announcement_results.dart';
+lib/announcements/view/announcement_detail_view.dart:5:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/view/announcement_feed_view.dart:4:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/view/announcement_feed_view.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/announcements/view/announcement_detail_page.dart:4:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/announcements/view/announcement_detail_page.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/announcements/bloc/announcement_bloc.dart:5:import 'package:rtu_mirea_app/announcements/models/models.dart';
+lib/announcements/bloc/announcement_bloc.dart:6:import 'package:rtu_mirea_app/announcements/repositories/repositories.dart';
+lib/announcements/bloc/announcement_bloc.dart:7:import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+lib/rating_system_calculator/view/rating_system_calculator_page.dart:6:import 'package:rtu_mirea_app/rating_system_calculator/bloc/rating_system_bloc.dart';
+lib/rating_system_calculator/view/rating_system_calculator_page.dart:7:import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
+lib/rating_system_calculator/view/rating_system_calculator_page.dart:8:import 'package:rtu_mirea_app/rating_system_calculator/widgets/widgets.dart';
+lib/rating_system_calculator/view/rating_system_calculator_page.dart:9:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/rating_system_calculator/view/rating_system_calculator_page.dart:10:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/rating_system_calculator/view/subject_page.dart:3:import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
+lib/rating_system_calculator/view/about_rating_system_page.dart:3:import 'package:rtu_mirea_app/rating_system_calculator/rating_system_calculator.dart';
+lib/rating_system_calculator/widgets/subject_card.dart:3:import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
+lib/rating_system_calculator/bloc/rating_system_bloc.dart:4:import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
+lib/search/view/search_page.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/search/view/search_page.dart:7:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/search/view/search_page.dart:8:import 'package:rtu_mirea_app/search/widgets/search_history_item.dart';
+lib/search/widgets/search_mode_select.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/search/widgets/search_mode_select.dart:5:import 'package:rtu_mirea_app/search/search.dart';
+lib/search/widgets/clear_search_history_button.dart:4:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/search/widgets/clear_search_history_button.dart:5:import 'package:rtu_mirea_app/search/bloc/search_bloc.dart';
+lib/map/models/campus_model.dart:2:import 'package:rtu_mirea_app/map/models/models.dart';
+lib/map/view/map_page_view.dart:3:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/view/map_page_view.dart:4:import 'package:rtu_mirea_app/presentation/constants.dart';
+lib/map/services/svg_room_parser.dart:7:import 'package:rtu_mirea_app/map/models/models.dart';
+lib/map/widgets/map_canvas.dart:2:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/widgets/campus_selector.dart:3:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/widgets/svg_interactive_view.dart:8:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/bloc/map_bloc.dart:4:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/bloc/map_state.dart:4:import 'package:rtu_mirea_app/map/map.dart';
+lib/map/bloc/map_event.dart:2:import 'package:rtu_mirea_app/map/models/models.dart';
+lib/profile/view/notifications_settings_page.dart:4:import 'package:rtu_mirea_app/presentation/bloc/notification_preferences/notification_preferences_bloc.dart';
+lib/profile/view/notifications_settings_page.dart:6:import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
+lib/profile/view/notifications_settings_page.dart:7:import 'package:rtu_mirea_app/schedule/models/models.dart';
+lib/profile/view/profile_page.dart:6:import 'package:rtu_mirea_app/app/theme/theme_mode.dart';
+lib/profile/view/profile_page.dart:8:import 'package:rtu_mirea_app/app/app.dart';
+lib/profile/view/profile_page.dart:9:import 'package:rtu_mirea_app/login/login.dart';
+lib/profile/view/profile_page.dart:10:import 'package:rtu_mirea_app/profile/widgets/widgets.dart';
+lib/profile/view/profile_page.dart:11:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/profile/widgets/schedule_section_wrapper.dart:3:import 'package:rtu_mirea_app/profile/profile.dart';
+lib/profile/widgets/export_schedule_modal_content.dart:5:import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
+lib/profile/widgets/schedule_management_section.dart:7:import 'package:rtu_mirea_app/profile/widgets/widgets.dart' hide ProfileButton;
+lib/profile/widgets/schedule_management_section.dart:8:import 'package:rtu_mirea_app/schedule/schedule.dart';
+lib/profile/widgets/schedule_management_section.dart:9:import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
+lib/profile/widgets/schedule_management_section.dart:213:        return 'Mirea Ninja Schedule';
+lib/feed/view/feed_view.dart:5:import 'package:rtu_mirea_app/announcements/announcements.dart';
+lib/feed/view/feed_view.dart:6:import 'package:rtu_mirea_app/categories/categories.dart';
+lib/feed/view/feed_view.dart:7:import 'package:rtu_mirea_app/feed/feed.dart';
+lib/feed/widgets/category_feed.dart:5:import 'package:rtu_mirea_app/feed/feed.dart';
+lib/feed/widgets/category_feed_item.dart:6:import 'package:rtu_mirea_app/categories/categories.dart';
+lib/institutional_profile/repositories/app_user_profile_repository.dart:3:import 'package:rtu_mirea_app/institutional_profile/models/models.dart';
+lib/article/view/article_page.dart:7:import 'package:rtu_mirea_app/article/article.dart';
+lib/article/widgets/article_content.dart:5:import 'package:rtu_mirea_app/article/article.dart';
+lib/article/widgets/article_content.dart:6:import 'package:rtu_mirea_app/categories/categories.dart';
+lib/article/widgets/article_content.dart:7:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/article/widgets/article_trailing_content.dart:4:import 'package:rtu_mirea_app/article/article.dart';
+lib/article/widgets/article_trailing_content.dart:5:import 'package:rtu_mirea_app/feed/feed.dart';
+lib/article/widgets/article_trailing_content.dart:6:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/article/widgets/article_content_item.dart:6:import 'package:rtu_mirea_app/categories/categories.dart';
+lib/article/widgets/article_content_item.dart:7:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/main/main_development.dart:2:import 'package:rtu_mirea_app/app/app.dart';
+lib/main/main_development.dart:3:import 'package:rtu_mirea_app/common/utils/logger.dart';
+lib/main/main_development.dart:4:import 'package:rtu_mirea_app/di/app_scope.dart';
+lib/main/main_development.dart:5:import 'package:rtu_mirea_app/main/bootstrap/bootstrap.dart';
+lib/main/bootstrap/hydrated_storage_initializer.dart:2:import 'package:rtu_mirea_app/common/hydrated_storage.dart';
+lib/main/bootstrap/supabase_initializer.dart:1:import 'package:rtu_mirea_app/env/env.dart';
+lib/main/bootstrap/bloc_observer_initializer.dart:2:import 'package:rtu_mirea_app/main/bootstrap/app_bloc_observer.dart';
+lib/main/bootstrap/firebase_initializer.dart:2:import 'package:rtu_mirea_app/firebase_options.dart';
+lib/main/main_production.dart:1:import 'package:rtu_mirea_app/app/app.dart';
+lib/main/main_production.dart:2:import 'package:rtu_mirea_app/di/app_scope.dart';
+lib/main/main_production.dart:3:import 'package:rtu_mirea_app/main/bootstrap/bootstrap.dart';
+lib/login/register_bloc/register_bloc.dart:7:import 'package:rtu_mirea_app/institutional_auth/institutional_auth.dart';
+lib/login/view/register_page.dart:4:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/view/login_with_email_page.dart:4:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/view/login_modal.dart:4:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/widgets/register_form.dart:5:import 'package:rtu_mirea_app/institutional_auth/institutional_auth.dart';
+lib/login/widgets/register_form.dart:6:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/widgets/login_with_email_form.dart:5:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/widgets/login_form.dart:5:import 'package:rtu_mirea_app/app/app.dart';
+lib/login/widgets/login_form.dart:6:import 'package:rtu_mirea_app/login/login.dart';
+lib/login/bloc/login_bloc.dart:7:import 'package:rtu_mirea_app/institutional_auth/institutional_auth.dart';
+lib/services/config/services_config.dart:3:import 'package:rtu_mirea_app/services/models/service_model.dart';
+lib/services/utils/service_utils.dart:4:import 'package:rtu_mirea_app/services/models/service_model.dart';
+lib/services/view/services_page.dart:2:import 'package:rtu_mirea_app/l10n/l10n.dart';
+lib/services/view/services_page.dart:3:import 'package:rtu_mirea_app/services/services.dart';
+lib/onboarding/view/onboarding_page.dart:5:import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
+lib/onboarding/view/onboarding_page.dart:6:import 'package:rtu_mirea_app/onboarding/widgets/widgets.dart';
+lib/onboarding/widgets/next_button.dart:4:import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
+android/app/build.gradle:54:            manifestPlaceholders = [appName: "Ninja Mirea [DEV]"]
+android/app/build.gradle:58:            manifestPlaceholders = [appName: "Ninja Mirea"]
+android/app/src/main/res/xml/schedule_glance_widget_info.xml:13:    android:label="Расписание МИРЭА">
+Binary file android/.gradle/8.11.1/executionHistory/executionHistory.bin matches
+ios/HomeWidget/HomeWidget.swift:12:private let widgetGroupId = "group.mirea.ninja.mireaapp"
+ios/Runner/Runner.entitlements:7:		<string>group.mirea.ninja.mireaapp</string>
+ios/Runner/Info.plist:32:				<string>ninja.mirea.mireaapp</string>
+ios/HomeWidgetExtension.entitlements:7:		<string>group.mirea.ninja.mireaapp</string>
+macos/Runner/Configs/AppInfo.xcconfig:8:PRODUCT_NAME = rtu_mirea_mobile
+macos/Runner/Configs/AppInfo.xcconfig:11:PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile
+macos/Runner/Configs/AppInfo.xcconfig:14:PRODUCT_COPYRIGHT = Copyright © 2024 ninja.mirea. All rights reserved.
+macos/Runner.xcodeproj/project.pbxproj:67:		33CC10ED2044A3C60003C045 /* rtu_mirea_mobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rtu_mirea_mobile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+macos/Runner.xcodeproj/project.pbxproj:134:				33CC10ED2044A3C60003C045 /* rtu_mirea_mobile.app */,
+macos/Runner.xcodeproj/project.pbxproj:220:			productReference = 33CC10ED2044A3C60003C045 /* rtu_mirea_mobile.app */;
+macos/Runner.xcodeproj/project.pbxproj:387:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:390:				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rtu_mirea_mobile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/rtu_mirea_mobile";
+macos/Runner.xcodeproj/project.pbxproj:401:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:404:				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rtu_mirea_mobile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/rtu_mirea_mobile";
+macos/Runner.xcodeproj/project.pbxproj:415:				PRODUCT_BUNDLE_IDENTIFIER = ninja.mirea.rtuMireaMobile.RunnerTests;
+macos/Runner.xcodeproj/project.pbxproj:418:				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/rtu_mirea_mobile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/rtu_mirea_mobile";
+macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme:18:               BuildableName = "rtu_mirea_mobile.app"
+macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme:34:            BuildableName = "rtu_mirea_mobile.app"
+macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme:68:            BuildableName = "rtu_mirea_mobile.app"
+macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme:85:            BuildableName = "rtu_mirea_mobile.app"
+linux/CMakeLists.txt:7:set(BINARY_NAME "rtu_mirea_mobile")
+linux/CMakeLists.txt:10:set(APPLICATION_ID "ninja.mirea.rtu_mirea_mobile")
+windows/CMakeLists.txt:3:project(rtu_mirea_mobile LANGUAGES CXX)
+windows/CMakeLists.txt:7:set(BINARY_NAME "rtu_mirea_mobile")
+windows/runner/Runner.rc:92:            VALUE "CompanyName", "Mirea Ninja" "\0"
+windows/runner/Runner.rc:93:            VALUE "FileDescription", "Приложение РТУ МИРЭА" "\0"
+windows/runner/Runner.rc:95:            VALUE "InternalName", "Мой РТУ МИРЭА" "\0"
+windows/runner/Runner.rc:97:            VALUE "OriginalFilename", "Мой РТУ МИРЭА.exe" "\0"
+windows/runner/Runner.rc:98:            VALUE "ProductName", "Ninja Mirea Desktop" "\0"
+windows/runner/main.cpp:30:  if (!window.Create(L"rtu_mirea_mobile", origin, size)) {
+pubspec.yaml:1:name: rtu_mirea_app
+pubspec.yaml:14:  - api/packages/rtu_mirea_schedule_api_client
+README.md:31:El repositorio se encuentra en proceso de adaptación técnica hacia Conecta ITT. Las referencias originales a MIREA, RTU MIREA, Ninja MIREA, Firebase original y servicios asociados se están inventariando antes de ser sustituidas o desactivadas de forma controlada.
+CHANGELOG.md:3:## [Unreleased](https://github.com/Ninja-Official/rtu-mirea-mobile/tree/HEAD)
+CHANGELOG.md:5:[Full Changelog](https://github.com/Ninja-Official/rtu-mirea-mobile/compare/1.0.2...HEAD)
+CHANGELOG.md:9:- \[FEATURE REQUEST\] Информация о преподавателе [\#103](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/103)
+CHANGELOG.md:10:- \[FEATURE REQUEST\] Полное ФИО преподавателей [\#102](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/102)
+CHANGELOG.md:11:- \[FEATURE REQUEST\] Изменение поведения дефиса в поле ввода группы [\#85](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/85)
+CHANGELOG.md:12:- \[FEATURE REQUEST\] Оптимизировать ввод группы с клавиатуры [\#58](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/58)
+CHANGELOG.md:13:- \[FEATURE REQUEST\] Реализация меню тегов во вкладке "Новости" [\#51](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/51)
+CHANGELOG.md:14:- \[FEATURE REQUEST\] Добавить виджеты рабочего стола для Android и iOS [\#40](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/40)
+CHANGELOG.md:15:- \[FEATURE REQUEST\] Страница профиля [\#6](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/6)
+CHANGELOG.md:19:- \[BUG\] Ошибка загрузки патронов [\#122](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/122)
+CHANGELOG.md:20:- \[BUG\] Скачивание некорректных данных ломает сторис [\#114](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/114)
+CHANGELOG.md:21:- \[BUG\] Некорректное отображение процента масштаба [\#94](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/94)
+CHANGELOG.md:25:- Если не указан кабинет в расписании, то после предмета стоит ненужная запятая [\#95](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/95)
+CHANGELOG.md:29:- FIX: add displaying evening lessons [\#93](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/93) ([0niel](https://github.com/0niel))
+CHANGELOG.md:31:## [1.0.2](https://github.com/Ninja-Official/rtu-mirea-mobile/tree/1.0.2) (2021-09-08)
+CHANGELOG.md:33:[Full Changelog](https://github.com/Ninja-Official/rtu-mirea-mobile/compare/1.0.1...1.0.2)
+CHANGELOG.md:37:- \[FEATURE REQUEST\] Сохранение состояния календаря [\#70](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/70)
+CHANGELOG.md:38:- \[FEATURE REQUEST\] Автоматическое обновление расписания [\#59](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/59)
+CHANGELOG.md:39:- \[FEATURE REQUEST\] Возврат стандартного размера карты, ограничение масштабирования [\#55](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/55)
+CHANGELOG.md:40:-  FEATURE: succesful server loading indication [\#74](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/74) ([uSlashVlad](https://github.com/uSlashVlad))
+CHANGELOG.md:41:- FEATURE: scaling map button \#55 [\#64](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/64) ([MadL1me](https://github.com/MadL1me))
+CHANGELOG.md:45:- \[BUG\] Артефакты отрисовки пиктограм при большом масштабе карты [\#89](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/89)
+CHANGELOG.md:46:- \[BUG\] Бесконечная загрузка расписания при медленном соединении [\#84](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/84)
+CHANGELOG.md:47:- \[BUG\] Поле ввода не видно на 4.7'' экране [\#79](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/79)
+CHANGELOG.md:48:- \[BUG\] Кнопки в разделе "О приложении" выходят за границу экрана [\#76](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/76)
+CHANGELOG.md:49:- \[BUG\] Ограниченный список новостей [\#72](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/72)
+CHANGELOG.md:50:- \[BUG\] - уезжает номер аудитории [\#67](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/67)
+CHANGELOG.md:54:- Release v1.0.2 [\#92](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/92) ([0niel](https://github.com/0niel))
+CHANGELOG.md:55:- UX: update app icons [\#91](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/91) ([0niel](https://github.com/0niel))
+CHANGELOG.md:56:- FIX: build schedule in next week and from cache [\#90](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/90) ([0niel](https://github.com/0niel))
+CHANGELOG.md:57:- UX: remove evening lessons [\#87](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/87) ([0niel](https://github.com/0niel))
+CHANGELOG.md:58:- FIX: schedule loading from internet on start [\#86](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/86) ([0niel](https://github.com/0niel))
+CHANGELOG.md:59:- FIX: punctuation on greeting screen [\#83](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/83) ([TinyClayMan](https://github.com/TinyClayMan))
+CHANGELOG.md:60:- \[FIX\] FIX: input field keyboard fix [\#81](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/81) ([MadL1me](https://github.com/MadL1me))
+CHANGELOG.md:61:- FEATURE: schedule from cache indication [\#78](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/78) ([uSlashVlad](https://github.com/uSlashVlad))
+CHANGELOG.md:62:- FIX: make buttons in about page non-fixed size [\#77](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/77) ([uSlashVlad](https://github.com/uSlashVlad))
+CHANGELOG.md:63:- FIX: add news loading [\#73](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/73) ([0niel](https://github.com/0niel))
+CHANGELOG.md:64:- FEATURE: add calendar type save [\#71](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/71) ([0niel](https://github.com/0niel))
+CHANGELOG.md:65:- FIX: increase maxLines to display more text [\#68](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/68) ([0niel](https://github.com/0niel))
+CHANGELOG.md:66:- FEATURE: create schedule settings buttons and add empty lessons [\#66](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/66) ([0niel](https://github.com/0niel))
+CHANGELOG.md:68:## [1.0.1](https://github.com/Ninja-Official/rtu-mirea-mobile/tree/1.0.1) (2021-08-28)
+CHANGELOG.md:70:[Full Changelog](https://github.com/Ninja-Official/rtu-mirea-mobile/compare/1.0.0...1.0.1)
+CHANGELOG.md:74:- \[FEATURE REQUEST\] Перезагрузка раздела новостей [\#54](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/54)
+CHANGELOG.md:75:- \[FEATURE REQUEST\]Возможность свайпами влево/вправо переходить на следующую/предыдущую неделю в расписании [\#49](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/49)
+CHANGELOG.md:76:- \[FEATURE REQUEST\] Цвет ивентов в календаре должен соответствовать цвету пар [\#38](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/38)
+CHANGELOG.md:80:- \[BUG\] Зависание приложения при листании календаря вперед [\#53](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/53)
+CHANGELOG.md:81:- \[BUG\] Не отображаются пары при прокрутке со дня каникул [\#50](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/50)
+CHANGELOG.md:82:- \[BUG\] Зависание приложения при перелистывании на 17-ю неделю [\#39](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/39)
+CHANGELOG.md:83:- \[BUG\] Если из группа пропадает на удалённом сервере, но она была скачана, то будет сообщение об ошибке с интернетом [\#36](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/36)
+CHANGELOG.md:84:- \[BUG\] После загрузки виджеты с юзерами на странице "О приложении" отображаются по центру [\#35](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/35)
+CHANGELOG.md:88:- Release v1.0.1 [\#62](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/62) ([0niel](https://github.com/0niel))
+CHANGELOG.md:89:- FIX: remove an error after deleting a group on API [\#61](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/61) ([0niel](https://github.com/0niel))
+CHANGELOG.md:90:- FEATURE: add group selector formatter [\#60](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/60) ([0niel](https://github.com/0niel))
+CHANGELOG.md:91:- FEATURE: create RefreshIndicator in news listview [\#56](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/56) ([0niel](https://github.com/0niel))
+CHANGELOG.md:92:- FEATURE: add swipe to next week and fix schedule on tap [\#52](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/52) ([0niel](https://github.com/0niel))
+CHANGELOG.md:93:- TEST: Better structure and code coverage [\#48](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/48) ([L3odr0id](https://github.com/L3odr0id))
+CHANGELOG.md:94:- FIX: add null check to lastPostedAt date [\#47](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/47) ([0niel](https://github.com/0niel))
+CHANGELOG.md:95:- UX: colors of events in the calendar as in the type [\#46](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/46) ([0niel](https://github.com/0niel))
+CHANGELOG.md:96:- FIX: add the last day to the calendar to avoid crash [\#44](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/44) ([0niel](https://github.com/0niel))
+CHANGELOG.md:97:- FIX: add progressIndicatorBuilder to fix wrap content align while loa… [\#42](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/42) ([0niel](https://github.com/0niel))
+CHANGELOG.md:99:## [1.0.0](https://github.com/Ninja-Official/rtu-mirea-mobile/tree/1.0.0) (2021-08-23)
+CHANGELOG.md:101:[Full Changelog](https://github.com/Ninja-Official/rtu-mirea-mobile/compare/b3419c6826ecd5e6bdb830f3b16082afd8f17ec2...1.0.0)
+CHANGELOG.md:105:- \[FEATURE REQUEST\] Страница расписания [\#5](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/5)
+CHANGELOG.md:106:- \[FEATURE REQUEST\] Intro страница \(Onboarding Screen\) [\#4](https://github.com/Ninja-Official/rtu-mirea-mobile/issues/4)
+CHANGELOG.md:107:- Feature: map screen [\#24](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/24) ([L3odr0id](https://github.com/L3odr0id))
+CHANGELOG.md:108:- Add clean architecture with bloc [\#9](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/9) ([0niel](https://github.com/0niel))
+CHANGELOG.md:109:- Create onboarding screen [\#7](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/7) ([0niel](https://github.com/0niel))
+CHANGELOG.md:113:- Better calendar [\#10](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/10) ([L3odr0id](https://github.com/L3odr0id))
+CHANGELOG.md:117:- Release 1.0.0 [\#34](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/34) ([0niel](https://github.com/0niel))
+CHANGELOG.md:118:- FIX: update news offset [\#33](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/33) ([0niel](https://github.com/0niel))
+CHANGELOG.md:119:- UX: update group selector modal window height [\#32](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/32) ([0niel](https://github.com/0niel))
+CHANGELOG.md:120:- FIX: bottom navigation bar [\#31](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/31) ([0niel](https://github.com/0niel))
+CHANGELOG.md:121:- FEATURE: create profile [\#30](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/30) ([0niel](https://github.com/0niel))
+CHANGELOG.md:122:- Merge branch 'dev' into feature/profile [\#29](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/29) ([0niel](https://github.com/0niel))
+CHANGELOG.md:123:- FEATURE: add news page [\#28](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/28) ([Shmyaks](https://github.com/Shmyaks))
+CHANGELOG.md:124:- FIX: add pop until route is first to navigator to avoid back [\#25](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/25) ([0niel](https://github.com/0niel))
+CHANGELOG.md:125:- FEATURE: schedule implementation [\#23](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/23) ([0niel](https://github.com/0niel))
+CHANGELOG.md:126:- Dev [\#22](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/22) ([0niel](https://github.com/0niel))
+CHANGELOG.md:127:- UX: create new UI theme [\#21](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/21) ([0niel](https://github.com/0niel))
+CHANGELOG.md:128:- REFACTOR: Feature/improve onboarding [\#20](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/20) ([0niel](https://github.com/0niel))
+CHANGELOG.md:129:- REFACTOR: Improve onboarding [\#19](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/19) ([L3odr0id](https://github.com/L3odr0id))
+CHANGELOG.md:130:- UX: update schedule screen design [\#16](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/16) ([0niel](https://github.com/0niel))
+CHANGELOG.md:131:- Feature/dependency injection [\#15](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/15) ([0niel](https://github.com/0niel))
+CHANGELOG.md:132:- Update workflows from master [\#14](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/14) ([0niel](https://github.com/0niel))
+CHANGELOG.md:133:- Big code improvements [\#13](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/13) ([0niel](https://github.com/0niel))
+CHANGELOG.md:134:- Create onboarding screen, update settings screen and schedule screen [\#8](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/8) ([0niel](https://github.com/0niel))
+CHANGELOG.md:135:- Create CODE\_OF\_CONDUCT.md [\#3](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/3) ([0niel](https://github.com/0niel))
+CHANGELOG.md:136:- Create LICENSE [\#2](https://github.com/Ninja-Official/rtu-mirea-mobile/pull/2) ([0niel](https://github.com/0niel))
+CODE_OF_CONDUCT.md:63:https://mirea.ninja/u/admin.
