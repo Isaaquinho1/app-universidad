@@ -10,19 +10,7 @@ class ServicesConfig {
   static List<ImportantServiceModel> getImportantServices(
     BuildContext context,
   ) {
-    final colors = Theme.of(context).extension<AppColors>()!;
-
-    return [
-      ImportantServiceModel(
-        title: 'Mapa del campus',
-        description:
-            'Ubica edificios, aulas, áreas administrativas y espacios del TecNM Campus Tlalpan.',
-        iconData: Icons.map,
-        color: colors.colorful07,
-        isExternal: false,
-        routePath: '/services/map',
-      ),
-    ];
+    return const [];
   }
 
   /// Get communities

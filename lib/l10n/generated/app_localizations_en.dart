@@ -799,18 +799,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToSelectedSchedule => 'Add to selected schedule';
 
   @override
-  String get findNeededClassroom => 'Find the needed classroom';
-
-  @override
-  String get passForUniversityEntry => 'Pass for university entry';
-
-  @override
-  String get cloudMireaNinja => 'Cloud Mirea Ninja';
-
-  @override
-  String get mostPopularUnofficialChat => 'Most popular unofficial chat';
-
-  @override
   String get kisDepartment => 'KIS Department';
 
   @override

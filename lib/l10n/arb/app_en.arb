@@ -1053,22 +1053,6 @@
   "@addToSelectedSchedule": {
     "description": "Button text to add class to selected schedule"
   },
-  "findNeededClassroom": "Find the needed classroom",
-  "@findNeededClassroom": {
-    "description": "MIREA Map service description"
-  },
-  "passForUniversityEntry": "Pass for university entry",
-  "@passForUniversityEntry": {
-    "description": "NFC Pass service description"
-  },
-  "cloudMireaNinja": "Cloud Mirea Ninja",
-  "@cloudMireaNinja": {
-    "description": "Cloud service title"
-  },
-  "mostPopularUnofficialChat": "Most popular unofficial chat",
-  "@mostPopularUnofficialChat": {
-    "description": "Mirea Ninja community description"
-  },
   "kisDepartment": "KIS Department",
   "@kisDepartment": {
     "description": "KIS Department title"

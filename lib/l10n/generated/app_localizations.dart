@@ -1610,30 +1610,6 @@ abstract class AppLocalizations {
   /// **'Add to selected schedule'**
   String get addToSelectedSchedule;
 
-  /// MIREA Map service description
-  ///
-  /// In en, this message translates to:
-  /// **'Find the needed classroom'**
-  String get findNeededClassroom;
-
-  /// NFC Pass service description
-  ///
-  /// In en, this message translates to:
-  /// **'Pass for university entry'**
-  String get passForUniversityEntry;
-
-  /// Cloud service title
-  ///
-  /// In en, this message translates to:
-  /// **'Cloud Mirea Ninja'**
-  String get cloudMireaNinja;
-
-  /// Mirea Ninja community description
-  ///
-  /// In en, this message translates to:
-  /// **'Most popular unofficial chat'**
-  String get mostPopularUnofficialChat;
-
   /// KIS Department title
   ///
   /// In en, this message translates to:

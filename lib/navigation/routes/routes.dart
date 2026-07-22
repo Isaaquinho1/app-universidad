@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/home/view/home_page.dart';
-import 'package:conecta_itt/map/view/map_page_view.dart';
 import 'package:conecta_itt/profile/profile.dart';
 import 'package:conecta_itt/profile/view/notifications_settings_page.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
@@ -50,7 +49,6 @@ class OnboardingRoute extends GoRouteData {
       routes: <TypedRoute<RouteData>>[
         TypedGoRoute<ServicesRoute>(
           path: '/services',
-          routes: <TypedRoute<RouteData>>[TypedGoRoute<MapRoute>(path: 'map')],
         ),
       ],
     ),
@@ -133,15 +131,6 @@ class ServicesRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ServicesPage();
-  }
-}
-
-class MapRoute extends GoRouteData {
-  const MapRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const MapPageView();
   }
 }
 

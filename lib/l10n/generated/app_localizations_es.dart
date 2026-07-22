@@ -806,18 +806,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addToSelectedSchedule => 'Añadir al horario seleccionado';
 
   @override
-  String get findNeededClassroom => 'Encuentra el aula necesaria';
-
-  @override
-  String get passForUniversityEntry => 'Pase para la entrada a la universidad';
-
-  @override
-  String get cloudMireaNinja => 'Cloud Campus Tlalpan';
-
-  @override
-  String get mostPopularUnofficialChat => 'El chat no oficial más popular';
-
-  @override
   String get kisDepartment => 'Departamento KIS';
 
   @override

@@ -51,11 +51,11 @@ android {
     productFlavors {
         development {
             dimension "default"
-            manifestPlaceholders = [appName: "Ninja Mirea [DEV]"]
+            manifestPlaceholders = [appName: "Conecta ITT [DEV]"]
         }
         production {
             dimension "default"
-            manifestPlaceholders = [appName: "Ninja Mirea"]
+            manifestPlaceholders = [appName: "Conecta ITT"]
         }
     }
 

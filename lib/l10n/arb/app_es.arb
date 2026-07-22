@@ -1053,22 +1053,6 @@
   "@addToSelectedSchedule": {
     "description": "Texto del botón para añadir clase al horario seleccionado"
   },
-  "findNeededClassroom": "Encuentra el aula necesaria",
-  "@findNeededClassroom": {
-    "description": "Descripción del servicio Mapa Campus Tlalpan"
-  },
-  "passForUniversityEntry": "Pase para la entrada a la universidad",
-  "@passForUniversityEntry": {
-    "description": "Descripción del servicio Pase NFC"
-  },
-  "cloudMireaNinja": "Cloud Campus Tlalpan",
-  "@cloudMireaNinja": {
-    "description": "Título del servicio en la nube"
-  },
-  "mostPopularUnofficialChat": "El chat no oficial más popular",
-  "@mostPopularUnofficialChat": {
-    "description": "Descripción de la comunidad Campus Tlalpan"
-  },
   "kisDepartment": "Departamento KIS",
   "@kisDepartment": {
     "description": "Título del Departamento KIS"
