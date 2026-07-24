@@ -12,8 +12,8 @@ dependencies:
   notifications_client: any
   permission_client: any
   storage: any
-  test: ^1.24.3
 dev_dependencies:
+  test: ^1.24.3
   mocktail: ^1.0.0
   flutter_test:
     sdk: flutter
