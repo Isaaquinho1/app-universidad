@@ -3,13 +3,10 @@ import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/common/utils/logger.dart';
 import 'package:conecta_itt/di/app_scope.dart';
 import 'package:conecta_itt/main/bootstrap/bootstrap.dart';
-import 'package:url_strategy/url_strategy.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
 
 void main() async {
   await bootstrap((_) async {
-    setPathUrlStrategy();
-
     final holder = AppScopeHolder(dev: true);
     await holder.create();
 
