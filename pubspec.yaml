@@ -8,25 +8,21 @@ environment:
   sdk: ">=3.7.0"
 
 workspace:
-  - packages/academic_calendar
   - packages/analytics_repository
   - packages/app_ui
   - packages/auth_client/auth_client
   - packages/auth_client/supabase_authentication_client
   - packages/auth_client/token_storage
   - packages/deep_link_client
-  - packages/mini_app
   - packages/notifications_client/firebase_notifications_client
   - packages/notifications_client/notifications_client
   - packages/notifications_repository
   - packages/package_info_client
   - packages/permission_client
-  - packages/share_launcher
   - packages/storage/persistent_storage
   - packages/storage/secure_storage
   - packages/storage/storage
   - packages/user_repository
-  - packages/web_oauth_interceptor_client
 
 dependencies:
   flutter:
@@ -123,8 +119,6 @@ dependencies:
   app_ui:
     path: packages/app_ui
   font_awesome_flutter: ^10.8.0
-  # mini_app:
-  #   path: packages/mini_app
   syncfusion_localizations: ^32.2.3
   flutter_native_splash: ^2.4.3
   flutter_launcher_icons: ^0.14.1
