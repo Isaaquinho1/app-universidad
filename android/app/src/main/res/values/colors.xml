@@ -65,4 +65,5 @@
     <color name="lesson_credit">@color/colorful07_dark</color>
     <color name="lesson_consultation">@color/colorful04_dark</color>
     <color name="lesson_coursework">@color/colorful05_dark</color>
+	<color name="ic_launcher_background">#FFFFFF</color>
 </resources>
