@@ -36,7 +36,6 @@ class LocalNotificationService {
     const initializationSettings = InitializationSettings(
       android: androidSettings,
       iOS: darwinSettings,
-      macOS: darwinSettings,
     );
 
     await _plugin.initialize(
@@ -111,7 +110,6 @@ class LocalNotificationService {
     const details = NotificationDetails(
       android: androidDetails,
       iOS: darwinDetails,
-      macOS: darwinDetails,
     );
 
     await _plugin.show(
