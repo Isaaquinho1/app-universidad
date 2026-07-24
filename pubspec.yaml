@@ -130,7 +130,6 @@ dependencies:
   device_info_plus: ^12.3.0
   video_player: ^2.9.2
   fluttertoast: ^9.0.0
-  watch_connectivity: ^0.2.1
   app_ui:
     path: packages/app_ui
   font_awesome_flutter: ^10.8.0

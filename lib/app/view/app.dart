@@ -178,7 +178,7 @@ class _AppViewState extends State<_AppView> {
 
                           return FirebaseInteractedMessageListener(
                             router: _router,
-                            child: WatchConnectivityWrapper(child: app),
+                            child: app,
                           );
                         },
                       );
