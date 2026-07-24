@@ -1,4 +1,4 @@
-/// A UI Toolkit for University App
+/// Conecta ITT UI Toolkit.
 library;
 
 export 'src/colors/colors.dart';

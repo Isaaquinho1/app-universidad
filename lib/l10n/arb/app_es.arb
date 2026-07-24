@@ -1325,42 +1325,6 @@
   "@findScheduleForClassroom": {
     "description": "Descripción de la búsqueda de horario de aula"
   },
-  "newYearHolidays": "Vacaciones de Año Nuevo",
-  "@newYearHolidays": {
-    "description": "Título de las vacaciones de Año Nuevo"
-  },
-  "winterVacation": "Vacaciones de invierno",
-  "@winterVacation": {
-    "description": "Título de las vacaciones de invierno"
-  },
-  "defenderOfFatherlandDay": "Día del Defensor de la Patria",
-  "@defenderOfFatherlandDay": {
-    "description": "Título del Día del Defensor de la Patria"
-  },
-  "internationalWomensDay": "Día Internacional de la Mujer",
-  "@internationalWomensDay": {
-    "description": "Título del Día Internacional de la Mujer"
-  },
-  "springAndLaborDay": "Día de la Primavera y del Trabajo",
-  "@springAndLaborDay": {
-    "description": "Título del Día de la Primavera y del Trabajo"
-  },
-  "victoryDay": "Día de la Victoria",
-  "@victoryDay": {
-    "description": "Título del Día de la Victoria"
-  },
-  "russiaDay": "Día de Rusia",
-  "@russiaDay": {
-    "description": "Título del Día de Rusia"
-  },
-  "nationalUnityDay": "Día de la Unidad Nacional",
-  "@nationalUnityDay": {
-    "description": "Título del Día de la Unidad Nacional"
-  },
-  "newYear": "Año Nuevo",
-  "@newYear": {
-    "description": "Título de Año Nuevo"
-  },
   "total": "Total",
   "@total": {
     "description": "Etiqueta para el total"

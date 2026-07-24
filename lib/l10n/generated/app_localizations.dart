@@ -2018,60 +2018,6 @@ abstract class AppLocalizations {
   /// **'You can quickly find a schedule for this classroom using schedule search.'**
   String get findScheduleForClassroom;
 
-  /// New Year holidays title
-  ///
-  /// In en, this message translates to:
-  /// **'New Year holidays'**
-  String get newYearHolidays;
-
-  /// Winter vacation title
-  ///
-  /// In en, this message translates to:
-  /// **'Winter vacation'**
-  String get winterVacation;
-
-  /// Defender of the Fatherland Day title
-  ///
-  /// In en, this message translates to:
-  /// **'Defender of the Fatherland Day'**
-  String get defenderOfFatherlandDay;
-
-  /// International Women's Day title
-  ///
-  /// In en, this message translates to:
-  /// **'International Women\'s Day'**
-  String get internationalWomensDay;
-
-  /// Spring and Labor Day title
-  ///
-  /// In en, this message translates to:
-  /// **'Spring and Labor Day'**
-  String get springAndLaborDay;
-
-  /// Victory Day title
-  ///
-  /// In en, this message translates to:
-  /// **'Victory Day'**
-  String get victoryDay;
-
-  /// Russia Day title
-  ///
-  /// In en, this message translates to:
-  /// **'Russia Day'**
-  String get russiaDay;
-
-  /// National Unity Day title
-  ///
-  /// In en, this message translates to:
-  /// **'National Unity Day'**
-  String get nationalUnityDay;
-
-  /// New Year title
-  ///
-  /// In en, this message translates to:
-  /// **'New Year'**
-  String get newYear;
-
   /// Total label
   ///
   /// In en, this message translates to:

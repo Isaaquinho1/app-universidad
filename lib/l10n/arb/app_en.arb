@@ -1325,42 +1325,6 @@
   "@findScheduleForClassroom": {
     "description": "Classroom schedule search description"
   },
-  "newYearHolidays": "New Year holidays",
-  "@newYearHolidays": {
-    "description": "New Year holidays title"
-  },
-  "winterVacation": "Winter vacation",
-  "@winterVacation": {
-    "description": "Winter vacation title"
-  },
-  "defenderOfFatherlandDay": "Defender of the Fatherland Day",
-  "@defenderOfFatherlandDay": {
-    "description": "Defender of the Fatherland Day title"
-  },
-  "internationalWomensDay": "International Women's Day",
-  "@internationalWomensDay": {
-    "description": "International Women's Day title"
-  },
-  "springAndLaborDay": "Spring and Labor Day",
-  "@springAndLaborDay": {
-    "description": "Spring and Labor Day title"
-  },
-  "victoryDay": "Victory Day",
-  "@victoryDay": {
-    "description": "Victory Day title"
-  },
-  "russiaDay": "Russia Day",
-  "@russiaDay": {
-    "description": "Russia Day title"
-  },
-  "nationalUnityDay": "National Unity Day",
-  "@nationalUnityDay": {
-    "description": "National Unity Day title"
-  },
-  "newYear": "New Year",
-  "@newYear": {
-    "description": "New Year title"
-  },
   "total": "Total",
   "@total": {
     "description": "Total label"

@@ -1019,33 +1019,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Puedes encontrar rápidamente un horario para esta aula usando la búsqueda de horarios.';
 
   @override
-  String get newYearHolidays => 'Vacaciones de Año Nuevo';
-
-  @override
-  String get winterVacation => 'Vacaciones de invierno';
-
-  @override
-  String get defenderOfFatherlandDay => 'Día del Defensor de la Patria';
-
-  @override
-  String get internationalWomensDay => 'Día Internacional de la Mujer';
-
-  @override
-  String get springAndLaborDay => 'Día de la Primavera y del Trabajo';
-
-  @override
-  String get victoryDay => 'Día de la Victoria';
-
-  @override
-  String get russiaDay => 'Día de Rusia';
-
-  @override
-  String get nationalUnityDay => 'Día de la Unidad Nacional';
-
-  @override
-  String get newYear => 'Año Nuevo';
-
-  @override
   String get total => 'Total';
 
   @override

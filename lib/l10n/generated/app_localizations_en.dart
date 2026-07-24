@@ -1012,33 +1012,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can quickly find a schedule for this classroom using schedule search.';
 
   @override
-  String get newYearHolidays => 'New Year holidays';
-
-  @override
-  String get winterVacation => 'Winter vacation';
-
-  @override
-  String get defenderOfFatherlandDay => 'Defender of the Fatherland Day';
-
-  @override
-  String get internationalWomensDay => 'International Women\'s Day';
-
-  @override
-  String get springAndLaborDay => 'Spring and Labor Day';
-
-  @override
-  String get victoryDay => 'Victory Day';
-
-  @override
-  String get russiaDay => 'Russia Day';
-
-  @override
-  String get nationalUnityDay => 'National Unity Day';
-
-  @override
-  String get newYear => 'New Year';
-
-  @override
   String get total => 'Total';
 
   @override
