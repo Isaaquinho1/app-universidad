@@ -77,8 +77,14 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         return;
       }
 
-      if (defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.macOS) {
+      if (!_isSupportedNotificationPlatform()) {
+        Logger().w(
+          'Notification registration is only supported on Android and iOS.',
+        );
+        return;
+      }
+
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
         await _waitForApplePushToken();
       }
 
@@ -183,18 +189,23 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     return generatedId;
   }
 
-  String _notificationPlatform() {
+  bool _isSupportedNotificationPlatform() {
     if (kIsWeb) {
-      return 'web';
+      return false;
     }
 
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+  }
+
+  String _notificationPlatform() {
     return switch (defaultTargetPlatform) {
       TargetPlatform.android => 'android',
       TargetPlatform.iOS => 'ios',
-      TargetPlatform.macOS => 'macos',
-      TargetPlatform.windows => 'windows',
-      TargetPlatform.linux => 'android',
-      TargetPlatform.fuchsia => 'android',
+      _ =>
+        throw UnsupportedError(
+          'Notification tokens are only supported on Android and iOS.',
+        ),
     };
   }
 

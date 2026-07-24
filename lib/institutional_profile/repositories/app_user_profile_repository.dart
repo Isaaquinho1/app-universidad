@@ -160,7 +160,7 @@ class AppUserProfileRepository {
       throw ArgumentError.value(token, 'token', 'FCM token cannot be empty.');
     }
 
-    const supportedPlatforms = {'android', 'ios', 'web', 'macos', 'windows'};
+    const supportedPlatforms = {'android', 'ios'};
 
     if (!supportedPlatforms.contains(platform)) {
       throw ArgumentError.value(
