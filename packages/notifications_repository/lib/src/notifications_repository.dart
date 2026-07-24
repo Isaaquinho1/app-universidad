@@ -22,14 +22,6 @@ abstract class NotificationsFailure with EquatableMixin implements Exception {
   List<Object> get props => [error];
 }
 
-/// {@template initialize_categories_preferences_failure}
-/// Thrown when initializing category preferences fails.
-/// {@endtemplate}
-class InitializeCategoriesPreferencesFailure extends NotificationsFailure {
-  /// {@macro initialize_categories_preferences_failure}
-  const InitializeCategoriesPreferencesFailure(super.error);
-}
-
 /// {@template toggle_notifications_failure}
 /// Thrown when enabling or disabling notifications fails.
 /// {@endtemplate}
@@ -100,13 +92,15 @@ class NotificationsRepository {
       if (enable) {
         final permissionStatus = await _permissionClient.notificationsStatus();
 
-        if (permissionStatus.isPermanentlyDenied || permissionStatus.isRestricted) {
+        if (permissionStatus.isPermanentlyDenied ||
+            permissionStatus.isRestricted) {
           await _permissionClient.openPermissionSettings();
           return;
         }
 
         if (permissionStatus.isDenied) {
-          final updatedPermissionStatus = await _permissionClient.requestNotifications();
+          final updatedPermissionStatus =
+              await _permissionClient.requestNotifications();
           if (!updatedPermissionStatus.isGranted) {
             return;
           }
@@ -134,7 +128,10 @@ class NotificationsRepository {
 
       return permissionStatus.isGranted && notificationsEnabled;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(FetchNotificationsEnabledFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        FetchNotificationsEnabledFailure(error),
+        stackTrace,
+      );
     }
   }
 
@@ -157,7 +154,10 @@ class NotificationsRepository {
         await _toggleCategoriesPreferencesSubscriptions(enable: true);
       }
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(SetCategoriesPreferencesFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        SetCategoriesPreferencesFailure(error),
+        stackTrace,
+      );
     }
   }
 
@@ -170,14 +170,20 @@ class NotificationsRepository {
     try {
       return await _storage.fetchCategoriesPreferences();
     } on StorageException catch (error, stackTrace) {
-      Error.throwWithStackTrace(FetchCategoriesPreferencesFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        FetchCategoriesPreferencesFailure(error),
+        stackTrace,
+      );
     }
   }
 
   /// Enables or disables notification subscriptions for categories based on
   /// user preferences.
-  Future<void> _toggleCategoriesPreferencesSubscriptions({required bool enable}) async {
-    final categoriesPreferences = await _storage.fetchCategoriesPreferences() ?? {};
+  Future<void> _toggleCategoriesPreferencesSubscriptions({
+    required bool enable,
+  }) async {
+    final categoriesPreferences =
+        await _storage.fetchCategoriesPreferences() ?? {};
     await Future.wait(
       categoriesPreferences.map((category) {
         return enable
