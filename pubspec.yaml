@@ -172,7 +172,6 @@ flutter:
     - shorebird.yaml
 
 dependency_overrides:
-  web: ^0.5.1
   share_plus_platform_interface: ^6.1.0
   analyzer: 6.4.1           
   build: 2.4.1              
