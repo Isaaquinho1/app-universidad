@@ -145,10 +145,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.7.8"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.7.8"
 
-    // ==== PLAY SERVICES & ADS ====
+    // ==== PLAY SERVICES ====
     implementation "com.google.android.gms:play-services-location:21.3.0"
-    implementation "com.yandex.android:mobileads:7.12.1"
-    implementation "com.google.android.gms:play-services-ads:24.0.0"
 
     implementation "com.google.crypto.tink:tink-android:1.19.0"
 }
