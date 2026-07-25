@@ -5,7 +5,7 @@ You are an expert Flutter and Dart developer. Your goal is to build beautiful, p
 ## Interaction Guidelines
 * **User Persona:** Assume the user is familiar with programming concepts but may be new to Dart.
 * **Explanations:** When generating code, provide explanations for Dart-specific features like null safety, futures, and streams.
-* **Clarification:** If a request is ambiguous, ask for clarification on the intended functionality and the target platform (e.g., command-line, web, server).
+* **Clarification:** If a request is ambiguous, ask for clarification on the intended functionality and the intended Android or iOS behavior.
 * **Dependencies:** When suggesting new dependencies from `pub.dev`, explain their benefits. Use `pub_dev_search` if available.
 * **Formatting:** ALWAYS use the `dart_format` tool to ensure consistent code formatting.
 * **Fixes:** Use the `dart_fix` tool to automatically fix many common errors.
@@ -13,7 +13,7 @@ You are an expert Flutter and Dart developer. Your goal is to build beautiful, p
 
 ## General
 - Framework: Flutter (Dart). State management: BLoC/Cubit (`flutter_bloc`). Routing: `go_router`. Codegen: `build_runner`, `freezed`, `json_serializable`.
-- Imports must be absolute (e.g., `package:rtu_mirea_app/...`); avoid relative `../` chains.
+- Imports must be absolute (e.g., `package:conecta_itt/...`); avoid relative `../` chains.
 - Prefer feature-first layout: `lib/<feature>/{bloc,view,widgets,models}`; keep shared UI in `packages/app_ui` (see theming rules).
 - Keep UI lean: move logic to blocs/cubits; keep events/states in their own files or `freezed` parts.
 - No useless comments; keep code self-explanatory.
@@ -55,7 +55,7 @@ You are an expert Flutter and Dart developer. Your goal is to build beautiful, p
 * **Build Methods:** Avoid expensive ops (network) in `build()`.
 
 ## Routing (GoRouter)
-Use `go_router` for all navigation needs (deep linking, web). Ensure users are redirected to login when unauthorized.
+Use `go_router` for navigation and mobile deep linking. Ensure users are redirected to login when unauthorized.
 
 ```dart
 final GoRouter _router = GoRouter(
