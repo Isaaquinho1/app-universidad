@@ -170,6 +170,7 @@ flutter:
 
   assets:
     - shorebird.yaml
+    - assets/branding/
 
 dependency_overrides:
   share_plus_platform_interface: ^6.1.0

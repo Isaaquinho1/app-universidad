@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/src/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conecta_itt/home/cubit/home_cubit.dart';
 import 'package:app_ui/app_ui.dart';
 
@@ -22,7 +22,7 @@ class NextButton extends StatelessWidget {
       onPressed: () {
         if (isLastPage) {
           context.read<HomeCubit>().closeOnboarding();
-          context.go('/feed');
+          context.go('/welcome');
         } else {
           onClick();
         }
@@ -30,7 +30,7 @@ class NextButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         foregroundColor: Theme.of(
           context,
-        ).extension<AppColors>()!.primary.withOpacity(0.25),
+        ).extension<AppColors>()!.primary.withValues(alpha: 0.25),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         backgroundColor: Theme.of(context).extension<AppColors>()!.primary,
         shadowColor: const Color(0x7f000000),

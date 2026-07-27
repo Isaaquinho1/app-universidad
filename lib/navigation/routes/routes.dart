@@ -9,6 +9,7 @@ import 'package:conecta_itt/profile/view/notifications_settings_page.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
 import 'package:conecta_itt/feed/feed.dart';
 import 'package:conecta_itt/onboarding/view/onboarding_page.dart';
+import 'package:conecta_itt/welcome/welcome.dart';
 import 'package:conecta_itt/profile/view/profile_settings_page.dart';
 
 import 'package:conecta_itt/services/view/view.dart';
@@ -26,9 +27,19 @@ class HomeRoute extends GoRouteData {
 @TypedGoRoute<OnboardingRoute>(path: '/onboarding')
 class OnboardingRoute extends GoRouteData {
   const OnboardingRoute();
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const OnBoardingPage();
+}
+
+@TypedGoRoute<WelcomeRoute>(path: '/welcome')
+class WelcomeRoute extends GoRouteData {
+  const WelcomeRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const WelcomePage();
 }
 
 @TypedStatefulShellRoute<ShellRouteData>(
@@ -47,9 +58,7 @@ class OnboardingRoute extends GoRouteData {
     ),
     TypedStatefulShellBranch<ServicesBranchData>(
       routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ServicesRoute>(
-          path: '/services',
-        ),
+        TypedGoRoute<ServicesRoute>(path: '/services'),
       ],
     ),
     TypedStatefulShellBranch<ProfileBranchData>(

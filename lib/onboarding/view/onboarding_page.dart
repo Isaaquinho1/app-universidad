@@ -217,7 +217,7 @@ class _PageIndicatorsState extends State<PageIndicators> {
                       key: const ValueKey("skipButton"),
                       onPressed: () {
                         context.read<HomeCubit>().closeOnboarding();
-                        context.go('/feed');
+                        context.go('/welcome');
                       },
                       child: Text(
                         "Omitir",
