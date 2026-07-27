@@ -148,32 +148,34 @@ class _AppViewState extends State<_AppView> {
                             title: 'Conecta ITT',
                             routerConfig: _router,
                             builder:
-                                (context, child) =>
-                                    ResponsiveBreakpoints.builder(
-                                      child: child!,
-                                      breakpoints: const [
-                                        Breakpoint(
-                                          start: 0,
-                                          end: 450,
-                                          name: MOBILE,
-                                        ),
-                                        Breakpoint(
-                                          start: 451,
-                                          end: 800,
-                                          name: TABLET,
-                                        ),
-                                        Breakpoint(
-                                          start: 801,
-                                          end: 1920,
-                                          name: DESKTOP,
-                                        ),
-                                        Breakpoint(
-                                          start: 1921,
-                                          end: double.infinity,
-                                          name: '4K',
-                                        ),
-                                      ],
-                                    ),
+                                (context, child) => Theme(
+                                  data: theme,
+                                  child: ResponsiveBreakpoints.builder(
+                                    child: child!,
+                                    breakpoints: const [
+                                      Breakpoint(
+                                        start: 0,
+                                        end: 450,
+                                        name: MOBILE,
+                                      ),
+                                      Breakpoint(
+                                        start: 451,
+                                        end: 800,
+                                        name: TABLET,
+                                      ),
+                                      Breakpoint(
+                                        start: 801,
+                                        end: 1920,
+                                        name: DESKTOP,
+                                      ),
+                                      Breakpoint(
+                                        start: 1921,
+                                        end: double.infinity,
+                                        name: '4K',
+                                      ),
+                                    ],
+                                  ),
+                                ),
                           );
 
                           return FirebaseInteractedMessageListener(

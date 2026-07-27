@@ -227,7 +227,14 @@ class _AdminAnnouncementCreatePageState
   }
 
   Future<void> _submit({required bool publish}) async {
-    if (_isSubmitting || !_formKey.currentState!.validate()) {
+    if (_isSubmitting) {
+      return;
+    }
+
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      _showMessage('Revisa el título y el contenido del comunicado.');
       return;
     }
 
@@ -321,15 +328,14 @@ class _AdminAnnouncementCreatePageState
         return;
       }
 
-      _showMessage(
-        _isEditing
-            ? 'Comunicado actualizado correctamente.'
-            : publish
-            ? 'Comunicado publicado correctamente.'
-            : 'Comunicado guardado como borrador.',
-      );
+      final successMessage =
+          _isEditing
+              ? 'Comunicado actualizado correctamente.'
+              : publish
+              ? 'Comunicado publicado correctamente.'
+              : 'Comunicado guardado como borrador.';
 
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(successMessage);
     } catch (error) {
       if (!mounted) {
         return;

@@ -19,15 +19,30 @@ class _AdminAnnouncementManagementPageState
   bool _isProcessing = false;
 
   Future<void> _openEdit(Announcement announcement) async {
-    final updated = await context.push<bool>(
+    final successMessage = await context.push<String>(
       '/profile/announcement-management/'
       '${announcement.id}/edit',
     );
 
-    if (updated == true && mounted) {
-      setState(() {});
-      _showMessage('Comunicado actualizado correctamente.');
+    if (!mounted || successMessage == null) {
+      return;
     }
+
+    setState(() {});
+    await _showMessage(successMessage);
+  }
+
+  Future<void> _openCreate() async {
+    final successMessage = await context.push<String>(
+      '/profile/announcement-management/create',
+    );
+
+    if (!mounted || successMessage == null) {
+      return;
+    }
+
+    setState(() {});
+    await _showMessage(successMessage);
   }
 
   Future<void> _publish(Announcement announcement) async {
@@ -90,13 +105,13 @@ class _AdminAnnouncementManagementPageState
         return;
       }
 
-      _showMessage(successMessage);
+      await _showMessage(successMessage);
     } catch (error) {
       if (!mounted) {
         return;
       }
 
-      _showMessage('No se pudo completar la operación: $error');
+      await _showMessage('No se pudo completar la operación: $error');
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
@@ -132,10 +147,26 @@ class _AdminAnnouncementManagementPageState
     return result ?? false;
   }
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+  Future<void> _showMessage(String message) async {
+    if (!mounted) {
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Operación completada'),
+          content: Text(message),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -178,12 +209,7 @@ class _AdminAnnouncementManagementPageState
               width: 40,
               height: 40,
               child: FilledButton(
-                onPressed:
-                    _isProcessing
-                        ? null
-                        : () => context.go(
-                          '/profile/announcement-management/create',
-                        ),
+                onPressed: _isProcessing ? null : _openCreate,
                 style: FilledButton.styleFrom(
                   padding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
