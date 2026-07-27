@@ -7,6 +7,15 @@ abstract class RegisterEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class RegisterFullNameChanged extends RegisterEvent {
+  const RegisterFullNameChanged(this.fullName);
+
+  final String fullName;
+
+  @override
+  List<Object?> get props => [fullName];
+}
+
 class RegisterEmailChanged extends RegisterEvent {
   const RegisterEmailChanged(this.email);
 
@@ -14,6 +23,42 @@ class RegisterEmailChanged extends RegisterEvent {
 
   @override
   List<Object?> get props => [email];
+}
+
+class RegisterCareerChanged extends RegisterEvent {
+  const RegisterCareerChanged(this.careerId);
+
+  final String? careerId;
+
+  @override
+  List<Object?> get props => [careerId];
+}
+
+class RegisterSemesterChanged extends RegisterEvent {
+  const RegisterSemesterChanged(this.semester);
+
+  final int? semester;
+
+  @override
+  List<Object?> get props => [semester];
+}
+
+class RegisterGroupChanged extends RegisterEvent {
+  const RegisterGroupChanged(this.groupId);
+
+  final String? groupId;
+
+  @override
+  List<Object?> get props => [groupId];
+}
+
+class RegisterTermsAcceptanceChanged extends RegisterEvent {
+  const RegisterTermsAcceptanceChanged(this.accepted);
+
+  final bool accepted;
+
+  @override
+  List<Object?> get props => [accepted];
 }
 
 class RegisterPasswordChanged extends RegisterEvent {

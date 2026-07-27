@@ -1,7 +1,10 @@
 part of 'register_bloc.dart';
 
+enum AcademicGroupsStatus { initial, loading, success, failure }
+
 class RegisterState extends Equatable {
   const RegisterState({
+    this.fullName = '',
     this.email = const RegisterEmail.pure(),
     this.password = const RegisterPassword.pure(),
     this.passwordConfirmation = const RegisterPasswordConfirmation.pure(),
@@ -9,9 +12,16 @@ class RegisterState extends Equatable {
     this.valid = false,
     this.emailType = InstitutionalEmailType.invalid,
     this.controlNumber,
+    this.careerId,
+    this.semester,
+    this.groupId,
+    this.availableGroups = const [],
+    this.groupsStatus = AcademicGroupsStatus.initial,
+    this.termsAccepted = false,
     this.errorMessage,
   });
 
+  final String fullName;
   final RegisterEmail email;
   final RegisterPassword password;
   final RegisterPasswordConfirmation passwordConfirmation;
@@ -19,9 +29,26 @@ class RegisterState extends Equatable {
   final bool valid;
   final InstitutionalEmailType emailType;
   final String? controlNumber;
+
+  final String? careerId;
+  final int? semester;
+  final String? groupId;
+  final List<AcademicGroup> availableGroups;
+  final AcademicGroupsStatus groupsStatus;
+
+  final bool termsAccepted;
   final String? errorMessage;
 
+  bool get isStudent => emailType.isStudent;
+
+  bool get isStaff => emailType.isStaff;
+
+  bool get hasConfiguredGroups => availableGroups.isNotEmpty;
+
+  bool get academicSelectionReady => careerId != null && semester != null;
+
   RegisterState copyWith({
+    String? fullName,
     RegisterEmail? email,
     RegisterPassword? password,
     RegisterPasswordConfirmation? passwordConfirmation,
@@ -30,10 +57,20 @@ class RegisterState extends Equatable {
     InstitutionalEmailType? emailType,
     String? controlNumber,
     bool clearControlNumber = false,
+    String? careerId,
+    bool clearCareerId = false,
+    int? semester,
+    bool clearSemester = false,
+    String? groupId,
+    bool clearGroupId = false,
+    List<AcademicGroup>? availableGroups,
+    AcademicGroupsStatus? groupsStatus,
+    bool? termsAccepted,
     String? errorMessage,
     bool clearErrorMessage = false,
   }) {
     return RegisterState(
+      fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       password: password ?? this.password,
       passwordConfirmation: passwordConfirmation ?? this.passwordConfirmation,
@@ -42,6 +79,12 @@ class RegisterState extends Equatable {
       emailType: emailType ?? this.emailType,
       controlNumber:
           clearControlNumber ? null : controlNumber ?? this.controlNumber,
+      careerId: clearCareerId ? null : careerId ?? this.careerId,
+      semester: clearSemester ? null : semester ?? this.semester,
+      groupId: clearGroupId ? null : groupId ?? this.groupId,
+      availableGroups: availableGroups ?? this.availableGroups,
+      groupsStatus: groupsStatus ?? this.groupsStatus,
+      termsAccepted: termsAccepted ?? this.termsAccepted,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
     );
@@ -49,6 +92,7 @@ class RegisterState extends Equatable {
 
   @override
   List<Object?> get props => [
+    fullName,
     email,
     password,
     passwordConfirmation,
@@ -56,6 +100,12 @@ class RegisterState extends Equatable {
     valid,
     emailType,
     controlNumber,
+    careerId,
+    semester,
+    groupId,
+    availableGroups,
+    groupsStatus,
+    termsAccepted,
     errorMessage,
   ];
 }

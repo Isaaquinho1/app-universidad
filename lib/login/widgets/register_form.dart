@@ -1,9 +1,10 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
+import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
-import 'package:conecta_itt/login/login.dart';
 
 /// Institutional account registration form.
 class RegisterForm extends StatelessWidget {
@@ -35,46 +36,7 @@ class RegisterForm extends StatelessWidget {
           _showRegistrationSuccessDialog(context, state);
         }
       },
-      child: const SafeArea(
-        child: AutofillGroup(
-          child: CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(
-                  AppSpacing.xlg,
-                  AppSpacing.lg,
-                  AppSpacing.xlg,
-                  AppSpacing.xxlg,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _Header(),
-                      SizedBox(height: AppSpacing.xxxlg),
-                      _EmailInput(),
-                      SizedBox(height: AppSpacing.md),
-                      _DetectedAccountInformation(),
-                      SizedBox(height: AppSpacing.lg),
-                      _PasswordInput(),
-                      SizedBox(height: AppSpacing.lg),
-                      _PasswordConfirmationInput(),
-                      SizedBox(height: AppSpacing.xlg),
-                      _PasswordRequirements(),
-                      SizedBox(height: AppSpacing.xxxlg),
-                      _RegisterButton(),
-                      SizedBox(height: AppSpacing.md),
-                      _BackToLoginButton(),
-                      SizedBox(height: AppSpacing.lg),
-                      _SecurityNotice(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: const _RegisterContent(),
     );
   }
 
@@ -93,12 +55,14 @@ class RegisterForm extends StatelessWidget {
           content: Text(
             isStaff
                 ? 'Revisa tu correo institucional para confirmar la cuenta. '
-                    'Después de la confirmación, el personal docente o '
-                    'administrativo deberá ser autorizado para recibir '
-                    'permisos especiales.'
+                    'Posteriormente, un administrador deberá validar tu acceso '
+                    'como docente o personal administrativo.'
+                : state.availableGroups.isEmpty
+                ? 'Revisa tu correo institucional para confirmar la cuenta. '
+                    'Tu carrera y semestre fueron registrados, pero deberás '
+                    'seleccionar un grupo cuando exista uno disponible.'
                 : 'Revisa tu correo institucional para confirmar la cuenta. '
-                    'Después podrás iniciar sesión y completar tu perfil '
-                    'académico.',
+                    'Después podrás iniciar sesión en Conecta ITT.',
           ),
           actions: [
             TextButton(
@@ -115,28 +79,266 @@ class RegisterForm extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header();
+class _RegisterContent extends StatelessWidget {
+  const _RegisterContent();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.extension<AppColors>()!;
+    return ColoredBox(
+      color: const Color(0xFFF3F4F8),
+      child: SafeArea(
+        child: CustomScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          slivers: [
+            const SliverToBoxAdapter(child: _RegisterHeader()),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xlg,
+                AppSpacing.xlg,
+                AppSpacing.xlg,
+                AppSpacing.xxlg,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: AutofillGroup(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const _FormIntroduction(),
+                      const SizedBox(height: AppSpacing.xlg),
+                      const _FullNameInput(),
+                      const SizedBox(height: AppSpacing.lg),
+                      const _EmailInput(),
+                      const SizedBox(height: AppSpacing.md),
+                      const _DetectedAccountInformation(),
+                      const _DynamicAccountFields(),
+                      const SizedBox(height: AppSpacing.lg),
+                      const _PasswordInput(),
+                      const SizedBox(height: AppSpacing.lg),
+                      const _PasswordConfirmationInput(),
+                      const SizedBox(height: AppSpacing.md),
+                      const _PasswordRequirements(),
+                      const SizedBox(height: AppSpacing.xlg),
+                      const _TermsAcceptance(),
+                      const SizedBox(height: AppSpacing.xlg),
+                      const _RegisterButton(),
+                      const SizedBox(height: AppSpacing.md),
+                      const _BackToLoginButton(),
+                      const SizedBox(height: AppSpacing.lg),
+                      const _SecurityNotice(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
+class _RegisterHeader extends StatelessWidget {
+  const _RegisterHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 245,
+      child: Stack(
+        children: [
+          const Positioned.fill(child: _HeaderBackground()),
+          Positioned(
+            top: 14,
+            left: AppSpacing.lg,
+            child: Material(
+              color: Colors.white,
+              elevation: 3,
+              shape: const CircleBorder(),
+              child: IconButton(
+                key: const Key('registerForm_backButton'),
+                onPressed: () => Navigator.of(context).maybePop(),
+                tooltip: 'Regresar',
+                color: const Color(0xFF18245D),
+                icon: const Icon(Icons.arrow_back_rounded),
+              ),
+            ),
+          ),
+          const Positioned(
+            top: 58,
+            left: AppSpacing.xlg,
+            right: AppSpacing.xlg,
+            child: Column(
+              children: [
+                Icon(
+                  Icons.person_add_alt_1_outlined,
+                  color: Colors.white,
+                  size: 44,
+                ),
+                SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Crear cuenta',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 34,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.6,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Regístrate con una cuenta institucional del '
+                  'TecNM Campus Tlalpan.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFFE5E9FF),
+                    fontSize: 15,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderBackground extends StatelessWidget {
+  const _HeaderBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(44)),
+      child: Stack(
+        children: [
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF1B2FD2),
+                    Color(0xFF244AF2),
+                    Color(0xFF3046D7),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: -80,
+            right: -45,
+            child: Container(
+              width: 220,
+              height: 220,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.09),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -70,
+            left: -60,
+            child: Container(
+              width: 230,
+              height: 230,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 65,
+            right: -30,
+            child: Transform.rotate(
+              angle: -0.25,
+              child: Container(
+                width: 210,
+                height: 76,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FormIntroduction extends StatelessWidget {
+  const _FormIntroduction();
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Crear cuenta institucional',
-          style: AppTextStyle.h4.copyWith(color: theme.colorScheme.onSurface),
+          'Únete a Conecta ITT',
+          textAlign: TextAlign.center,
+          style: AppTextStyle.h4.copyWith(
+            color: const Color(0xFF202124),
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Regístrate con una cuenta oficial del TecNM Campus Tlalpan.',
-          style: AppTextStyle.body.copyWith(color: colors.deactive),
+          'Completa tus datos para crear tu acceso institucional.',
+          textAlign: TextAlign.center,
+          style: AppTextStyle.body.copyWith(
+            color: const Color(0xFF6C707A),
+            height: 1.4,
+          ),
         ),
       ],
     );
+  }
+}
+
+class _FullNameInput extends StatefulWidget {
+  const _FullNameInput();
+
+  @override
+  State<_FullNameInput> createState() => _FullNameInputState();
+}
+
+class _FullNameInputState extends State<_FullNameInput> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final fullName = context.select((RegisterBloc bloc) => bloc.state.fullName);
+
+    return LabelledInput(
+      key: const Key('registerForm_fullNameInput'),
+      controller: _controller,
+      label: 'Nombre completo',
+      placeholder: 'Nombre y apellidos',
+      autofillHints: const [AutofillHints.name],
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(RegisterFullNameChanged(value));
+      },
+      errorText:
+          fullName.isEmpty || fullName.trim().length >= 3
+              ? null
+              : 'Ingresa tu nombre completo.',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
@@ -158,16 +360,16 @@ class _EmailInputState extends State<_EmailInput> {
       key: const Key('registerForm_emailInput'),
       controller: _controller,
       label: 'Correo institucional',
-      placeholder: 'correo@tlalpan.tecnm.mx',
+      placeholder: 'l#########@tlalpan.tecnm.mx',
       keyboardType: TextInputType.emailAddress,
       autofillHints: const [
         AutofillHints.username,
         AutofillHints.newUsername,
         AutofillHints.email,
       ],
-      onChanged:
-          (value) =>
-              context.read<RegisterBloc>().add(RegisterEmailChanged(value)),
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(RegisterEmailChanged(value));
+      },
       errorText:
           email.isPure || email.isValid
               ? null
@@ -202,27 +404,268 @@ class _DetectedAccountInformation extends StatelessWidget {
     };
 
     final message =
-        state.emailType.isStudent
-            ? 'Tipo detectado: $label\n'
-                'Número de control: ${state.controlNumber ?? 'No disponible'}'
-            : 'Tipo detectado: $label\n'
-                'La cuenta requerirá autorización para obtener permisos '
-                'administrativos o docentes.';
+        state.isStudent
+            ? 'Cuenta detectada: $label\n'
+                'Número de control: ${state.controlNumber}'
+            : 'Cuenta detectada: $label\n'
+                'Tu acceso deberá ser autorizado por un administrador.';
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Theme.of(
-          context,
-        ).extension<AppColors>()!.primary.withValues(alpha: 0.1),
+        color: const Color(0xFFE9EEFF),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.verified_user_outlined),
+          const Icon(Icons.verified_user_outlined, color: Color(0xFF2857D9)),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(child: Text(message, style: AppTextStyle.body)),
+          Expanded(
+            child: Text(
+              message,
+              style: AppTextStyle.body.copyWith(
+                color: const Color(0xFF495473),
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DynamicAccountFields extends StatelessWidget {
+  const _DynamicAccountFields();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<RegisterBloc>().state;
+
+    if (!state.email.isValid) {
+      return const SizedBox.shrink();
+    }
+
+    if (state.isStaff) {
+      return const Padding(
+        padding: EdgeInsets.only(top: AppSpacing.lg),
+        child: _StaffApprovalNotice(),
+      );
+    }
+
+    if (state.isStudent) {
+      return const Padding(
+        padding: EdgeInsets.only(top: AppSpacing.lg),
+        child: _AcademicFields(),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class _AcademicFields extends StatelessWidget {
+  const _AcademicFields();
+
+  static const _semesters = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<RegisterBloc>().state;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Información académica',
+          style: AppTextStyle.h4.copyWith(
+            color: const Color(0xFF202124),
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+
+        DropdownButtonFormField<String>(
+          key: ValueKey('career-${state.careerId}'),
+          initialValue: state.careerId,
+          isExpanded: true,
+          decoration: _dropdownDecoration(
+            label: 'Carrera',
+            hint: 'Selecciona tu carrera',
+          ),
+          items: InstitutionalCareers.values
+              .map(
+                (career) => DropdownMenuItem<String>(
+                  value: career.id,
+                  child: Text(career.name, overflow: TextOverflow.ellipsis),
+                ),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            context.read<RegisterBloc>().add(RegisterCareerChanged(value));
+          },
+        ),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        DropdownButtonFormField<int>(
+          key: ValueKey('semester-${state.semester}'),
+          initialValue: state.semester,
+          decoration: _dropdownDecoration(
+            label: 'Semestre',
+            hint: 'Selecciona tu semestre',
+          ),
+          items: _semesters
+              .map(
+                (semester) => DropdownMenuItem<int>(
+                  value: semester,
+                  child: Text('$semester.º semestre'),
+                ),
+              )
+              .toList(growable: false),
+          onChanged: (value) {
+            context.read<RegisterBloc>().add(RegisterSemesterChanged(value));
+          },
+        ),
+
+        if (state.academicSelectionReady) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _GroupField(state: state),
+        ],
+      ],
+    );
+  }
+}
+
+class _GroupField extends StatelessWidget {
+  const _GroupField({required this.state});
+
+  final RegisterState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (state.groupsStatus) {
+      AcademicGroupsStatus.initial => const SizedBox.shrink(),
+      AcademicGroupsStatus.loading => const _CatalogMessage(
+        icon: Icons.sync_rounded,
+        text: 'Consultando los grupos disponibles...',
+        showProgress: true,
+      ),
+      AcademicGroupsStatus.failure => const _CatalogMessage(
+        icon: Icons.cloud_off_outlined,
+        text:
+            'No fue posible consultar los grupos. Revisa tu conexión e '
+            'intenta cambiar nuevamente la carrera o el semestre.',
+      ),
+      AcademicGroupsStatus.success when state.availableGroups.isEmpty =>
+        const _CatalogMessage(
+          icon: Icons.info_outline_rounded,
+          text:
+              'Todavía no existen grupos configurados para esta carrera y '
+              'semestre. Podrás seleccionarlo posteriormente.',
+        ),
+      AcademicGroupsStatus.success => DropdownButtonFormField<String>(
+        key: ValueKey('group-${state.groupId}'),
+        initialValue: state.groupId,
+        isExpanded: true,
+        decoration: _dropdownDecoration(
+          label: 'Grupo',
+          hint: 'Selecciona tu grupo',
+        ),
+        items: state.availableGroups
+            .map(
+              (group) => DropdownMenuItem<String>(
+                value: group.id,
+                child: Text(group.name.toUpperCase()),
+              ),
+            )
+            .toList(growable: false),
+        onChanged: (value) {
+          context.read<RegisterBloc>().add(RegisterGroupChanged(value));
+        },
+      ),
+    };
+  }
+}
+
+class _CatalogMessage extends StatelessWidget {
+  const _CatalogMessage({
+    required this.icon,
+    required this.text,
+    this.showProgress = false,
+  });
+
+  final IconData icon;
+  final String text;
+  final bool showProgress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F3F9),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFD9DDEA)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (showProgress)
+            const SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          else
+            Icon(icon, size: 21, color: const Color(0xFF526184)),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Color(0xFF586074),
+                fontSize: 13,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StaffApprovalNotice extends StatelessWidget {
+  const _StaffApprovalNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF4D9),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFF2D384)),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.admin_panel_settings_outlined, color: Color(0xFF9A6B00)),
+          SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'Las cuentas de docentes y personal administrativo requieren '
+              'autorización. Crear la cuenta no asignará automáticamente '
+              'permisos especiales.',
+              style: TextStyle(
+                color: Color(0xFF715314),
+                fontSize: 13,
+                height: 1.45,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -251,9 +694,9 @@ class _PasswordInputState extends State<_PasswordInput> {
       obscureText: true,
       showPasswordToggle: true,
       autofillHints: const [AutofillHints.newPassword],
-      onChanged:
-          (value) =>
-              context.read<RegisterBloc>().add(RegisterPasswordChanged(value)),
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(RegisterPasswordChanged(value));
+      },
       errorText: _passwordError(password),
     );
   }
@@ -309,10 +752,11 @@ class _PasswordConfirmationInputState
       obscureText: true,
       showPasswordToggle: true,
       autofillHints: const [AutofillHints.newPassword],
-      onChanged:
-          (value) => context.read<RegisterBloc>().add(
-            RegisterPasswordConfirmationChanged(value),
-          ),
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(
+          RegisterPasswordConfirmationChanged(value),
+        );
+      },
       errorText:
           confirmation.isPure || confirmation.isValid
               ? null
@@ -335,12 +779,125 @@ class _PasswordRequirements extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColors>()!;
-
-    return Text(
+    return const Text(
       'La contraseña debe contener al menos 8 caracteres, una mayúscula, '
       'una minúscula y un número.',
-      style: AppTextStyle.captionL.copyWith(color: colors.deactive),
+      style: TextStyle(color: Color(0xFF747986), fontSize: 12.5, height: 1.4),
+    );
+  }
+}
+
+class _TermsAcceptance extends StatelessWidget {
+  const _TermsAcceptance();
+
+  @override
+  Widget build(BuildContext context) {
+    final accepted = context.select(
+      (RegisterBloc bloc) => bloc.state.termsAccepted,
+    );
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Checkbox(
+          key: const Key('registerForm_termsCheckbox'),
+          value: accepted,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          onChanged: (value) {
+            context.read<RegisterBloc>().add(
+              RegisterTermsAcceptanceChanged(value ?? false),
+            );
+          },
+        ),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 9),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                const Text(
+                  'Al registrarte, aceptas nuestros ',
+                  style: TextStyle(
+                    color: Color(0xFF555A66),
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+                _LegalLink(
+                  text: 'Términos de Servicio',
+                  title: 'Términos de Servicio',
+                  message:
+                      'Los Términos de Servicio institucionales se '
+                      'publicarán antes del lanzamiento de Conecta ITT.',
+                ),
+                const Text(
+                  ' y nuestra ',
+                  style: TextStyle(
+                    color: Color(0xFF555A66),
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+                _LegalLink(
+                  text: 'Política de Privacidad',
+                  title: 'Política de Privacidad',
+                  message:
+                      'La Política de Privacidad institucional se '
+                      'publicará antes del lanzamiento de Conecta ITT.',
+                ),
+                const Text(
+                  '.',
+                  style: TextStyle(color: Color(0xFF555A66), fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LegalLink extends StatelessWidget {
+  const _LegalLink({
+    required this.text,
+    required this.title,
+    required this.message,
+  });
+
+  final String text;
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        showDialog<void>(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text(title),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cerrar'),
+                  ),
+                ],
+              ),
+        );
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Color(0xFF2860F5),
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          height: 1.5,
+        ),
+      ),
     );
   }
 }
@@ -353,25 +910,48 @@ class _RegisterButton extends StatelessWidget {
     final state = context.watch<RegisterBloc>().state;
     final loading = state.status.isInProgress;
 
-    return PrimaryButton(
-      key: const Key('registerForm_submitButton'),
-      text: loading ? 'Creando cuenta...' : 'Crear cuenta',
-      enabled: state.valid && !loading,
-      icon:
-          loading
-              ? const SizedBox.square(
-                dimension: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
+    return SizedBox(
+      height: 54,
+      child: FilledButton(
+        key: const Key('registerForm_submitButton'),
+        onPressed:
+            !state.valid || loading
+                ? null
+                : () {
+                  context.read<RegisterBloc>().add(const RegisterSubmitted());
+                },
+        style: FilledButton.styleFrom(
+          backgroundColor: const Color(0xFF2860F5),
+          disabledBackgroundColor: const Color(0xFFB9C4E7),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child:
+            loading
+                ? const SizedBox.square(
+                  dimension: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.3,
+                    color: Colors.white,
+                  ),
+                )
+                : const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Crear cuenta institucional',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Icon(Icons.arrow_forward_rounded),
+                  ],
                 ),
-              )
-              : null,
-      onPressed:
-          loading
-              ? null
-              : () =>
-                  context.read<RegisterBloc>().add(const RegisterSubmitted()),
+      ),
     );
   }
 }
@@ -382,6 +962,7 @@ class _BackToLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
+      key: const Key('registerForm_loginButton'),
       onPressed: () => Navigator.of(context).pop(),
       child: const Text('Ya tengo una cuenta'),
     );
@@ -393,14 +974,59 @@ class _SecurityNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColors>()!;
-
-    return Text(
-      'Crear una cuenta con correo institucional no otorga automáticamente '
-      'permisos de administrador. Los roles especiales se asignan mediante '
-      'un proceso de autorización.',
-      textAlign: TextAlign.center,
-      style: AppTextStyle.captionL.copyWith(color: colors.deactive),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE9EEFF),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.security_outlined, size: 20, color: Color(0xFF2857D9)),
+          SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'Los permisos institucionales se administran de forma segura. '
+              'Ninguna cuenta puede asignarse por sí misma privilegios de '
+              'docente, administrador o superadministrador.',
+              style: TextStyle(
+                color: Color(0xFF495473),
+                fontSize: 12.5,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
+}
+
+InputDecoration _dropdownDecoration({
+  required String label,
+  required String hint,
+}) {
+  return InputDecoration(
+    labelText: label,
+    hintText: hint,
+    filled: true,
+    fillColor: const Color(0xFFF7F8FC),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.md,
+      vertical: AppSpacing.lg,
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFFD4D8E3)),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFFD4D8E3)),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFF2860F5), width: 1.5),
+    ),
+  );
 }
