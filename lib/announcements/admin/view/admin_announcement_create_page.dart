@@ -40,6 +40,11 @@ class _AdminAnnouncementCreatePageState
   bool _hasChanges = false;
   bool _initialStateReady = false;
 
+  List<PublicationAsset> _publicationAssets = const [];
+  bool _isLoadingAssets = false;
+  bool _isManagingAssets = false;
+  String? _assetError;
+
   Announcement? _persistedAnnouncement;
 
   bool get _isEditing => _persistedAnnouncement != null;
@@ -71,6 +76,10 @@ class _AdminAnnouncementCreatePageState
     if (announcement == null) {
       return;
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadPublicationAssets();
+    });
 
     _titleController.text = announcement.title;
     _summaryController.text = announcement.summary ?? '';
@@ -136,6 +145,288 @@ class _AdminAnnouncementCreatePageState
         setState(() => _isLoadingInitialRecipients = false);
       }
     }
+  }
+
+  Future<void> _loadPublicationAssets() async {
+    final publicationId = _publicationId;
+
+    if (publicationId == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _isLoadingAssets = true;
+      _assetError = null;
+    });
+
+    try {
+      final assets = await context
+          .read<PublicationAssetRepository>()
+          .fetchAssets(publicationId: publicationId);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _publicationAssets = assets;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _assetError = 'No se pudieron cargar los archivos: $error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingAssets = false);
+      }
+    }
+  }
+
+  Future<void> _selectCover() async {
+    final publicationId = _publicationId;
+
+    if (publicationId == null || _isManagingAssets) {
+      return;
+    }
+
+    final repository = context.read<PublicationAssetRepository>();
+    final file = await repository.pickCoverImage();
+
+    if (file == null || !mounted) {
+      return;
+    }
+
+    final currentCover = _coverAsset;
+
+    if (currentCover != null) {
+      final confirmed = await _confirmAssetAction(
+        title: 'Cambiar portada',
+        message: 'La portada actual será sustituida por "${file.name}".',
+        confirmText: 'Cambiar',
+      );
+
+      if (!confirmed || !mounted) {
+        return;
+      }
+    }
+
+    await _runAssetOperation(
+      action: () async {
+        if (currentCover == null) {
+          await repository.uploadAsset(
+            publicationId: publicationId,
+            file: file,
+            type: PublicationAssetType.cover,
+          );
+        } else {
+          await repository.replaceCover(
+            publicationId: publicationId,
+            file: file,
+          );
+        }
+      },
+      successMessage:
+          currentCover == null
+              ? 'Portada agregada correctamente.'
+              : 'Portada actualizada correctamente.',
+    );
+  }
+
+  Future<void> _selectGalleryImages() async {
+    final publicationId = _publicationId;
+
+    if (publicationId == null || _isManagingAssets) {
+      return;
+    }
+
+    final repository = context.read<PublicationAssetRepository>();
+    final files = await repository.pickGalleryImages();
+
+    if (files.isEmpty || !mounted) {
+      return;
+    }
+
+    await _runAssetOperation(
+      action: () async {
+        final initialOrder = _galleryAssets.length;
+
+        for (var index = 0; index < files.length; index++) {
+          await repository.uploadAsset(
+            publicationId: publicationId,
+            file: files[index],
+            type: PublicationAssetType.image,
+            displayOrder: initialOrder + index,
+          );
+        }
+      },
+      successMessage:
+          files.length == 1
+              ? 'Imagen agregada correctamente.'
+              : '${files.length} imágenes agregadas correctamente.',
+    );
+  }
+
+  Future<void> _selectAttachments() async {
+    final publicationId = _publicationId;
+
+    if (publicationId == null || _isManagingAssets) {
+      return;
+    }
+
+    final repository = context.read<PublicationAssetRepository>();
+    final files = await repository.pickAttachments();
+
+    if (files.isEmpty || !mounted) {
+      return;
+    }
+
+    await _runAssetOperation(
+      action: () async {
+        final initialOrder = _attachmentAssets.length;
+
+        for (var index = 0; index < files.length; index++) {
+          await repository.uploadAsset(
+            publicationId: publicationId,
+            file: files[index],
+            type: PublicationAssetType.attachment,
+            displayOrder: initialOrder + index,
+          );
+        }
+      },
+      successMessage:
+          files.length == 1
+              ? 'Documento adjuntado correctamente.'
+              : '${files.length} documentos adjuntados correctamente.',
+    );
+  }
+
+  Future<void> _removeAsset(PublicationAsset asset) async {
+    if (_isManagingAssets) {
+      return;
+    }
+
+    final confirmed = await _confirmAssetAction(
+      title:
+          asset.type.isCover
+              ? 'Eliminar portada'
+              : asset.type.isImage
+              ? 'Eliminar imagen'
+              : 'Eliminar documento',
+      message: 'Se eliminará permanentemente "${asset.originalName}".',
+      confirmText: 'Eliminar',
+      destructive: true,
+    );
+
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    await _runAssetOperation(
+      action:
+          () => context.read<PublicationAssetRepository>().deleteAsset(asset),
+      successMessage: 'Archivo eliminado correctamente.',
+    );
+  }
+
+  Future<void> _runAssetOperation({
+    required Future<void> Function() action,
+    required String successMessage,
+  }) async {
+    if (_isManagingAssets) {
+      return;
+    }
+
+    setState(() {
+      _isManagingAssets = true;
+      _assetError = null;
+    });
+
+    try {
+      await action();
+      await _loadPublicationAssets();
+
+      if (!mounted) {
+        return;
+      }
+
+      _showMessage(successMessage);
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _assetError = 'No se pudo completar la operación: $error';
+      });
+
+      _showMessage('No se pudo procesar el archivo: $error');
+    } finally {
+      if (mounted) {
+        setState(() => _isManagingAssets = false);
+      }
+    }
+  }
+
+  Future<bool> _confirmAssetAction({
+    required String title,
+    required String message,
+    required String confirmText,
+    bool destructive = false,
+  }) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              style:
+                  destructive
+                      ? FilledButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(dialogContext).colorScheme.error,
+                      )
+                      : null,
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(confirmText),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false;
+  }
+
+  PublicationAsset? get _coverAsset {
+    for (final asset in _publicationAssets) {
+      if (asset.type.isCover) {
+        return asset;
+      }
+    }
+
+    return null;
+  }
+
+  List<PublicationAsset> get _galleryAssets {
+    return _publicationAssets
+        .where((asset) => asset.type == PublicationAssetType.image)
+        .toList(growable: false);
+  }
+
+  List<PublicationAsset> get _attachmentAssets {
+    return _publicationAssets
+        .where((asset) => asset.type.isAttachment)
+        .toList(growable: false);
   }
 
   @override
@@ -269,7 +560,7 @@ class _AdminAnnouncementCreatePageState
   }
 
   Future<void> _submit({required bool publish}) async {
-    if (_isSubmitting) {
+    if (_isSubmitting || _isManagingAssets) {
       return;
     }
 
@@ -567,6 +858,7 @@ class _AdminAnnouncementCreatePageState
                 OutlinedButton.icon(
                   onPressed:
                       _isSubmitting ||
+                              _isManagingAssets ||
                               _isLoadingInitialRecipients ||
                               !_initialStateReady ||
                               !_hasChanges
@@ -589,6 +881,7 @@ class _AdminAnnouncementCreatePageState
                   FilledButton.icon(
                     onPressed:
                         _isSubmitting ||
+                                _isManagingAssets ||
                                 _isLoadingInitialRecipients ||
                                 !_initialStateReady
                             ? null
@@ -608,14 +901,18 @@ class _AdminAnnouncementCreatePageState
               ] else ...[
                 OutlinedButton.icon(
                   onPressed:
-                      _isSubmitting ? null : () => _submit(publish: false),
+                      _isSubmitting || _isManagingAssets
+                          ? null
+                          : () => _submit(publish: false),
                   icon: const Icon(Icons.save_outlined),
                   label: const Text('Guardar borrador'),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 FilledButton.icon(
                   onPressed:
-                      _isSubmitting ? null : () => _submit(publish: true),
+                      _isSubmitting || _isManagingAssets
+                          ? null
+                          : () => _submit(publish: true),
                   icon:
                       _isSubmitting
                           ? const SizedBox.square(
@@ -638,6 +935,9 @@ class _AdminAnnouncementCreatePageState
   Widget _buildMultimediaPreparationCard(BuildContext context) {
     final theme = Theme.of(context);
     final publicationId = _publicationId;
+    final cover = _coverAsset;
+    final gallery = _galleryAssets;
+    final attachments = _attachmentAssets;
 
     return Card(
       child: Padding(
@@ -657,21 +957,90 @@ class _AdminAnnouncementCreatePageState
                     ),
                   ),
                 ),
+                if (_isLoadingAssets || _isManagingAssets)
+                  const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              _canManageAssets
-                  ? 'El borrador ya tiene un identificador. '
-                      'Puedes agregar portada, imágenes y documentos.'
-                  : 'Guarda primero el comunicado como borrador para '
-                      'habilitar la carga segura de archivos.',
+              publicationId == null
+                  ? 'Guarda primero el comunicado como borrador para '
+                      'habilitar la carga segura de archivos.'
+                  : 'Agrega una portada, imágenes complementarias o '
+                      'documentos institucionales.',
               style: theme.textTheme.bodyMedium,
             ),
+            if (_assetError != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                _assetError!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.md),
+            OutlinedButton.icon(
+              onPressed:
+                  !_canManageAssets || _isManagingAssets ? null : _selectCover,
+              icon: Icon(
+                cover == null
+                    ? Icons.add_photo_alternate_outlined
+                    : Icons.change_circle_outlined,
+              ),
+              label: Text(
+                cover == null ? 'Agregar portada' : 'Cambiar portada',
+              ),
+            ),
+            if (cover != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _buildAssetTile(context, cover),
+            ],
+            const Divider(height: AppSpacing.xlg),
+            OutlinedButton.icon(
+              onPressed:
+                  !_canManageAssets || _isManagingAssets
+                      ? null
+                      : _selectGalleryImages,
+              icon: const Icon(Icons.collections_outlined),
+              label: const Text('Agregar imágenes'),
+            ),
+            if (gallery.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Galería (${gallery.length})',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              ...gallery.map((asset) => _buildAssetTile(context, asset)),
+            ],
+            const Divider(height: AppSpacing.xlg),
+            OutlinedButton.icon(
+              onPressed:
+                  !_canManageAssets || _isManagingAssets
+                      ? null
+                      : _selectAttachments,
+              icon: const Icon(Icons.attach_file_outlined),
+              label: const Text('Adjuntar documentos'),
+            ),
+            if (attachments.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Documentos (${attachments.length})',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              ...attachments.map((asset) => _buildAssetTile(context, asset)),
+            ],
             if (publicationId != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              SelectableText(
-                'Publicación: $publicationId',
+              Text(
+                'Máximo 25 MiB por archivo.',
                 style: theme.textTheme.bodySmall,
               ),
             ],
@@ -679,6 +1048,53 @@ class _AdminAnnouncementCreatePageState
         ),
       ),
     );
+  }
+
+  Widget _buildAssetTile(BuildContext context, PublicationAsset asset) {
+    final theme = Theme.of(context);
+
+    final icon =
+        asset.type.isCover
+            ? Icons.image_outlined
+            : asset.type.isImage
+            ? Icons.photo_library_outlined
+            : asset.isPdf
+            ? Icons.picture_as_pdf_outlined
+            : Icons.description_outlined;
+
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icon),
+      title: Text(
+        asset.originalName,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        '${asset.extension.toUpperCase()} · '
+        '${_formatFileSize(asset.sizeBytes)}',
+      ),
+      trailing: IconButton(
+        tooltip: 'Eliminar archivo',
+        onPressed: _isManagingAssets ? null : () => _removeAsset(asset),
+        icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+      ),
+    );
+  }
+
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) {
+      return '$bytes B';
+    }
+
+    final kilobytes = bytes / 1024;
+
+    if (kilobytes < 1024) {
+      return '${kilobytes.toStringAsFixed(1)} KB';
+    }
+
+    final megabytes = kilobytes / 1024;
+    return '${megabytes.toStringAsFixed(1)} MB';
   }
 
   Widget _buildAudienceSection(BuildContext context) {

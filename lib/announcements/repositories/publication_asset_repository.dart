@@ -212,25 +212,92 @@ class PublicationAssetRepository {
     }
   }
 
-  /// Replaces the current cover image.
-  ///
-  /// The new cover is uploaded first. The former cover is removed only after
-  /// the new asset has been registered successfully.
+  /// Replaces the current cover without leaving the publication uncovered
+  /// when the new Storage upload or metadata update fails.
   Future<PublicationAsset> replaceCover({
     required String publicationId,
     required PlatformFile file,
   }) async {
+    _validatePublicationId(publicationId);
+    _validateFile(file: file, type: PublicationAssetType.cover);
+
     final currentCover = await fetchCover(publicationId: publicationId);
 
-    if (currentCover != null) {
-      await deleteAsset(currentCover);
+    if (currentCover == null) {
+      return uploadAsset(
+        publicationId: publicationId,
+        file: file,
+        type: PublicationAssetType.cover,
+      );
     }
 
-    return uploadAsset(
+    final user = _supabaseClient.auth.currentUser;
+
+    if (user == null) {
+      throw StateError(
+        'An authenticated administrator is required to replace assets.',
+      );
+    }
+
+    final bytes = _requireBytes(file);
+    final extension = _extensionOf(file.name);
+    final mimeType = _mimeTypeForExtension(extension);
+    final nextStoragePath = _buildStoragePath(
       publicationId: publicationId,
-      file: file,
       type: PublicationAssetType.cover,
+      extension: extension,
     );
+
+    await _supabaseClient.storage
+        .from(bucketName)
+        .uploadBinary(
+          nextStoragePath,
+          bytes,
+          fileOptions: FileOptions(
+            contentType: mimeType,
+            cacheControl: '3600',
+            upsert: false,
+          ),
+        );
+
+    try {
+      final row =
+          await _supabaseClient
+              .from(_assetsTable)
+              .update({
+                'storage_bucket': bucketName,
+                'storage_path': nextStoragePath,
+                'original_name': file.name.trim(),
+                'mime_type': mimeType,
+                'size_bytes': file.size,
+                'display_order': 0,
+                'uploaded_by': user.id,
+              })
+              .eq('id', currentCover.id)
+              .select()
+              .single();
+
+      try {
+        await _supabaseClient.storage.from(currentCover.storageBucket).remove([
+          currentCover.storagePath,
+        ]);
+      } catch (_) {
+        // The new cover is already authoritative. A stale Storage object can
+        // be cleaned later without affecting the publication.
+      }
+
+      return PublicationAsset.fromSupabase(row);
+    } catch (_) {
+      try {
+        await _supabaseClient.storage.from(bucketName).remove([
+          nextStoragePath,
+        ]);
+      } catch (_) {
+        // Preserve the original metadata update error.
+      }
+
+      rethrow;
+    }
   }
 
   /// Creates a temporary URL for a private publication asset.
