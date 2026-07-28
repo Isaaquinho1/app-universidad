@@ -27,6 +27,11 @@ type FcmTokenRow = {
   platform: string | null;
 };
 
+type PublicationCoverRow = {
+  storage_bucket: string;
+  storage_path: string;
+};
+
 type SendResult = {
   tokenId: string;
   userId: string;
@@ -35,10 +40,7 @@ type SendResult = {
   error?: string;
 };
 
-function jsonResponse(
-  body: Record<string, unknown>,
-  status = 200,
-): Response {
+function jsonResponse(body: Record<string, unknown>, status = 200): Response {
   return Response.json(body, {
     status,
     headers: {
@@ -51,9 +53,7 @@ function readServiceAccount(): Record<string, unknown> {
   const encoded = Deno.env.get("FIREBASE_SERVICE_ACCOUNT_BASE64");
 
   if (!encoded) {
-    throw new Error(
-      "FIREBASE_SERVICE_ACCOUNT_BASE64 is not configured.",
-    );
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_BASE64 is not configured.");
   }
 
   try {
@@ -121,13 +121,76 @@ function isInvalidFcmToken(
   });
 }
 
+async function resolveCoverImageUrl({
+  announcementId,
+  supabaseAdmin,
+}: {
+  announcementId: string;
+  supabaseAdmin: {
+    from: (table: string) => any;
+    storage: {
+      from: (bucket: string) => {
+        createSignedUrl: (
+          path: string,
+          expiresIn: number,
+        ) => Promise<{
+          data: { signedUrl?: string } | null;
+          error: { message: string } | null;
+        }>;
+      };
+    };
+  };
+}): Promise<string | null> {
+  const { data: coverData, error: coverError } = await supabaseAdmin
+    .from("publication_assets")
+    .select("storage_bucket, storage_path")
+    .eq("publication_id", announcementId)
+    .eq("asset_type", "cover")
+    .maybeSingle();
+
+  if (coverError) {
+    console.warn(
+      `Could not resolve notification cover metadata: ${coverError.message}`,
+    );
+    return null;
+  }
+
+  if (!coverData) {
+    return null;
+  }
+
+  const cover = coverData as PublicationCoverRow;
+
+  if (!cover.storage_bucket || !cover.storage_path) {
+    return null;
+  }
+
+  const { data: signedUrlData, error: signedUrlError } =
+    await supabaseAdmin.storage
+      .from(cover.storage_bucket)
+      .createSignedUrl(cover.storage_path, 24 * 60 * 60);
+
+  if (signedUrlError) {
+    console.warn(
+      `Could not create notification cover URL: ${signedUrlError.message}`,
+    );
+    return null;
+  }
+
+  const signedUrl = signedUrlData?.signedUrl?.trim();
+
+  return signedUrl && signedUrl.length > 0 ? signedUrl : null;
+}
+
 async function sendToToken({
   accessToken,
   announcement,
+  imageUrl,
   token,
 }: {
   accessToken: string;
   announcement: AnnouncementResults;
+  imageUrl: string | null;
   token: FcmTokenRow;
 }): Promise<SendResult> {
   const response = await fetch(
@@ -149,12 +212,14 @@ async function sendToToken({
             type: "institutional_announcement",
             announcement_id: announcement.announcement_id,
             content_version: String(announcement.content_version),
+            ...(imageUrl ? { image_url: imageUrl } : {}),
           },
           android: {
             priority: "high",
             notification: {
               channel_id: "institutional_announcements",
               sound: "default",
+              ...(imageUrl ? { image: imageUrl } : {}),
             },
           },
           apns: {
@@ -176,7 +241,7 @@ async function sendToToken({
   let responseBody: Record<string, unknown> = {};
 
   try {
-    responseBody = await response.json() as Record<string, unknown>;
+    responseBody = (await response.json()) as Record<string, unknown>;
   } catch {
     responseBody = {};
   }
@@ -202,10 +267,12 @@ async function sendToToken({
 async function sendInChunks({
   accessToken,
   announcement,
+  imageUrl,
   tokens,
 }: {
   accessToken: string;
   announcement: AnnouncementResults;
+  imageUrl: string | null;
   tokens: FcmTokenRow[];
 }): Promise<SendResult[]> {
   const results: SendResult[] = [];
@@ -219,8 +286,9 @@ async function sendInChunks({
         sendToToken({
           accessToken,
           announcement,
+          imageUrl,
           token,
-        })
+        }),
       ),
     );
 
@@ -231,296 +299,266 @@ async function sendInChunks({
 }
 
 export default {
-  fetch: withSupabase(
-    { auth: "user" },
-    async (req, ctx) => {
-      if (req.method !== "POST") {
-        return jsonResponse(
-          { error: "Method not allowed." },
-          405,
-        );
-      }
+  fetch: withSupabase({ auth: "user" }, async (req, ctx) => {
+    if (req.method !== "POST") {
+      return jsonResponse({ error: "Method not allowed." }, 405);
+    }
 
-      const {
-        data: authenticatedUserData,
-        error: authenticatedUserError,
-      } = await ctx.supabase.auth.getUser();
+    const { data: authenticatedUserData, error: authenticatedUserError } =
+      await ctx.supabase.auth.getUser();
 
-      if (authenticatedUserError) {
-        return jsonResponse(
-          {
-            error: "Could not validate the authenticated user.",
-            details: authenticatedUserError.message,
-          },
-          401,
-        );
-      }
+    if (authenticatedUserError) {
+      return jsonResponse(
+        {
+          error: "Could not validate the authenticated user.",
+          details: authenticatedUserError.message,
+        },
+        401,
+      );
+    }
 
-      const callerId = authenticatedUserData.user?.id;
+    const callerId = authenticatedUserData.user?.id;
 
-      if (!callerId) {
-        return jsonResponse(
-          { error: "Authenticated user identifier is missing." },
-          401,
-        );
-      }
+    if (!callerId) {
+      return jsonResponse(
+        { error: "Authenticated user identifier is missing." },
+        401,
+      );
+    }
 
-      let requestBody: RequestBody;
+    let requestBody: RequestBody;
 
-      try {
-        requestBody = await req.json() as RequestBody;
-      } catch {
-        return jsonResponse(
-          { error: "A valid JSON body is required." },
-          400,
-        );
-      }
+    try {
+      requestBody = (await req.json()) as RequestBody;
+    } catch {
+      return jsonResponse({ error: "A valid JSON body is required." }, 400);
+    }
 
-      const announcementId = requestBody.announcement_id;
+    const announcementId = requestBody.announcement_id;
 
-      if (
-        typeof announcementId !== "string" ||
-        announcementId.trim().length === 0
-      ) {
-        return jsonResponse(
-          { error: "announcement_id is required." },
-          400,
-        );
-      }
+    if (
+      typeof announcementId !== "string" ||
+      announcementId.trim().length === 0
+    ) {
+      return jsonResponse({ error: "announcement_id is required." }, 400);
+    }
 
-      const {
-        data: callerProfile,
-        error: callerProfileError,
-      } = await ctx.supabase
+    const { data: callerProfile, error: callerProfileError } =
+      await ctx.supabase
         .from("profiles")
         .select("id, role, active")
         .eq("id", callerId)
         .maybeSingle();
 
-      if (callerProfileError) {
-        return jsonResponse(
-          {
-            error: "Could not validate the caller profile.",
-            details: callerProfileError.message,
-          },
-          500,
-        );
-      }
-
-      if (
-        !callerProfile ||
-        callerProfile.active !== true ||
-        !["admin", "superAdmin"].includes(callerProfile.role)
-      ) {
-        return jsonResponse(
-          { error: "Administrator permissions are required." },
-          403,
-        );
-      }
-
-      const {
-        data: announcementResults,
-        error: announcementResultsError,
-      } = await ctx.supabase.rpc(
-        "get_announcement_results",
+    if (callerProfileError) {
+      return jsonResponse(
         {
-          p_announcement_id: announcementId,
+          error: "Could not validate the caller profile.",
+          details: callerProfileError.message,
         },
+        500,
       );
+    }
 
-      if (announcementResultsError) {
-        return jsonResponse(
-          {
-            error: "Could not resolve the announcement audience.",
-            details: announcementResultsError.message,
-          },
-          400,
-        );
-      }
+    if (
+      !callerProfile ||
+      callerProfile.active !== true ||
+      !["admin", "superAdmin"].includes(callerProfile.role)
+    ) {
+      return jsonResponse(
+        { error: "Administrator permissions are required." },
+        403,
+      );
+    }
 
-      const announcement =
-        announcementResults as AnnouncementResults;
+    const { data: announcementResults, error: announcementResultsError } =
+      await ctx.supabase.rpc("get_announcement_results", {
+        p_announcement_id: announcementId,
+      });
 
-      if (announcement.status !== "published") {
+    if (announcementResultsError) {
+      return jsonResponse(
+        {
+          error: "Could not resolve the announcement audience.",
+          details: announcementResultsError.message,
+        },
+        400,
+      );
+    }
+
+    const announcement = announcementResults as AnnouncementResults;
+
+    if (announcement.status !== "published") {
+      return jsonResponse(
+        {
+          error: "Only published announcements can send notifications.",
+        },
+        409,
+      );
+    }
+
+    const { data: dispatch, error: dispatchError } = await ctx.supabaseAdmin
+      .from("announcement_notification_dispatches")
+      .insert({
+        announcement_id: announcement.announcement_id,
+        content_version: announcement.content_version,
+        requested_by: callerId,
+        status: "processing",
+        audience_count: announcement.recipients.length,
+      })
+      .select("id")
+      .single();
+
+    if (dispatchError) {
+      if (dispatchError.code === "23505") {
         return jsonResponse(
           {
             error:
-              "Only published announcements can send notifications.",
+              "A notification was already sent or started for this announcement version.",
+            duplicate: true,
           },
           409,
         );
       }
 
-      const {
-        data: dispatch,
-        error: dispatchError,
-      } = await ctx.supabaseAdmin
-        .from("announcement_notification_dispatches")
-        .insert({
-          announcement_id: announcement.announcement_id,
-          content_version: announcement.content_version,
-          requested_by: callerId,
-          status: "processing",
-          audience_count: announcement.recipients.length,
-        })
-        .select("id")
-        .single();
+      return jsonResponse(
+        {
+          error: "Could not reserve the notification dispatch.",
+          details: dispatchError.message,
+        },
+        500,
+      );
+    }
 
-      if (dispatchError) {
-        if (dispatchError.code === "23505") {
-          return jsonResponse(
-            {
-              error:
-                "A notification was already sent or started for this announcement version.",
-              duplicate: true,
-            },
-            409,
-          );
-        }
+    const dispatchId = dispatch.id as string;
 
-        return jsonResponse(
-          {
-            error: "Could not reserve the notification dispatch.",
-            details: dispatchError.message,
-          },
-          500,
-        );
-      }
+    try {
+      const recipientIds = [
+        ...new Set(
+          announcement.recipients.map((recipient) => recipient.user_id),
+        ),
+      ];
 
-      const dispatchId = dispatch.id as string;
-
-      try {
-        const recipientIds = [
-          ...new Set(
-            announcement.recipients.map(
-              (recipient) => recipient.user_id,
-            ),
-          ),
-        ];
-
-        if (recipientIds.length === 0) {
-          await ctx.supabaseAdmin
-            .from("announcement_notification_dispatches")
-            .update({
-              status: "completed",
-              completed_at: new Date().toISOString(),
-            })
-            .eq("id", dispatchId);
-
-          return jsonResponse({
-            dispatch_id: dispatchId,
-            audience_count: 0,
-            token_count: 0,
-            sent_count: 0,
-            failed_count: 0,
-            no_token_count: 0,
-            invalid_token_count: 0,
-          });
-        }
-
-        const {
-          data: tokenRows,
-          error: tokenRowsError,
-        } = await ctx.supabaseAdmin
-          .from("user_fcm_tokens")
-          .select("id, user_id, token, platform")
-          .in("user_id", recipientIds)
-          .eq("active", true);
-
-        if (tokenRowsError) {
-          throw new Error(tokenRowsError.message);
-        }
-
-        const tokens = (tokenRows ?? []) as FcmTokenRow[];
-        const usersWithTokens = new Set(
-          tokens.map((token) => token.user_id),
-        );
-
-        const noTokenCount = recipientIds.filter(
-          (userId) => !usersWithTokens.has(userId),
-        ).length;
-
-        const accessToken = await getFirebaseAccessToken();
-
-        const sendResults = await sendInChunks({
-          accessToken,
-          announcement,
-          tokens,
-        });
-
-        const successfulResults = sendResults.filter(
-          (result) => result.success,
-        );
-
-        const failedResults = sendResults.filter(
-          (result) => !result.success,
-        );
-
-        const invalidResults = failedResults.filter(
-          (result) => result.invalidToken,
-        );
-
-        if (invalidResults.length > 0) {
-          await ctx.supabaseAdmin
-            .from("user_fcm_tokens")
-            .update({
-              active: false,
-              updated_at: new Date().toISOString(),
-            })
-            .in(
-              "id",
-              invalidResults.map((result) => result.tokenId),
-            );
-        }
-
+      if (recipientIds.length === 0) {
         await ctx.supabaseAdmin
           .from("announcement_notification_dispatches")
           .update({
             status: "completed",
-            token_count: tokens.length,
-            sent_count: successfulResults.length,
-            failed_count: failedResults.length,
-            no_token_count: noTokenCount,
-            invalid_token_count: invalidResults.length,
             completed_at: new Date().toISOString(),
           })
           .eq("id", dispatchId);
 
         return jsonResponse({
           dispatch_id: dispatchId,
-          announcement_id: announcement.announcement_id,
-          content_version: announcement.content_version,
-          audience_count: recipientIds.length,
+          audience_count: 0,
+          token_count: 0,
+          sent_count: 0,
+          failed_count: 0,
+          no_token_count: 0,
+          invalid_token_count: 0,
+        });
+      }
+
+      const { data: tokenRows, error: tokenRowsError } = await ctx.supabaseAdmin
+        .from("user_fcm_tokens")
+        .select("id, user_id, token, platform")
+        .in("user_id", recipientIds)
+        .eq("active", true);
+
+      if (tokenRowsError) {
+        throw new Error(tokenRowsError.message);
+      }
+
+      const tokens = (tokenRows ?? []) as FcmTokenRow[];
+      const usersWithTokens = new Set(tokens.map((token) => token.user_id));
+
+      const noTokenCount = recipientIds.filter(
+        (userId) => !usersWithTokens.has(userId),
+      ).length;
+
+      const imageUrl = await resolveCoverImageUrl({
+        announcementId: announcement.announcement_id,
+        supabaseAdmin: ctx.supabaseAdmin,
+      });
+
+      const accessToken = await getFirebaseAccessToken();
+
+      const sendResults = await sendInChunks({
+        accessToken,
+        announcement,
+        imageUrl,
+        tokens,
+      });
+
+      const successfulResults = sendResults.filter((result) => result.success);
+
+      const failedResults = sendResults.filter((result) => !result.success);
+
+      const invalidResults = failedResults.filter(
+        (result) => result.invalidToken,
+      );
+
+      if (invalidResults.length > 0) {
+        await ctx.supabaseAdmin
+          .from("user_fcm_tokens")
+          .update({
+            active: false,
+            updated_at: new Date().toISOString(),
+          })
+          .in(
+            "id",
+            invalidResults.map((result) => result.tokenId),
+          );
+      }
+
+      await ctx.supabaseAdmin
+        .from("announcement_notification_dispatches")
+        .update({
+          status: "completed",
           token_count: tokens.length,
           sent_count: successfulResults.length,
           failed_count: failedResults.length,
           no_token_count: noTokenCount,
           invalid_token_count: invalidResults.length,
-        });
-      } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Unknown notification dispatch error.";
+          completed_at: new Date().toISOString(),
+        })
+        .eq("id", dispatchId);
 
-        await ctx.supabaseAdmin
-          .from("announcement_notification_dispatches")
-          .update({
-            status: "failed",
-            error_message: message,
-            completed_at: new Date().toISOString(),
-          })
-          .eq("id", dispatchId);
+      return jsonResponse({
+        dispatch_id: dispatchId,
+        announcement_id: announcement.announcement_id,
+        content_version: announcement.content_version,
+        audience_count: recipientIds.length,
+        token_count: tokens.length,
+        sent_count: successfulResults.length,
+        failed_count: failedResults.length,
+        no_token_count: noTokenCount,
+        invalid_token_count: invalidResults.length,
+        has_cover_image: imageUrl != null,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unknown notification dispatch error.";
 
-        return jsonResponse(
-          {
-            error: "The notification dispatch failed.",
-            details: message,
-            dispatch_id: dispatchId,
-          },
-          500,
-        );
-      }
-    },
-  ),
+      await ctx.supabaseAdmin
+        .from("announcement_notification_dispatches")
+        .update({
+          status: "failed",
+          error_message: message,
+          completed_at: new Date().toISOString(),
+        })
+        .eq("id", dispatchId);
+
+      return jsonResponse(
+        {
+          error: "The notification dispatch failed.",
+          details: message,
+          dispatch_id: dispatchId,
+        },
+        500,
+      );
+    }
+  }),
 };
