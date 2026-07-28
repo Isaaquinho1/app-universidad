@@ -54,10 +54,10 @@ class DefaultFirebaseOptions {
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAWhPt9mgbL7JF2MPmT9SCmJYzSMexUd7s',
-    appId: '1:952856895087:ios:8afd071c5c11706371b79a',
+    appId: '1:952856895087:ios:7270294f565f520c71b79a',
     messagingSenderId: '952856895087',
     projectId: 'conecta-itt-55275',
     storageBucket: 'conecta-itt-55275.firebasestorage.app',
-    iosBundleId: 'com.ituniversity.app',
+    iosBundleId: 'mx.tecnm.tlalpan.conectaitt',
   );
 }

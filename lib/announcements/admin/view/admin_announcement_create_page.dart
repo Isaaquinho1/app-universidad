@@ -716,9 +716,30 @@ class _AdminAnnouncementCreatePageState
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    if (messenger != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+      return;
+    }
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Conecta ITT'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    ).ignore();
   }
 
   @override

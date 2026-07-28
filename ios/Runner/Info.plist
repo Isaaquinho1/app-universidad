@@ -29,7 +29,7 @@
 			<string>Viewer</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.ituniversity.app</string>
+				<string>mx.tecnm.tlalpan.conectaitt</string>
 			</array>
 		</dict>
 	</array>

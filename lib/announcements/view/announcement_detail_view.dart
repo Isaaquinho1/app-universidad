@@ -78,13 +78,7 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
         return;
       }
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text('No se pudo abrir "${asset.originalName}": $error'),
-          ),
-        );
+      _showMessage('No se pudo abrir "${asset.originalName}": $error');
     } finally {
       if (mounted) {
         setState(() {
@@ -92,6 +86,33 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
         });
       }
     }
+  }
+
+  void _showMessage(String message) {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    if (messenger != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+      return;
+    }
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Conecta ITT'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    ).ignore();
   }
 
   @override
@@ -102,13 +123,7 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
               previous.status != current.status &&
               current.status == AnnouncementReceiptOperationStatus.failure,
       listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(
-              content: Text('No se pudo actualizar el estado de lectura.'),
-            ),
-          );
+        _showMessage('No se pudo actualizar el estado de lectura.');
       },
       builder: (context, state) {
         final publishedAt = announcement.publishedAt;

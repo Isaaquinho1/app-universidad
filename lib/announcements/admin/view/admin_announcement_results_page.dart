@@ -266,18 +266,12 @@ class _AdminAnnouncementResultsPageState
       final failedCount = _readResponseInt(result['failed_count']);
       final noTokenCount = _readResponseInt(result['no_token_count']);
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              'Recordatorio procesado. '
-              'Enviados: $sentCount · '
-              'Fallidos: $failedCount · '
-              'Sin token: $noTokenCount',
-            ),
-          ),
-        );
+      _showMessage(
+        'Recordatorio procesado. '
+        'Enviados: $sentCount · '
+        'Fallidos: $failedCount · '
+        'Sin token: $noTokenCount',
+      );
 
       await _refresh();
       await _prepareReminderPreview();
@@ -354,13 +348,7 @@ class _AdminAnnouncementResultsPageState
         return;
       }
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text('No se pudo exportar el reporte CSV.\n$error'),
-          ),
-        );
+      _showMessage('No se pudo exportar el reporte CSV.\n$error');
     } finally {
       if (mounted) {
         setState(() {
@@ -368,6 +356,33 @@ class _AdminAnnouncementResultsPageState
         });
       }
     }
+  }
+
+  void _showMessage(String message) {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    if (messenger != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+      return;
+    }
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Conecta ITT'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    ).ignore();
   }
 
   @override
