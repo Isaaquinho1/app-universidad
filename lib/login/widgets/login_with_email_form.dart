@@ -249,11 +249,11 @@ class _FormIntroduction extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          '¡Bienvenid@!',
+          '¡Bienvenid@ de nuevo!',
           textAlign: TextAlign.center,
           style: AppTextStyle.h4.copyWith(
             color: const Color(0xFF202124),
-            fontSize: 25,
+            fontSize: 22,
             fontWeight: FontWeight.w700,
           ),
         ),
