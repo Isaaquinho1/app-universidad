@@ -40,7 +40,21 @@ class _AdminAnnouncementCreatePageState
   bool _hasChanges = false;
   bool _initialStateReady = false;
 
-  bool get _isEditing => widget.initialAnnouncement != null;
+  Announcement? _persistedAnnouncement;
+
+  bool get _isEditing => _persistedAnnouncement != null;
+
+  String? get _publicationId {
+    final id = _persistedAnnouncement?.id.trim();
+
+    if (id == null || id.isEmpty) {
+      return null;
+    }
+
+    return id;
+  }
+
+  bool get _canManageAssets => _publicationId != null;
 
   @override
   void initState() {
@@ -52,6 +66,7 @@ class _AdminAnnouncementCreatePageState
     _groupsController.addListener(_evaluateChanges);
 
     final announcement = widget.initialAnnouncement;
+    _persistedAnnouncement = announcement;
 
     if (announcement == null) {
       return;
@@ -155,7 +170,7 @@ class _AdminAnnouncementCreatePageState
   }
 
   bool _matchesInitialAnnouncement() {
-    final initial = widget.initialAnnouncement;
+    final initial = _persistedAnnouncement;
 
     if (initial == null) {
       return false;
@@ -188,7 +203,7 @@ class _AdminAnnouncementCreatePageState
   }
 
   Future<bool> _confirmUpdate() async {
-    final initial = widget.initialAnnouncement;
+    final initial = _persistedAnnouncement;
 
     if (initial == null) {
       return true;
@@ -217,6 +232,33 @@ class _AdminAnnouncementCreatePageState
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               child: const Text('Actualizar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false;
+  }
+
+  Future<bool> _confirmDraftPublication() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Publicar comunicado'),
+          content: const Text(
+            'El comunicado se publicará para la audiencia seleccionada '
+            'y se enviará una notificación push a sus destinatarios.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Publicar'),
             ),
           ],
         );
@@ -270,11 +312,18 @@ class _AdminAnnouncementCreatePageState
     }
 
     if (_isEditing) {
-      if (!_hasChanges) {
+      final persisted = _persistedAnnouncement;
+      final isPublishingDraft =
+          publish && persisted?.status == AnnouncementStatus.draft;
+
+      if (!_hasChanges && !isPublishingDraft) {
         return;
       }
 
-      final confirmed = await _confirmUpdate();
+      final confirmed =
+          isPublishingDraft
+              ? await _confirmDraftPublication()
+              : await _confirmUpdate();
 
       if (!confirmed || !mounted) {
         return;
@@ -287,7 +336,14 @@ class _AdminAnnouncementCreatePageState
       final now = DateTime.now().toUtc();
       final authorName = profile.displayName?.trim();
 
-      final existingAnnouncement = widget.initialAnnouncement;
+      final existingAnnouncement = _persistedAnnouncement;
+
+      final nextStatus =
+          publish
+              ? AnnouncementStatus.published
+              : existingAnnouncement?.status == AnnouncementStatus.published
+              ? AnnouncementStatus.published
+              : AnnouncementStatus.draft;
 
       final announcement = Announcement(
         id: existingAnnouncement?.id ?? '',
@@ -304,36 +360,55 @@ class _AdminAnnouncementCreatePageState
                 ? 'Administración Conecta ITT'
                 : authorName),
         target: target,
-        status:
-            existingAnnouncement?.status ??
-            (publish ? AnnouncementStatus.published : AnnouncementStatus.draft),
+        status: nextStatus,
         priority: _priority,
         createdAt: existingAnnouncement?.createdAt ?? now,
         updatedAt: now,
         publishedAt:
-            existingAnnouncement?.publishedAt ?? (publish ? now : null),
+            nextStatus == AnnouncementStatus.published
+                ? existingAnnouncement?.publishedAt ?? now
+                : null,
         expiresAt: existingAnnouncement?.expiresAt,
         attachmentUrls: existingAnnouncement?.attachmentUrls ?? const [],
       );
 
       final repository = context.read<AnnouncementRepository>();
 
-      if (_isEditing) {
+      final wasPersisted = _isEditing;
+      late final String persistedId;
+
+      if (wasPersisted) {
         await repository.updateAnnouncement(announcement);
+        persistedId = announcement.id;
       } else {
-        await repository.createAnnouncement(announcement);
+        persistedId = await repository.createAnnouncement(announcement);
       }
 
       if (!mounted) {
         return;
       }
 
+      final persistedAnnouncement = announcement.copyWith(id: persistedId);
+
+      setState(() {
+        _persistedAnnouncement = persistedAnnouncement;
+        _hasChanges = false;
+        _initialStateReady = true;
+      });
+
+      if (!publish) {
+        _showMessage(
+          wasPersisted
+              ? 'Borrador actualizado correctamente.'
+              : 'Borrador creado. Ya puedes agregar contenido multimedia.',
+        );
+        return;
+      }
+
       final successMessage =
-          _isEditing
+          wasPersisted
               ? 'Comunicado actualizado correctamente.'
-              : publish
-              ? 'Comunicado publicado correctamente.'
-              : 'Comunicado guardado como borrador.';
+              : 'Comunicado publicado correctamente.';
 
       Navigator.of(context).pop(successMessage);
     } catch (error) {
@@ -485,9 +560,11 @@ class _AdminAnnouncementCreatePageState
               ),
               const SizedBox(height: AppSpacing.lg),
               _buildAudienceSection(context),
+              const SizedBox(height: AppSpacing.lg),
+              _buildMultimediaPreparationCard(context),
               const SizedBox(height: AppSpacing.xlg),
-              if (_isEditing)
-                FilledButton.icon(
+              if (_isEditing) ...[
+                OutlinedButton.icon(
                   onPressed:
                       _isSubmitting ||
                               _isLoadingInitialRecipients ||
@@ -505,8 +582,30 @@ class _AdminAnnouncementCreatePageState
                   label: Text(
                     _isSubmitting ? 'Guardando cambios…' : 'Guardar cambios',
                   ),
-                )
-              else ...[
+                ),
+                if (_persistedAnnouncement?.status ==
+                    AnnouncementStatus.draft) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  FilledButton.icon(
+                    onPressed:
+                        _isSubmitting ||
+                                _isLoadingInitialRecipients ||
+                                !_initialStateReady
+                            ? null
+                            : () => _submit(publish: true),
+                    icon:
+                        _isSubmitting
+                            ? const SizedBox.square(
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : const Icon(Icons.publish_outlined),
+                    label: Text(
+                      _isSubmitting ? 'Publicando…' : 'Publicar comunicado',
+                    ),
+                  ),
+                ],
+              ] else ...[
                 OutlinedButton.icon(
                   onPressed:
                       _isSubmitting ? null : () => _submit(publish: false),
@@ -531,6 +630,52 @@ class _AdminAnnouncementCreatePageState
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMultimediaPreparationCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final publicationId = _publicationId;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.perm_media_outlined),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Contenido multimedia',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              _canManageAssets
+                  ? 'El borrador ya tiene un identificador. '
+                      'Puedes agregar portada, imágenes y documentos.'
+                  : 'Guarda primero el comunicado como borrador para '
+                      'habilitar la carga segura de archivos.',
+              style: theme.textTheme.bodyMedium,
+            ),
+            if (publicationId != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              SelectableText(
+                'Publicación: $publicationId',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ],
         ),
       ),
     );
