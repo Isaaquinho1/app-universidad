@@ -36,18 +36,26 @@ class _LabelledInputState extends State<LabelledInput> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.label.toUpperCase(),
           textAlign: TextAlign.left,
-          style: AppTextStyle.chip.copyWith(color: Theme.of(context).extension<AppColors>()!.deactiveDarker),
+          style: AppTextStyle.chip.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
         TextField(
           controller: widget.controller,
           autofillHints: widget.autofillHints,
-          style: AppTextStyle.title,
+          style: AppTextStyle.title.copyWith(
+            color: colorScheme.onSurface,
+          ),
+          cursorColor: colorScheme.primary,
           onTap: () {},
           keyboardType: widget.keyboardType,
           obscureText: widget.obscureText == true && !_showPassword,
@@ -58,7 +66,7 @@ class _LabelledInputState extends State<LabelledInput> {
                 ? IconButton(
                     icon: Icon(
                       _showPassword ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).extension<AppColors>()!.deactiveDarker,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     onPressed: () {
                       setState(() {
@@ -70,7 +78,7 @@ class _LabelledInputState extends State<LabelledInput> {
                     ? IconButton(
                         icon: Icon(
                           Icons.cancel,
-                          color: Theme.of(context).extension<AppColors>()!.deactiveDarker,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                         onPressed: () {
                           widget.controller?.clear();
@@ -78,20 +86,24 @@ class _LabelledInputState extends State<LabelledInput> {
                       )
                     : null,
             hintText: widget.placeholder,
-            hintStyle: AppTextStyle.titleM.copyWith(color: Theme.of(context).extension<AppColors>()!.deactive),
+            hintStyle: AppTextStyle.titleM.copyWith(
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+            ),
             errorText: widget.errorText,
             errorStyle: AppTextStyle.captionL.copyWith(
-              color: AppColors.dark.colorful07,
+              color: colorScheme.error,
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).extension<AppColors>()!.colorful05),
+              borderSide: BorderSide(color: colorScheme.primary),
             ),
             filled: false,
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).extension<AppColors>()!.deactiveDarker),
+              borderSide: BorderSide(
+                color: colorScheme.outlineVariant,
+              ),
             ),
             border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).extension<AppColors>()!.colorful05),
+              borderSide: BorderSide(color: colorScheme.primary),
             ),
           ),
         ),

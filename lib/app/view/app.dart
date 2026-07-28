@@ -214,8 +214,11 @@ class _AppViewState extends State<_AppView> {
     );
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: theme.scaffoldBackgroundColor,
-        systemNavigationBarColor: theme.scaffoldBackgroundColor,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarContrastEnforced: false,
         statusBarIconBrightness:
             theme.brightness == Brightness.light
                 ? Brightness.dark

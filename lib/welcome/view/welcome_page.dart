@@ -14,97 +14,87 @@ class WelcomePage extends StatelessWidget {
     final colors = theme.extension<AppColors>()!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F8),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
+      backgroundColor: const Color(0xFF1A32D6),
+      body: Stack(
+        children: [
+          const Positioned.fill(child: _HeroBackground()),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
+              child: Column(
                 children: [
-                  const _HeroBackground(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xlg,
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 170,
-                                  height: 170,
-                                  child: ClipRect(
-                                    child: Transform.scale(
-                                      scale: 2.75,
-                                      child: Image.asset(
-                                        _logoPath,
-                                        fit: BoxFit.contain,
-                                        filterQuality: FilterQuality.high,
-                                        semanticLabel: 'Logo de Conecta ITT',
-                                      ),
-                                    ),
-                                  ),
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 170,
+                            height: 170,
+                            child: ClipRect(
+                              child: Transform.scale(
+                                scale: 2.75,
+                                child: Image.asset(
+                                  _logoPath,
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                  semanticLabel: 'Logo de Conecta ITT',
                                 ),
-
-                                const SizedBox(height: AppSpacing.md),
-
-                                Text(
-                                  'Conecta ITT',
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyle.h4.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 38,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-
-                                const SizedBox(height: AppSpacing.sm),
-
-                                Text(
-                                  'Tu comunidad universitaria, siempre conectada.',
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyle.body.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.92),
-                                  ),
-                                ),
-
-                                const SizedBox(height: AppSpacing.sm),
-
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                  ),
-                                  child: Text(
-                                    'Consulta comunicados, servicios y contenido '
-                                    'personalizado del TecNM Campus Tlalpan.',
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyle.captionL.copyWith(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.84,
-                                      ),
-                                      height: 1.45,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
 
-                        _AccessCard(colors: colors),
+                          const SizedBox(height: AppSpacing.md),
 
-                        const SizedBox(height: AppSpacing.xlg),
-                      ],
+                          Text(
+                            'Conecta ITT',
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.h4.copyWith(
+                              color: Colors.white,
+                              fontSize: 38,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+
+                          const SizedBox(height: AppSpacing.sm),
+
+                          Text(
+                            'Tu comunidad universitaria, siempre conectada.',
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.body.copyWith(
+                              color: Colors.white.withValues(alpha: 0.92),
+                            ),
+                          ),
+
+                          const SizedBox(height: AppSpacing.sm),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                            ),
+                            child: Text(
+                              'Consulta comunicados, servicios y contenido '
+                              'personalizado del TecNM Campus Tlalpan.',
+                              textAlign: TextAlign.center,
+                              style: AppTextStyle.captionL.copyWith(
+                                color: Colors.white.withValues(alpha: 0.84),
+                                height: 1.45,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+
+                  _AccessCard(colors: colors),
+
+                  const SizedBox(height: AppSpacing.xlg),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -43,14 +43,27 @@ class _AnimatedBottomNavigationBarState
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSlide(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-      offset: Offset(0, _controller.isVisible ? 0 : 1),
-      child: AppBottomNavigationBar(
-        key: ValueKey<int>(widget.index),
-        index: widget.index,
-        onClick: widget.onClick,
+    final mediaQuery = MediaQuery.of(context);
+    final controlledBottomInset =
+        mediaQuery.viewPadding.bottom > 0
+            ? mediaQuery.viewPadding.bottom * 0.35
+            : 0.0;
+
+    return MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: controlledBottomInset),
+        child: AnimatedSlide(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          offset: Offset(0, _controller.isVisible ? 0 : 1),
+          child: AppBottomNavigationBar(
+            key: ValueKey<int>(widget.index),
+            index: widget.index,
+            onClick: widget.onClick,
+          ),
+        ),
       ),
     );
   }

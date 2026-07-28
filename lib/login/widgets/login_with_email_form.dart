@@ -43,82 +43,87 @@ class _LoginContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
+    final topInset = MediaQuery.paddingOf(context).top;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+
     return ColoredBox(
-      color: const Color(0xFFF3F4F8),
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const _LoginHeader(),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.xlg,
-                            AppSpacing.xlg,
-                            AppSpacing.xlg,
-                            AppSpacing.xxlg,
+      color: surfaceColor,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _LoginHeader(topInset: topInset),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpacing.xlg,
+                          AppSpacing.xlg,
+                          AppSpacing.xlg,
+                          AppSpacing.xxlg + bottomInset,
+                        ),
+                        decoration: BoxDecoration(
+                          color: surfaceColor,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(34),
                           ),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFF3F4F8),
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(34),
-                            ),
-                          ),
-                          child: const AutofillGroup(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                _FormIntroduction(),
-                                SizedBox(height: AppSpacing.xlg),
-                                _EmailInput(),
-                                SizedBox(height: AppSpacing.lg),
-                                _PasswordInput(),
-                                SizedBox(height: AppSpacing.sm),
-                                _RememberAndForgotRow(),
-                                SizedBox(height: AppSpacing.xlg),
-                                _LoginButton(),
-                                SizedBox(height: AppSpacing.lg),
-                                _AccountDivider(),
-                                SizedBox(height: AppSpacing.lg),
-                                _RegisterButton(),
-                                SizedBox(height: AppSpacing.xlg),
-                                _InstitutionalAccessNotice(),
-                              ],
-                            ),
+                        ),
+                        child: const AutofillGroup(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _FormIntroduction(),
+                              SizedBox(height: AppSpacing.xlg),
+                              _EmailInput(),
+                              SizedBox(height: AppSpacing.lg),
+                              _PasswordInput(),
+                              SizedBox(height: AppSpacing.sm),
+                              _RememberAndForgotRow(),
+                              SizedBox(height: AppSpacing.xlg),
+                              _LoginButton(),
+                              SizedBox(height: AppSpacing.lg),
+                              _AccountDivider(),
+                              SizedBox(height: AppSpacing.lg),
+                              _RegisterButton(),
+                              SizedBox(height: AppSpacing.xlg),
+                              _InstitutionalAccessNotice(),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
 class _LoginHeader extends StatelessWidget {
-  const _LoginHeader();
+  const _LoginHeader({required this.topInset});
+
+  final double topInset;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 250,
+      height: 250 + topInset,
       child: Stack(
         children: [
           const Positioned.fill(child: _HeaderBackground()),
           Positioned(
-            top: 14,
+            top: topInset + 14,
             left: AppSpacing.lg,
             child: Material(
               color: Colors.white,
@@ -133,10 +138,10 @@ class _LoginHeader extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             left: AppSpacing.xlg,
             right: AppSpacing.xlg,
-            top: 58,
+            top: topInset + 58,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -252,7 +257,7 @@ class _FormIntroduction extends StatelessWidget {
           '¡Bienvenid@ de nuevo!',
           textAlign: TextAlign.center,
           style: AppTextStyle.h4.copyWith(
-            color: const Color(0xFF202124),
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 22,
             fontWeight: FontWeight.w700,
           ),

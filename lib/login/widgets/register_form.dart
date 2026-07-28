@@ -84,71 +84,76 @@ class _RegisterContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
+    final topInset = MediaQuery.paddingOf(context).top;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+
     return ColoredBox(
-      color: const Color(0xFFF3F4F8),
-      child: SafeArea(
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          slivers: [
-            const SliverToBoxAdapter(child: _RegisterHeader()),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xlg,
-                AppSpacing.xlg,
-                AppSpacing.xlg,
-                AppSpacing.xxlg,
-              ),
-              sliver: SliverToBoxAdapter(
-                child: AutofillGroup(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const _FormIntroduction(),
-                      const SizedBox(height: AppSpacing.xlg),
-                      const _FullNameInput(),
-                      const SizedBox(height: AppSpacing.lg),
-                      const _EmailInput(),
-                      const SizedBox(height: AppSpacing.md),
-                      const _DetectedAccountInformation(),
-                      const _DynamicAccountFields(),
-                      const SizedBox(height: AppSpacing.lg),
-                      const _PasswordInput(),
-                      const SizedBox(height: AppSpacing.lg),
-                      const _PasswordConfirmationInput(),
-                      const SizedBox(height: AppSpacing.md),
-                      const _PasswordRequirements(),
-                      const SizedBox(height: AppSpacing.xlg),
-                      const _TermsAcceptance(),
-                      const SizedBox(height: AppSpacing.xlg),
-                      const _RegisterButton(),
-                      const SizedBox(height: AppSpacing.md),
-                      const _BackToLoginButton(),
-                      const SizedBox(height: AppSpacing.lg),
-                      const _SecurityNotice(),
-                    ],
-                  ),
+      color: surfaceColor,
+      child: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          SliverToBoxAdapter(child: _RegisterHeader(topInset: topInset)),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.xlg,
+              AppSpacing.xlg,
+              AppSpacing.xlg,
+              AppSpacing.xxlg + bottomInset,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: AutofillGroup(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _FormIntroduction(),
+                    const SizedBox(height: AppSpacing.xlg),
+                    const _FullNameInput(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _EmailInput(),
+                    const SizedBox(height: AppSpacing.md),
+                    const _DetectedAccountInformation(),
+                    const _DynamicAccountFields(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _PasswordInput(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _PasswordConfirmationInput(),
+                    const SizedBox(height: AppSpacing.md),
+                    const _PasswordRequirements(),
+                    const SizedBox(height: AppSpacing.xlg),
+                    const _TermsAcceptance(),
+                    const SizedBox(height: AppSpacing.xlg),
+                    const _RegisterButton(),
+                    const SizedBox(height: AppSpacing.md),
+                    const _BackToLoginButton(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _SecurityNotice(),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _RegisterHeader extends StatelessWidget {
-  const _RegisterHeader();
+  const _RegisterHeader({required this.topInset});
+
+  final double topInset;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 245,
+      height: 245 + topInset,
       child: Stack(
         children: [
           const Positioned.fill(child: _HeaderBackground()),
           Positioned(
-            top: 14,
+            top: topInset + 14,
             left: AppSpacing.lg,
             child: Material(
               color: Colors.white,
@@ -163,8 +168,8 @@ class _RegisterHeader extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned(
-            top: 58,
+          Positioned(
+            top: topInset + 58,
             left: AppSpacing.xlg,
             right: AppSpacing.xlg,
             child: Column(
@@ -286,7 +291,7 @@ class _FormIntroduction extends StatelessWidget {
           'Únete a Conecta ITT',
           textAlign: TextAlign.center,
           style: AppTextStyle.h4.copyWith(
-            color: const Color(0xFF202124),
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 25,
             fontWeight: FontWeight.w700,
           ),
