@@ -283,13 +283,14 @@ class _ReceiptBadge extends StatelessWidget {
     final isEdited =
         receipt != null && receipt!.receiptVersion < contentVersion;
 
-    final (label, icon, backgroundColor, foregroundColor) =
+    final (label, icon, backgroundColor, foregroundColor, borderColor) =
         isEdited
             ? (
               'Editado',
               Icons.edit_notifications_outlined,
-              theme.colorScheme.errorContainer,
-              theme.colorScheme.onErrorContainer,
+              Colors.orange.shade700,
+              Colors.white,
+              Colors.transparent,
             )
             : switch (status) {
               null || AnnouncementReceiptStatus.delivered => (
@@ -297,24 +298,28 @@ class _ReceiptBadge extends StatelessWidget {
                 Icons.fiber_new_outlined,
                 theme.colorScheme.primaryContainer,
                 theme.colorScheme.onPrimaryContainer,
+                Colors.transparent,
               ),
               AnnouncementReceiptStatus.seen => (
                 'Visto',
                 Icons.visibility_outlined,
                 theme.colorScheme.secondaryContainer,
                 theme.colorScheme.onSecondaryContainer,
+                Colors.transparent,
               ),
               AnnouncementReceiptStatus.read => (
                 'Leído',
                 Icons.done_all,
-                theme.colorScheme.tertiaryContainer,
-                theme.colorScheme.onTertiaryContainer,
+                theme.colorScheme.surface,
+                Colors.blue.shade700,
+                Colors.blue.shade200,
               ),
               AnnouncementReceiptStatus.confirmed => (
                 'Confirmado',
                 Icons.verified_outlined,
-                theme.colorScheme.primaryContainer,
-                theme.colorScheme.onPrimaryContainer,
+                Colors.green.shade700,
+                Colors.white,
+                Colors.transparent,
               ),
             };
 
@@ -322,6 +327,10 @@ class _ReceiptBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(999),
+        border:
+            borderColor == Colors.transparent
+                ? null
+                : Border.all(color: borderColor),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -354,14 +363,63 @@ class _PriorityBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = switch (priority) {
-      AnnouncementPriority.low => 'Baja',
-      AnnouncementPriority.normal => 'Normal',
-      AnnouncementPriority.high => 'Importante',
-      AnnouncementPriority.urgent => 'Urgente',
+    final theme = Theme.of(context);
+
+    final (
+      label,
+      backgroundColor,
+      foregroundColor,
+      borderColor,
+    ) = switch (priority) {
+      AnnouncementPriority.low => (
+        'Baja',
+        theme.colorScheme.surfaceContainerLow,
+        theme.colorScheme.onSurfaceVariant,
+        theme.colorScheme.outlineVariant,
+      ),
+      AnnouncementPriority.normal => (
+        'Normal',
+        theme.colorScheme.surfaceContainerLow,
+        theme.colorScheme.onSurfaceVariant,
+        theme.colorScheme.outlineVariant,
+      ),
+      AnnouncementPriority.high => (
+        'Importante',
+        Colors.amber.shade900,
+        Colors.white,
+        Colors.transparent,
+      ),
+      AnnouncementPriority.urgent => (
+        'Urgente',
+        Colors.red.shade700,
+        Colors.white,
+        Colors.transparent,
+      ),
     };
 
-    return Chip(visualDensity: VisualDensity.compact, label: Text(label));
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+        border:
+            borderColor == Colors.transparent
+                ? null
+                : Border.all(color: borderColor),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: foregroundColor,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
   }
 }
 

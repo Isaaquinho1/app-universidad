@@ -275,6 +275,13 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
                             SizedBox(
                               width: double.infinity,
                               child: FilledButton.icon(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.green.shade700,
+                                  foregroundColor: Colors.white,
+                                  disabledBackgroundColor:
+                                      Colors.green.shade200,
+                                  disabledForegroundColor: Colors.white,
+                                ),
                                 onPressed:
                                     state.isRead &&
                                             !state.isConfirmed &&
@@ -399,11 +406,38 @@ class _AnnouncementStatusHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final priorityLabel = switch (priority) {
-      AnnouncementPriority.low => 'Prioridad baja',
-      AnnouncementPriority.normal => 'Prioridad normal',
-      AnnouncementPriority.high => 'Importante',
-      AnnouncementPriority.urgent => 'Urgente',
+    final theme = Theme.of(context);
+
+    final (
+      priorityLabel,
+      priorityBackground,
+      priorityForeground,
+      priorityBorder,
+    ) = switch (priority) {
+      AnnouncementPriority.low => (
+        'Prioridad baja',
+        theme.colorScheme.surfaceContainerLow,
+        theme.colorScheme.onSurfaceVariant,
+        theme.colorScheme.outlineVariant,
+      ),
+      AnnouncementPriority.normal => (
+        'Prioridad normal',
+        theme.colorScheme.surfaceContainerLow,
+        theme.colorScheme.onSurfaceVariant,
+        theme.colorScheme.outlineVariant,
+      ),
+      AnnouncementPriority.high => (
+        'Importante',
+        Colors.amber.shade400,
+        Colors.white,
+        Colors.transparent,
+      ),
+      AnnouncementPriority.urgent => (
+        'Urgente',
+        Colors.red.shade700,
+        Colors.white,
+        Colors.transparent,
+      ),
     };
 
     final isEdited =
@@ -420,24 +454,112 @@ class _AnnouncementStatusHeader extends StatelessWidget {
               null => 'Registrando apertura',
             };
 
+    final (statusBackground, statusForeground, statusBorder, statusIcon) =
+        isEdited
+            ? (
+              Colors.orange.shade700,
+              Colors.white,
+              Colors.transparent,
+              Icons.edit_notifications_outlined,
+            )
+            : switch (receipt?.status) {
+              AnnouncementReceiptStatus.confirmed => (
+                Colors.green.shade700,
+                Colors.white,
+                Colors.transparent,
+                Icons.verified_outlined,
+              ),
+              AnnouncementReceiptStatus.read => (
+                theme.colorScheme.surface,
+                Colors.blue.shade700,
+                Colors.blue.shade200,
+                Icons.done_all,
+              ),
+              AnnouncementReceiptStatus.seen => (
+                theme.colorScheme.secondaryContainer,
+                theme.colorScheme.onSecondaryContainer,
+                Colors.transparent,
+                Icons.visibility_outlined,
+              ),
+              AnnouncementReceiptStatus.delivered || null => (
+                theme.colorScheme.primaryContainer,
+                theme.colorScheme.onPrimaryContainer,
+                Colors.transparent,
+                Icons.fiber_new_outlined,
+              ),
+            };
+
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
       children: [
-        Chip(
-          avatar: const Icon(Icons.campaign_outlined, size: 18),
-          label: Text(priorityLabel),
+        _DetailBadge(
+          label: priorityLabel,
+          icon: Icons.campaign_outlined,
+          backgroundColor: priorityBackground,
+          foregroundColor: priorityForeground,
+          borderColor: priorityBorder,
         ),
-        Chip(
-          avatar: Icon(
-            !isEdited && (receipt?.isConfirmed ?? false)
-                ? Icons.verified_outlined
-                : Icons.visibility_outlined,
-            size: 18,
-          ),
-          label: Text(statusLabel),
+        _DetailBadge(
+          label: statusLabel,
+          icon: statusIcon,
+          backgroundColor: statusBackground,
+          foregroundColor: statusForeground,
+          borderColor: statusBorder,
         ),
       ],
+    );
+  }
+}
+
+class _DetailBadge extends StatelessWidget {
+  const _DetailBadge({
+    required this.label,
+    required this.icon,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    required this.borderColor,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+        border:
+            borderColor == Colors.transparent
+                ? null
+                : Border.all(color: borderColor),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: foregroundColor),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: foregroundColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
