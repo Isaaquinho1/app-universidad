@@ -178,9 +178,19 @@ class _AppViewState extends State<_AppView> {
                                 ),
                           );
 
-                          return FirebaseInteractedMessageListener(
-                            router: _router,
-                            child: app,
+                          return BlocListener<AppBloc, AppState>(
+                            listenWhen:
+                                (previous, current) =>
+                                    previous.status != current.status,
+                            listener: (context, state) {
+                              if (!state.status.isLoggedIn) {
+                                _router.go('/welcome');
+                              }
+                            },
+                            child: FirebaseInteractedMessageListener(
+                              router: _router,
+                              child: app,
+                            ),
                           );
                         },
                       );
