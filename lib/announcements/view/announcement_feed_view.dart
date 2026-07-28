@@ -28,6 +28,7 @@ class AnnouncementCategoryFeed extends StatelessWidget {
       create:
           (context) => AnnouncementBloc(
             repository: context.read<AnnouncementRepository>(),
+            assetRepository: context.read<PublicationAssetRepository>(),
             profile: profile,
           )..add(const AnnouncementsStarted()),
       child: AnnouncementFeedView(scrollController: scrollController),
@@ -91,6 +92,9 @@ class AnnouncementFeedView extends StatelessWidget {
                           announcement: announcement,
                           receipt:
                               state.receiptsByAnnouncementId[announcement.id],
+                          assets:
+                              state.assetsByAnnouncementId[announcement.id] ??
+                              const [],
                         );
                       },
                       separatorBuilder:
@@ -107,10 +111,16 @@ class AnnouncementFeedView extends StatelessWidget {
 }
 
 class AnnouncementCard extends StatelessWidget {
-  const AnnouncementCard({required this.announcement, this.receipt, super.key});
+  const AnnouncementCard({
+    required this.announcement,
+    this.receipt,
+    this.assets = const [],
+    super.key,
+  });
 
   final Announcement announcement;
   final AnnouncementReceipt? receipt;
+  final List<PublicationAsset> assets;
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +129,7 @@ class AnnouncementCard extends StatelessWidget {
         announcement.summary?.trim().isNotEmpty ?? false
             ? announcement.summary!
             : announcement.body;
+    final cover = _coverAsset;
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -136,15 +147,28 @@ class AnnouncementCard extends StatelessWidget {
           await Navigator.of(context).push<void>(
             MaterialPageRoute<void>(
               builder:
-                  (_) => BlocProvider(
-                    create:
-                        (_) => AnnouncementReceiptCubit(
-                          repository: repository,
-                          announcementId: announcement.id,
-                          userUid: profile.uid,
-                          contentVersion: announcement.contentVersion,
-                        )..started(),
-                    child: AnnouncementDetailView(announcement: announcement),
+                  (_) => MultiRepositoryProvider(
+                    providers: [
+                      RepositoryProvider<AnnouncementRepository>.value(
+                        value: repository,
+                      ),
+                      RepositoryProvider<PublicationAssetRepository>.value(
+                        value: context.read<PublicationAssetRepository>(),
+                      ),
+                    ],
+                    child: BlocProvider(
+                      create:
+                          (_) => AnnouncementReceiptCubit(
+                            repository: repository,
+                            announcementId: announcement.id,
+                            userUid: profile.uid,
+                            contentVersion: announcement.contentVersion,
+                          )..started(),
+                      child: AnnouncementDetailView(
+                        announcement: announcement,
+                        initialAssets: assets,
+                      ),
+                    ),
                   ),
             ),
           );
@@ -155,66 +179,94 @@ class AnnouncementCard extends StatelessWidget {
 
           context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
         },
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      announcement.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  _PriorityBadge(priority: announcement.priority),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                description,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: _ReceiptBadge(
-                  receipt: receipt,
-                  contentVersion: announcement.contentVersion,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (cover != null)
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: PublicationAssetImage(
+                  asset: cover,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-              Row(
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.account_circle_outlined, size: 18),
-                  const SizedBox(width: AppSpacing.xs),
-                  Expanded(
-                    child: Text(
-                      announcement.authorName ?? 'TecNM Campus Tlalpan',
-                      style: theme.textTheme.bodySmall,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          announcement.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _PriorityBadge(priority: announcement.priority),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    description,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: _ReceiptBadge(
+                      receipt: receipt,
+                      contentVersion: announcement.contentVersion,
                     ),
                   ),
-                  if (announcement.attachmentUrls.isNotEmpty) ...[
-                    const Icon(Icons.attach_file, size: 18),
-                    Text(
-                      '${announcement.attachmentUrls.length}',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ],
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    children: [
+                      const Icon(Icons.account_circle_outlined, size: 18),
+                      const SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          announcement.authorName ?? 'TecNM Campus Tlalpan',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                      if (_attachmentCount > 0) ...[
+                        const Icon(Icons.attach_file, size: 18),
+                        Text(
+                          '$_attachmentCount',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  int get _attachmentCount {
+    return assets.where((asset) => asset.type.isAttachment).length;
+  }
+
+  PublicationAsset? get _coverAsset {
+    for (final asset in assets) {
+      if (asset.type.isCover) {
+        return asset;
+      }
+    }
+
+    return null;
   }
 }
 

@@ -12,8 +12,10 @@ part 'announcement_state.dart';
 class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
   AnnouncementBloc({
     required AnnouncementRepository repository,
+    required PublicationAssetRepository assetRepository,
     required AppUserProfile profile,
   }) : _repository = repository,
+       _assetRepository = assetRepository,
        _profile = profile,
        super(const AnnouncementState()) {
     on<AnnouncementsStarted>(_onStarted);
@@ -22,6 +24,7 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
   }
 
   final AnnouncementRepository _repository;
+  final PublicationAssetRepository _assetRepository;
   final AppUserProfile _profile;
 
   StreamSubscription<List<Announcement>>? _subscription;
@@ -53,19 +56,36 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
     Emitter<AnnouncementState> emit,
   ) async {
     try {
-      final receiptsByAnnouncementId = await _repository
-          .fetchReceiptsForAnnouncements(
-            announcementIds: event.announcements.map(
-              (announcement) => announcement.id,
-            ),
-            userUid: _profile.uid,
-          );
+      final announcementIds = event.announcements
+          .map((announcement) => announcement.id)
+          .toList(growable: false);
+
+      final receiptsFuture = _repository.fetchReceiptsForAnnouncements(
+        announcementIds: announcementIds,
+        userUid: _profile.uid,
+      );
+
+      final assetsFuture = _assetRepository.fetchAssetsForPublications(
+        publicationIds: announcementIds,
+      );
+
+      final receiptsByAnnouncementId = await receiptsFuture;
+
+      Map<String, List<PublicationAsset>> assetsByAnnouncementId;
+
+      try {
+        assetsByAnnouncementId = await assetsFuture;
+      } catch (error, stackTrace) {
+        assetsByAnnouncementId = const {};
+        addError(error, stackTrace);
+      }
 
       emit(
         state.copyWith(
           status: AnnouncementsStatus.populated,
           announcements: event.announcements,
           receiptsByAnnouncementId: receiptsByAnnouncementId,
+          assetsByAnnouncementId: assetsByAnnouncementId,
         ),
       );
     } catch (error, stackTrace) {

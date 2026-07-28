@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:conecta_itt/announcements/models/models.dart';
+import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -119,6 +123,45 @@ class PublicationAssetRepository {
         .order('created_at');
 
     return rows.map(PublicationAsset.fromSupabase).toList(growable: false);
+  }
+
+  /// Returns managed assets grouped by publication identifier.
+  ///
+  /// This prevents one database request per card in the student feed.
+  Future<Map<String, List<PublicationAsset>>> fetchAssetsForPublications({
+    required Iterable<String> publicationIds,
+  }) async {
+    final ids = publicationIds
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+
+    if (ids.isEmpty) {
+      return const {};
+    }
+
+    final rows = await _supabaseClient
+        .from(_assetsTable)
+        .select()
+        .inFilter('publication_id', ids)
+        .order('display_order')
+        .order('created_at');
+
+    final grouped = <String, List<PublicationAsset>>{
+      for (final id in ids) id: <PublicationAsset>[],
+    };
+
+    for (final row in rows) {
+      final asset = PublicationAsset.fromSupabase(row);
+      grouped.putIfAbsent(asset.publicationId, () => <PublicationAsset>[]);
+      grouped[asset.publicationId]!.add(asset);
+    }
+
+    return {
+      for (final entry in grouped.entries)
+        entry.key: List<PublicationAsset>.unmodifiable(entry.value),
+    };
   }
 
   /// Returns the cover asset for one publication, when available.
@@ -326,6 +369,45 @@ class PublicationAssetRepository {
         .createSignedUrl(asset.storagePath, expiresInSeconds);
   }
 
+  /// Downloads a private publication asset to the application cache and
+  /// requests the operating system to open it with a compatible application.
+  Future<void> downloadAndOpenAsset(PublicationAsset asset) async {
+    if (asset.storagePath.trim().isEmpty) {
+      throw ArgumentError.value(
+        asset.storagePath,
+        'asset.storagePath',
+        'A Storage path is required.',
+      );
+    }
+
+    final signedUrl = await createSignedUrl(asset, expiresInSeconds: 300);
+
+    final response = await http.get(Uri.parse(signedUrl));
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw StateError(
+        'No se pudo descargar el archivo '
+        '(HTTP ${response.statusCode}).',
+      );
+    }
+
+    final temporaryDirectory = await getTemporaryDirectory();
+    final safeName = _safeLocalFileName(asset.originalName);
+    final localFile = File('${temporaryDirectory.path}/${asset.id}-$safeName');
+
+    await localFile.writeAsBytes(response.bodyBytes, flush: true);
+
+    final result = await OpenFilex.open(localFile.path);
+
+    if (result.type != ResultType.done) {
+      throw StateError(
+        result.message.isEmpty
+            ? 'No existe una aplicación compatible para abrir el archivo.'
+            : result.message,
+      );
+    }
+  }
+
   /// Deletes one Storage object and its metadata.
   Future<void> deleteAsset(PublicationAsset asset) async {
     if (asset.id.trim().isEmpty) {
@@ -491,6 +573,19 @@ class PublicationAssetRepository {
           'No se pudo determinar el tipo MIME para .$extension.',
         );
     }
+  }
+
+  String _safeLocalFileName(String fileName) {
+    final normalized = fileName.trim().replaceAll(
+      RegExp(r'[^a-zA-Z0-9._ -]'),
+      '_',
+    );
+
+    if (normalized.isEmpty) {
+      return 'archivo';
+    }
+
+    return normalized;
   }
 
   void _validatePublicationId(String publicationId) {

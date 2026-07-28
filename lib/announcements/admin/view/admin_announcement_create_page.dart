@@ -1053,18 +1053,37 @@ class _AdminAnnouncementCreatePageState
   Widget _buildAssetTile(BuildContext context, PublicationAsset asset) {
     final theme = Theme.of(context);
 
-    final icon =
-        asset.type.isCover
-            ? Icons.image_outlined
-            : asset.type.isImage
-            ? Icons.photo_library_outlined
-            : asset.isPdf
+    final documentIcon =
+        asset.isPdf
             ? Icons.picture_as_pdf_outlined
             : Icons.description_outlined;
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon),
+      leading:
+          asset.type.isImage
+              ? SizedBox(
+                width: 64,
+                height: 48,
+                child: PublicationAssetImage(
+                  asset: asset,
+                  width: 64,
+                  height: 48,
+                  fit: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              )
+              : SizedBox(
+                width: 64,
+                height: 48,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(documentIcon),
+                ),
+              ),
       title: Text(
         asset.originalName,
         maxLines: 2,
