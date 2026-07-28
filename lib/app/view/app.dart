@@ -39,6 +39,9 @@ class App extends StatelessWidget {
             RepositoryProvider<AnnouncementRepository>.value(
               value: appScope.announcementRepository,
             ),
+            RepositoryProvider<PublicationAssetRepository>.value(
+              value: appScope.publicationAssetRepository,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [

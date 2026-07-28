@@ -26,6 +26,7 @@ abstract class AppScope implements Scope {
   UserRepository get userRepository;
   AppUserProfileRepository get appUserProfileRepository;
   AnnouncementRepository get announcementRepository;
+  PublicationAssetRepository get publicationAssetRepository;
   SupabaseClient get supabaseClient;
 }
 
@@ -105,6 +106,10 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   late final _announcementRepositoryDep = dep(
     () => AnnouncementRepository(supabaseClient: _supabaseClientDep.get),
   );
+
+  late final _publicationAssetRepositoryDep = dep(
+    () => PublicationAssetRepository(supabaseClient: _supabaseClientDep.get),
+  );
   late final _analyticsRepositoryDep = dep(() {
     try {
       return AnalyticsRepository(FirebaseAnalytics.instance);
@@ -143,6 +148,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   AnnouncementRepository get announcementRepository =>
       _announcementRepositoryDep.get;
+  @override
+  PublicationAssetRepository get publicationAssetRepository =>
+      _publicationAssetRepositoryDep.get;
   @override
   SupabaseClient get supabaseClient => _supabaseClientDep.get;
 }
