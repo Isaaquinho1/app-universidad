@@ -39,10 +39,9 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
     super.onEvent(bloc, event);
-    if (event != null) {
-      _analyticsRepository.track(
-        AnalyticsEvent('${bloc.runtimeType}_${event.runtimeType}'),
-      );
+
+    if (event is AnalyticsEventMixin) {
+      _analyticsRepository.track(event.event);
     }
   }
 

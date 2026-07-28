@@ -2,6 +2,8 @@ part of 'register_bloc.dart';
 
 enum AcademicGroupsStatus { initial, loading, success, failure }
 
+enum LegalDocumentsStatus { initial, loading, success, failure }
+
 class RegisterState extends Equatable {
   const RegisterState({
     this.fullName = '',
@@ -18,6 +20,8 @@ class RegisterState extends Equatable {
     this.availableGroups = const [],
     this.groupsStatus = AcademicGroupsStatus.initial,
     this.termsAccepted = false,
+    this.legalDocuments = const [],
+    this.legalDocumentsStatus = LegalDocumentsStatus.initial,
     this.errorMessage,
   });
 
@@ -37,6 +41,9 @@ class RegisterState extends Equatable {
   final AcademicGroupsStatus groupsStatus;
 
   final bool termsAccepted;
+  final List<LegalDocument> legalDocuments;
+  final LegalDocumentsStatus legalDocumentsStatus;
+
   final String? errorMessage;
 
   bool get isStudent => emailType.isStudent;
@@ -46,6 +53,31 @@ class RegisterState extends Equatable {
   bool get hasConfiguredGroups => availableGroups.isNotEmpty;
 
   bool get academicSelectionReady => careerId != null && semester != null;
+
+  LegalDocument? get termsDocument {
+    for (final document in legalDocuments) {
+      if (document.isTerms) {
+        return document;
+      }
+    }
+
+    return null;
+  }
+
+  LegalDocument? get privacyDocument {
+    for (final document in legalDocuments) {
+      if (document.isPrivacy) {
+        return document;
+      }
+    }
+
+    return null;
+  }
+
+  bool get legalDocumentsReady =>
+      legalDocumentsStatus == LegalDocumentsStatus.success &&
+      termsDocument != null &&
+      privacyDocument != null;
 
   RegisterState copyWith({
     String? fullName,
@@ -66,6 +98,8 @@ class RegisterState extends Equatable {
     List<AcademicGroup>? availableGroups,
     AcademicGroupsStatus? groupsStatus,
     bool? termsAccepted,
+    List<LegalDocument>? legalDocuments,
+    LegalDocumentsStatus? legalDocumentsStatus,
     String? errorMessage,
     bool clearErrorMessage = false,
   }) {
@@ -85,6 +119,8 @@ class RegisterState extends Equatable {
       availableGroups: availableGroups ?? this.availableGroups,
       groupsStatus: groupsStatus ?? this.groupsStatus,
       termsAccepted: termsAccepted ?? this.termsAccepted,
+      legalDocuments: legalDocuments ?? this.legalDocuments,
+      legalDocumentsStatus: legalDocumentsStatus ?? this.legalDocumentsStatus,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
     );
@@ -106,6 +142,8 @@ class RegisterState extends Equatable {
     availableGroups,
     groupsStatus,
     termsAccepted,
+    legalDocuments,
+    legalDocumentsStatus,
     errorMessage,
   ];
 }

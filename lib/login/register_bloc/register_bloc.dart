@@ -97,8 +97,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc({
     required UserRepository userRepository,
     required AcademicCatalogRepository academicCatalogRepository,
+    required LegalDocumentRepository legalDocumentRepository,
   }) : _userRepository = userRepository,
        _academicCatalogRepository = academicCatalogRepository,
+       _legalDocumentRepository = legalDocumentRepository,
        super(const RegisterState()) {
     on<RegisterFullNameChanged>(_onFullNameChanged);
     on<RegisterEmailChanged>(_onEmailChanged);
@@ -108,11 +110,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterTermsAcceptanceChanged>(_onTermsAcceptanceChanged);
     on<RegisterPasswordChanged>(_onPasswordChanged);
     on<RegisterPasswordConfirmationChanged>(_onPasswordConfirmationChanged);
+    on<RegisterLegalDocumentsRequested>(_onLegalDocumentsRequested);
     on<RegisterSubmitted>(_onSubmitted);
+
+    add(const RegisterLegalDocumentsRequested());
   }
 
   final UserRepository _userRepository;
   final AcademicCatalogRepository _academicCatalogRepository;
+  final LegalDocumentRepository _legalDocumentRepository;
 
   void _onFullNameChanged(
     RegisterFullNameChanged event,
@@ -265,6 +271,43 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
+  Future<void> _onLegalDocumentsRequested(
+    RegisterLegalDocumentsRequested event,
+    Emitter<RegisterState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        legalDocumentsStatus: LegalDocumentsStatus.loading,
+        legalDocuments: const [],
+        termsAccepted: false,
+        clearErrorMessage: true,
+      ),
+    );
+
+    try {
+      final documents =
+          await _legalDocumentRepository.fetchRegistrationDocuments();
+
+      final next = state.copyWith(
+        legalDocuments: documents,
+        legalDocumentsStatus: LegalDocumentsStatus.success,
+      );
+
+      _emitValidated(emit, next);
+    } catch (error, stackTrace) {
+      final next = state.copyWith(
+        legalDocuments: const [],
+        legalDocumentsStatus: LegalDocumentsStatus.failure,
+        termsAccepted: false,
+        errorMessage:
+            'No fue posible cargar los documentos legales requeridos.',
+      );
+
+      _emitValidated(emit, next);
+      addError(error, stackTrace);
+    }
+  }
+
   Future<void> _loadGroupsIfReady(Emitter<RegisterState> emit) async {
     final current = state;
 
@@ -274,20 +317,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       return;
     }
 
-    emit(
-      current.copyWith(
-        groupsStatus: AcademicGroupsStatus.loading,
-        availableGroups: const [],
-        clearGroupId: true,
-        valid: _validateState(
-          current.copyWith(
-            groupsStatus: AcademicGroupsStatus.loading,
-            availableGroups: const [],
-            clearGroupId: true,
-          ),
-        ),
-      ),
+    final loadingState = current.copyWith(
+      groupsStatus: AcademicGroupsStatus.loading,
+      availableGroups: const [],
+      clearGroupId: true,
     );
+
+    emit(loadingState.copyWith(valid: _validateState(loadingState)));
 
     try {
       final groups = await _academicCatalogRepository.fetchGroups(
@@ -342,9 +378,24 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       return;
     }
 
+    final termsDocument = submittedState.termsDocument;
+    final privacyDocument = submittedState.privacyDocument;
+
+    if (termsDocument == null || privacyDocument == null) {
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          errorMessage:
+              'No están disponibles los documentos legales requeridos.',
+        ),
+      );
+      return;
+    }
+
     final institutionalEmail = email.institutionalEmail;
     final isStudent = institutionalEmail.type.isStudent;
     final hasGroupCatalog = submittedState.availableGroups.isNotEmpty;
+    final legalAcceptedAt = DateTime.now().toUtc().toIso8601String();
 
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
@@ -356,7 +407,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           'display_name': submittedState.fullName.trim(),
           'institutionalEmailType': institutionalEmail.type.name,
           'termsAccepted': true,
-          'termsAcceptedAt': DateTime.now().toUtc().toIso8601String(),
+          'privacyAccepted': true,
+          'termsDocumentVersion': termsDocument.version,
+          'privacyDocumentVersion': privacyDocument.version,
+          'legalAcceptedAt': legalAcceptedAt,
           if (institutionalEmail.controlNumber != null)
             'controlNumber': institutionalEmail.controlNumber,
           if (isStudent) ...{
@@ -415,6 +469,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         fullNameValid &&
         credentialsValid &&
         state.termsAccepted &&
+        state.legalDocumentsReady &&
         state.emailType.isValid;
 
     if (!commonValid) {
@@ -447,6 +502,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     if (message.contains('already registered') ||
         message.contains('user already exists')) {
       return 'Este correo institucional ya está registrado.';
+    }
+
+    if (message.contains('terms') ||
+        message.contains('privacy') ||
+        message.contains('legal document')) {
+      return 'Los documentos legales cambiaron. '
+          'Revisa y acepta nuevamente las condiciones.';
     }
 
     if (message.contains('password')) {

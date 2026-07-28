@@ -792,67 +792,130 @@ class _TermsAcceptance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accepted = context.select(
-      (RegisterBloc bloc) => bloc.state.termsAccepted,
-    );
+    final state = context.watch<RegisterBloc>().state;
+    final terms = state.termsDocument;
+    final privacy = state.privacyDocument;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    if (state.legalDocumentsStatus == LegalDocumentsStatus.loading ||
+        state.legalDocumentsStatus == LegalDocumentsStatus.initial) {
+      return const _CatalogMessage(
+        icon: Icons.description_outlined,
+        text: 'Cargando Términos de Servicio y Política de Privacidad...',
+        showProgress: true,
+      );
+    }
+
+    if (state.legalDocumentsStatus == LegalDocumentsStatus.failure ||
+        terms == null ||
+        privacy == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _CatalogMessage(
+            icon: Icons.error_outline_rounded,
+            text:
+                'No fue posible cargar los documentos legales. '
+                'No puedes completar el registro por el momento.',
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextButton.icon(
+            onPressed: () {
+              context.read<RegisterBloc>().add(
+                const RegisterLegalDocumentsRequested(),
+              );
+            },
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Reintentar'),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Checkbox(
-          key: const Key('registerForm_termsCheckbox'),
-          value: accepted,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          onChanged: (value) {
-            context.read<RegisterBloc>().add(
-              RegisterTermsAcceptanceChanged(value ?? false),
-            );
-          },
-        ),
-        const SizedBox(width: AppSpacing.xs),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 9),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
+        if (terms.isDevelopment || privacy.isDevelopment) ...[
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4D9),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFF2D384)),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Al registrarte, aceptas nuestros ',
-                  style: TextStyle(
-                    color: Color(0xFF555A66),
-                    fontSize: 13,
-                    height: 1.5,
+                Icon(
+                  Icons.science_outlined,
+                  size: 20,
+                  color: Color(0xFF9A6B00),
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Los documentos legales actuales son versiones '
+                    'provisionales para pruebas internas.',
+                    style: TextStyle(
+                      color: Color(0xFF715314),
+                      fontSize: 12.5,
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                _LegalLink(
-                  text: 'Términos de Servicio',
-                  title: 'Términos de Servicio',
-                  message:
-                      'Los Términos de Servicio institucionales se '
-                      'publicarán antes del lanzamiento de Conecta ITT.',
-                ),
-                const Text(
-                  ' y nuestra ',
-                  style: TextStyle(
-                    color: Color(0xFF555A66),
-                    fontSize: 13,
-                    height: 1.5,
-                  ),
-                ),
-                _LegalLink(
-                  text: 'Política de Privacidad',
-                  title: 'Política de Privacidad',
-                  message:
-                      'La Política de Privacidad institucional se '
-                      'publicará antes del lanzamiento de Conecta ITT.',
-                ),
-                const Text(
-                  '.',
-                  style: TextStyle(color: Color(0xFF555A66), fontSize: 13),
                 ),
               ],
             ),
           ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Checkbox(
+              key: const Key('registerForm_termsCheckbox'),
+              value: state.termsAccepted,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onChanged: (value) {
+                context.read<RegisterBloc>().add(
+                  RegisterTermsAcceptanceChanged(value ?? false),
+                );
+              },
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 9),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const Text(
+                      'Al registrarte, aceptas nuestros ',
+                      style: TextStyle(
+                        color: Color(0xFF555A66),
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
+                    ),
+                    _LegalLink(document: terms),
+                    const Text(
+                      ' y nuestra ',
+                      style: TextStyle(
+                        color: Color(0xFF555A66),
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
+                    ),
+                    _LegalLink(document: privacy),
+                    const Text(
+                      '.',
+                      style: TextStyle(color: Color(0xFF555A66), fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -860,29 +923,63 @@ class _TermsAcceptance extends StatelessWidget {
 }
 
 class _LegalLink extends StatelessWidget {
-  const _LegalLink({
-    required this.text,
-    required this.title,
-    required this.message,
-  });
+  const _LegalLink({required this.document});
 
-  final String text;
-  final String title;
-  final String message;
+  final LegalDocument document;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(4),
       onTap: () {
         showDialog<void>(
           context: context,
           builder:
-              (context) => AlertDialog(
-                title: Text(title),
-                content: Text(message),
+              (dialogContext) => AlertDialog(
+                title: Text(document.title),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (document.isDevelopment) ...[
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF4D9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'Documento provisional para pruebas internas. '
+                            'Será sustituido por la versión institucional '
+                            'antes del lanzamiento.',
+                            style: TextStyle(
+                              color: Color(0xFF715314),
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                      ],
+                      Text(
+                        document.content,
+                        style: const TextStyle(height: 1.5),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Versión: ${document.version}',
+                        style: const TextStyle(
+                          color: Color(0xFF747986),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
                     child: const Text('Cerrar'),
                   ),
                 ],
@@ -890,7 +987,7 @@ class _LegalLink extends StatelessWidget {
         );
       },
       child: Text(
-        text,
+        document.isTerms ? 'Términos de Servicio' : 'Política de Privacidad',
         style: const TextStyle(
           color: Color(0xFF2860F5),
           fontSize: 13,

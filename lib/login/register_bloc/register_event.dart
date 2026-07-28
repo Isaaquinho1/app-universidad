@@ -79,6 +79,10 @@ class RegisterPasswordConfirmationChanged extends RegisterEvent {
   List<Object?> get props => [passwordConfirmation];
 }
 
+class RegisterLegalDocumentsRequested extends RegisterEvent {
+  const RegisterLegalDocumentsRequested();
+}
+
 class RegisterSubmitted extends RegisterEvent with AnalyticsEventMixin {
   const RegisterSubmitted();
 

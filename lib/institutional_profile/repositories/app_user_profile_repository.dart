@@ -12,7 +12,6 @@ class AppUserProfileRepository {
   final SupabaseClient _supabaseClient;
 
   static const _profilesTable = 'profiles';
-  static const _fcmTokensTable = 'user_fcm_tokens';
 
   /// Watches the institutional profile for the provided [uid].
   ///
@@ -139,7 +138,11 @@ class AppUserProfileRepository {
     );
   }
 
-  /// Stores or updates an FCM token for one user device.
+  /// Registers or transfers an FCM token to the active account.
+  ///
+  /// The token identifies the app installation. If another user signs in
+  /// on the same device, Supabase atomically transfers the token so that
+  /// notifications are delivered only to the current account.
   Future<void> updateFcmToken({
     required String uid,
     required String deviceId,
@@ -148,7 +151,11 @@ class AppUserProfileRepository {
   }) async {
     _validateCurrentUser(uid);
 
-    if (deviceId.trim().isEmpty) {
+    final normalizedDeviceId = deviceId.trim();
+    final normalizedToken = token.trim();
+    final normalizedPlatform = platform.trim().toLowerCase();
+
+    if (normalizedDeviceId.isEmpty) {
       throw ArgumentError.value(
         deviceId,
         'deviceId',
@@ -156,13 +163,13 @@ class AppUserProfileRepository {
       );
     }
 
-    if (token.trim().isEmpty) {
+    if (normalizedToken.isEmpty) {
       throw ArgumentError.value(token, 'token', 'FCM token cannot be empty.');
     }
 
     const supportedPlatforms = {'android', 'ios'};
 
-    if (!supportedPlatforms.contains(platform)) {
+    if (!supportedPlatforms.contains(normalizedPlatform)) {
       throw ArgumentError.value(
         platform,
         'platform',
@@ -170,32 +177,14 @@ class AppUserProfileRepository {
       );
     }
 
-    final existingRow =
-        await _supabaseClient
-            .from(_fcmTokensTable)
-            .select('id')
-            .eq('user_id', uid)
-            .eq('device_id', deviceId)
-            .maybeSingle();
-
-    final values = <String, dynamic>{
-      'user_id': uid,
-      'device_id': deviceId,
-      'token': token,
-      'platform': platform,
-      'active': true,
-      'last_seen_at': DateTime.now().toUtc().toIso8601String(),
-    };
-
-    if (existingRow == null) {
-      await _supabaseClient.from(_fcmTokensTable).insert(values);
-      return;
-    }
-
-    await _supabaseClient
-        .from(_fcmTokensTable)
-        .update(values)
-        .eq('id', existingRow['id']!);
+    await _supabaseClient.rpc(
+      'register_current_user_fcm_token',
+      params: {
+        'p_device_id': normalizedDeviceId,
+        'p_token': normalizedToken,
+        'p_platform': normalizedPlatform,
+      },
+    );
   }
 
   void _validateCurrentUser(String uid) {

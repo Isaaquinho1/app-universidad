@@ -1,3 +1,4 @@
+import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/login/login.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,17 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final supabaseClient = Supabase.instance.client;
+
     return BlocProvider(
       create:
           (_) => RegisterBloc(
             userRepository: context.read<UserRepository>(),
             academicCatalogRepository: AcademicCatalogRepository(
-              supabaseClient: Supabase.instance.client,
+              supabaseClient: supabaseClient,
+            ),
+            legalDocumentRepository: LegalDocumentRepository(
+              supabaseClient: supabaseClient,
             ),
           ),
       child: const Scaffold(
