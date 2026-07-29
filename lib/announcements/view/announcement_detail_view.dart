@@ -117,6 +117,10 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    if (announcement.isNews) {
+      return _buildPublicationScaffold(context);
+    }
+
     return BlocConsumer<AnnouncementReceiptCubit, AnnouncementReceiptState>(
       listenWhen:
           (previous, current) =>
@@ -126,228 +130,236 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
         _showMessage('No se pudo actualizar el estado de lectura.');
       },
       builder: (context, state) {
-        final publishedAt = announcement.publishedAt;
-        final isConfirming =
-            state.status == AnnouncementReceiptOperationStatus.confirming;
+        return _buildPublicationScaffold(context, receiptState: state);
+      },
+    );
+  }
 
-        return Scaffold(
-          appBar: AppBar(title: const Text('Comunicado')),
-          body: SafeArea(
-            child: FutureBuilder<List<PublicationAsset>>(
-              future: _assetsFuture,
-              builder: (context, assetsSnapshot) {
-                final assets =
-                    assetsSnapshot.data ??
-                    widget.initialAssets ??
-                    const <PublicationAsset>[];
+  Widget _buildPublicationScaffold(
+    BuildContext context, {
+    AnnouncementReceiptState? receiptState,
+  }) {
+    final publishedAt = announcement.publishedAt;
+    final isAnnouncement = announcement.isAnnouncement;
+    final isConfirming =
+        receiptState?.status == AnnouncementReceiptOperationStatus.confirming;
 
-                final cover = _findCover(assets);
-                final gallery = assets
-                    .where((asset) => asset.type == PublicationAssetType.image)
-                    .toList(growable: false);
-                final attachments = assets
-                    .where((asset) => asset.type.isAttachment)
-                    .toList(growable: false);
+    return Scaffold(
+      appBar: AppBar(title: Text(announcement.contentType.label)),
+      body: SafeArea(
+        child: FutureBuilder<List<PublicationAsset>>(
+          future: _assetsFuture,
+          builder: (context, assetsSnapshot) {
+            final assets =
+                assetsSnapshot.data ??
+                widget.initialAssets ??
+                const <PublicationAsset>[];
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (cover != null)
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: PublicationAssetImage(
-                            asset: cover,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+            final cover = _findCover(assets);
+            final gallery = assets
+                .where((asset) => asset.type == PublicationAssetType.image)
+                .toList(growable: false);
+            final attachments = assets
+                .where((asset) => asset.type.isAttachment)
+                .toList(growable: false);
+
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (cover != null)
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: PublicationAssetImage(
+                        asset: cover,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isAnnouncement)
+                          _AnnouncementStatusHeader(
+                            priority: announcement.priority,
+                            receipt: receiptState?.receipt,
+                            contentVersion: announcement.contentVersion,
+                          )
+                        else
+                          _NewsStatusHeader(announcement: announcement),
+                        const SizedBox(height: AppSpacing.lg),
+                        Text(
+                          announcement.title,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppSpacing.lg),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(height: AppSpacing.md),
+                        Row(
                           children: [
-                            _AnnouncementStatusHeader(
-                              priority: announcement.priority,
-                              receipt: state.receipt,
-                              contentVersion: announcement.contentVersion,
+                            const Icon(Icons.account_circle_outlined, size: 20),
+                            const SizedBox(width: AppSpacing.xs),
+                            Expanded(
+                              child: Text(
+                                announcement.authorName ??
+                                    'TecNM Campus Tlalpan',
+                              ),
                             ),
-                            const SizedBox(height: AppSpacing.lg),
-                            Text(
-                              announcement.title,
-                              style: Theme.of(context).textTheme.headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                          ],
+                        ),
+                        if (publishedAt != null) ...[
+                          const SizedBox(height: AppSpacing.sm),
+                          Row(
+                            children: [
+                              const Icon(Icons.schedule_outlined, size: 20),
+                              const SizedBox(width: AppSpacing.xs),
+                              Text(
+                                DateFormat(
+                                  'dd/MM/yyyy, HH:mm',
+                                ).format(publishedAt.toLocal()),
+                              ),
+                            ],
+                          ),
+                        ],
+                        const SizedBox(height: AppSpacing.xlg),
+                        SelectableText(
+                          announcement.body,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge?.copyWith(height: 1.5),
+                        ),
+                        if (gallery.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.xlg),
+                          Text(
+                            'Galería',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          SizedBox(
+                            height: 180,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: gallery.length,
+                              separatorBuilder:
+                                  (_, _) =>
+                                      const SizedBox(width: AppSpacing.sm),
+                              itemBuilder: (context, index) {
+                                final asset = gallery[index];
+
+                                return PublicationAssetImage(
+                                  asset: asset,
+                                  width: 260,
+                                  height: 180,
+                                  fit: BoxFit.cover,
+                                  borderRadius: BorderRadius.circular(12),
+                                );
+                              },
                             ),
-                            const SizedBox(height: AppSpacing.md),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.account_circle_outlined,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: AppSpacing.xs),
-                                Expanded(
-                                  child: Text(
-                                    announcement.authorName ??
-                                        'TecNM Campus Tlalpan',
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (publishedAt != null) ...[
-                              const SizedBox(height: AppSpacing.sm),
-                              Row(
+                          ),
+                        ],
+                        if (attachments.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.xlg),
+                          Text(
+                            'Archivos adjuntos',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          ...attachments.map(
+                            (asset) => _buildAttachmentTile(context, asset),
+                          ),
+                        ],
+                        if (assetsSnapshot.hasError) ...[
+                          const SizedBox(height: AppSpacing.lg),
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(Icons.schedule_outlined, size: 20),
-                                  const SizedBox(width: AppSpacing.xs),
-                                  Text(
-                                    DateFormat(
-                                      'dd/MM/yyyy, HH:mm',
-                                    ).format(publishedAt.toLocal()),
+                                  const Text(
+                                    'No se pudo cargar el '
+                                    'contenido multimedia.',
+                                  ),
+                                  const SizedBox(height: AppSpacing.sm),
+                                  TextButton.icon(
+                                    onPressed: _retryAssets,
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Reintentar'),
                                   ),
                                 ],
                               ),
-                            ],
-                            const SizedBox(height: AppSpacing.xlg),
-                            SelectableText(
-                              announcement.body,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.copyWith(height: 1.5),
                             ),
-                            if (gallery.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.xlg),
-                              Text(
-                                'Galería',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ] else if (assetsSnapshot.connectionState !=
+                                ConnectionState.done &&
+                            assets.isEmpty) ...[
+                          const SizedBox(height: AppSpacing.lg),
+                          const Center(child: CircularProgressIndicator()),
+                        ],
+                        if (isAnnouncement && receiptState != null) ...[
+                          const SizedBox(height: AppSpacing.xlg),
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.green.shade700,
+                                foregroundColor: Colors.white,
+                                disabledBackgroundColor: Colors.green.shade200,
+                                disabledForegroundColor: Colors.white,
                               ),
-                              const SizedBox(height: AppSpacing.sm),
-                              SizedBox(
-                                height: 180,
-                                child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: gallery.length,
-                                  separatorBuilder:
-                                      (_, _) =>
-                                          const SizedBox(width: AppSpacing.sm),
-                                  itemBuilder: (context, index) {
-                                    final asset = gallery[index];
-
-                                    return PublicationAssetImage(
-                                      asset: asset,
-                                      width: 260,
-                                      height: 180,
-                                      fit: BoxFit.cover,
-                                      borderRadius: BorderRadius.circular(12),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                            if (attachments.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.xlg),
-                              Text(
-                                'Archivos adjuntos',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w700),
-                              ),
-                              const SizedBox(height: AppSpacing.sm),
-                              ...attachments.map(
-                                (asset) => _buildAttachmentTile(context, asset),
-                              ),
-                            ],
-                            if (assetsSnapshot.hasError) ...[
-                              const SizedBox(height: AppSpacing.lg),
-                              Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(AppSpacing.md),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'No se pudo cargar el '
-                                        'contenido multimedia.',
-                                      ),
-                                      const SizedBox(height: AppSpacing.sm),
-                                      TextButton.icon(
-                                        onPressed: _retryAssets,
-                                        icon: const Icon(Icons.refresh),
-                                        label: const Text('Reintentar'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ] else if (assetsSnapshot.connectionState !=
-                                    ConnectionState.done &&
-                                assets.isEmpty) ...[
-                              const SizedBox(height: AppSpacing.lg),
-                              const Center(child: CircularProgressIndicator()),
-                            ],
-                            const SizedBox(height: AppSpacing.xlg),
-                            SizedBox(
-                              width: double.infinity,
-                              child: FilledButton.icon(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: Colors.green.shade700,
-                                  foregroundColor: Colors.white,
-                                  disabledBackgroundColor:
-                                      Colors.green.shade200,
-                                  disabledForegroundColor: Colors.white,
-                                ),
-                                onPressed:
-                                    state.isRead &&
-                                            !state.isConfirmed &&
-                                            !isConfirming
-                                        ? () {
-                                          context
-                                              .read<AnnouncementReceiptCubit>()
-                                              .confirmReading();
-                                        }
-                                        : null,
-                                icon:
-                                    isConfirming
-                                        ? const SizedBox.square(
-                                          dimension: 18,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                        : Icon(
-                                          state.isConfirmed
-                                              ? Icons.verified_outlined
-                                              : Icons.task_alt_outlined,
+                              onPressed:
+                                  receiptState.isRead &&
+                                          !receiptState.isConfirmed &&
+                                          !isConfirming
+                                      ? () {
+                                        context
+                                            .read<AnnouncementReceiptCubit>()
+                                            .confirmReading();
+                                      }
+                                      : null,
+                              icon:
+                                  isConfirming
+                                      ? const SizedBox.square(
+                                        dimension: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
                                         ),
-                                label: Text(
-                                  state.isConfirmed
-                                      ? 'Lectura confirmada'
-                                      : state.isRead
-                                      ? 'Confirmar lectura'
-                                      : 'Leyendo comunicado…',
-                                ),
+                                      )
+                                      : Icon(
+                                        receiptState.isConfirmed
+                                            ? Icons.verified_outlined
+                                            : Icons.task_alt_outlined,
+                                      ),
+                              label: Text(
+                                receiptState.isConfirmed
+                                    ? 'Lectura confirmada'
+                                    : receiptState.isRead
+                                    ? 'Confirmar lectura'
+                                    : 'Leyendo comunicado…',
                               ),
                             ),
-                            if (!state.isRead) ...[
-                              const SizedBox(height: AppSpacing.sm),
-                              const Text(
-                                'La confirmación estará disponible '
-                                'después de leer el comunicado.',
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          ),
+                          if (!receiptState.isRead) ...[
+                            const SizedBox(height: AppSpacing.sm),
+                            const Text(
+                              'La confirmación estará disponible '
+                              'después de leer el comunicado.',
+                              textAlign: TextAlign.center,
+                            ),
                           ],
-                        ),
-                      ),
-                    ],
+                        ],
+                      ],
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
-        );
-      },
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -405,6 +417,48 @@ class _AnnouncementDetailViewState extends State<AnnouncementDetailView> {
 
     final megabytes = kilobytes / 1024;
     return '${megabytes.toStringAsFixed(1)} MB';
+  }
+}
+
+class _NewsStatusHeader extends StatelessWidget {
+  const _NewsStatusHeader({required this.announcement});
+
+  final Announcement announcement;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final category = announcement.newsCategory?.trim();
+
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        _DetailBadge(
+          label: 'Noticia',
+          icon: Icons.newspaper_outlined,
+          backgroundColor: theme.colorScheme.tertiaryContainer,
+          foregroundColor: theme.colorScheme.onTertiaryContainer,
+          borderColor: Colors.transparent,
+        ),
+        if (category != null && category.isNotEmpty)
+          _DetailBadge(
+            label: category,
+            icon: Icons.sell_outlined,
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            foregroundColor: theme.colorScheme.onSurfaceVariant,
+            borderColor: Colors.transparent,
+          ),
+        if (announcement.isCurrentlyFeatured)
+          _DetailBadge(
+            label: 'Destacada',
+            icon: Icons.star_rounded,
+            backgroundColor: Colors.amber.shade800,
+            foregroundColor: Colors.white,
+            borderColor: Colors.transparent,
+          ),
+      ],
+    );
   }
 }
 

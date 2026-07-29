@@ -21,10 +21,13 @@ class _AdminAnnouncementCreatePageState
   final _titleController = TextEditingController();
   final _summaryController = TextEditingController();
   final _bodyController = TextEditingController();
+  final _newsCategoryController = TextEditingController();
   final _groupsController = TextEditingController();
   final _recipientSearchController = TextEditingController();
 
+  PublicationContentType _contentType = PublicationContentType.announcement;
   AnnouncementPriority _priority = AnnouncementPriority.normal;
+  bool _featured = false;
   bool _allUsers = true;
   bool _specificRecipients = false;
   bool _allSemesters = true;
@@ -68,6 +71,7 @@ class _AdminAnnouncementCreatePageState
     _titleController.addListener(_evaluateChanges);
     _summaryController.addListener(_evaluateChanges);
     _bodyController.addListener(_evaluateChanges);
+    _newsCategoryController.addListener(_evaluateChanges);
     _groupsController.addListener(_evaluateChanges);
 
     final announcement = widget.initialAnnouncement;
@@ -84,9 +88,12 @@ class _AdminAnnouncementCreatePageState
     _titleController.text = announcement.title;
     _summaryController.text = announcement.summary ?? '';
     _bodyController.text = announcement.body;
+    _newsCategoryController.text = announcement.newsCategory ?? '';
     _groupsController.text = announcement.target.groupIds.join(', ');
 
+    _contentType = announcement.contentType;
     _priority = announcement.priority;
+    _featured = announcement.featured;
     _allUsers = announcement.target.allUsers;
     _specificRecipients = !_allUsers && announcement.target.userUids.isNotEmpty;
     _allSemesters = announcement.target.semesters.isEmpty;
@@ -434,6 +441,7 @@ class _AdminAnnouncementCreatePageState
     _titleController.dispose();
     _summaryController.dispose();
     _bodyController.dispose();
+    _newsCategoryController.dispose();
     _groupsController.dispose();
     _recipientSearchController.dispose();
     super.dispose();
@@ -473,6 +481,12 @@ class _AdminAnnouncementCreatePageState
         _bodyController.text.trim() == initial.body.trim() &&
         (currentSummary.isEmpty ? null : currentSummary) ==
             initial.summary?.trim() &&
+        _contentType == initial.contentType &&
+        (_newsCategoryController.text.trim().isEmpty
+                ? null
+                : _newsCategoryController.text.trim()) ==
+            initial.newsCategory?.trim() &&
+        _featured == initial.featured &&
         _priority == initial.priority &&
         _targetsAreEqual(_buildTarget(), initial.target);
   }
@@ -501,6 +515,11 @@ class _AdminAnnouncementCreatePageState
     }
 
     final isPublished = initial.status == AnnouncementStatus.published;
+    final label = _contentType.label.toLowerCase();
+    final audienceText =
+        _contentType.isNews
+            ? 'a toda la comunidad activa'
+            : 'a sus destinatarios';
 
     final result = await showDialog<bool>(
       context: context,
@@ -509,11 +528,10 @@ class _AdminAnnouncementCreatePageState
           title: const Text('Confirmar actualización'),
           content: Text(
             isPublished
-                ? 'Se creará una nueva versión del comunicado y se '
-                    'enviará otra notificación push a los destinatarios.'
-                : 'Se guardarán los cambios del comunicado. '
-                    'No se enviará una notificación mientras no esté '
-                    'publicado.',
+                ? 'Se creará una nueva versión de la $label y se enviará '
+                    'otra notificación push $audienceText.'
+                : 'Se guardarán los cambios de la $label. No se enviará '
+                    'una notificación mientras no esté publicada.',
           ),
           actions: [
             TextButton(
@@ -533,14 +551,20 @@ class _AdminAnnouncementCreatePageState
   }
 
   Future<bool> _confirmDraftPublication() async {
+    final label = _contentType.label.toLowerCase();
+    final publicationScope =
+        _contentType.isNews
+            ? 'para toda la comunidad activa'
+            : 'para la audiencia seleccionada';
+
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Publicar comunicado'),
-          content: const Text(
-            'El comunicado se publicará para la audiencia seleccionada '
-            'y se enviará una notificación push a sus destinatarios.',
+          title: Text('Publicar $label'),
+          content: Text(
+            'La $label se publicará $publicationScope y se enviará una '
+            'notificación push.',
           ),
           actions: [
             TextButton(
@@ -567,11 +591,15 @@ class _AdminAnnouncementCreatePageState
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
-      _showMessage('Revisa el título y el contenido del comunicado.');
+      _showMessage(
+        'Revisa el título, el contenido y los datos de la '
+        '${_contentType.label.toLowerCase()}.',
+      );
       return;
     }
 
-    if (!_allUsers &&
+    if (_contentType.isAnnouncement &&
+        !_allUsers &&
         !_specificRecipients &&
         !_allSemesters &&
         _selectedSemesters.isEmpty) {
@@ -582,14 +610,16 @@ class _AdminAnnouncementCreatePageState
       return;
     }
 
-    if (_specificRecipients && _selectedRecipients.isEmpty) {
+    if (_contentType.isAnnouncement &&
+        _specificRecipients &&
+        _selectedRecipients.isEmpty) {
       _showMessage('Selecciona al menos una persona específica.');
       return;
     }
 
     final target = _buildTarget();
 
-    if (target.isEmpty) {
+    if (_contentType.isAnnouncement && target.isEmpty) {
       _showMessage('Selecciona al menos un criterio de audiencia.');
       return;
     }
@@ -598,7 +628,7 @@ class _AdminAnnouncementCreatePageState
     final profile = appState.institutionalProfile;
 
     if (profile == null || !profile.canManageAnnouncements) {
-      _showMessage('No tienes permisos para crear comunicados.');
+      _showMessage('No tienes permisos para crear publicaciones.');
       return;
     }
 
@@ -652,7 +682,12 @@ class _AdminAnnouncementCreatePageState
                 : authorName),
         target: target,
         status: nextStatus,
-        priority: _priority,
+        priority: _contentType.isNews ? AnnouncementPriority.normal : _priority,
+        contentType: _contentType,
+        newsCategory:
+            _contentType.isNews ? _newsCategoryController.text.trim() : null,
+        featured: _contentType.isNews && _featured,
+        featuredUntil: null,
         createdAt: existingAnnouncement?.createdAt ?? now,
         updatedAt: now,
         publishedAt:
@@ -696,10 +731,12 @@ class _AdminAnnouncementCreatePageState
         return;
       }
 
+      final publicationLabel = _contentType.label;
+
       final successMessage =
           wasPersisted
-              ? 'Comunicado actualizado correctamente.'
-              : 'Comunicado publicado correctamente.';
+              ? '$publicationLabel actualizada correctamente.'
+              : '$publicationLabel publicada correctamente.';
 
       Navigator.of(context).pop(successMessage);
     } catch (error) {
@@ -707,7 +744,9 @@ class _AdminAnnouncementCreatePageState
         return;
       }
 
-      _showMessage('No se pudo guardar el comunicado: $error');
+      _showMessage(
+        'No se pudo guardar la ${_contentType.label.toLowerCase()}: $error',
+      );
     } finally {
       if (mounted) {
         setState(() => _isSubmitting = false);
@@ -753,7 +792,11 @@ class _AdminAnnouncementCreatePageState
     if (!profile.canManageAnnouncements) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(_isEditing ? 'Editar comunicado' : 'Crear comunicado'),
+          title: Text(
+            _isEditing
+                ? 'Editar ${_contentType.label.toLowerCase()}'
+                : 'Crear publicación',
+          ),
         ),
         body: const Center(
           child: Padding(
@@ -776,7 +819,11 @@ class _AdminAnnouncementCreatePageState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Editar comunicado' : 'Crear comunicado'),
+        title: Text(
+          _isEditing
+              ? 'Editar ${_contentType.label.toLowerCase()}'
+              : 'Crear publicación',
+        ),
       ),
       body: SafeArea(
         child: Form(
@@ -784,6 +831,8 @@ class _AdminAnnouncementCreatePageState
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
+              _buildPublicationTypeSection(context),
+              const SizedBox(height: AppSpacing.lg),
               TextFormField(
                 controller: _titleController,
                 textCapitalization: TextCapitalization.sentences,
@@ -846,32 +895,45 @@ class _AdminAnnouncementCreatePageState
                   return null;
                 },
               ),
-              const SizedBox(height: AppSpacing.lg),
-              DropdownButtonFormField<AnnouncementPriority>(
-                initialValue: _priority,
-                decoration: const InputDecoration(
-                  labelText: 'Prioridad',
-                  border: OutlineInputBorder(),
+              if (_contentType.isAnnouncement) ...[
+                const SizedBox(height: AppSpacing.lg),
+                DropdownButtonFormField<AnnouncementPriority>(
+                  initialValue: _priority,
+                  decoration: const InputDecoration(
+                    labelText: 'Prioridad',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: AnnouncementPriority.values
+                      .map(
+                        (priority) => DropdownMenuItem(
+                          value: priority,
+                          child: Text(_priorityLabel(priority)),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged:
+                      _isSubmitting
+                          ? null
+                          : (priority) {
+                            if (priority != null) {
+                              _setFormState(() => _priority = priority);
+                            }
+                          },
                 ),
-                items: AnnouncementPriority.values
-                    .map(
-                      (priority) => DropdownMenuItem(
-                        value: priority,
-                        child: Text(_priorityLabel(priority)),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged:
-                    _isSubmitting
-                        ? null
-                        : (priority) {
-                          if (priority != null) {
-                            _setFormState(() => _priority = priority);
-                          }
-                        },
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              _buildAudienceSection(context),
+                const SizedBox(height: AppSpacing.lg),
+                _buildAudienceSection(context),
+              ] else ...[
+                const SizedBox(height: AppSpacing.lg),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.public),
+                    title: const Text('Publicación global'),
+                    subtitle: const Text(
+                      'La noticia será visible para todos los usuarios activos.',
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: AppSpacing.lg),
               _buildMultimediaPreparationCard(context),
               const SizedBox(height: AppSpacing.xlg),
@@ -915,7 +977,9 @@ class _AdminAnnouncementCreatePageState
                             )
                             : const Icon(Icons.publish_outlined),
                     label: Text(
-                      _isSubmitting ? 'Publicando…' : 'Publicar comunicado',
+                      _isSubmitting
+                          ? 'Publicando…'
+                          : 'Publicar ${_contentType.label.toLowerCase()}',
                     ),
                   ),
                 ],
@@ -942,12 +1006,133 @@ class _AdminAnnouncementCreatePageState
                           )
                           : const Icon(Icons.publish_outlined),
                   label: Text(
-                    _isSubmitting ? 'Publicando…' : 'Publicar comunicado',
+                    _isSubmitting
+                        ? 'Publicando…'
+                        : 'Publicar ${_contentType.label.toLowerCase()}',
                   ),
                 ),
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPublicationTypeSection(BuildContext context) {
+    final theme = Theme.of(context);
+    final isNews = _contentType.isNews;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Tipo de publicación',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SegmentedButton<PublicationContentType>(
+              segments: const [
+                ButtonSegment<PublicationContentType>(
+                  value: PublicationContentType.announcement,
+                  icon: Icon(Icons.campaign_outlined),
+                  label: Text('Comunicado'),
+                ),
+                ButtonSegment<PublicationContentType>(
+                  value: PublicationContentType.news,
+                  icon: Icon(Icons.newspaper_outlined),
+                  label: Text('Noticia'),
+                ),
+              ],
+              selected: {_contentType},
+              onSelectionChanged:
+                  _isSubmitting
+                      ? null
+                      : (selection) {
+                        final type = selection.first;
+
+                        _setFormState(() {
+                          _contentType = type;
+
+                          if (type.isNews) {
+                            _allUsers = true;
+                            _specificRecipients = false;
+                            _selectedRoles.clear();
+                            _selectedCareerIds.clear();
+                            _selectedSemesters.clear();
+                            _allSemesters = true;
+                            _groupsController.clear();
+                            _selectedRecipients.clear();
+                            _recipientSearchResults = const [];
+                            _recipientSearchController.clear();
+                            _recipientSearchError = null;
+                            _priority = AnnouncementPriority.normal;
+                          } else {
+                            _featured = false;
+                            _newsCategoryController.clear();
+                          }
+                        });
+                      },
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              isNews
+                  ? 'Las noticias son globales y estarán disponibles para '
+                      'todos los usuarios activos.'
+                  : 'Los comunicados pueden publicarse para toda la comunidad '
+                      'o para una audiencia segmentada.',
+              style: theme.textTheme.bodySmall,
+            ),
+            if (isNews) ...[
+              const SizedBox(height: AppSpacing.lg),
+              TextFormField(
+                controller: _newsCategoryController,
+                enabled: !_isSubmitting,
+                textCapitalization: TextCapitalization.words,
+                maxLength: 80,
+                decoration: const InputDecoration(
+                  labelText: 'Categoría editorial',
+                  hintText: 'Ej. Vida académica, Cultura o Institucional',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (!_contentType.isNews) {
+                    return null;
+                  }
+
+                  final category = value?.trim() ?? '';
+
+                  if (category.isEmpty) {
+                    return 'Selecciona o escribe una categoría para la noticia.';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Noticia destacada'),
+                subtitle: const Text(
+                  'Se mostrará con mayor prioridad visual en el feed.',
+                ),
+                value: _featured,
+                onChanged:
+                    _isSubmitting
+                        ? null
+                        : (value) {
+                          _setFormState(() {
+                            _featured = value;
+                          });
+                        },
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -988,7 +1173,8 @@ class _AdminAnnouncementCreatePageState
             const SizedBox(height: AppSpacing.sm),
             Text(
               publicationId == null
-                  ? 'Guarda primero el comunicado como borrador para '
+                  ? 'Guarda primero la '
+                      '${_contentType.label.toLowerCase()} como borrador para '
                       'habilitar la carga segura de archivos.'
                   : 'Agrega una portada, imágenes complementarias o '
                       'documentos institucionales.',
@@ -1594,7 +1780,7 @@ class _AdminAnnouncementCreatePageState
   }
 
   AnnouncementTarget _buildTarget() {
-    if (_allUsers) {
+    if (_contentType.isNews || _allUsers) {
       return const AnnouncementTarget.all();
     }
 

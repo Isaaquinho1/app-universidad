@@ -119,6 +119,10 @@ class _AnnouncementDetailPageState extends State<AnnouncementDetailPage> {
           );
         }
 
+        if (announcement.isNews) {
+          return AnnouncementDetailView(announcement: announcement);
+        }
+
         return BlocProvider(
           create:
               (_) => AnnouncementReceiptCubit(

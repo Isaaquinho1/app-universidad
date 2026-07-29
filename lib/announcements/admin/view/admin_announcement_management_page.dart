@@ -46,10 +46,17 @@ class _AdminAnnouncementManagementPageState
   }
 
   Future<void> _publish(Announcement announcement) async {
+    final label = announcement.contentType.label.toLowerCase();
+    final scope =
+        announcement.isNews
+            ? 'toda la comunidad activa'
+            : announcement.target.allUsers
+            ? 'toda la comunidad activa'
+            : 'la audiencia seleccionada';
+
     final confirmed = await _confirmAction(
-      title: 'Publicar comunicado',
-      message:
-          'El comunicado "${announcement.title}" será visible para su audiencia.',
+      title: 'Publicar $label',
+      message: 'La $label "${announcement.title}" será visible para $scope.',
       confirmText: 'Publicar',
     );
 
@@ -58,7 +65,8 @@ class _AdminAnnouncementManagementPageState
     }
 
     await _runAction(
-      successMessage: 'Comunicado publicado correctamente.',
+      successMessage:
+          '${announcement.contentType.label} publicada correctamente.',
       action:
           () => context.read<AnnouncementRepository>().publishAnnouncement(
             announcement.id,
@@ -67,11 +75,13 @@ class _AdminAnnouncementManagementPageState
   }
 
   Future<void> _archive(Announcement announcement) async {
+    final label = announcement.contentType.label.toLowerCase();
+
     final confirmed = await _confirmAction(
-      title: 'Archivar comunicado',
+      title: 'Archivar $label',
       message:
-          'El comunicado "${announcement.title}" dejará de mostrarse '
-          'a los estudiantes.',
+          'La $label "${announcement.title}" dejará de mostrarse '
+          'a los usuarios.',
       confirmText: 'Archivar',
     );
 
@@ -80,7 +90,8 @@ class _AdminAnnouncementManagementPageState
     }
 
     await _runAction(
-      successMessage: 'Comunicado archivado correctamente.',
+      successMessage:
+          '${announcement.contentType.label} archivada correctamente.',
       action:
           () => context.read<AnnouncementRepository>().archiveAnnouncement(
             announcement.id,
@@ -179,7 +190,7 @@ class _AdminAnnouncementManagementPageState
 
     if (!profile.canManageAnnouncements) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Gestión de comunicados')),
+        appBar: AppBar(title: const Text('Gestión de publicaciones')),
         body: const Center(
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.xlg),
@@ -189,7 +200,7 @@ class _AdminAnnouncementManagementPageState
                 Icon(Icons.lock_outline, size: 64),
                 SizedBox(height: AppSpacing.md),
                 Text(
-                  'No tienes permisos para administrar comunicados.',
+                  'No tienes permisos para administrar publicaciones.',
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -201,7 +212,7 @@ class _AdminAnnouncementManagementPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de comunicados'),
+        title: const Text('Gestión de publicaciones'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: AppSpacing.md),
@@ -246,7 +257,7 @@ class _AdminAnnouncementManagementPageState
                   if (snapshot.hasError && !snapshot.hasData) {
                     return _ErrorState(
                       message:
-                          'No se pudieron cargar los comunicados.\n'
+                          'No se pudieron cargar las publicaciones.\n'
                           '${snapshot.error}',
                       onRetry: () => setState(() {}),
                     );
@@ -362,14 +373,42 @@ class _AnnouncementAdminCard extends StatelessWidget {
                   label: Text(_statusLabel(announcement.status)),
                 ),
                 Chip(
-                  label: Text(
-                    'Prioridad: ${_priorityLabel(announcement.priority)}',
+                  avatar: Icon(
+                    announcement.isNews
+                        ? Icons.newspaper_outlined
+                        : Icons.campaign_outlined,
+                    size: 18,
                   ),
+                  label: Text(announcement.contentType.label),
                 ),
+                if (announcement.isAnnouncement)
+                  Chip(
+                    label: Text(
+                      'Prioridad: ${_priorityLabel(announcement.priority)}',
+                    ),
+                  ),
+                if (announcement.isNews &&
+                    announcement.newsCategory?.trim().isNotEmpty == true)
+                  Chip(
+                    avatar: const Icon(Icons.sell_outlined, size: 18),
+                    label: Text(announcement.newsCategory!.trim()),
+                  ),
+                if (announcement.isCurrentlyFeatured)
+                  const Chip(
+                    avatar: Icon(Icons.star_rounded, size: 18),
+                    label: Text('Destacada'),
+                  ),
                 Chip(
-                  avatar: const Icon(Icons.groups_outlined, size: 18),
-                  label: Text(
+                  avatar: Icon(
                     announcement.target.allUsers
+                        ? Icons.public_outlined
+                        : Icons.groups_outlined,
+                    size: 18,
+                  ),
+                  label: Text(
+                    announcement.isNews
+                        ? 'Publicación global'
+                        : announcement.target.allUsers
                         ? 'Toda la comunidad'
                         : 'Audiencia segmentada',
                   ),
@@ -416,8 +455,9 @@ class _AnnouncementAdminCard extends StatelessWidget {
                   ),
               ],
             ),
-            if (announcement.status == AnnouncementStatus.published ||
-                announcement.status == AnnouncementStatus.archived) ...[
+            if (announcement.isAnnouncement &&
+                (announcement.status == AnnouncementStatus.published ||
+                    announcement.status == AnnouncementStatus.archived)) ...[
               const SizedBox(height: AppSpacing.sm),
               SizedBox(
                 width: double.infinity,
@@ -450,8 +490,8 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final description =
         status == null
-            ? 'Todavía no hay comunicados administrativos.'
-            : 'No hay comunicados con estado '
+            ? 'Todavía no hay publicaciones administrativas.'
+            : 'No hay publicaciones con estado '
                 '"${_statusLabel(status!)}".';
 
     return Center(

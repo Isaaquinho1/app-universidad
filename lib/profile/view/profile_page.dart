@@ -217,7 +217,7 @@ class _InitialProfileStatePageState extends State<_InitialProfileStatePage> {
             title: 'Administración',
             children: [
               SettingsItem(
-                text: 'Gestión de comunicados',
+                text: 'Gestión de publicaciones',
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedMegaphone01,
                   color: colors.active,

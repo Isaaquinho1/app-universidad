@@ -1,6 +1,7 @@
 import 'announcement_priority.dart';
 import 'announcement_status.dart';
 import 'announcement_target.dart';
+import 'publication_content_type.dart';
 
 /// Institutional announcement stored in Supabase.
 class Announcement {
@@ -15,8 +16,12 @@ class Announcement {
     required this.createdAt,
     required this.updatedAt,
     this.contentVersion = 1,
+    this.contentType = PublicationContentType.announcement,
     this.summary,
     this.authorName,
+    this.newsCategory,
+    this.featured = false,
+    this.featuredUntil,
     this.publishedAt,
     this.expiresAt,
     this.attachmentUrls = const [],
@@ -34,11 +39,29 @@ class Announcement {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int contentVersion;
+  final PublicationContentType contentType;
+  final String? newsCategory;
+  final bool featured;
+  final DateTime? featuredUntil;
   final DateTime? publishedAt;
   final DateTime? expiresAt;
   final List<String> attachmentUrls;
 
   bool get isPublished => status == AnnouncementStatus.published;
+
+  bool get isAnnouncement => contentType.isAnnouncement;
+
+  bool get isNews => contentType.isNews;
+
+  bool get isCurrentlyFeatured {
+    if (!featured) {
+      return false;
+    }
+
+    final limit = featuredUntil;
+
+    return limit == null || limit.isAfter(DateTime.now());
+  }
 
   bool get isArchived => status == AnnouncementStatus.archived;
 
@@ -74,6 +97,12 @@ class Announcement {
           _readDateTime(row['updated_at']) ??
           DateTime.fromMillisecondsSinceEpoch(0),
       contentVersion: _readInt(row['content_version']) ?? 1,
+      contentType: PublicationContentType.fromValue(
+        row['content_type'] as String?,
+      ),
+      newsCategory: row['news_category'] as String?,
+      featured: _readBool(row['featured']),
+      featuredUntil: _readDateTime(row['featured_until']),
       publishedAt: _readDateTime(row['published_at']),
       expiresAt: _readDateTime(row['expires_at']),
       attachmentUrls: _readStringList(row['attachment_urls']),
@@ -101,6 +130,15 @@ class Announcement {
           DateTime.fromMillisecondsSinceEpoch(0),
       contentVersion:
           _readInt(json['contentVersion'] ?? json['content_version']) ?? 1,
+      contentType: PublicationContentType.fromValue(
+        json['contentType'] as String? ?? json['content_type'] as String?,
+      ),
+      newsCategory:
+          json['newsCategory'] as String? ?? json['news_category'] as String?,
+      featured: _readBool(json['featured']),
+      featuredUntil: _readDateTime(
+        json['featuredUntil'] ?? json['featured_until'],
+      ),
       publishedAt: _readDateTime(json['publishedAt'] ?? json['published_at']),
       expiresAt: _readDateTime(json['expiresAt'] ?? json['expires_at']),
       attachmentUrls: _readStringList(
@@ -118,6 +156,10 @@ class Announcement {
       'author_name': authorName,
       'status': status.value,
       'priority': priority.value,
+      'content_type': contentType.value,
+      'news_category': newsCategory,
+      'featured': featured,
+      'featured_until': featuredUntil?.toUtc().toIso8601String(),
       'all_users': target.allUsers,
       'published_at': publishedAt?.toUtc().toIso8601String(),
       'expires_at': expiresAt?.toUtc().toIso8601String(),
@@ -139,6 +181,10 @@ class Announcement {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'contentVersion': contentVersion,
+      'contentType': contentType.value,
+      'newsCategory': newsCategory,
+      'featured': featured,
+      'featuredUntil': featuredUntil,
       'publishedAt': publishedAt,
       'expiresAt': expiresAt,
       'attachmentUrls': attachmentUrls,
@@ -158,6 +204,10 @@ class Announcement {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? contentVersion,
+    PublicationContentType? contentType,
+    String? newsCategory,
+    bool? featured,
+    DateTime? featuredUntil,
     DateTime? publishedAt,
     DateTime? expiresAt,
     List<String>? attachmentUrls,
@@ -175,6 +225,10 @@ class Announcement {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       contentVersion: contentVersion ?? this.contentVersion,
+      contentType: contentType ?? this.contentType,
+      newsCategory: newsCategory ?? this.newsCategory,
+      featured: featured ?? this.featured,
+      featuredUntil: featuredUntil ?? this.featuredUntil,
       publishedAt: publishedAt ?? this.publishedAt,
       expiresAt: expiresAt ?? this.expiresAt,
       attachmentUrls: attachmentUrls ?? this.attachmentUrls,
@@ -203,6 +257,18 @@ class Announcement {
         .map((item) => item.toString())
         .where((item) => item.isNotEmpty)
         .toList(growable: false);
+  }
+
+  static bool _readBool(Object? value) {
+    if (value is bool) {
+      return value;
+    }
+
+    if (value is num) {
+      return value != 0;
+    }
+
+    return value?.toString().toLowerCase() == 'true';
   }
 
   static int? _readInt(Object? value) {

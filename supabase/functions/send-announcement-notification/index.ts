@@ -14,6 +14,7 @@ type AnnouncementResults = {
   announcement_id: string;
   title: string;
   status: string;
+  content_type: "announcement" | "news";
   content_version: number;
   recipients: Array<{
     user_id: string;
@@ -85,6 +86,12 @@ async function getFirebaseAccessToken(): Promise<string> {
 }
 
 function notificationBody(results: AnnouncementResults): string {
+  if (results.content_type === "news") {
+    return results.title.length <= 120
+      ? "Tienes una nueva noticia institucional."
+      : "Consulta la nueva noticia institucional en Conecta ITT.";
+  }
+
   return results.title.length <= 120
     ? "Tienes un nuevo comunicado institucional."
     : "Consulta el nuevo comunicado institucional en Conecta ITT.";
@@ -210,6 +217,7 @@ async function sendToToken({
           },
           data: {
             type: "institutional_announcement",
+            content_type: announcement.content_type,
             announcement_id: announcement.announcement_id,
             content_version: String(announcement.content_version),
             ...(imageUrl ? { image_url: imageUrl } : {}),
@@ -391,7 +399,7 @@ export default {
     if (announcement.status !== "published") {
       return jsonResponse(
         {
-          error: "Only published announcements can send notifications.",
+          error: "Only published institutional publications can send notifications.",
         },
         409,
       );
