@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -88,10 +87,6 @@ class _AppViewState extends State<_AppView> {
   void initState() {
     super.initState();
     _router = createRouter();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FlutterNativeSplash.remove();
-    });
   }
 
   @override
