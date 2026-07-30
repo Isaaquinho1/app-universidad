@@ -133,7 +133,7 @@ class _LoginHeader extends StatelessWidget {
                 key: const Key('loginWithEmailForm_backButton'),
                 onPressed: () => Navigator.of(context).maybePop(),
                 icon: const Icon(Icons.arrow_back_rounded),
-                color: const Color(0xFF18245D),
+                color: const Color(0xFF003B5C),
                 tooltip: 'Regresar',
               ),
             ),
@@ -162,7 +162,7 @@ class _LoginHeader extends StatelessWidget {
                   'Accede a tu espacio institucional de Conecta ITT.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFFE5E9FF),
+                    color: Color(0xFFDCEAF0),
                     fontSize: 15,
                     height: 1.35,
                   ),
@@ -192,9 +192,9 @@ class _HeaderBackground extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF1B2FD2),
-                    Color(0xFF244AF2),
-                    Color(0xFF3046D7),
+                    Color(0xFF002A43),
+                    Color(0xFF003B5C),
+                    Color(0xFF075578),
                   ],
                 ),
               ),
@@ -444,8 +444,8 @@ class _LoginButton extends StatelessWidget {
                   context.read<LoginBloc>().add(const LoginSubmitted());
                 },
         style: FilledButton.styleFrom(
-          backgroundColor: const Color(0xFF2860F5),
-          disabledBackgroundColor: const Color(0xFFB9C4E7),
+          backgroundColor: const Color(0xFF003B5C),
+          disabledBackgroundColor: const Color(0xFFB9CFD9),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -513,8 +513,8 @@ class _RegisterButton extends StatelessWidget {
           Navigator.of(context).push<void>(RegisterPage.route());
         },
         style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF2860F5),
-          side: const BorderSide(color: Color(0xFF2860F5), width: 1.4),
+          foregroundColor: const Color(0xFF003B5C),
+          side: const BorderSide(color: Color(0xFF003B5C), width: 1.4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -536,7 +536,7 @@ class _InstitutionalAccessNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EEFF),
+        color: const Color(0xFFE8F1F5),
         borderRadius: BorderRadius.circular(14),
       ),
       child: const Row(
@@ -545,7 +545,7 @@ class _InstitutionalAccessNotice extends StatelessWidget {
           Icon(
             Icons.verified_user_outlined,
             size: 20,
-            color: Color(0xFF2857D9),
+            color: Color(0xFF075578),
           ),
           SizedBox(width: AppSpacing.sm),
           Expanded(

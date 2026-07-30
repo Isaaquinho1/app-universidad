@@ -14,7 +14,7 @@ class WelcomePage extends StatelessWidget {
     final colors = theme.extension<AppColors>()!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A32D6),
+      backgroundColor: const Color(0xFF003B5C),
       body: Stack(
         children: [
           const Positioned.fill(child: _HeroBackground()),
@@ -112,7 +112,7 @@ class _HeroBackground extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF1A32D6), Color(0xFF2348F0), Color(0xFF273CDA)],
+              colors: [Color(0xFF002A43), Color(0xFF003B5C), Color(0xFF075578)],
             ),
           ),
         ),
@@ -241,7 +241,7 @@ class _AccessCard extends StatelessWidget {
                 Navigator.of(context).push<void>(LoginWithEmailPage.route());
               },
               style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF2C61F4),
+                backgroundColor: const Color(0xFF003B5C),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -264,8 +264,8 @@ class _AccessCard extends StatelessWidget {
                 Navigator.of(context).push<void>(RegisterPage.route());
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF2C61F4),
-                side: const BorderSide(color: Color(0xFF2C61F4), width: 1.4),
+                foregroundColor: const Color(0xFF003B5C),
+                side: const BorderSide(color: Color(0xFF003B5C), width: 1.4),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

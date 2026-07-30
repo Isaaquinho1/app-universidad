@@ -163,7 +163,7 @@ class _RegisterHeader extends StatelessWidget {
                 key: const Key('registerForm_backButton'),
                 onPressed: () => Navigator.of(context).maybePop(),
                 tooltip: 'Regresar',
-                color: const Color(0xFF18245D),
+                color: const Color(0xFF003B5C),
                 icon: const Icon(Icons.arrow_back_rounded),
               ),
             ),
@@ -196,7 +196,7 @@ class _RegisterHeader extends StatelessWidget {
                   'TecNM Campus Tlalpan.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFFE5E9FF),
+                    color: Color(0xFFDCEAF0),
                     fontSize: 15,
                     height: 1.35,
                   ),
@@ -226,9 +226,9 @@ class _HeaderBackground extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF1B2FD2),
-                    Color(0xFF244AF2),
-                    Color(0xFF3046D7),
+                    Color(0xFF002A43),
+                    Color(0xFF003B5C),
+                    Color(0xFF075578),
                   ],
                 ),
               ),
@@ -418,13 +418,13 @@ class _DetectedAccountInformation extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EEFF),
+        color: const Color(0xFFE8F1F5),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.verified_user_outlined, color: Color(0xFF2857D9)),
+          const Icon(Icons.verified_user_outlined, color: Color(0xFF075578)),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -485,7 +485,7 @@ class _AcademicFields extends StatelessWidget {
         Text(
           'Información académica',
           style: AppTextStyle.h4.copyWith(
-            color: const Color(0xFF202124),
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -496,7 +496,11 @@ class _AcademicFields extends StatelessWidget {
           key: ValueKey('career-${state.careerId}'),
           initialValue: state.careerId,
           isExpanded: true,
+          dropdownColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          iconEnabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
           decoration: _dropdownDecoration(
+            context: context,
             label: 'Carrera',
             hint: 'Selecciona tu carrera',
           ),
@@ -518,7 +522,11 @@ class _AcademicFields extends StatelessWidget {
         DropdownButtonFormField<int>(
           key: ValueKey('semester-${state.semester}'),
           initialValue: state.semester,
+          dropdownColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          iconEnabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
           decoration: _dropdownDecoration(
+            context: context,
             label: 'Semestre',
             hint: 'Selecciona tu semestre',
           ),
@@ -575,7 +583,11 @@ class _GroupField extends StatelessWidget {
         key: ValueKey('group-${state.groupId}'),
         initialValue: state.groupId,
         isExpanded: true,
+        dropdownColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        iconEnabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
         decoration: _dropdownDecoration(
+          context: context,
           label: 'Grupo',
           hint: 'Selecciona tu grupo',
         ),
@@ -994,7 +1006,7 @@ class _LegalLink extends StatelessWidget {
       child: Text(
         document.isTerms ? 'Términos de Servicio' : 'Política de Privacidad',
         style: const TextStyle(
-          color: Color(0xFF2860F5),
+          color: Color(0xFF003B5C),
           fontSize: 13,
           fontWeight: FontWeight.w600,
           height: 1.5,
@@ -1023,8 +1035,8 @@ class _RegisterButton extends StatelessWidget {
                   context.read<RegisterBloc>().add(const RegisterSubmitted());
                 },
         style: FilledButton.styleFrom(
-          backgroundColor: const Color(0xFF2860F5),
-          disabledBackgroundColor: const Color(0xFFB9C4E7),
+          backgroundColor: const Color(0xFF003B5C),
+          disabledBackgroundColor: const Color(0xFFB9CFD9),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -1079,13 +1091,13 @@ class _SecurityNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EEFF),
+        color: const Color(0xFFE8F1F5),
         borderRadius: BorderRadius.circular(14),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.security_outlined, size: 20, color: Color(0xFF2857D9)),
+          Icon(Icons.security_outlined, size: 20, color: Color(0xFF075578)),
           SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -1106,29 +1118,49 @@ class _SecurityNotice extends StatelessWidget {
 }
 
 InputDecoration _dropdownDecoration({
+  required BuildContext context,
   required String label,
   required String hint,
 }) {
+  final theme = Theme.of(context);
+  final colors = theme.colorScheme;
+  final isDark = theme.brightness == Brightness.dark;
+
+  final fillColor = isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF7F8FC);
+  final borderColor =
+      isDark ? const Color(0xFF55555A) : const Color(0xFFD4D8E3);
+  final focusedBorderColor =
+      isDark ? const Color(0xFF5FA8C6) : const Color(0xFF003B5C);
+
   return InputDecoration(
     labelText: label,
     hintText: hint,
     filled: true,
-    fillColor: const Color(0xFFF7F8FC),
+    fillColor: fillColor,
+    labelStyle: TextStyle(
+      color: colors.onSurfaceVariant,
+      fontWeight: FontWeight.w500,
+    ),
+    floatingLabelStyle: TextStyle(
+      color: focusedBorderColor,
+      fontWeight: FontWeight.w600,
+    ),
+    hintStyle: TextStyle(color: colors.onSurfaceVariant),
     contentPadding: const EdgeInsets.symmetric(
       horizontal: AppSpacing.md,
       vertical: AppSpacing.lg,
     ),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: Color(0xFFD4D8E3)),
+      borderSide: BorderSide(color: borderColor),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: Color(0xFFD4D8E3)),
+      borderSide: BorderSide(color: borderColor),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: Color(0xFF2860F5), width: 1.5),
+      borderSide: BorderSide(color: focusedBorderColor, width: 1.5),
     ),
   );
 }
