@@ -1,12 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class AboutAppPage extends StatelessWidget {
   const AboutAppPage({super.key});
-
-  static const _repositoryUrl =
-      'https://github.com/Isaaquinho1/app-universidad';
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +41,18 @@ class AboutAppPage extends StatelessWidget {
                 _Contributor(
                   name: 'Esteban Isaac Méndez Vázquez',
                   description:
-                      'Responsable del desarrollo y adaptación de la '
+                      'Responsable Fullcstack del desarrollo de la '
                       'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
                   name: 'Jessica Vianney Sánchez Díaz',
-                  description: 'Colaboradora del proyecto.',
+                  description: 'Colaboradora Fronted del proyecto.',
                 ),
                 Divider(height: 28),
                 _Contributor(
                   name: 'Jesús Ali Lucas Mendoza',
-                  description: 'Colaborador del proyecto.',
+                  description: 'Colaborador Backend del proyecto.',
                 ),
               ],
             ),
@@ -72,26 +68,6 @@ class AboutAppPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xlg),
-            SizedBox(
-              height: 52,
-              child: OutlinedButton.icon(
-                onPressed:
-                    () => launchUrlString(
-                      _repositoryUrl,
-                      mode: LaunchMode.externalApplication,
-                    ),
-                icon: const Icon(Icons.code_rounded),
-                label: const Text('Consultar repositorio del proyecto'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF003B5C),
-                  side: const BorderSide(color: Color(0xFF003B5C)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
             SizedBox(
               height: 52,
               child: FilledButton.icon(
@@ -141,12 +117,12 @@ class _AboutHeader extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(
-            'assets/branding/conecta_itt_logo_clean.png',
-            width: 74,
-            height: 74,
+            'assets/branding/conecta_itt_splash_android12.png',
+            width: 92,
+            height: 92,
             fit: BoxFit.contain,
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Conecta ITT',
             style: AppTextStyle.h4.copyWith(
