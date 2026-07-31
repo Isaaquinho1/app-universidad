@@ -1,84 +1,98 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/material.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
+import 'package:conecta_itt/app/theme/theme_mode.dart';
+import 'package:flutter/material.dart';
 
 class ProfileSettingsPage extends StatelessWidget {
   const ProfileSettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final currentMode = AdaptiveTheme.of(context).mode;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Configuración")),
+      appBar: AppBar(title: const Text('Configuración')),
       body: SafeArea(
         bottom: false,
         child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
+          ),
           children: [
-            const SizedBox(height: 24),
-            ListTile(
-              title: Text("Tema", style: AppTextStyle.body),
-              leading: FaIcon(FontAwesomeIcons.palette, color: Theme.of(context).extension<AppColors>()!.active),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => SimpleDialog(
-                        title: Text("Seleccionar tema", style: AppTextStyle.titleS),
-                        contentPadding: const EdgeInsets.all(16),
-                        backgroundColor: Theme.of(context).extension<AppColors>()!.background02,
-                        elevation: 0,
-                        children: [
-                          _ListTileThemeItem(
-                            title: "Clara",
-                            trailing:
-                                AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                                    ? Icon(Icons.check, color: Theme.of(context).extension<AppColors>()!.active)
-                                    : null,
-                            onTap: () {
-                              AdaptiveTheme.of(context).setLight();
-                              context.pop();
-                            },
-                          ),
-                          const SizedBox(height: 8),
-                          _ListTileThemeItem(
-                            title: "Oscura",
-                            trailing:
-                                AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark
-                                    ? Icon(Icons.check, color: Theme.of(context).extension<AppColors>()!.active)
-                                    : null,
-                            onTap: () {
-                              AdaptiveTheme.of(context).setDark();
-                              context.pop();
-                            },
-                          ),
-                          const SizedBox(height: 8),
-                          _ListTileThemeItem(
-                            title: "Según el sistema",
-                            trailing:
-                                AdaptiveTheme.of(context).mode == AdaptiveThemeMode.system
-                                    ? Icon(Icons.check, color: Theme.of(context).extension<AppColors>()!.active)
-                                    : null,
-                            onTap: () {
-                              AdaptiveTheme.of(context).setSystem();
-                              context.pop();
-                            },
-                          ),
-                        ],
-                      ),
-                );
+            Text(
+              'Apariencia',
+              style: AppTextStyle.h4.copyWith(
+                fontSize: 21,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Elige cómo quieres visualizar Conecta ITT.',
+              style: AppTextStyle.body.copyWith(
+                color: Theme.of(context).extension<AppColors>()!.deactive,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            _ThemeOption(
+              title: 'Claro',
+              description: 'Usa colores claros en toda la aplicación.',
+              icon: Icons.light_mode_outlined,
+              selected: currentMode == AdaptiveThemeMode.light,
+              onPressed: () {
+                CustomThemeMode.setAmoled(false);
+                AdaptiveTheme.of(context).setLight();
               },
             ),
-            const Divider(),
-            ListTile(
-              title: Text("Notificaciones", style: AppTextStyle.body),
-              leading: Icon(Icons.notifications, color: Theme.of(context).extension<AppColors>()!.active),
-              onTap: () {
-                context.go("/profile/settings/notifications");
+            const SizedBox(height: AppSpacing.md),
+            _ThemeOption(
+              title: 'Oscuro',
+              description: 'Reduce el brillo y utiliza superficies oscuras.',
+              icon: Icons.dark_mode_outlined,
+              selected: currentMode == AdaptiveThemeMode.dark,
+              onPressed: () {
+                CustomThemeMode.setAmoled(false);
+                AdaptiveTheme.of(context).setDark();
               },
             ),
-            const Divider(),
+            const SizedBox(height: AppSpacing.md),
+            _ThemeOption(
+              title: 'Según el sistema',
+              description:
+                  'Adapta la apariencia a la configuración del dispositivo.',
+              icon: Icons.settings_suggest_outlined,
+              selected: currentMode == AdaptiveThemeMode.system,
+              onPressed: () {
+                CustomThemeMode.setAmoled(false);
+                AdaptiveTheme.of(context).setSystem();
+              },
+            ),
+            const SizedBox(height: AppSpacing.xlg),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.notifications_active_outlined),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      'Los comunicados institucionales se entregan según tu '
+                      'perfil, audiencia y permisos de notificación del '
+                      'dispositivo.',
+                      style: TextStyle(height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -86,24 +100,90 @@ class ProfileSettingsPage extends StatelessWidget {
   }
 }
 
-class _ListTileThemeItem extends StatelessWidget {
-  const _ListTileThemeItem({required this.title, required this.onTap, this.trailing});
+class _ThemeOption extends StatelessWidget {
+  const _ThemeOption({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.selected,
+    required this.onPressed,
+  });
 
   final String title;
-  final Widget? trailing;
-  final VoidCallback onTap;
+  final String description;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title, style: AppTextStyle.body.copyWith(color: Theme.of(context).extension<AppColors>()!.active)),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      dense: true,
-      onTap: () {
-        onTap();
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      trailing: trailing,
+    final theme = Theme.of(context);
+    final colors = theme.extension<AppColors>()!;
+
+    return Material(
+      color:
+          selected
+              ? const Color(0xFF003B5C).withValues(alpha: 0.12)
+              : colors.background02,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: selected ? const Color(0xFF075578) : colors.background03,
+              width: selected ? 1.6 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color:
+                      selected ? const Color(0xFF003B5C) : colors.background03,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  icon,
+                  color: selected ? Colors.white : colors.active,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyle.bodyBold.copyWith(
+                        color: colors.active,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      description,
+                      style: AppTextStyle.captionL.copyWith(
+                        color: colors.deactive,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Icon(
+                selected ? Icons.check_circle_rounded : Icons.circle_outlined,
+                color: selected ? const Color(0xFF075578) : colors.deactive,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

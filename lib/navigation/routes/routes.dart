@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/home/view/home_page.dart';
 import 'package:conecta_itt/profile/profile.dart';
-import 'package:conecta_itt/profile/view/notifications_settings_page.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
 import 'package:conecta_itt/feed/feed.dart';
 import 'package:conecta_itt/onboarding/view/onboarding_page.dart';
@@ -81,12 +80,7 @@ class WelcomeRoute extends GoRouteData {
             ),
             TypedGoRoute<ProfileEditRoute>(path: 'edit'),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
-            TypedGoRoute<ProfileSettingsRoute>(
-              path: 'settings',
-              routes: <TypedRoute<RouteData>>[
-                TypedGoRoute<NotificationsSettingsRoute>(path: 'notifications'),
-              ],
-            ),
+            TypedGoRoute<ProfileSettingsRoute>(path: 'settings'),
           ],
         ),
       ],
@@ -218,15 +212,6 @@ class ProfileSettingsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ProfileSettingsPage();
-  }
-}
-
-class NotificationsSettingsRoute extends GoRouteData {
-  const NotificationsSettingsRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const NotificationsSettingsPage();
   }
 }
 
