@@ -24,16 +24,26 @@ class $AssetsBrandingGen {
   AssetGenImage get conectaIttLogo =>
       const AssetGenImage('assets/branding/conecta_itt_logo.png');
 
+  /// File path: assets/branding/conecta_itt_logo_clean.png
+  AssetGenImage get conectaIttLogoClean =>
+      const AssetGenImage('assets/branding/conecta_itt_logo_clean.png');
+
   /// File path: assets/branding/conecta_itt_logo_source.png
   AssetGenImage get conectaIttLogoSource =>
       const AssetGenImage('assets/branding/conecta_itt_logo_source.png');
+
+  /// File path: assets/branding/conecta_itt_splash_android12.png
+  AssetGenImage get conectaIttSplashAndroid12 =>
+      const AssetGenImage('assets/branding/conecta_itt_splash_android12.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
         conectaIttAdaptiveForeground,
         conectaIttAppIcon,
         conectaIttLogo,
-        conectaIttLogoSource
+        conectaIttLogoClean,
+        conectaIttLogoSource,
+        conectaIttSplashAndroid12
       ];
 }
 
