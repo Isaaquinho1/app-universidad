@@ -95,7 +95,7 @@ class AppUserProfileRepository {
   }
 
   /// Updates academic fields through the protected database function.
-  Future<void> updateProfile({
+  Future<AppUserProfile> updateProfile({
     required String uid,
     String? displayName,
     String? careerId,
@@ -113,7 +113,7 @@ class AppUserProfileRepository {
       );
     }
 
-    await _supabaseClient.rpc(
+    final response = await _supabaseClient.rpc(
       'update_own_profile',
       params: {
         'p_display_name': displayName,
@@ -123,6 +123,14 @@ class AppUserProfileRepository {
         'p_profile_completed': profileCompleted,
       },
     );
+
+    if (response is! Map) {
+      throw StateError(
+        'The profile update did not return the updated institutional profile.',
+      );
+    }
+
+    return AppUserProfile.fromSupabase(Map<String, dynamic>.from(response));
   }
 
   /// Updates the role of a user.

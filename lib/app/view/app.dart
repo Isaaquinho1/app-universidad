@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/navigation/navigation.dart';
 import 'package:flutter/services.dart';
 import 'package:conecta_itt/analytics/bloc/analytics_bloc.dart';
@@ -35,6 +36,12 @@ class App extends StatelessWidget {
           providers: [
             RepositoryProvider.value(value: appScope.analyticsRepository),
             RepositoryProvider.value(value: appScope.userRepository),
+            RepositoryProvider<AppUserProfileRepository>.value(
+              value: appScope.appUserProfileRepository,
+            ),
+            RepositoryProvider<AcademicCatalogRepository>.value(
+              value: appScope.academicCatalogRepository,
+            ),
             RepositoryProvider<AnnouncementRepository>.value(
               value: appScope.announcementRepository,
             ),
