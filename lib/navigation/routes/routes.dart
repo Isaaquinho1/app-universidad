@@ -11,6 +11,7 @@ import 'package:conecta_itt/onboarding/view/onboarding_page.dart';
 import 'package:conecta_itt/welcome/welcome.dart';
 import 'package:conecta_itt/profile/view/profile_settings_page.dart';
 import 'package:conecta_itt/profile/view/profile_edit_page.dart';
+import 'package:conecta_itt/profile/view/student_id_page.dart';
 
 import 'package:conecta_itt/services/view/view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -78,6 +79,7 @@ class WelcomeRoute extends GoRouteData {
                 ),
               ],
             ),
+            TypedGoRoute<StudentIdRoute>(path: 'student-id'),
             TypedGoRoute<ProfileEditRoute>(path: 'edit'),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
             TypedGoRoute<ProfileSettingsRoute>(path: 'settings'),
@@ -185,6 +187,15 @@ class AdminAnnouncementResultsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AdminAnnouncementResultsPage(announcementId: announcementId);
+  }
+}
+
+class StudentIdRoute extends GoRouteData {
+  const StudentIdRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const StudentIdPage();
   }
 }
 

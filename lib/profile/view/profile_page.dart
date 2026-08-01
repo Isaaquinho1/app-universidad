@@ -87,6 +87,13 @@ class _AuthenticatedProfile extends StatelessWidget {
           SettingsSection(
             title: 'Información académica',
             children: [
+              SettingsItem(
+                text: 'Identificación digital',
+                icon: const Icon(Icons.badge_rounded),
+                onPressed: () => context.go('/profile/student-id'),
+                trailing: const Icon(Icons.chevron_right),
+              ),
+              const Divider(height: 24, thickness: 0.5),
               _ProfileDataRow(
                 icon: Icons.badge_outlined,
                 label: 'Número de control',
