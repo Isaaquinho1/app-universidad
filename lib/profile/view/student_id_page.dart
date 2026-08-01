@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/profile/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -124,6 +125,10 @@ class _StudentIdPageState extends State<StudentIdPage> {
                     ),
                   ],
                 ),
+                if (_selectedSide == 0) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _ProfilePhotoAction(profile: profile),
+                ],
                 const SizedBox(height: AppSpacing.lg),
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -161,6 +166,278 @@ class _StudentIdPageState extends State<StudentIdPage> {
     _pageController.dispose();
     super.dispose();
   }
+}
+
+class _ProfilePhotoAction extends StatefulWidget {
+  const _ProfilePhotoAction({required this.profile});
+
+  final AppUserProfile profile;
+
+  @override
+  State<_ProfilePhotoAction> createState() => _ProfilePhotoActionState();
+}
+
+class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
+  bool _isSubmitting = false;
+
+  Future<void> _selectAndSubmitPhoto() async {
+    if (_isSubmitting) {
+      return;
+    }
+
+    final repository = context.read<StudentProfilePhotoRepository>();
+
+    try {
+      final selectedFile = await repository.pickPhoto();
+
+      if (selectedFile == null || !mounted) {
+        return;
+      }
+
+      final confirmed = await _confirmSubmission(
+        context,
+        replacing: widget.profile.hasProfilePhoto,
+      );
+
+      if (!confirmed || !mounted) {
+        return;
+      }
+
+      setState(() => _isSubmitting = true);
+
+      final updatedProfile = await repository.submitPhoto(
+        uid: widget.profile.uid,
+        file: selectedFile,
+        previousPhotoPath: widget.profile.photoPath,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      context.read<AppBloc>().add(
+        AppInstitutionalProfileChanged(updatedProfile),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Fotografía enviada correctamente. '
+              'Quedó pendiente de validación.',
+            ),
+          ),
+        );
+    } on FormatException catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      _showError(error.message);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      _showError(
+        'No fue posible subir la fotografía. '
+        'Verifica tu conexión e inténtalo nuevamente.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = widget.profile;
+    final status = _photoStatusPresentation(profile);
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(status.icon, color: status.color),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      status.title,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      status.description,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 13,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (profile.isProfilePhotoRejected &&
+              profile.photoRejectionReason?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Text(
+                profile.photoRejectionReason!.trim(),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: OutlinedButton.icon(
+              onPressed: _isSubmitting ? null : _selectAndSubmitPhoto,
+              icon:
+                  _isSubmitting
+                      ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                      : Icon(
+                        profile.hasProfilePhoto
+                            ? Icons.change_circle_outlined
+                            : Icons.add_a_photo_outlined,
+                      ),
+              label: Text(
+                _isSubmitting
+                    ? 'Subiendo fotografía...'
+                    : profile.hasProfilePhoto
+                    ? 'Cambiar fotografía'
+                    : 'Agregar fotografía',
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF003B5C),
+                side: const BorderSide(color: Color(0xFF003B5C)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PhotoStatusPresentation {
+  const _PhotoStatusPresentation({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.description,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String description;
+}
+
+_PhotoStatusPresentation _photoStatusPresentation(AppUserProfile profile) {
+  return switch (profile.photoStatus) {
+    'pending' => const _PhotoStatusPresentation(
+      icon: Icons.schedule_rounded,
+      color: Colors.orange,
+      title: 'Fotografía pendiente de validación',
+      description:
+          'La imagen ya aparece en tu credencial mientras '
+          'se realiza la revisión institucional.',
+    ),
+    'approved' => const _PhotoStatusPresentation(
+      icon: Icons.verified_rounded,
+      color: Colors.green,
+      title: 'Fotografía validada',
+      description:
+          'La fotografía fue aprobada para tu '
+          'identificación digital.',
+    ),
+    'rejected' => const _PhotoStatusPresentation(
+      icon: Icons.cancel_outlined,
+      color: Colors.red,
+      title: 'Fotografía rechazada',
+      description:
+          'Selecciona una nueva fotografía que cumpla '
+          'con los requisitos institucionales.',
+    ),
+    _ => const _PhotoStatusPresentation(
+      icon: Icons.account_box_outlined,
+      color: Color(0xFF003B5C),
+      title: 'Fotografía no registrada',
+      description:
+          'Agrega una fotografía frontal y clara para '
+          'personalizar tu identificación digital.',
+    ),
+  };
+}
+
+Future<bool> _confirmSubmission(
+  BuildContext context, {
+  required bool replacing,
+}) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder:
+        (dialogContext) => AlertDialog(
+          title: Text(replacing ? 'Cambiar fotografía' : 'Enviar fotografía'),
+          content: Text(
+            replacing
+                ? 'La fotografía actual será sustituida y '
+                    'la nueva quedará pendiente de validación.'
+                : 'La fotografía seleccionada será utilizada '
+                    'en tu identificación digital y quedará '
+                    'pendiente de validación.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF003B5C),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        ),
+  );
+
+  return confirmed ?? false;
 }
 
 class _StudentIdFront extends StatelessWidget {
@@ -252,25 +529,12 @@ class _StudentIdFront extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 26),
-                  Container(
+                  StudentProfilePhoto(
+                    profile: profile,
+                    initials: _initials(displayName),
                     width: 142,
                     height: 172,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.28),
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      _initials(displayName),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 44,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
+                    borderRadius: BorderRadius.circular(24),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
@@ -303,7 +567,12 @@ class _StudentIdFront extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      AppSpacing.sm,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -311,7 +580,7 @@ class _StudentIdFront extends StatelessWidget {
                           label: 'Número de control',
                           value: controlNumber,
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.sm),
                         _CredentialData(
                           label: 'Carrera',
                           value: career,
@@ -421,12 +690,17 @@ class _StudentIdBack extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xlg),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  AppSpacing.sm,
+                ),
                 child: Column(
                   children: [
                     Container(
-                      width: 196,
-                      height: 196,
+                      width: 184,
+                      height: 184,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
@@ -441,7 +715,7 @@ class _StudentIdBack extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.qr_code_2_rounded,
-                            size: 98,
+                            size: 90,
                             color: Color(0xFF003B5C),
                           ),
                           SizedBox(height: AppSpacing.md),
@@ -455,12 +729,12 @@ class _StudentIdBack extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.sm),
                     _BackDataRow(
                       label: 'Número de control',
                       value: controlNumber,
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.sm),
                     _BackDataRow(
                       label: 'Estado',
                       value:

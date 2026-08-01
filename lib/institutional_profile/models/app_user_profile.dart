@@ -13,6 +13,12 @@ class AppUserProfile {
     this.semester,
     this.groupId,
     this.controlNumber,
+    this.photoPath,
+    this.photoStatus = 'missing',
+    this.photoUpdatedAt,
+    this.photoReviewedAt,
+    this.photoReviewedBy,
+    this.photoRejectionReason,
     this.fcmTokens = const {},
     this.createdAt,
     this.updatedAt,
@@ -26,6 +32,12 @@ class AppUserProfile {
   final int? semester;
   final String? groupId;
   final String? controlNumber;
+  final String? photoPath;
+  final String photoStatus;
+  final DateTime? photoUpdatedAt;
+  final DateTime? photoReviewedAt;
+  final String? photoReviewedBy;
+  final String? photoRejectionReason;
   final Map<String, String> fcmTokens;
   final bool profileCompleted;
   final bool active;
@@ -44,6 +56,14 @@ class AppUserProfile {
 
   bool get canManageAdmins => role.canManageAdmins;
 
+  bool get hasProfilePhoto => photoPath?.trim().isNotEmpty ?? false;
+
+  bool get isProfilePhotoPending => photoStatus == 'pending';
+
+  bool get isProfilePhotoApproved => photoStatus == 'approved';
+
+  bool get isProfilePhotoRejected => photoStatus == 'rejected';
+
   /// Creates a profile from a Supabase/PostgREST row.
   factory AppUserProfile.fromSupabase(Map<String, dynamic> row) {
     return AppUserProfile(
@@ -55,6 +75,12 @@ class AppUserProfile {
       semester: _readInt(row['semester']),
       groupId: row['group_id'] as String?,
       controlNumber: row['control_number'] as String?,
+      photoPath: row['photo_path'] as String?,
+      photoStatus: row['photo_status'] as String? ?? 'missing',
+      photoUpdatedAt: _readDateTime(row['photo_updated_at']),
+      photoReviewedAt: _readDateTime(row['photo_reviewed_at']),
+      photoReviewedBy: row['photo_reviewed_by'] as String?,
+      photoRejectionReason: row['photo_rejection_reason'] as String?,
       profileCompleted: row['profile_completed'] as bool? ?? false,
       active: row['active'] as bool? ?? true,
       createdAt: _readDateTime(row['created_at']),
@@ -75,6 +101,23 @@ class AppUserProfile {
       groupId: json['groupId'] as String? ?? json['group_id'] as String?,
       controlNumber:
           json['controlNumber'] as String? ?? json['control_number'] as String?,
+      photoPath: json['photoPath'] as String? ?? json['photo_path'] as String?,
+      photoStatus:
+          json['photoStatus'] as String? ??
+          json['photo_status'] as String? ??
+          'missing',
+      photoUpdatedAt: _readDateTime(
+        json['photoUpdatedAt'] ?? json['photo_updated_at'],
+      ),
+      photoReviewedAt: _readDateTime(
+        json['photoReviewedAt'] ?? json['photo_reviewed_at'],
+      ),
+      photoReviewedBy:
+          json['photoReviewedBy'] as String? ??
+          json['photo_reviewed_by'] as String?,
+      photoRejectionReason:
+          json['photoRejectionReason'] as String? ??
+          json['photo_rejection_reason'] as String?,
       fcmTokens: _readStringMap(json['fcmTokens']),
       profileCompleted:
           json['profileCompleted'] as bool? ??
@@ -96,6 +139,12 @@ class AppUserProfile {
       'semester': semester,
       'groupId': groupId,
       'controlNumber': controlNumber,
+      'photoPath': photoPath,
+      'photoStatus': photoStatus,
+      'photoUpdatedAt': photoUpdatedAt,
+      'photoReviewedAt': photoReviewedAt,
+      'photoReviewedBy': photoReviewedBy,
+      'photoRejectionReason': photoRejectionReason,
       'fcmTokens': fcmTokens,
       'profileCompleted': profileCompleted,
       'active': active,
@@ -113,6 +162,12 @@ class AppUserProfile {
     int? semester,
     String? groupId,
     String? controlNumber,
+    String? photoPath,
+    String? photoStatus,
+    DateTime? photoUpdatedAt,
+    DateTime? photoReviewedAt,
+    String? photoReviewedBy,
+    String? photoRejectionReason,
     Map<String, String>? fcmTokens,
     bool? profileCompleted,
     bool? active,
@@ -128,6 +183,12 @@ class AppUserProfile {
       semester: semester ?? this.semester,
       groupId: groupId ?? this.groupId,
       controlNumber: controlNumber ?? this.controlNumber,
+      photoPath: photoPath ?? this.photoPath,
+      photoStatus: photoStatus ?? this.photoStatus,
+      photoUpdatedAt: photoUpdatedAt ?? this.photoUpdatedAt,
+      photoReviewedAt: photoReviewedAt ?? this.photoReviewedAt,
+      photoReviewedBy: photoReviewedBy ?? this.photoReviewedBy,
+      photoRejectionReason: photoRejectionReason ?? this.photoRejectionReason,
       fcmTokens: fcmTokens ?? this.fcmTokens,
       profileCompleted: profileCompleted ?? this.profileCompleted,
       active: active ?? this.active,

@@ -1,2 +1,3 @@
 export 'academic_catalog_repository.dart';
 export 'app_user_profile_repository.dart';
+export 'student_profile_photo_repository.dart';
