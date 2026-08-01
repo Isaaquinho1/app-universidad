@@ -134,6 +134,9 @@ dependencies:
   uuid: ^4.6.0
   flutter_local_notifications: ^20.1.0
   clock: ^1.1.2
+  image_picker: ^1.2.3
+  image_cropper: ^12.2.1
+  image: ^4.8.0
   
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

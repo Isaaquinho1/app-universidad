@@ -2,45 +2,117 @@ import 'dart:typed_data';
 
 import 'package:conecta_itt/institutional_profile/models/models.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:image/image.dart' as image_library;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+enum StudentProfilePhotoSource { camera, gallery }
+
 /// Manages private institutional photographs used by the digital student ID.
 class StudentProfilePhotoRepository {
-  const StudentProfilePhotoRepository({required SupabaseClient supabaseClient})
-    : _supabaseClient = supabaseClient;
+  StudentProfilePhotoRepository({
+    required SupabaseClient supabaseClient,
+    ImagePicker? imagePicker,
+    ImageCropper? imageCropper,
+  }) : _supabaseClient = supabaseClient,
+       _imagePicker = imagePicker ?? ImagePicker(),
+       _imageCropper = imageCropper ?? ImageCropper();
 
   final SupabaseClient _supabaseClient;
+  final ImagePicker _imagePicker;
+  final ImageCropper _imageCropper;
 
   static const bucketName = 'student-profile-photos';
   static const maxFileSizeBytes = 5 * 1024 * 1024;
 
-  static const allowedExtensions = <String>{
-    'jpg',
-    'jpeg',
-    'png',
-    'webp',
-    'heic',
-    'heif',
-  };
+  static const outputWidth = 1200;
+  static const outputHeight = 1500;
+  static const outputJpegQuality = 88;
 
-  /// Selects one photograph from the device.
-  Future<PlatformFile?> pickPhoto() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExtensions.toList(growable: false),
-      allowMultiple: false,
-      withData: true,
+  /// Selects, crops and normalizes one institutional photograph.
+  ///
+  /// Every successful result is a portrait JPEG in 4:5 proportion with
+  /// dimensions no greater than 1200 x 1500 pixels.
+  Future<PlatformFile?> pickAndPreparePhoto({
+    required StudentProfilePhotoSource source,
+  }) async {
+    final pickedFile = await _imagePicker.pickImage(
+      source:
+          source == StudentProfilePhotoSource.camera
+              ? ImageSource.camera
+              : ImageSource.gallery,
+      imageQuality: 100,
+      requestFullMetadata: false,
     );
 
-    if (result == null || result.files.isEmpty) {
+    if (pickedFile == null) {
       return null;
     }
 
-    final file = result.files.single;
-    _validateFile(file);
+    final croppedFile = await _imageCropper.cropImage(
+      sourcePath: pickedFile.path,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      aspectRatio: const CropAspectRatio(ratioX: 4, ratioY: 5),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Recortar fotografía',
+          toolbarColor: const Color(0xFF003B5C),
+          toolbarWidgetColor: Colors.white,
+          statusBarLight: false,
+          activeControlsWidgetColor: const Color(0xFF003B5C),
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Recortar fotografía',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+          aspectRatioPickerButtonHidden: true,
+          doneButtonTitle: 'Usar',
+          cancelButtonTitle: 'Cancelar',
+        ),
+      ],
+    );
 
-    return file;
+    if (croppedFile == null) {
+      return null;
+    }
+
+    final inputBytes = await croppedFile.readAsBytes();
+
+    if (inputBytes.isEmpty) {
+      throw const FormatException(
+        'No se pudieron leer los datos de la fotografía recortada.',
+      );
+    }
+
+    final decoded = image_library.decodeImage(inputBytes);
+
+    if (decoded == null) {
+      throw const FormatException(
+        'La fotografía seleccionada no pudo procesarse.',
+      );
+    }
+
+    final oriented = image_library.bakeOrientation(decoded);
+    final normalized = _resizeToCredentialBounds(oriented);
+
+    final outputBytes = Uint8List.fromList(
+      image_library.encodeJpg(normalized, quality: outputJpegQuality),
+    );
+
+    final result = PlatformFile(
+      name: 'profile_photo.jpg',
+      size: outputBytes.length,
+      bytes: outputBytes,
+    );
+
+    _validateFile(result);
+
+    return result;
   }
 
   /// Uploads a new photograph and registers it as pending review.
@@ -56,17 +128,15 @@ class StudentProfilePhotoRepository {
     _validateFile(file);
 
     final bytes = _requireBytes(file);
-    final extension = _extensionOf(file.name);
-    final mimeType = _mimeTypeForExtension(extension);
-    final nextPath = '$uid/${const Uuid().v4()}.$extension';
+    final nextPath = '$uid/${const Uuid().v4()}.jpg';
 
     await _supabaseClient.storage
         .from(bucketName)
         .uploadBinary(
           nextPath,
           bytes,
-          fileOptions: FileOptions(
-            contentType: mimeType,
+          fileOptions: const FileOptions(
+            contentType: 'image/jpeg',
             cacheControl: '3600',
             upsert: false,
           ),
@@ -96,8 +166,7 @@ class StudentProfilePhotoRepository {
         try {
           await _supabaseClient.storage.from(bucketName).remove([previousPath]);
         } catch (_) {
-          // The new photograph is already authoritative. A stale object can
-          // be removed later without affecting the current profile.
+          // The new photograph is already authoritative.
         }
       }
 
@@ -149,7 +218,6 @@ class StudentProfilePhotoRepository {
     _validateCurrentUser(uid);
 
     final normalizedPath = photoPath.trim();
-
     final response = await _supabaseClient.rpc('remove_own_profile_photo');
 
     if (response is! Map) {
@@ -166,12 +234,31 @@ class StudentProfilePhotoRepository {
       try {
         await _supabaseClient.storage.from(bucketName).remove([normalizedPath]);
       } catch (_) {
-        // The profile no longer references this object. A stale Storage object
-        // can be cleaned later without affecting the account.
+        // The profile no longer references this object.
       }
     }
 
     return updatedProfile;
+  }
+
+  image_library.Image _resizeToCredentialBounds(image_library.Image source) {
+    if (source.width <= outputWidth && source.height <= outputHeight) {
+      return source;
+    }
+
+    final widthScale = outputWidth / source.width;
+    final heightScale = outputHeight / source.height;
+    final scale = widthScale < heightScale ? widthScale : heightScale;
+
+    final targetWidth = (source.width * scale).round();
+    final targetHeight = (source.height * scale).round();
+
+    return image_library.copyResize(
+      source,
+      width: targetWidth,
+      height: targetHeight,
+      interpolation: image_library.Interpolation.average,
+    );
   }
 
   void _validateCurrentUser(String uid) {
@@ -207,10 +294,11 @@ class StudentProfilePhotoRepository {
       );
     }
 
-    final extension = _extensionOf(name);
-
-    if (!allowedExtensions.contains(extension)) {
-      throw FormatException('El formato .$extension no está permitido.');
+    if (!name.toLowerCase().endsWith('.jpg') &&
+        !name.toLowerCase().endsWith('.jpeg')) {
+      throw const FormatException(
+        'La fotografía normalizada debe estar en formato JPEG.',
+      );
     }
 
     _requireBytes(file);
@@ -226,32 +314,5 @@ class StudentProfilePhotoRepository {
     }
 
     return bytes;
-  }
-
-  String _extensionOf(String fileName) {
-    final normalized = fileName.trim().toLowerCase();
-    final separator = normalized.lastIndexOf('.');
-
-    if (separator < 0 || separator == normalized.length - 1) {
-      throw const FormatException(
-        'La fotografía no tiene una extensión válida.',
-      );
-    }
-
-    return normalized.substring(separator + 1);
-  }
-
-  String _mimeTypeForExtension(String extension) {
-    return switch (extension) {
-      'jpg' || 'jpeg' => 'image/jpeg',
-      'png' => 'image/png',
-      'webp' => 'image/webp',
-      'heic' => 'image/heic',
-      'heif' => 'image/heif',
-      _ =>
-        throw FormatException(
-          'No existe un tipo MIME permitido para .$extension.',
-        ),
-    };
   }
 }

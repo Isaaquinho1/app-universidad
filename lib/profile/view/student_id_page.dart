@@ -2,6 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/profile/widgets/widgets.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -185,17 +187,24 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
       return;
     }
 
+    final source = await _selectPhotoSource(context);
+
+    if (source == null || !mounted) {
+      return;
+    }
+
     final repository = context.read<StudentProfilePhotoRepository>();
 
     try {
-      final selectedFile = await repository.pickPhoto();
+      final selectedFile = await repository.pickAndPreparePhoto(source: source);
 
       if (selectedFile == null || !mounted) {
         return;
       }
 
-      final confirmed = await _confirmSubmission(
+      final confirmed = await _previewAndConfirmPhoto(
         context,
+        file: selectedFile,
         replacing: widget.profile.hasProfilePhoto,
       );
 
@@ -219,28 +228,22 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
         AppInstitutionalProfileChanged(updatedProfile),
       );
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Fotografía enviada correctamente. '
-              'Quedó pendiente de validación.',
-            ),
-          ),
-        );
+      await _showMessage(
+        'Fotografía enviada correctamente. '
+        'Quedó pendiente de validación.',
+      );
     } on FormatException catch (error) {
       if (!mounted) {
         return;
       }
 
-      _showError(error.message);
+      await _showError(error.message);
     } catch (_) {
       if (!mounted) {
         return;
       }
 
-      _showError(
+      await _showError(
         'No fue posible subir la fotografía. '
         'Verifica tu conexión e inténtalo nuevamente.',
       );
@@ -251,10 +254,47 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
     }
   }
 
-  void _showError(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+  Future<void> _showMessage(String message, {bool isError = false}) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    if (messenger != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor:
+                isError ? Theme.of(context).colorScheme.error : null,
+          ),
+        );
+      return;
+    }
+
+    await showCupertinoDialog<void>(
+      context: context,
+      builder:
+          (dialogContext) => CupertinoAlertDialog(
+            title: Text(
+              isError
+                  ? 'No fue posible completar la acción'
+                  : 'Fotografía actualizada',
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(message),
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Aceptar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<void> _showError(String message) {
+    return _showMessage(message, isError: true);
   }
 
   @override
@@ -403,27 +443,107 @@ _PhotoStatusPresentation _photoStatusPresentation(AppUserProfile profile) {
   };
 }
 
-Future<bool> _confirmSubmission(
+Future<StudentProfilePhotoSource?> _selectPhotoSource(BuildContext context) {
+  return showModalBottomSheet<StudentProfilePhotoSource>(
+    context: context,
+    showDragHandle: true,
+    builder:
+        (sheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              0,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Seleccionar fotografía',
+                  style: Theme.of(
+                    sheetContext,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'La imagen se recortará en formato vertical antes '
+                  'de enviarse.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(sheetContext).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt_outlined),
+                  title: const Text('Tomar fotografía'),
+                  subtitle: const Text('Usar la cámara del dispositivo'),
+                  onTap:
+                      () => Navigator.of(
+                        sheetContext,
+                      ).pop(StudentProfilePhotoSource.camera),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined),
+                  title: const Text('Elegir de galería'),
+                  subtitle: const Text('Seleccionar una imagen existente'),
+                  onTap:
+                      () => Navigator.of(
+                        sheetContext,
+                      ).pop(StudentProfilePhotoSource.gallery),
+                ),
+              ],
+            ),
+          ),
+        ),
+  );
+}
+
+Future<bool> _previewAndConfirmPhoto(
   BuildContext context, {
+  required PlatformFile file,
   required bool replacing,
 }) async {
+  final bytes = file.bytes;
+
+  if (bytes == null || bytes.isEmpty) {
+    return false;
+  }
+
   final confirmed = await showDialog<bool>(
     context: context,
     builder:
         (dialogContext) => AlertDialog(
-          title: Text(replacing ? 'Cambiar fotografía' : 'Enviar fotografía'),
-          content: Text(
-            replacing
-                ? 'La fotografía actual será sustituida y '
-                    'la nueva quedará pendiente de validación.'
-                : 'La fotografía seleccionada será utilizada '
-                    'en tu identificación digital y quedará '
-                    'pendiente de validación.',
+          title: Text(
+            replacing ? 'Confirmar nueva fotografía' : 'Confirmar fotografía',
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: AspectRatio(
+                  aspectRatio: 4 / 5,
+                  child: Image.memory(bytes, fit: BoxFit.cover),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                replacing
+                    ? 'La fotografía actual será sustituida y la nueva '
+                        'quedará pendiente de validación.'
+                    : 'Esta fotografía se utilizará en tu identificación '
+                        'digital y quedará pendiente de validación.',
+                textAlign: TextAlign.center,
+                style: const TextStyle(height: 1.4),
+              ),
+            ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancelar'),
+              child: const Text('Volver'),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -431,7 +551,7 @@ Future<bool> _confirmSubmission(
                 backgroundColor: const Color(0xFF003B5C),
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Confirmar'),
+              child: const Text('Usar fotografía'),
             ),
           ],
         ),
@@ -719,11 +839,17 @@ class _StudentIdBack extends StatelessWidget {
                             color: Color(0xFF003B5C),
                           ),
                           SizedBox(height: AppSpacing.md),
-                          Text(
-                            'QR seguro próximamente',
-                            style: TextStyle(
-                              color: Color(0xFF003B5C),
-                              fontWeight: FontWeight.w700,
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'QR seguro\npróximamente',
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              style: TextStyle(
+                                color: Color(0xFF003B5C),
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                              ),
                             ),
                           ),
                         ],

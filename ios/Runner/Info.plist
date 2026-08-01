@@ -46,6 +46,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Conecta ITT necesita acceso a la cámara para tomar tu fotografía de identificación digital.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Conecta ITT necesita acceso a tus fotografías para seleccionar la imagen de tu identificación digital.</string>
 	<key>PermissionGroupNotification</key>
 	<string>Conecta ITT requiere permiso para enviarte comunicados y notificaciones institucionales.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
