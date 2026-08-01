@@ -135,6 +135,13 @@ class _AuthenticatedProfile extends StatelessWidget {
                 onPressed: () => context.go('/profile/announcement-management'),
                 trailing: const Icon(Icons.chevron_right),
               ),
+              const Divider(height: 24, thickness: 0.5),
+              SettingsItem(
+                text: 'Revisión de fotografías',
+                icon: const Icon(Icons.fact_check_outlined),
+                onPressed: () => context.go('/profile/photo-review'),
+                trailing: const Icon(Icons.chevron_right),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.xlg),

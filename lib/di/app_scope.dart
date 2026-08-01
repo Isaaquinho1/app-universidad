@@ -27,6 +27,7 @@ abstract class AppScope implements Scope {
   AppUserProfileRepository get appUserProfileRepository;
   AcademicCatalogRepository get academicCatalogRepository;
   StudentProfilePhotoRepository get studentProfilePhotoRepository;
+  AdminProfilePhotoRepository get adminProfilePhotoRepository;
   AnnouncementRepository get announcementRepository;
   PublicationAssetRepository get publicationAssetRepository;
   SupabaseClient get supabaseClient;
@@ -111,6 +112,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   late final _studentProfilePhotoRepositoryDep = dep(
     () => StudentProfilePhotoRepository(supabaseClient: _supabaseClientDep.get),
   );
+  late final _adminProfilePhotoRepositoryDep = dep(
+    () => AdminProfilePhotoRepository(supabaseClient: _supabaseClientDep.get),
+  );
   late final _announcementRepositoryDep = dep(
     () => AnnouncementRepository(supabaseClient: _supabaseClientDep.get),
   );
@@ -159,6 +163,9 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   StudentProfilePhotoRepository get studentProfilePhotoRepository =>
       _studentProfilePhotoRepositoryDep.get;
+  @override
+  AdminProfilePhotoRepository get adminProfilePhotoRepository =>
+      _adminProfilePhotoRepositoryDep.get;
   @override
   AnnouncementRepository get announcementRepository =>
       _announcementRepositoryDep.get;

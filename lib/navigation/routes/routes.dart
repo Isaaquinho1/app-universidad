@@ -79,6 +79,7 @@ class WelcomeRoute extends GoRouteData {
                 ),
               ],
             ),
+            TypedGoRoute<AdminProfilePhotoReviewRoute>(path: 'photo-review'),
             TypedGoRoute<StudentIdRoute>(path: 'student-id'),
             TypedGoRoute<ProfileEditRoute>(path: 'edit'),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
@@ -187,6 +188,15 @@ class AdminAnnouncementResultsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AdminAnnouncementResultsPage(announcementId: announcementId);
+  }
+}
+
+class AdminProfilePhotoReviewRoute extends GoRouteData {
+  const AdminProfilePhotoReviewRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminProfilePhotoReviewPage();
   }
 }
 
