@@ -142,6 +142,13 @@ class _AuthenticatedProfile extends StatelessWidget {
                 onPressed: () => context.go('/profile/photo-review'),
                 trailing: const Icon(Icons.chevron_right),
               ),
+              const Divider(height: 24, thickness: 0.5),
+              SettingsItem(
+                text: 'Validar identificación',
+                icon: const Icon(Icons.qr_code_scanner_rounded),
+                onPressed: () => context.go('/profile/id-validator'),
+                trailing: const Icon(Icons.chevron_right),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.xlg),
