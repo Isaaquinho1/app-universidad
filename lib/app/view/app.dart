@@ -48,6 +48,9 @@ class App extends StatelessWidget {
             RepositoryProvider<AdminProfilePhotoRepository>.value(
               value: appScope.adminProfilePhotoRepository,
             ),
+            RepositoryProvider<StudentIdQrRepository>.value(
+              value: appScope.studentIdQrRepository,
+            ),
             RepositoryProvider<AnnouncementRepository>.value(
               value: appScope.announcementRepository,
             ),

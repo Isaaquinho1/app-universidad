@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
@@ -5,6 +6,7 @@ import 'package:conecta_itt/profile/widgets/widgets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Digital student identification inspired by the physical campus credential.
@@ -818,43 +820,7 @@ class _StudentIdBack extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: 184,
-                      height: 184,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                        border: Border.all(
-                          color: const Color(
-                            0xFF003B5C,
-                          ).withValues(alpha: 0.18),
-                        ),
-                      ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.qr_code_2_rounded,
-                            size: 90,
-                            color: Color(0xFF003B5C),
-                          ),
-                          SizedBox(height: AppSpacing.md),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              'QR seguro\npróximamente',
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                color: Color(0xFF003B5C),
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _DynamicStudentIdQr(profile: profile),
                     const SizedBox(height: AppSpacing.sm),
                     _BackDataRow(
                       label: 'Número de control',
@@ -871,7 +837,7 @@ class _StudentIdBack extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     const _BackDataRow(
                       label: 'Vigencia',
-                      value: 'Pendiente de configuración institucional',
+                      value: 'Código temporal de 60 segundos',
                     ),
                     const Spacer(),
                     Text(
@@ -897,6 +863,300 @@ class _StudentIdBack extends StatelessWidget {
       ),
     );
   }
+}
+
+class _DynamicStudentIdQr extends StatefulWidget {
+  const _DynamicStudentIdQr({required this.profile});
+
+  final AppUserProfile profile;
+
+  @override
+  State<_DynamicStudentIdQr> createState() => _DynamicStudentIdQrState();
+}
+
+class _DynamicStudentIdQrState extends State<_DynamicStudentIdQr> {
+  static const Duration _renewalThreshold = Duration(seconds: 10);
+
+  Timer? _timer;
+  StudentIdQrToken? _token;
+
+  DateTime _now = DateTime.now().toUtc();
+
+  bool _isLoading = true;
+  bool _isRenewing = false;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    unawaited(_issueToken());
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _onTick());
+  }
+
+  @override
+  void didUpdateWidget(covariant _DynamicStudentIdQr oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final eligibilityChanged =
+        oldWidget.profile.active != widget.profile.active ||
+        oldWidget.profile.photoStatus != widget.profile.photoStatus ||
+        oldWidget.profile.profileCompleted != widget.profile.profileCompleted;
+
+    if (eligibilityChanged) {
+      _token = null;
+      unawaited(_issueToken());
+    }
+  }
+
+  void _onTick() {
+    if (!mounted) {
+      return;
+    }
+
+    final now = DateTime.now().toUtc();
+    final token = _token;
+
+    setState(() {
+      _now = now;
+    });
+
+    if (token == null || _isRenewing) {
+      return;
+    }
+
+    if (token.remainingAt(now) <= _renewalThreshold) {
+      unawaited(_issueToken(automatic: true));
+    }
+  }
+
+  Future<void> _issueToken({bool automatic = false}) async {
+    if (_isRenewing) {
+      return;
+    }
+
+    final eligibilityError = _eligibilityError();
+
+    if (eligibilityError != null) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _token = null;
+        _isLoading = false;
+        _isRenewing = false;
+        _errorMessage = eligibilityError;
+      });
+      return;
+    }
+
+    setState(() {
+      _isRenewing = true;
+
+      if (_token == null) {
+        _isLoading = true;
+      }
+
+      if (!automatic) {
+        _errorMessage = null;
+      }
+    });
+
+    try {
+      final nextToken =
+          await context.read<StudentIdQrRepository>().issueToken();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _token = nextToken;
+        _now = DateTime.now().toUtc();
+        _isLoading = false;
+        _errorMessage = null;
+      });
+    } catch (error, stackTrace) {
+      debugPrint('Student ID QR token error: $error\n$stackTrace');
+
+      if (!mounted) {
+        return;
+      }
+
+      final activeToken = _token;
+      final tokenStillValid =
+          activeToken != null &&
+          !activeToken.isExpiredAt(DateTime.now().toUtc());
+
+      setState(() {
+        _isLoading = false;
+        _errorMessage =
+            tokenStillValid
+                ? 'La renovación falló. Se reintentará automáticamente.'
+                : 'No fue posible generar el código temporal.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRenewing = false;
+        });
+      }
+    }
+  }
+
+  String? _eligibilityError() {
+    if (!widget.profile.active) {
+      return 'La identificación institucional está inactiva.';
+    }
+
+    if (!widget.profile.profileCompleted) {
+      return 'Completa tu perfil institucional.';
+    }
+
+    if (!widget.profile.isProfilePhotoApproved) {
+      return 'La fotografía debe estar aprobada.';
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final token = _token;
+    final remaining = token?.remainingAt(_now) ?? Duration.zero;
+
+    final remainingSeconds = ((remaining.inMilliseconds + 999) ~/ 1000).clamp(
+      0,
+      60,
+    );
+
+    final tokenIsVisible = token != null && !token.isExpiredAt(_now);
+
+    return Container(
+      width: 184,
+      height: 184,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: const Color(0xFF003B5C).withValues(alpha: 0.18),
+        ),
+      ),
+      child:
+          _isLoading && token == null
+              ? const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Color(0xFF003B5C),
+                ),
+              )
+              : tokenIsVisible
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QrImageView(
+                    data: token.value,
+                    version: QrVersions.auto,
+                    size: 136,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Colors.white,
+                    errorCorrectionLevel: QrErrorCorrectLevel.M,
+                    eyeStyle: const QrEyeStyle(
+                      eyeShape: QrEyeShape.square,
+                      color: Color(0xFF003B5C),
+                    ),
+                    dataModuleStyle: const QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.square,
+                      color: Color(0xFF003B5C),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_isRenewing)
+                        const Padding(
+                          padding: EdgeInsets.only(right: 6),
+                          child: SizedBox.square(
+                            dimension: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.7,
+                              color: Color(0xFF003B5C),
+                            ),
+                          ),
+                        ),
+                      Text(
+                        _formatCountdown(remainingSeconds),
+                        style: const TextStyle(
+                          color: Color(0xFF003B5C),
+                          fontWeight: FontWeight.w800,
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+              : _QrUnavailableState(
+                message: _errorMessage ?? 'El código temporal expiró.',
+                onRetry: _isRenewing ? null : () => _issueToken(),
+              ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+}
+
+class _QrUnavailableState extends StatelessWidget {
+  const _QrUnavailableState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.qr_code_2_rounded,
+            size: 44,
+            color: Color(0xFF003B5C),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.blueGrey.shade700,
+              fontSize: 11,
+              height: 1.25,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (onRetry != null) ...[
+            const SizedBox(height: 2),
+            TextButton(onPressed: onRetry, child: const Text('Renovar ahora')),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+String _formatCountdown(int seconds) {
+  return '00:${seconds.toString().padLeft(2, '0')}';
 }
 
 class _CredentialStatus extends StatelessWidget {
