@@ -40,10 +40,9 @@ class StudentProfilePhotoRepository {
     required StudentProfilePhotoSource source,
   }) async {
     final pickedFile = await _imagePicker.pickImage(
-      source:
-          source == StudentProfilePhotoSource.camera
-              ? ImageSource.camera
-              : ImageSource.gallery,
+      source: source == StudentProfilePhotoSource.camera
+          ? ImageSource.camera
+          : ImageSource.gallery,
       imageQuality: 100,
       requestFullMetadata: false,
     );
@@ -115,14 +114,28 @@ class StudentProfilePhotoRepository {
     return result;
   }
 
+  /// Returns the photograph-change allowance for the active period.
+  Future<ProfilePhotoAllowance> getPhotoAllowance() async {
+    final response = await _supabaseClient.rpc(
+      'get_own_profile_photo_allowance',
+    );
+
+    if (response is! Map) {
+      throw StateError(
+        'The photograph allowance returned an invalid response.',
+      );
+    }
+
+    return ProfilePhotoAllowance.fromJson(Map<String, dynamic>.from(response));
+  }
+
   /// Uploads a new photograph and registers it as pending review.
   ///
-  /// The previous photograph is removed only after the new upload and profile
-  /// update succeed, so a failed replacement never leaves the profile empty.
+  /// Previous photographs are retained for institutional audit and are not
+  /// removed when a replacement is submitted.
   Future<AppUserProfile> submitPhoto({
     required String uid,
     required PlatformFile file,
-    String? previousPhotoPath,
   }) async {
     _validateCurrentUser(uid);
     _validateFile(file);
@@ -157,18 +170,6 @@ class StudentProfilePhotoRepository {
       final updatedProfile = AppUserProfile.fromSupabase(
         Map<String, dynamic>.from(response),
       );
-
-      final previousPath = previousPhotoPath?.trim();
-
-      if (previousPath != null &&
-          previousPath.isNotEmpty &&
-          previousPath != nextPath) {
-        try {
-          await _supabaseClient.storage.from(bucketName).remove([previousPath]);
-        } catch (_) {
-          // The new photograph is already authoritative.
-        }
-      }
 
       return updatedProfile;
     } catch (_) {
