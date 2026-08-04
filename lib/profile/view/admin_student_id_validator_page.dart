@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -21,6 +22,7 @@ class _AdminStudentIdValidatorPageState
   late final MobileScannerController _scannerController;
 
   bool _isProcessing = false;
+  bool _codeDetected = false;
   bool _scannerPaused = true;
   bool _scannerStarting = false;
   int _scannerSession = 0;
@@ -124,17 +126,25 @@ class _AdminStudentIdValidatorPageState
     }
 
     final repository = context.read<StudentIdQrRepository>();
+    final feedbackStartedAt = DateTime.now();
 
     setState(() {
       _isProcessing = true;
+      _codeDetected = true;
       _processingError = null;
     });
+
+    unawaited(HapticFeedback.mediumImpact());
 
     try {
       await _scannerController.pause();
       _scannerPaused = true;
 
-      final result = await repository.validateToken(token);
+      final validationFuture = repository.validateToken(token);
+
+      await _waitForMinimumDetectionFeedback(feedbackStartedAt);
+
+      final result = await validationFuture;
 
       if (!mounted) {
         return;
@@ -169,13 +179,20 @@ class _AdminStudentIdValidatorPageState
       return;
     }
 
+    final feedbackStartedAt = DateTime.now();
+
     setState(() {
       _isProcessing = true;
+      _codeDetected = true;
     });
+
+    unawaited(HapticFeedback.mediumImpact());
 
     try {
       await _scannerController.pause();
       _scannerPaused = true;
+
+      await _waitForMinimumDetectionFeedback(feedbackStartedAt);
 
       if (!mounted) {
         return;
@@ -205,6 +222,7 @@ class _AdminStudentIdValidatorPageState
     setState(() {
       _result = null;
       _processingError = null;
+      _codeDetected = false;
       _lastToken = null;
       _lastDetectionAt = null;
       _scannerPaused = true;
@@ -218,6 +236,16 @@ class _AdminStudentIdValidatorPageState
     }
 
     await _startScanner();
+  }
+
+  Future<void> _waitForMinimumDetectionFeedback(DateTime startedAt) async {
+    const minimumDuration = Duration(milliseconds: 900);
+    final elapsed = DateTime.now().difference(startedAt);
+    final remaining = minimumDuration - elapsed;
+
+    if (remaining > Duration.zero) {
+      await Future<void>.delayed(remaining);
+    }
   }
 
   Future<void> _retryValidation() async {
@@ -372,24 +400,64 @@ class _AdminStudentIdValidatorPageState
                           ),
                         ),
                   ),
-                  const _ScannerOverlay(),
+                  _ScannerOverlay(detected: _codeDetected),
                   if (_isProcessing)
                     ColoredBox(
-                      color: Colors.black.withValues(alpha: 0.58),
-                      child: const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircularProgressIndicator(color: Colors.white),
-                            SizedBox(height: AppSpacing.md),
-                            Text(
-                              'Validando identificación…',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
+                      color: Colors.black.withValues(alpha: 0.46),
+                      child: Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 220),
+                          child: Column(
+                            key: ValueKey<bool>(_codeDetected),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 74,
+                                height: 74,
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF20D7A0,
+                                  ).withValues(alpha: 0.18),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFF20D7A0),
+                                    width: 3,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.qr_code_2_rounded,
+                                  color: Color(0xFF20D7A0),
+                                  size: 42,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: AppSpacing.md),
+                              const Text(
+                                'Código detectado',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              const Text(
+                                'Validando identificación…',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              const SizedBox(
+                                width: 26,
+                                height: 26,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -443,15 +511,23 @@ class _AdminStudentIdValidatorPageState
 }
 
 class _ScannerOverlay extends StatelessWidget {
-  const _ScannerOverlay();
+  const _ScannerOverlay({required this.detected});
+
+  final bool detected;
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(child: CustomPaint(painter: _ScannerOverlayPainter()));
+    return IgnorePointer(
+      child: CustomPaint(painter: _ScannerOverlayPainter(detected: detected)),
+    );
   }
 }
 
 class _ScannerOverlayPainter extends CustomPainter {
+  const _ScannerOverlayPainter({required this.detected});
+
+  final bool detected;
+
   @override
   void paint(Canvas canvas, Size size) {
     final shortestSide = size.width < size.height ? size.width : size.height;
@@ -477,12 +553,21 @@ class _ScannerOverlayPainter extends CustomPainter {
       Paint()..color = Colors.black.withValues(alpha: 0.52),
     );
 
+    if (detected) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(scanRect, const Radius.circular(24)),
+        Paint()
+          ..color = const Color(0xFF20D7A0).withValues(alpha: 0.22)
+          ..style = PaintingStyle.fill,
+      );
+    }
+
     canvas.drawRRect(
       RRect.fromRectAndRadius(scanRect, const Radius.circular(24)),
       Paint()
-        ..color = Colors.white
+        ..color = detected ? const Color(0xFF20D7A0) : Colors.white
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
+        ..strokeWidth = detected ? 5 : 3,
     );
 
     const cornerLength = 34.0;
@@ -540,7 +625,7 @@ class _ScannerOverlayPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ScannerOverlayPainter oldDelegate) {
-    return false;
+    return oldDelegate.detected != detected;
   }
 }
 

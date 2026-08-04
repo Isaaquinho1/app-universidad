@@ -41,18 +41,22 @@ class AboutAppPage extends StatelessWidget {
                 _Contributor(
                   name: 'Esteban Isaac Méndez Vázquez',
                   description:
-                      'Responsable Fullcstack del desarrollo de la '
+                      'Desarrollador Fullstack de la '
                       'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
                   name: 'Jessica Vianney Sánchez Díaz',
-                  description: 'Colaboradora Fronted del proyecto.',
+                  description: 
+                        'Desarrolladora Frontend de la '
+                        'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
                   name: 'Jesús Ali Lucas Mendoza',
-                  description: 'Colaborador Backend del proyecto.',
+                  description: 
+                        'Desarrollador Backend de la '
+                        'aplicación móvil.',
                 ),
               ],
             ),
