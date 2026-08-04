@@ -1077,7 +1077,11 @@ class _BackToLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       key: const Key('registerForm_loginButton'),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () {
+        Navigator.of(
+          context,
+        ).pushReplacement<void, void>(LoginWithEmailPage.route());
+      },
       child: const Text('Ya tengo una cuenta'),
     );
   }
