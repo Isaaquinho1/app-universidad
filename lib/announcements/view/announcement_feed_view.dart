@@ -275,6 +275,7 @@ class AnnouncementCard extends StatelessWidget {
                   Wrap(
                     spacing: AppSpacing.sm,
                     runSpacing: AppSpacing.xs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       _PublicationTypeBadge(announcement: announcement),
                       if (announcement.isNews &&
@@ -284,25 +285,21 @@ class AnnouncementCard extends StatelessWidget {
                         ),
                       if (announcement.isCurrentlyFeatured)
                         const _FeaturedBadge(),
+                      if (announcement.isAnnouncement) ...[
+                        _PriorityBadge(priority: announcement.priority),
+                        _ReceiptBadge(
+                          receipt: receipt,
+                          contentVersion: announcement.contentVersion,
+                        ),
+                      ],
                     ],
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          announcement.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      if (announcement.isAnnouncement) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        _PriorityBadge(priority: announcement.priority),
-                      ],
-                    ],
+                  Text(
+                    announcement.title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
@@ -311,16 +308,6 @@ class AnnouncementCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium,
                   ),
-                  if (announcement.isAnnouncement) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _ReceiptBadge(
-                        receipt: receipt,
-                        contentVersion: announcement.contentVersion,
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: AppSpacing.md),
                   Row(
                     children: [
