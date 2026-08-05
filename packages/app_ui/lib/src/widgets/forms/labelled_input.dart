@@ -82,6 +82,8 @@ class _LabelledInputState extends State<LabelledInput> {
                         ),
                         onPressed: () {
                           widget.controller?.clear();
+                          widget.onChanged?.call('');
+                          setState(() {});
                         },
                       )
                     : null,

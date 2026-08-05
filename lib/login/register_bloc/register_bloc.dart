@@ -102,7 +102,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
        _academicCatalogRepository = academicCatalogRepository,
        _legalDocumentRepository = legalDocumentRepository,
        super(const RegisterState()) {
-    on<RegisterFullNameChanged>(_onFullNameChanged);
+    on<RegisterGivenNamesChanged>(_onGivenNamesChanged);
+    on<RegisterFirstSurnameChanged>(_onFirstSurnameChanged);
+    on<RegisterSecondSurnameChanged>(_onSecondSurnameChanged);
     on<RegisterEmailChanged>(_onEmailChanged);
     on<RegisterCareerChanged>(_onCareerChanged);
     on<RegisterSemesterChanged>(_onSemesterChanged);
@@ -120,14 +122,42 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AcademicCatalogRepository _academicCatalogRepository;
   final LegalDocumentRepository _legalDocumentRepository;
 
-  void _onFullNameChanged(
-    RegisterFullNameChanged event,
+  void _onGivenNamesChanged(
+    RegisterGivenNamesChanged event,
     Emitter<RegisterState> emit,
   ) {
     _emitValidated(
       emit,
       state.copyWith(
-        fullName: event.fullName,
+        givenNames: event.givenNames,
+        status: FormzSubmissionStatus.initial,
+        clearErrorMessage: true,
+      ),
+    );
+  }
+
+  void _onFirstSurnameChanged(
+    RegisterFirstSurnameChanged event,
+    Emitter<RegisterState> emit,
+  ) {
+    _emitValidated(
+      emit,
+      state.copyWith(
+        firstSurname: event.firstSurname,
+        status: FormzSubmissionStatus.initial,
+        clearErrorMessage: true,
+      ),
+    );
+  }
+
+  void _onSecondSurnameChanged(
+    RegisterSecondSurnameChanged event,
+    Emitter<RegisterState> emit,
+  ) {
+    _emitValidated(
+      emit,
+      state.copyWith(
+        secondSurname: event.secondSurname,
         status: FormzSubmissionStatus.initial,
         clearErrorMessage: true,
       ),
@@ -404,7 +434,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         email: email.normalizedValue,
         password: password.value,
         data: {
-          'display_name': submittedState.fullName.trim(),
+          'display_name': _normalizeFullName(submittedState),
           'institutionalEmailType': institutionalEmail.type.name,
           'termsAccepted': true,
           'privacyAccepted': true,
@@ -456,8 +486,44 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(next.copyWith(valid: _validateState(next)));
   }
 
+  static bool _isValidNamePart(String value) {
+    final normalized = value.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    if (normalized.length < 2) {
+      return false;
+    }
+
+    return RegExp(r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]+$").hasMatch(normalized);
+  }
+
+  static String _normalizeNamePart(String value) {
+    final normalized = value.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    return normalized
+        .split(' ')
+        .map((part) {
+          if (part.isEmpty) {
+            return part;
+          }
+
+          final lower = part.toLowerCase();
+          return '${lower[0].toUpperCase()}${lower.substring(1)}';
+        })
+        .join(' ');
+  }
+
+  static String _normalizeFullName(RegisterState state) {
+    return [
+      _normalizeNamePart(state.givenNames),
+      _normalizeNamePart(state.firstSurname),
+      _normalizeNamePart(state.secondSurname),
+    ].join(' ');
+  }
+
   static bool _validateState(RegisterState state) {
-    final fullNameValid = state.fullName.trim().length >= 3;
+    final namesValid = _isValidNamePart(state.givenNames);
+    final firstSurnameValid = _isValidNamePart(state.firstSurname);
+    final secondSurnameValid = _isValidNamePart(state.secondSurname);
 
     final credentialsValid = Formz.validate([
       state.email,
@@ -466,7 +532,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     ]);
 
     final commonValid =
-        fullNameValid &&
+        namesValid &&
+        firstSurnameValid &&
+        secondSurnameValid &&
         credentialsValid &&
         state.termsAccepted &&
         state.legalDocumentsReady &&
@@ -500,8 +568,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     final message = failure.error.toString().toLowerCase();
 
     if (message.contains('already registered') ||
-        message.contains('user already exists')) {
-      return 'Este correo institucional ya está registrado.';
+        message.contains('user already exists') ||
+        message.contains('email already exists') ||
+        message.contains('already been registered')) {
+      return 'Ya existe una cuenta asociada a este correo institucional. '
+          'Inicia sesión o recupera tu contraseña.';
     }
 
     if (message.contains('terms') ||

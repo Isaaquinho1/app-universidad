@@ -6,7 +6,9 @@ enum LegalDocumentsStatus { initial, loading, success, failure }
 
 class RegisterState extends Equatable {
   const RegisterState({
-    this.fullName = '',
+    this.givenNames = '',
+    this.firstSurname = '',
+    this.secondSurname = '',
     this.email = const RegisterEmail.pure(),
     this.password = const RegisterPassword.pure(),
     this.passwordConfirmation = const RegisterPasswordConfirmation.pure(),
@@ -25,7 +27,15 @@ class RegisterState extends Equatable {
     this.errorMessage,
   });
 
-  final String fullName;
+  final String givenNames;
+  final String firstSurname;
+  final String secondSurname;
+
+  String get fullName => [
+    givenNames.trim(),
+    firstSurname.trim(),
+    secondSurname.trim(),
+  ].where((part) => part.isNotEmpty).join(' ');
   final RegisterEmail email;
   final RegisterPassword password;
   final RegisterPasswordConfirmation passwordConfirmation;
@@ -80,7 +90,9 @@ class RegisterState extends Equatable {
       privacyDocument != null;
 
   RegisterState copyWith({
-    String? fullName,
+    String? givenNames,
+    String? firstSurname,
+    String? secondSurname,
     RegisterEmail? email,
     RegisterPassword? password,
     RegisterPasswordConfirmation? passwordConfirmation,
@@ -104,7 +116,9 @@ class RegisterState extends Equatable {
     bool clearErrorMessage = false,
   }) {
     return RegisterState(
-      fullName: fullName ?? this.fullName,
+      givenNames: givenNames ?? this.givenNames,
+      firstSurname: firstSurname ?? this.firstSurname,
+      secondSurname: secondSurname ?? this.secondSurname,
       email: email ?? this.email,
       password: password ?? this.password,
       passwordConfirmation: passwordConfirmation ?? this.passwordConfirmation,
@@ -128,7 +142,9 @@ class RegisterState extends Equatable {
 
   @override
   List<Object?> get props => [
-    fullName,
+    givenNames,
+    firstSurname,
+    secondSurname,
     email,
     password,
     passwordConfirmation,

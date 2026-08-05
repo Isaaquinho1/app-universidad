@@ -106,6 +106,13 @@ class AppUserProfileRepository {
   }) async {
     _validateCurrentUser(uid);
 
+    if (displayName != null) {
+      throw UnsupportedError(
+        'The institutional display name is defined during registration '
+        'and cannot be updated from the client.',
+      );
+    }
+
     if (controlNumber != null) {
       throw UnsupportedError(
         'The control number is generated from the institutional email '
@@ -116,7 +123,7 @@ class AppUserProfileRepository {
     final response = await _supabaseClient.rpc(
       'update_own_profile',
       params: {
-        'p_display_name': displayName,
+        'p_display_name': null,
         'p_career_id': careerId,
         'p_semester': semester,
         'p_group_id': groupId,

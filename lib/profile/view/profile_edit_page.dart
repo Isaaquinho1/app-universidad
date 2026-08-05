@@ -15,8 +15,6 @@ class ProfileEditPage extends StatefulWidget {
 class _ProfileEditPageState extends State<ProfileEditPage> {
   static const _semesters = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  late final TextEditingController _nameController;
-
   String? _careerId;
   int? _semester;
   String? _groupId;
@@ -41,9 +39,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     final profile = context.read<AppBloc>().state.institutionalProfile;
     _initialProfile = profile;
 
-    _nameController = TextEditingController(
-      text: profile?.displayName?.trim() ?? '',
-    );
     _careerId = profile?.careerId;
     _semester = profile?.semester;
     _groupId = profile?.groupId;
@@ -62,19 +57,16 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       return false;
     }
 
-    return _nameController.text.trim() != (profile.displayName?.trim() ?? '') ||
-        _careerId != profile.careerId ||
+    return _careerId != profile.careerId ||
         _semester != profile.semester ||
         _groupId != profile.groupId;
   }
 
   bool get _formValid {
-    final nameValid = _nameController.text.trim().length >= 3;
     final academicValid = _careerId != null && _semester != null;
     final groupValid = _groups.isEmpty || _groupId != null;
 
-    return nameValid &&
-        academicValid &&
+    return academicValid &&
         groupValid &&
         !_loadingGroups &&
         _groupsError == null;
@@ -178,7 +170,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           .read<AppUserProfileRepository>()
           .updateProfile(
             uid: profile.uid,
-            displayName: _nameController.text.trim(),
             careerId: _careerId,
             semester: _semester,
             groupId: _groupId,
@@ -260,13 +251,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             ),
             const SizedBox(height: AppSpacing.lg),
             TextFormField(
-              controller: _nameController,
-              textCapitalization: TextCapitalization.words,
-              onChanged: (_) => setState(() {}),
+              initialValue: profile.displayName?.trim() ?? '',
+              readOnly: true,
               decoration: _decoration(
                 context,
                 label: 'Nombre completo',
-                hint: 'Nombre y apellidos',
+                hint: 'No disponible',
+                locked: true,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -393,8 +384,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Text(
-                'El correo institucional, número de control y rol no pueden '
-                'modificarse desde la aplicación.',
+                'El nombre completo, correo institucional, número de '
+                'control y rol no pueden modificarse desde la aplicación.',
               ),
             ),
             const SizedBox(height: AppSpacing.xlg),
@@ -464,7 +455,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
     super.dispose();
   }
 }

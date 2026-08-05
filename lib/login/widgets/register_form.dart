@@ -61,8 +61,10 @@ class RegisterForm extends StatelessWidget {
                 ? 'Revisa tu correo institucional para confirmar la cuenta. '
                     'Tu carrera y semestre fueron registrados, pero deberás '
                     'seleccionar un grupo cuando exista uno disponible.'
-                : 'Revisa tu correo institucional para confirmar la cuenta. '
-                    'Después podrás iniciar sesión en Conecta ITT.',
+                : 'Si el correo todavía no tenía una cuenta, recibirás un '
+                    'mensaje para confirmarla. Si ya estabas registrado, '
+                    'puedes volver e iniciar sesión o recuperar tu '
+                    'contraseña.',
           ),
           actions: [
             TextButton(
@@ -109,7 +111,13 @@ class _RegisterContent extends StatelessWidget {
                   children: [
                     const _FormIntroduction(),
                     const SizedBox(height: AppSpacing.xlg),
-                    const _FullNameInput(),
+                    const _RequiredNameNotice(),
+                    const SizedBox(height: AppSpacing.md),
+                    const _GivenNamesInput(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _FirstSurnameInput(),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _SecondSurnameInput(),
                     const SizedBox(height: AppSpacing.lg),
                     const _EmailInput(),
                     const SizedBox(height: AppSpacing.md),
@@ -125,6 +133,7 @@ class _RegisterContent extends StatelessWidget {
                     const _TermsAcceptance(),
                     const SizedBox(height: AppSpacing.xlg),
                     const _RegisterButton(),
+                    const _RegistrationPendingMessage(),
                     const SizedBox(height: AppSpacing.md),
                     const _BackToLoginButton(),
                     const SizedBox(height: AppSpacing.lg),
@@ -310,33 +319,145 @@ class _FormIntroduction extends StatelessWidget {
   }
 }
 
-class _FullNameInput extends StatefulWidget {
-  const _FullNameInput();
+class _RequiredNameNotice extends StatelessWidget {
+  const _RequiredNameNotice();
 
   @override
-  State<_FullNameInput> createState() => _FullNameInputState();
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F1F5),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline_rounded, size: 20, color: Color(0xFF075578)),
+          SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'Los campos marcados con * son obligatorios. Ingresa tu '
+              'nombre o nombres y tus dos apellidos tal como aparecen en '
+              'tus documentos institucionales.',
+              style: TextStyle(
+                color: Color(0xFF495473),
+                fontSize: 12.5,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _FullNameInputState extends State<_FullNameInput> {
+class _GivenNamesInput extends StatefulWidget {
+  const _GivenNamesInput();
+
+  @override
+  State<_GivenNamesInput> createState() => _GivenNamesInputState();
+}
+
+class _GivenNamesInputState extends State<_GivenNamesInput> {
   final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final fullName = context.select((RegisterBloc bloc) => bloc.state.fullName);
+    final value = context.select((RegisterBloc bloc) => bloc.state.givenNames);
 
     return LabelledInput(
-      key: const Key('registerForm_fullNameInput'),
+      key: const Key('registerForm_givenNamesInput'),
       controller: _controller,
-      label: 'Nombre completo',
-      placeholder: 'Nombre y apellidos',
-      autofillHints: const [AutofillHints.name],
+      label: 'Nombre(s) *',
+      placeholder: 'Uno o dos nombres',
+      autofillHints: const [AutofillHints.givenName],
       onChanged: (value) {
-        context.read<RegisterBloc>().add(RegisterFullNameChanged(value));
+        context.read<RegisterBloc>().add(RegisterGivenNamesChanged(value));
       },
       errorText:
-          fullName.isEmpty || fullName.trim().length >= 3
+          value.isEmpty || value.trim().length >= 2
               ? null
-              : 'Ingresa tu nombre completo.',
+              : 'Ingresa tu nombre o nombres.',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class _FirstSurnameInput extends StatefulWidget {
+  const _FirstSurnameInput();
+
+  @override
+  State<_FirstSurnameInput> createState() => _FirstSurnameInputState();
+}
+
+class _FirstSurnameInputState extends State<_FirstSurnameInput> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final value = context.select(
+      (RegisterBloc bloc) => bloc.state.firstSurname,
+    );
+
+    return LabelledInput(
+      key: const Key('registerForm_firstSurnameInput'),
+      controller: _controller,
+      label: 'Primer apellido *',
+      placeholder: 'Apellido paterno',
+      autofillHints: const [AutofillHints.familyName],
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(RegisterFirstSurnameChanged(value));
+      },
+      errorText:
+          value.isEmpty || value.trim().length >= 2
+              ? null
+              : 'Ingresa tu primer apellido.',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class _SecondSurnameInput extends StatefulWidget {
+  const _SecondSurnameInput();
+
+  @override
+  State<_SecondSurnameInput> createState() => _SecondSurnameInputState();
+}
+
+class _SecondSurnameInputState extends State<_SecondSurnameInput> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final value = context.select(
+      (RegisterBloc bloc) => bloc.state.secondSurname,
+    );
+
+    return LabelledInput(
+      key: const Key('registerForm_secondSurnameInput'),
+      controller: _controller,
+      label: 'Segundo apellido *',
+      placeholder: 'Apellido materno',
+      autofillHints: const [AutofillHints.familyName],
+      onChanged: (value) {
+        context.read<RegisterBloc>().add(RegisterSecondSurnameChanged(value));
+      },
+      errorText:
+          value.isEmpty || value.trim().length >= 2
+              ? null
+              : 'Ingresa tu segundo apellido.',
     );
   }
 
@@ -1011,6 +1132,71 @@ class _LegalLink extends StatelessWidget {
           fontWeight: FontWeight.w600,
           height: 1.5,
         ),
+      ),
+    );
+  }
+}
+
+class _RegistrationPendingMessage extends StatelessWidget {
+  const _RegistrationPendingMessage();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<RegisterBloc>().state;
+
+    if (state.valid || state.status.isInProgress) {
+      return const SizedBox.shrink();
+    }
+
+    final message = switch (state) {
+      _ when state.givenNames.trim().length < 2 =>
+        'Completa el campo Nombre(s).',
+      _ when state.firstSurname.trim().length < 2 =>
+        'Completa el primer apellido.',
+      _ when state.secondSurname.trim().length < 2 =>
+        'Completa el segundo apellido.',
+      _ when !state.email.isValid => 'Ingresa un correo institucional válido.',
+      _ when state.isStudent && state.careerId == null =>
+        'Selecciona tu carrera.',
+      _ when state.isStudent && state.semester == null =>
+        'Selecciona tu semestre.',
+      _
+          when state.isStudent &&
+              state.availableGroups.isNotEmpty &&
+              state.groupId == null =>
+        'Selecciona tu grupo.',
+      _ when !state.password.isValid =>
+        'Completa una contraseña que cumpla los requisitos.',
+      _ when !state.passwordConfirmation.isValid =>
+        'Confirma correctamente la contraseña.',
+      _ when !state.termsAccepted =>
+        'Acepta los términos y la política de privacidad.',
+      _ when !state.legalDocumentsReady =>
+        'Espera a que se carguen los documentos legales.',
+      _ => 'Completa los datos obligatorios para continuar.',
+    };
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.info_outline_rounded,
+            size: 17,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Expanded(
+            child: Text(
+              message,
+              style: AppTextStyle.captionL.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
