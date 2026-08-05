@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Digital student identification inspired by the physical campus credential.
@@ -20,10 +21,64 @@ class StudentIdPage extends StatefulWidget {
   State<StudentIdPage> createState() => _StudentIdPageState();
 }
 
-class _StudentIdPageState extends State<StudentIdPage> {
+class _StudentIdPageState extends State<StudentIdPage>
+    with WidgetsBindingObserver {
   final PageController _pageController = PageController();
 
   int _selectedSide = 0;
+  bool _brightnessEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    unawaited(_enableMaximumBrightness());
+  }
+
+  Future<void> _enableMaximumBrightness() async {
+    try {
+      await ScreenBrightness.instance.setApplicationScreenBrightness(1);
+      _brightnessEnabled = true;
+    } catch (_) {
+      // La identificación debe seguir disponible aunque el dispositivo
+      // no permita modificar temporalmente el brillo.
+    }
+  }
+
+  Future<void> _restoreBrightness() async {
+    if (!_brightnessEnabled) {
+      return;
+    }
+
+    try {
+      await ScreenBrightness.instance.resetApplicationScreenBrightness();
+    } catch (_) {
+      // No interrumpir la navegación si falla la restauración.
+    } finally {
+      _brightnessEnabled = false;
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        unawaited(_enableMaximumBrightness());
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        unawaited(_restoreBrightness());
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    unawaited(_restoreBrightness());
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,12 +218,6 @@ class _StudentIdPageState extends State<StudentIdPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 }
 
