@@ -34,7 +34,10 @@ class _ServicesViewState extends State<ServicesView>
   bool _isUserInteracting = false;
   bool _isScreenInFocus = true;
 
-  final List<String> _categories = ["Campus", "Servicios digitales"];
+  final List<String> _categories = [
+    "Campus",
+    "Servicios digitales · Próximamente",
+  ];
   int _selectedIndex = 0;
   int _currentBannerIndex = 0;
 
@@ -151,11 +154,25 @@ class _ServicesViewState extends State<ServicesView>
   }
 
   void _onCategorySelected(int index) {
+    if (index == 1) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Servicios digitales estará disponible próximamente.',
+            ),
+          ),
+        );
+      return;
+    }
+
+    if (_selectedIndex == index) return;
+
     setState(() {
       _selectedIndex = index;
     });
 
-    // Check if controller is attached to a view before animating
     if (!_pageController.hasClients) return;
 
     _pageController.animateToPage(
@@ -200,6 +217,7 @@ class _ServicesViewState extends State<ServicesView>
         Expanded(
           child: PageView(
             controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
             onPageChanged: (index) {
               setState(() {
                 _selectedIndex = index;
