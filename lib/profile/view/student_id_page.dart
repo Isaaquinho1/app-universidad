@@ -32,8 +32,9 @@ class _StudentIdPageState extends State<StudentIdPage> {
       body: SafeArea(
         bottom: false,
         child: BlocBuilder<AppBloc, AppState>(
-          buildWhen: (previous, current) =>
-              previous.institutionalProfile != current.institutionalProfile,
+          buildWhen:
+              (previous, current) =>
+                  previous.institutionalProfile != current.institutionalProfile,
           builder: (context, state) {
             final profile = state.institutionalProfile;
 
@@ -80,8 +81,8 @@ class _StudentIdPageState extends State<StudentIdPage> {
                   height: 590,
                   child: PageView(
                     controller: _pageController,
-                    onPageChanged: (index) =>
-                        setState(() => _selectedSide = index),
+                    onPageChanged:
+                        (index) => setState(() => _selectedSide = index),
                     children: [
                       _StudentIdFront(profile: profile),
                       _StudentIdBack(profile: profile),
@@ -95,13 +96,14 @@ class _StudentIdPageState extends State<StudentIdPage> {
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: _selectedSide == 0
-                            ? null
-                            : () => _pageController.animateToPage(
-                                0,
-                                duration: const Duration(milliseconds: 320),
-                                curve: Curves.easeOutCubic,
-                              ),
+                        onPressed:
+                            _selectedSide == 0
+                                ? null
+                                : () => _pageController.animateToPage(
+                                  0,
+                                  duration: const Duration(milliseconds: 320),
+                                  curve: Curves.easeOutCubic,
+                                ),
                         icon: const Icon(Icons.badge_outlined),
                         label: const Text('Ver frente'),
                       ),
@@ -109,13 +111,14 @@ class _StudentIdPageState extends State<StudentIdPage> {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed: _selectedSide == 1
-                            ? null
-                            : () => _pageController.animateToPage(
-                                1,
-                                duration: const Duration(milliseconds: 320),
-                                curve: Curves.easeOutCubic,
-                              ),
+                        onPressed:
+                            _selectedSide == 1
+                                ? null
+                                : () => _pageController.animateToPage(
+                                  1,
+                                  duration: const Duration(milliseconds: 320),
+                                  curve: Curves.easeOutCubic,
+                                ),
                         icon: const Icon(Icons.qr_code_2_rounded),
                         label: const Text('Ver reverso'),
                         style: FilledButton.styleFrom(
@@ -134,9 +137,8 @@ class _StudentIdPageState extends State<StudentIdPage> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Row(
@@ -236,11 +238,12 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
     }
 
     if (!allowance.canSubmit) {
-      final message = allowance.hasPendingSubmission
-          ? 'Ya tienes una fotografía pendiente de revisión. '
-                'Espera la resolución antes de enviar otra.'
-          : 'Has utilizado todos los cambios disponibles para '
-                '${allowance.academicPeriodName}.';
+      final message =
+          allowance.hasPendingSubmission
+              ? 'Ya tienes una fotografía pendiente de revisión. '
+                  'Espera la resolución antes de enviar otra.'
+              : 'Has utilizado todos los cambios disponibles para '
+                  '${allowance.academicPeriodName}.';
 
       await _showError(message);
       return;
@@ -333,9 +336,8 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
         ..showSnackBar(
           SnackBar(
             content: Text(message),
-            backgroundColor: isError
-                ? Theme.of(context).colorScheme.error
-                : null,
+            backgroundColor:
+                isError ? Theme.of(context).colorScheme.error : null,
           ),
         );
       return;
@@ -343,23 +345,24 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
 
     await showCupertinoDialog<void>(
       context: context,
-      builder: (dialogContext) => CupertinoAlertDialog(
-        title: Text(
-          isError
-              ? 'No fue posible completar la acción'
-              : 'Fotografía actualizada',
-        ),
-        content: Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(message),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Aceptar'),
+      builder:
+          (dialogContext) => CupertinoAlertDialog(
+            title: Text(
+              isError
+                  ? 'No fue posible completar la acción'
+                  : 'Fotografía actualizada',
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(message),
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Aceptar'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -384,19 +387,20 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
         final canSubmit =
             !_isSubmitting && allowance != null && allowance.canSubmit;
 
-        final buttonLabel = _isSubmitting
-            ? 'Subiendo fotografía...'
-            : loading
-            ? 'Consultando disponibilidad...'
-            : allowanceError
-            ? 'No disponible'
-            : allowance!.hasPendingSubmission
-            ? 'Pendiente de revisión'
-            : !allowance.canSubmit
-            ? 'Límite de cambios alcanzado'
-            : profile.hasProfilePhoto
-            ? 'Cambiar fotografía'
-            : 'Agregar fotografía';
+        final buttonLabel =
+            _isSubmitting
+                ? 'Subiendo fotografía...'
+                : loading
+                ? 'Consultando disponibilidad...'
+                : allowanceError
+                ? 'No disponible'
+                : allowance!.hasPendingSubmission
+                ? 'Pendiente de revisión'
+                : !allowance.canSubmit
+                ? 'Límite de cambios alcanzado'
+                : profile.hasProfilePhoto
+                ? 'Cambiar fotografía'
+                : 'Agregar fotografía';
 
         return Container(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -422,9 +426,8 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
                         Text(
                           status.description,
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 13,
                             height: 1.35,
                           ),
@@ -477,10 +480,10 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
                       Text(
                         allowance.hasInitialSubmission
                             ? 'Cambios disponibles: '
-                                  '${allowance.remainingChanges} de '
-                                  '${allowance.totalLimit}'
+                                '${allowance.remainingChanges} de '
+                                '${allowance.totalLimit}'
                             : 'Tu primera fotografía no consume '
-                                  'ningún cambio.',
+                                'ningún cambio.',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 13,
@@ -530,16 +533,17 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
                 height: 48,
                 child: OutlinedButton.icon(
                   onPressed: canSubmit ? _selectAndSubmitPhoto : null,
-                  icon: _isSubmitting || loading
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(
-                          profile.hasProfilePhoto
-                              ? Icons.change_circle_outlined
-                              : Icons.add_a_photo_outlined,
-                        ),
+                  icon:
+                      _isSubmitting || loading
+                          ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : Icon(
+                            profile.hasProfilePhoto
+                                ? Icons.change_circle_outlined
+                                : Icons.add_a_photo_outlined,
+                          ),
                   label: Text(buttonLabel),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF003B5C),
@@ -613,53 +617,58 @@ Future<bool> _confirmPhotoRequirements(
 }) async {
   final result = await showDialog<bool>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: const Text('Requisitos de la fotografía'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _PhotoRequirement(
-            icon: Icons.wallpaper_outlined,
-            text: 'Utiliza preferentemente un fondo blanco o claro.',
+    builder:
+        (dialogContext) => AlertDialog(
+          title: const Text('Requisitos de la fotografía'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _PhotoRequirement(
+                icon: Icons.wallpaper_outlined,
+                text: 'Utiliza preferentemente un fondo blanco o claro.',
+              ),
+              const _PhotoRequirement(
+                icon: Icons.light_mode_outlined,
+                text: 'Colócate con buena iluminación frontal y sin sombras.',
+              ),
+              const _PhotoRequirement(
+                icon: Icons.face_retouching_natural_outlined,
+                text: 'Mantén el rostro descubierto, centrado y de frente.',
+              ),
+              const _PhotoRequirement(
+                icon: Icons.filter_alt_off_outlined,
+                text:
+                    'No uses filtros, capturas de pantalla ni imágenes ajenas.',
+              ),
+              if (replacing) ...[
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'Este envío utilizará uno de tus '
+                  '$remainingChanges cambios restantes.',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ],
           ),
-          const _PhotoRequirement(
-            icon: Icons.light_mode_outlined,
-            text: 'Colócate con buena iluminación frontal y sin sombras.',
-          ),
-          const _PhotoRequirement(
-            icon: Icons.face_retouching_natural_outlined,
-            text: 'Mantén el rostro descubierto, centrado y de frente.',
-          ),
-          const _PhotoRequirement(
-            icon: Icons.filter_alt_off_outlined,
-            text: 'No uses filtros, capturas de pantalla ni imágenes ajenas.',
-          ),
-          if (replacing) ...[
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              'Este envío utilizará uno de tus '
-              '$remainingChanges cambios restantes.',
-              style: const TextStyle(fontWeight: FontWeight.w700, height: 1.4),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF003B5C),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Entendido'),
             ),
           ],
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: const Text('Cancelar'),
         ),
-        FilledButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFF003B5C),
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Entendido'),
-        ),
-      ],
-    ),
   );
 
   return result ?? false;
@@ -691,54 +700,57 @@ Future<StudentProfilePhotoSource?> _selectPhotoSource(BuildContext context) {
   return showModalBottomSheet<StudentProfilePhotoSource>(
     context: context,
     showDragHandle: true,
-    builder: (sheetContext) => SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          0,
-          AppSpacing.lg,
-          AppSpacing.lg,
+    builder:
+        (sheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              0,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Seleccionar fotografía',
+                  style: Theme.of(
+                    sheetContext,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Usa una fotografía frontal, con fondo blanco o claro '
+                  'y buena iluminación. La imagen se recortará en formato '
+                  'vertical antes de enviarse.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(sheetContext).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt_outlined),
+                  title: const Text('Tomar fotografía'),
+                  subtitle: const Text('Usar la cámara del dispositivo'),
+                  onTap:
+                      () => Navigator.of(
+                        sheetContext,
+                      ).pop(StudentProfilePhotoSource.camera),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined),
+                  title: const Text('Elegir de galería'),
+                  subtitle: const Text('Seleccionar una imagen existente'),
+                  onTap:
+                      () => Navigator.of(
+                        sheetContext,
+                      ).pop(StudentProfilePhotoSource.gallery),
+                ),
+              ],
+            ),
+          ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Seleccionar fotografía',
-              style: Theme.of(
-                sheetContext,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Usa una fotografía frontal, con fondo blanco o claro '
-              'y buena iluminación. La imagen se recortará en formato '
-              'vertical antes de enviarse.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(sheetContext).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            ListTile(
-              leading: const Icon(Icons.camera_alt_outlined),
-              title: const Text('Tomar fotografía'),
-              subtitle: const Text('Usar la cámara del dispositivo'),
-              onTap: () => Navigator.of(
-                sheetContext,
-              ).pop(StudentProfilePhotoSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Elegir de galería'),
-              subtitle: const Text('Seleccionar una imagen existente'),
-              onTap: () => Navigator.of(
-                sheetContext,
-              ).pop(StudentProfilePhotoSource.gallery),
-            ),
-          ],
-        ),
-      ),
-    ),
   );
 }
 
@@ -755,47 +767,48 @@ Future<bool> _previewAndConfirmPhoto(
 
   final confirmed = await showDialog<bool>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(
-        replacing ? 'Confirmar nueva fotografía' : 'Confirmar fotografía',
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: AspectRatio(
-              aspectRatio: 4 / 5,
-              child: Image.memory(bytes, fit: BoxFit.cover),
+    builder:
+        (dialogContext) => AlertDialog(
+          title: Text(
+            replacing ? 'Confirmar nueva fotografía' : 'Confirmar fotografía',
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: AspectRatio(
+                  aspectRatio: 4 / 5,
+                  child: Image.memory(bytes, fit: BoxFit.cover),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                replacing
+                    ? 'La fotografía actual será sustituida y la nueva '
+                        'quedará pendiente de validación.'
+                    : 'Esta fotografía se utilizará en tu identificación '
+                        'digital y quedará pendiente de validación.',
+                textAlign: TextAlign.center,
+                style: const TextStyle(height: 1.4),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Volver'),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            replacing
-                ? 'La fotografía actual será sustituida y la nueva '
-                      'quedará pendiente de validación.'
-                : 'Esta fotografía se utilizará en tu identificación '
-                      'digital y quedará pendiente de validación.',
-            textAlign: TextAlign.center,
-            style: const TextStyle(height: 1.4),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: const Text('Volver'),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF003B5C),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Usar fotografía'),
+            ),
+          ],
         ),
-        FilledButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFF003B5C),
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Usar fotografía'),
-        ),
-      ],
-    ),
   );
 
   return confirmed ?? false;
@@ -811,9 +824,10 @@ class _StudentIdFront extends StatelessWidget {
     final displayName = _displayValue(profile.displayName, 'Usuario');
     final career = _careerLabel(profile.careerId);
     final controlNumber = _displayValue(profile.controlNumber, 'No registrado');
-    final semester = profile.semester == null
-        ? 'Semestre no registrado'
-        : '${profile.semester}.º semestre';
+    final semester =
+        profile.semester == null
+            ? 'Semestre no registrado'
+            : '${profile.semester}.º semestre';
     final group = _displayValue(profile.groupId, 'Sin grupo').toUpperCase();
 
     return Padding(
@@ -838,7 +852,7 @@ class _StudentIdFront extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 30),
+              padding: const EdgeInsets.fromLTRB(24, 22, 24, 20),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -888,7 +902,7 @@ class _StudentIdFront extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 20),
                   StudentProfilePhoto(
                     profile: profile,
                     initials: _initials(displayName),
@@ -896,20 +910,41 @@ class _StudentIdFront extends StatelessWidget {
                     height: 172,
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    displayName.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 21,
-                      height: 1.15,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
                   const SizedBox(height: AppSpacing.md),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final normalizedName = displayName.trim();
+                      final nameLength = normalizedName.length;
+
+                      final fontSize = switch (nameLength) {
+                        > 38 => 17.0,
+                        > 29 => 18.5,
+                        _ => 21.0,
+                      };
+
+                      return ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: 48,
+                          maxHeight: 52,
+                        ),
+                        child: Center(
+                          child: Text(
+                            normalizedName.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: fontSize,
+                              height: 1.12,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
                   _CredentialStatus(active: profile.active),
                 ],
               ),
@@ -929,9 +964,9 @@ class _StudentIdFront extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.lg,
-                      AppSpacing.md,
-                      AppSpacing.lg,
                       AppSpacing.sm,
+                      AppSpacing.lg,
+                      AppSpacing.xs,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -940,7 +975,7 @@ class _StudentIdFront extends StatelessWidget {
                           label: 'Número de control',
                           value: controlNumber,
                         ),
-                        const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.xs),
                         _CredentialData(
                           label: 'Carrera',
                           value: career,
@@ -1067,9 +1102,10 @@ class _StudentIdBack extends StatelessWidget {
                     const SizedBox(height: AppSpacing.sm),
                     _BackDataRow(
                       label: 'Estado',
-                      value: profile.active
-                          ? 'Identificación activa'
-                          : 'Identificación inactiva',
+                      value:
+                          profile.active
+                              ? 'Identificación activa'
+                              : 'Identificación inactiva',
                     ),
                     const SizedBox(height: AppSpacing.md),
                     const _BackDataRow(
@@ -1202,9 +1238,8 @@ class _DynamicStudentIdQrState extends State<_DynamicStudentIdQr> {
     });
 
     try {
-      final nextToken = await context
-          .read<StudentIdQrRepository>()
-          .issueToken();
+      final nextToken =
+          await context.read<StudentIdQrRepository>().issueToken();
 
       if (!mounted) {
         return;
@@ -1230,9 +1265,10 @@ class _DynamicStudentIdQrState extends State<_DynamicStudentIdQr> {
 
       setState(() {
         _isLoading = false;
-        _errorMessage = tokenStillValid
-            ? 'La renovación falló. Se reintentará automáticamente.'
-            : 'No fue posible generar el código temporal.';
+        _errorMessage =
+            tokenStillValid
+                ? 'La renovación falló. Se reintentará automáticamente.'
+                : 'No fue posible generar el código temporal.';
       });
     } finally {
       if (mounted) {
@@ -1282,64 +1318,65 @@ class _DynamicStudentIdQrState extends State<_DynamicStudentIdQr> {
           color: const Color(0xFF003B5C).withValues(alpha: 0.18),
         ),
       ),
-      child: _isLoading && token == null
-          ? const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: Color(0xFF003B5C),
-              ),
-            )
-          : tokenIsVisible
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                QrImageView(
-                  data: token.value,
-                  version: QrVersions.auto,
-                  size: 136,
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.white,
-                  errorCorrectionLevel: QrErrorCorrectLevel.M,
-                  eyeStyle: const QrEyeStyle(
-                    eyeShape: QrEyeShape.square,
-                    color: Color(0xFF003B5C),
-                  ),
-                  dataModuleStyle: const QrDataModuleStyle(
-                    dataModuleShape: QrDataModuleShape.square,
-                    color: Color(0xFF003B5C),
-                  ),
+      child:
+          _isLoading && token == null
+              ? const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Color(0xFF003B5C),
                 ),
-                const SizedBox(height: 3),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (_isRenewing)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 6),
-                        child: SizedBox.square(
-                          dimension: 12,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1.7,
-                            color: Color(0xFF003B5C),
+              )
+              : tokenIsVisible
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QrImageView(
+                    data: token.value,
+                    version: QrVersions.auto,
+                    size: 136,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: Colors.white,
+                    errorCorrectionLevel: QrErrorCorrectLevel.M,
+                    eyeStyle: const QrEyeStyle(
+                      eyeShape: QrEyeShape.square,
+                      color: Color(0xFF003B5C),
+                    ),
+                    dataModuleStyle: const QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.square,
+                      color: Color(0xFF003B5C),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_isRenewing)
+                        const Padding(
+                          padding: EdgeInsets.only(right: 6),
+                          child: SizedBox.square(
+                            dimension: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.7,
+                              color: Color(0xFF003B5C),
+                            ),
                           ),
                         ),
+                      Text(
+                        _formatCountdown(remainingSeconds),
+                        style: const TextStyle(
+                          color: Color(0xFF003B5C),
+                          fontWeight: FontWeight.w800,
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
                       ),
-                    Text(
-                      _formatCountdown(remainingSeconds),
-                      style: const TextStyle(
-                        color: Color(0xFF003B5C),
-                        fontWeight: FontWeight.w800,
-                        fontFeatures: [FontFeature.tabularFigures()],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          : _QrUnavailableState(
-              message: _errorMessage ?? 'El código temporal expiró.',
-              onRetry: _isRenewing ? null : () => _issueToken(),
-            ),
+                    ],
+                  ),
+                ],
+              )
+              : _QrUnavailableState(
+                message: _errorMessage ?? 'El código temporal expiró.',
+                onRetry: _isRenewing ? null : () => _issueToken(),
+              ),
     );
   }
 
@@ -1405,14 +1442,16 @@ class _CredentialStatus extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: active
-            ? Colors.green.withValues(alpha: 0.18)
-            : Colors.red.withValues(alpha: 0.18),
+        color:
+            active
+                ? Colors.green.withValues(alpha: 0.18)
+                : Colors.red.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: active
-              ? Colors.greenAccent.withValues(alpha: 0.65)
-              : Colors.redAccent.withValues(alpha: 0.65),
+          color:
+              active
+                  ? Colors.greenAccent.withValues(alpha: 0.65)
+                  : Colors.redAccent.withValues(alpha: 0.65),
         ),
       ),
       child: Row(
@@ -1580,9 +1619,10 @@ class _PageIndicator extends StatelessWidget {
           height: 9,
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: selectedIndex == index
-                ? const Color(0xFF003B5C)
-                : const Color(0xFF003B5C).withValues(alpha: 0.25),
+            color:
+                selectedIndex == index
+                    ? const Color(0xFF003B5C)
+                    : const Color(0xFF003B5C).withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(999),
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileEditPage extends StatefulWidget {
@@ -194,13 +195,15 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
       _initialProfile = updatedProfile;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.maybeOf(context);
+
+      messenger?.showSnackBar(
         const SnackBar(
           content: Text('Perfil institucional actualizado correctamente.'),
         ),
       );
 
-      Navigator.of(context).pop();
+      context.go('/profile');
     } catch (_) {
       if (!mounted) {
         return;
@@ -208,7 +211,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
       setState(() => _saving = false);
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.maybeOf(context);
+
+      messenger?.showSnackBar(
         const SnackBar(
           content: Text(
             'No fue posible actualizar el perfil. Intenta nuevamente.',
