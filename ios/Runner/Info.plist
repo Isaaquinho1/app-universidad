@@ -48,6 +48,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Conecta ITT necesita acceso a la cámara para tomar tu fotografía de identificación y escanear códigos de validación institucional.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Conecta ITT utiliza Face ID para permitirte iniciar sesión de forma rápida y segura.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Conecta ITT necesita acceso a tus fotografías para seleccionar la imagen de tu identificación digital.</string>
 	<key>PermissionGroupNotification</key>

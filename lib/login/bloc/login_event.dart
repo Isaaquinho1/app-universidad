@@ -36,6 +36,29 @@ class LoginSubmitted extends LoginEvent with AnalyticsEventMixin {
   AnalyticsEvent get event => const AnalyticsEvent('LoginSubmitted');
 }
 
+class LoginBiometricAvailabilityRequested extends LoginEvent {
+  const LoginBiometricAvailabilityRequested();
+}
+
+class LoginBiometricSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginBiometricSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginBiometricSubmitted');
+}
+
+class LoginBiometricEnrollmentAccepted extends LoginEvent {
+  const LoginBiometricEnrollmentAccepted();
+}
+
+class LoginBiometricEnrollmentDeclined extends LoginEvent {
+  const LoginBiometricEnrollmentDeclined();
+}
+
+class LoginBiometricEnrollmentHandled extends LoginEvent {
+  const LoginBiometricEnrollmentHandled();
+}
+
 /// Legacy Magic Link event.
 ///
 /// It remains temporarily while the old interface is being replaced.

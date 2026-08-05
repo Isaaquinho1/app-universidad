@@ -12,8 +12,14 @@ class LoginWithEmailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final biometricLoginService = BiometricLoginService();
+
     return BlocProvider(
-      create: (_) => LoginBloc(userRepository: context.read<UserRepository>()),
+      create:
+          (_) => LoginBloc(
+            userRepository: context.read<UserRepository>(),
+            biometricLoginService: biometricLoginService,
+          )..add(const LoginBiometricAvailabilityRequested()),
       child: const Scaffold(
         resizeToAvoidBottomInset: true,
         body: LoginWithEmailForm(),

@@ -8,6 +8,12 @@ class LoginState extends Equatable {
     this.valid = false,
     this.passwordVisible = false,
     this.errorMessage,
+    this.biometricType = BiometricLoginType.none,
+    this.biometricAvailable = false,
+    this.biometricCredentialsSaved = false,
+    this.biometricAuthenticating = false,
+    this.biometricEnrollmentPending = false,
+    this.biometricMessage,
   });
 
   final Email email;
@@ -17,6 +23,19 @@ class LoginState extends Equatable {
   final bool passwordVisible;
   final String? errorMessage;
 
+  final BiometricLoginType biometricType;
+  final bool biometricAvailable;
+  final bool biometricCredentialsSaved;
+  final bool biometricAuthenticating;
+  final bool biometricEnrollmentPending;
+  final String? biometricMessage;
+
+  bool get canUseBiometricLogin =>
+      biometricAvailable &&
+      biometricCredentialsSaved &&
+      !biometricAuthenticating &&
+      !status.isInProgress;
+
   LoginState copyWith({
     Email? email,
     Password? password,
@@ -25,6 +44,13 @@ class LoginState extends Equatable {
     bool? passwordVisible,
     String? errorMessage,
     bool clearErrorMessage = false,
+    BiometricLoginType? biometricType,
+    bool? biometricAvailable,
+    bool? biometricCredentialsSaved,
+    bool? biometricAuthenticating,
+    bool? biometricEnrollmentPending,
+    String? biometricMessage,
+    bool clearBiometricMessage = false,
   }) {
     return LoginState(
       email: email ?? this.email,
@@ -34,6 +60,18 @@ class LoginState extends Equatable {
       passwordVisible: passwordVisible ?? this.passwordVisible,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+      biometricType: biometricType ?? this.biometricType,
+      biometricAvailable: biometricAvailable ?? this.biometricAvailable,
+      biometricCredentialsSaved:
+          biometricCredentialsSaved ?? this.biometricCredentialsSaved,
+      biometricAuthenticating:
+          biometricAuthenticating ?? this.biometricAuthenticating,
+      biometricEnrollmentPending:
+          biometricEnrollmentPending ?? this.biometricEnrollmentPending,
+      biometricMessage:
+          clearBiometricMessage
+              ? null
+              : biometricMessage ?? this.biometricMessage,
     );
   }
 
@@ -45,5 +83,11 @@ class LoginState extends Equatable {
     valid,
     passwordVisible,
     errorMessage,
+    biometricType,
+    biometricAvailable,
+    biometricCredentialsSaved,
+    biometricAuthenticating,
+    biometricEnrollmentPending,
+    biometricMessage,
   ];
 }

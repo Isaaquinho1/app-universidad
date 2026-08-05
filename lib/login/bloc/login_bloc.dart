@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
+import 'package:conecta_itt/login/services/biometric_login_service.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'login_event.dart';
@@ -45,19 +46,28 @@ class Password extends FormzInput<String, PasswordValidationError> {
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc({required UserRepository userRepository})
-    : _userRepository = userRepository,
-      super(const LoginState()) {
+  LoginBloc({
+    required UserRepository userRepository,
+    required BiometricLoginService biometricLoginService,
+  }) : _userRepository = userRepository,
+       _biometricLoginService = biometricLoginService,
+       super(const LoginState()) {
     on<LoginEmailChanged>(_onEmailChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginPasswordVisibilityChanged>(_onPasswordVisibilityChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
+    on<LoginBiometricAvailabilityRequested>(_onBiometricAvailabilityRequested);
+    on<LoginBiometricSubmitted>(_onBiometricSubmitted);
+    on<LoginBiometricEnrollmentAccepted>(_onBiometricEnrollmentAccepted);
+    on<LoginBiometricEnrollmentDeclined>(_onBiometricEnrollmentDeclined);
+    on<LoginBiometricEnrollmentHandled>(_onBiometricEnrollmentHandled);
 
     // Se mantiene solo durante la migración de la interfaz anterior.
     on<SendEmailLinkSubmitted>(_onSendEmailLinkSubmitted);
   }
 
   final UserRepository _userRepository;
+  final BiometricLoginService _biometricLoginService;
 
   void _onEmailChanged(LoginEmailChanged event, Emitter<LoginState> emit) {
     final email = Email.dirty(event.email);
@@ -124,10 +134,28 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: password.value,
       );
 
+      final biometricType = await _biometricLoginService.getAvailableType();
+
+      final biometricAvailable = biometricType != BiometricLoginType.none;
+
+      final alreadyConfigured =
+          biometricAvailable &&
+          await _biometricLoginService.hasSavedCredentials();
+
+      final shouldOfferEnrollment = biometricAvailable && !alreadyConfigured;
+
       emit(
         state.copyWith(
-          status: FormzSubmissionStatus.success,
+          status:
+              shouldOfferEnrollment
+                  ? FormzSubmissionStatus.initial
+                  : FormzSubmissionStatus.success,
+          biometricType: biometricType,
+          biometricAvailable: biometricAvailable,
+          biometricCredentialsSaved: alreadyConfigured,
+          biometricEnrollmentPending: shouldOfferEnrollment,
           clearErrorMessage: true,
+          clearBiometricMessage: true,
         ),
       );
     } on SignInWithPasswordFailure catch (error, stackTrace) {
@@ -147,6 +175,210 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       addError(error, stackTrace);
     }
+  }
+
+  Future<void> _onBiometricAvailabilityRequested(
+    LoginBiometricAvailabilityRequested event,
+    Emitter<LoginState> emit,
+  ) async {
+    final biometricType = await _biometricLoginService.getAvailableType();
+    final hasSavedCredentials =
+        biometricType != BiometricLoginType.none &&
+        await _biometricLoginService.hasSavedCredentials();
+
+    emit(
+      state.copyWith(
+        biometricType: biometricType,
+        biometricAvailable: biometricType != BiometricLoginType.none,
+        biometricCredentialsSaved: hasSavedCredentials,
+        biometricAuthenticating: false,
+        clearBiometricMessage: true,
+      ),
+    );
+
+    if (hasSavedCredentials) {
+      add(const LoginBiometricSubmitted());
+    }
+  }
+
+  Future<void> _onBiometricSubmitted(
+    LoginBiometricSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    if (!state.canUseBiometricLogin) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        biometricAuthenticating: true,
+        clearErrorMessage: true,
+        clearBiometricMessage: true,
+      ),
+    );
+
+    try {
+      final authenticated = await _biometricLoginService.authenticate();
+
+      if (!authenticated) {
+        emit(
+          state.copyWith(
+            biometricAuthenticating: false,
+            biometricMessage: 'No se completó la autenticación biométrica.',
+          ),
+        );
+        return;
+      }
+
+      final credentials = await _biometricLoginService.readCredentials();
+
+      if (credentials == null) {
+        emit(
+          state.copyWith(
+            biometricAuthenticating: false,
+            biometricCredentialsSaved: false,
+            biometricMessage:
+                'No hay credenciales biométricas guardadas en este dispositivo.',
+          ),
+        );
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.inProgress,
+          biometricAuthenticating: true,
+          clearErrorMessage: true,
+          clearBiometricMessage: true,
+        ),
+      );
+
+      await _userRepository.signInWithPassword(
+        email: credentials.email,
+        password: credentials.password,
+      );
+
+      emit(
+        state.copyWith(
+          email: Email.dirty(credentials.email),
+          password: const Password.pure(),
+          status: FormzSubmissionStatus.success,
+          valid: false,
+          biometricAuthenticating: false,
+          biometricEnrollmentPending: false,
+          clearErrorMessage: true,
+          clearBiometricMessage: true,
+        ),
+      );
+    } on SignInWithPasswordFailure catch (error, stackTrace) {
+      await _biometricLoginService.clearCredentials();
+
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          biometricAuthenticating: false,
+          biometricCredentialsSaved: false,
+          biometricMessage:
+              'El acceso biométrico dejó de ser válido. '
+              'Inicia sesión nuevamente con tu correo y contraseña.',
+          errorMessage: _authenticationErrorMessage(error),
+        ),
+      );
+
+      addError(error, stackTrace);
+    } catch (error, stackTrace) {
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          biometricAuthenticating: false,
+          biometricMessage: 'No fue posible iniciar sesión con biometría.',
+        ),
+      );
+
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onBiometricEnrollmentAccepted(
+    LoginBiometricEnrollmentAccepted event,
+    Emitter<LoginState> emit,
+  ) async {
+    if (!state.biometricEnrollmentPending ||
+        !state.biometricAvailable ||
+        state.email.normalizedValue.isEmpty ||
+        state.password.value.isEmpty) {
+      emit(state.copyWith(biometricEnrollmentPending: false));
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        biometricAuthenticating: true,
+        clearBiometricMessage: true,
+      ),
+    );
+
+    final authenticated = await _biometricLoginService.authenticate();
+
+    if (!authenticated) {
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.success,
+          biometricAuthenticating: false,
+          biometricEnrollmentPending: false,
+          biometricMessage: 'No se activó el acceso biométrico.',
+        ),
+      );
+      return;
+    }
+
+    try {
+      await _biometricLoginService.saveCredentials(
+        email: state.email.normalizedValue,
+        password: state.password.value,
+      );
+
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.success,
+          biometricAuthenticating: false,
+          biometricCredentialsSaved: true,
+          biometricEnrollmentPending: false,
+          biometricMessage:
+              'El acceso biométrico quedó activado en este dispositivo.',
+        ),
+      );
+    } catch (error, stackTrace) {
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.success,
+          biometricAuthenticating: false,
+          biometricEnrollmentPending: false,
+          biometricMessage: 'No fue posible guardar el acceso biométrico.',
+        ),
+      );
+
+      addError(error, stackTrace);
+    }
+  }
+
+  void _onBiometricEnrollmentDeclined(
+    LoginBiometricEnrollmentDeclined event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        status: FormzSubmissionStatus.success,
+        biometricEnrollmentPending: false,
+      ),
+    );
+  }
+
+  void _onBiometricEnrollmentHandled(
+    LoginBiometricEnrollmentHandled event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(state.copyWith(biometricEnrollmentPending: false));
   }
 
   Future<void> _onSendEmailLinkSubmitted(

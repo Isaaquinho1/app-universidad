@@ -14,8 +14,80 @@ class LoginWithEmailForm extends StatelessWidget {
       listenWhen:
           (previous, current) =>
               previous.status != current.status ||
-              previous.errorMessage != current.errorMessage,
-      listener: (context, state) {
+              previous.errorMessage != current.errorMessage ||
+              previous.biometricMessage != current.biometricMessage ||
+              previous.biometricEnrollmentPending !=
+                  current.biometricEnrollmentPending,
+      listener: (context, state) async {
+        if (state.biometricEnrollmentPending) {
+          final loginBloc = context.read<LoginBloc>();
+
+          final activate = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) {
+              final biometricName = switch (state.biometricType) {
+                BiometricLoginType.face => 'Face ID',
+                BiometricLoginType.fingerprint => 'la huella digital',
+                BiometricLoginType.generic => 'los datos biométricos',
+                BiometricLoginType.none => 'los datos biométricos',
+              };
+
+              final biometricIcon = switch (state.biometricType) {
+                BiometricLoginType.face => Icons.face_retouching_natural,
+                BiometricLoginType.fingerprint => Icons.fingerprint,
+                BiometricLoginType.generic => Icons.lock_person_outlined,
+                BiometricLoginType.none => Icons.lock_person_outlined,
+              };
+
+              return AlertDialog(
+                icon: Icon(
+                  biometricIcon,
+                  size: 38,
+                  color: const Color(0xFF003B5C),
+                ),
+                title: const Text('Activar acceso biométrico'),
+                content: Text(
+                  '¿Deseas utilizar $biometricName para iniciar sesión '
+                  'más rápidamente en este dispositivo?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(false);
+                    },
+                    child: const Text('Ahora no'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(true);
+                    },
+                    child: const Text('Activar'),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (!context.mounted) {
+            return;
+          }
+
+          loginBloc.add(
+            activate == true
+                ? const LoginBiometricEnrollmentAccepted()
+                : const LoginBiometricEnrollmentDeclined(),
+          );
+
+          return;
+        }
+
+        if (state.biometricMessage != null) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(state.biometricMessage!)));
+        }
+
         if (state.status.isSuccess) {
           context.go('/feed');
           return;
