@@ -12,7 +12,9 @@ class HomeCubit extends HydratedBloc<HomeEvent, HomeState> {
 
   void _onCheckOnboarding(CheckOnboardingEvent event, Emitter<HomeState> emit) {
     final settings = state.settings;
-    final isMobileApp = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
+    final isMobileApp =
+        defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
 
     if (settings.onboardingShown == false && isMobileApp) {
       emit(AppOnboarding(settings: settings.copyWith(onboardingShown: true)));
