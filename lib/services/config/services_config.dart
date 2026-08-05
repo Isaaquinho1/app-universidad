@@ -10,7 +10,17 @@ class ServicesConfig {
   static List<ImportantServiceModel> getImportantServices(
     BuildContext context,
   ) {
-    return const [];
+    final colors = Theme.of(context).extension<AppColors>()!;
+
+    return [
+      ImportantServiceModel(
+        title: 'Mapa',
+        description: 'Consulta la distribución y los espacios del campus.',
+        iconData: Icons.map_rounded,
+        color: colors.colorful02,
+        isComingSoon: true,
+      ),
+    ];
   }
 
   /// Get communities
@@ -25,7 +35,7 @@ class ServicesConfig {
       CommunityModel(
         title: 'Facebook oficial',
         description: 'Noticias, comunicados y publicaciones del campus.',
-        url: 'https://www.facebook.com/TecNMTlalpan',
+        url: 'https://www.facebook.com/tecnm.campus.tlalpan',
         logoUrl: 'https://www.tlalpan.tecnm.mx/img/logoitt.png',
       ),
       CommunityModel(

@@ -9,6 +9,7 @@ abstract class ServiceModel {
   final String? url;
   final bool isExternal;
   final String? routePath;
+  final bool isComingSoon;
 
   const ServiceModel({
     required this.title,
@@ -18,6 +19,7 @@ abstract class ServiceModel {
     this.url,
     this.isExternal = true,
     this.routePath,
+    this.isComingSoon = false,
   });
 }
 
@@ -31,6 +33,7 @@ class ImportantServiceModel extends ServiceModel {
     super.url,
     super.isExternal,
     super.routePath,
+    super.isComingSoon,
   });
 }
 
