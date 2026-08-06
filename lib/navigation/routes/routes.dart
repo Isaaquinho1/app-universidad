@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:conecta_itt/academic_planner/academic_planner.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/home/view/home_page.dart';
 import 'package:conecta_itt/profile/profile.dart';
@@ -57,6 +58,11 @@ class WelcomeRoute extends GoRouteData {
         ),
       ],
     ),
+    TypedStatefulShellBranch<AcademicPlannerBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<AcademicPlannerRoute>(path: '/schedule'),
+      ],
+    ),
     TypedStatefulShellBranch<ServicesBranchData>(
       routes: <TypedRoute<RouteData>>[
         TypedGoRoute<ServicesRoute>(path: '/services'),
@@ -107,6 +113,10 @@ class FeedBranchData extends StatefulShellBranchData {
   const FeedBranchData();
 }
 
+class AcademicPlannerBranchData extends StatefulShellBranchData {
+  const AcademicPlannerBranchData();
+}
+
 class ServicesBranchData extends StatefulShellBranchData {
   const ServicesBranchData();
 }
@@ -131,6 +141,15 @@ class AnnouncementDetailRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AnnouncementDetailPage(announcementId: announcementId);
+  }
+}
+
+class AcademicPlannerRoute extends GoRouteData {
+  const AcademicPlannerRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AcademicPlannerPage();
   }
 }
 

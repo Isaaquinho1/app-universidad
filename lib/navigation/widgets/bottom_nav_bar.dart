@@ -119,6 +119,13 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
         ),
         _buildNavBarItem(
           1,
+          Icon(
+            Icons.calendar_month_rounded,
+            color: Theme.of(context).extension<AppColors>()!.active,
+          ),
+        ),
+        _buildNavBarItem(
+          2,
           Assets.icons.hugeicons.dashboardSquare01.svg(
             colorFilter: ColorFilter.mode(
               Theme.of(context).extension<AppColors>()!.active,
@@ -127,7 +134,7 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
           ),
         ),
         _buildNavBarItem(
-          2,
+          3,
           Assets.icons.hugeicons.userAccount.svg(
             colorFilter: ColorFilter.mode(
               Theme.of(context).extension<AppColors>()!.active,
