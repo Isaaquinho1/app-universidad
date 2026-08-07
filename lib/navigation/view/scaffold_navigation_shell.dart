@@ -71,7 +71,7 @@ class _ScaffoldNavigationShellState extends State<ScaffoldNavigationShell> {
           backgroundColor:
               Theme.of(context).extension<AppColors>()?.background03 ??
               Theme.of(context).scaffoldBackgroundColor,
-          extendBody: !isWide,
+          extendBody: false,
           body: widget.navigationShell,
           bottomNavigationBar:
               isWide
