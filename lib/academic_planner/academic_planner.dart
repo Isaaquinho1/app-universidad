@@ -6,3 +6,4 @@ export 'widgets/widgets.dart';
 export 'view/subject_sessions_page.dart';
 export 'view/daily_schedule_view.dart';
 export 'view/subjects_management_view.dart';
+export 'view/weekly_schedule_view.dart';

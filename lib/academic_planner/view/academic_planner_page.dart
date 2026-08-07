@@ -1,5 +1,6 @@
 import 'package:conecta_itt/academic_planner/view/daily_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/view/subjects_management_view.dart';
+import 'package:conecta_itt/academic_planner/view/weekly_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_planner_section_switch.dart';
 import 'package:flutter/material.dart';
 
@@ -28,9 +29,15 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
     return IndexedStack(
       index: _selectedIndex,
       children: [
-        _DailySchedulePage(
+        _PlannerSectionPage(
           selectedIndex: _selectedIndex,
           onSectionSelected: _selectSection,
+          child: const DailyScheduleView(),
+        ),
+        _PlannerSectionPage(
+          selectedIndex: _selectedIndex,
+          onSectionSelected: _selectSection,
+          child: const WeeklyScheduleView(),
         ),
         SubjectsManagementView(
           selectedIndex: _selectedIndex,
@@ -41,14 +48,16 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
   }
 }
 
-class _DailySchedulePage extends StatelessWidget {
-  const _DailySchedulePage({
+class _PlannerSectionPage extends StatelessWidget {
+  const _PlannerSectionPage({
     required this.selectedIndex,
     required this.onSectionSelected,
+    required this.child,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onSectionSelected;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +72,7 @@ class _DailySchedulePage extends StatelessWidget {
           ),
         ),
       ),
-      body: const SafeArea(bottom: false, child: DailyScheduleView()),
+      body: SafeArea(bottom: false, child: child),
     );
   }
 }

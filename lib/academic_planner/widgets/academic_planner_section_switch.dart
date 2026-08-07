@@ -28,10 +28,15 @@ class AcademicPlannerSectionSwitch extends StatelessWidget {
             ButtonSegment<int>(
               value: 0,
               icon: Icon(Icons.today_rounded),
-              label: Text('Hoy'),
+              label: Text('Día'),
             ),
             ButtonSegment<int>(
               value: 1,
+              icon: Icon(Icons.calendar_view_week_rounded),
+              label: Text('Semana'),
+            ),
+            ButtonSegment<int>(
+              value: 2,
               icon: Icon(Icons.menu_book_rounded),
               label: Text('Materias'),
             ),
