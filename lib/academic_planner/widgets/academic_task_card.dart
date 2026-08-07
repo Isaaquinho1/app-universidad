@@ -13,6 +13,7 @@ class AcademicTaskCard extends StatelessWidget {
   const AcademicTaskCard({
     super.key,
     required this.task,
+    required this.onTap,
     required this.onAction,
     this.subject,
     this.category,
@@ -23,6 +24,7 @@ class AcademicTaskCard extends StatelessWidget {
   final AcademicSubject? subject;
   final TaskCategory? category;
   final List<AcademicSubtask> subtasks;
+  final VoidCallback onTap;
   final ValueChanged<AcademicTaskAction> onAction;
 
   String _priorityLabel(TaskPriority priority) {
@@ -77,7 +79,7 @@ class AcademicTaskCard extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () => onAction(AcademicTaskAction.edit),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),

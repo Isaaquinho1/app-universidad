@@ -60,6 +60,23 @@ class AcademicTaskRepository {
     return task;
   }
 
+  Future<AcademicTask?> getById(String id) async {
+    final database = await _academicDatabase.database;
+
+    final rows = await database.query(
+      'academic_tasks',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return AcademicTask.fromDatabase(rows.first);
+  }
+
   Future<List<AcademicTask>> getAll({bool includeArchived = false}) async {
     final database = await _academicDatabase.database;
 

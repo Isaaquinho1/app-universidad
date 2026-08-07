@@ -11,6 +11,7 @@ import 'package:conecta_itt/academic_planner/repositories/academic_subtask_repos
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
 import 'package:conecta_itt/academic_planner/services/academic_task_reminder_service.dart';
+import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart';
 import 'package:conecta_itt/academic_planner/view/task_categories_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
@@ -149,6 +150,30 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
     await _reminderService.requestExactAlarmPermission();
     return true;
+  }
+
+  Future<void> _openTaskDetail(AcademicTask task) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder:
+            (_) => AcademicTaskDetailPage(
+              taskId: task.id,
+              onEdit: (task, subjects, categories) async {
+                await _openTaskForm(
+                  task: task,
+                  subjects: subjects,
+                  categories: categories,
+                );
+              },
+            ),
+      ),
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    await _refresh();
   }
 
   Future<void> _openTaskForm({
@@ -582,6 +607,9 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
                         subtasks:
                             data.subtasksByTaskId[tasks[index].id] ??
                             const <AcademicSubtask>[],
+                        onTap: () {
+                          _openTaskDetail(tasks[index]);
+                        },
                         onAction: (action) {
                           _handleAction(
                             task: tasks[index],
