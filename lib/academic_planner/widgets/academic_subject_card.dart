@@ -8,10 +8,12 @@ class AcademicSubjectCard extends StatelessWidget {
   const AcademicSubjectCard({
     super.key,
     required this.subject,
+    required this.onTap,
     required this.onAction,
   });
 
   final AcademicSubject subject;
+  final VoidCallback onTap;
   final ValueChanged<AcademicSubjectAction> onAction;
 
   @override
@@ -28,7 +30,7 @@ class AcademicSubjectCard extends StatelessWidget {
         side: BorderSide(color: colors.deactive.withValues(alpha: 0.18)),
       ),
       child: InkWell(
-        onTap: () => onAction(AcademicSubjectAction.edit),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),

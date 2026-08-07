@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
+import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -298,6 +299,13 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
 
                   return AcademicSubjectCard(
                     subject: subject,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => SubjectSessionsPage(subject: subject),
+                        ),
+                      );
+                    },
                     onAction: (action) {
                       _handleAction(subject, action);
                     },

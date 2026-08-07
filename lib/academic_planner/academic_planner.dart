@@ -3,3 +3,4 @@ export 'models/models.dart';
 export 'repositories/repositories.dart';
 export 'view/academic_planner_page.dart';
 export 'widgets/widgets.dart';
+export 'view/subject_sessions_page.dart';
