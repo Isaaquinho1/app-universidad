@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
+import 'package:conecta_itt/academic_planner/models/academic_subtask.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task_status.dart';
 import 'package:conecta_itt/academic_planner/models/task_category.dart';
@@ -15,11 +16,13 @@ class AcademicTaskCard extends StatelessWidget {
     required this.onAction,
     this.subject,
     this.category,
+    this.subtasks = const [],
   });
 
   final AcademicTask task;
   final AcademicSubject? subject;
   final TaskCategory? category;
+  final List<AcademicSubtask> subtasks;
   final ValueChanged<AcademicTaskAction> onAction;
 
   String _priorityLabel(TaskPriority priority) {
@@ -136,6 +139,58 @@ class AcademicTaskCard extends StatelessWidget {
                           ),
                       ],
                     ),
+                    if (subtasks.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Builder(
+                        builder: (context) {
+                          final completedCount =
+                              subtasks
+                                  .where((subtask) => subtask.isCompleted)
+                                  .length;
+
+                          final progress = completedCount / subtasks.length;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.checklist_rounded,
+                                    size: 17,
+                                    color: colors.deactive,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '$completedCount/'
+                                    '${subtasks.length} subtareas',
+                                    style: AppTextStyle.body.copyWith(
+                                      fontSize: 12,
+                                      color: colors.deactive,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${(progress * 100).round()}%',
+                                    style: AppTextStyle.bodyBold.copyWith(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 7),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(999),
+                                child: LinearProgressIndicator(
+                                  value: progress,
+                                  minHeight: 6,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.md),
                     Row(
                       children: [

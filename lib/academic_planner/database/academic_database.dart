@@ -5,7 +5,7 @@ class AcademicDatabase {
   AcademicDatabase._();
 
   static const _databaseName = 'conecta_itt_academic.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
   static final AcademicDatabase instance = AcademicDatabase._();
 
@@ -25,6 +25,7 @@ class AcademicDatabase {
         await database.execute('PRAGMA foreign_keys = ON');
       },
       onCreate: _createVersionOne,
+      onUpgrade: _upgrade,
     );
 
     return _database!;
@@ -134,7 +135,49 @@ class AcademicDatabase {
       ''');
 
       await _insertDefaultCategories(transaction);
+      await _createVersionTwo(transaction);
     });
+  }
+
+  static Future<void> _upgrade(
+    Database database,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    if (oldVersion < 2) {
+      await database.transaction((transaction) async {
+        await _createVersionTwo(transaction);
+      });
+    }
+  }
+
+  static Future<void> _createVersionTwo(Transaction transaction) async {
+    await transaction.execute('''
+      CREATE TABLE academic_subtasks (
+        id TEXT PRIMARY KEY,
+        task_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        is_completed INTEGER NOT NULL DEFAULT 0
+          CHECK (is_completed IN (0, 1)),
+        position INTEGER NOT NULL DEFAULT 0
+          CHECK (position >= 0),
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (task_id)
+          REFERENCES academic_tasks(id)
+          ON DELETE CASCADE
+      )
+    ''');
+
+    await transaction.execute('''
+      CREATE INDEX index_academic_subtasks_task
+      ON academic_subtasks(task_id)
+    ''');
+
+    await transaction.execute('''
+      CREATE INDEX index_academic_subtasks_task_position
+      ON academic_subtasks(task_id, position)
+    ''');
   }
 
   static Future<void> _insertDefaultCategories(Transaction transaction) async {

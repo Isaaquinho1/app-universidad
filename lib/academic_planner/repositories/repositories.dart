@@ -4,3 +4,4 @@ export 'class_session_repository.dart';
 export 'task_category_repository.dart';
 export 'daily_schedule_repository.dart';
 export 'weekly_schedule_repository.dart';
+export 'academic_subtask_repository.dart';

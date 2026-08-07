@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
+import 'package:conecta_itt/academic_planner/models/academic_subtask.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task_status.dart';
 import 'package:conecta_itt/academic_planner/models/task_category.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
+import 'package:conecta_itt/academic_planner/repositories/academic_subtask_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
 import 'package:conecta_itt/academic_planner/services/academic_task_reminder_service.dart';
@@ -23,6 +25,9 @@ class AcademicTasksView extends StatefulWidget {
 
 class _AcademicTasksViewState extends State<AcademicTasksView> {
   final AcademicTaskRepository _taskRepository = AcademicTaskRepository();
+
+  final AcademicSubtaskRepository _subtaskRepository =
+      AcademicSubtaskRepository();
 
   final AcademicSubjectRepository _subjectRepository =
       AcademicSubjectRepository();
@@ -57,12 +62,22 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
     final tasks = results[0] as List<AcademicTask>;
 
+    final subtaskEntries = await Future.wait(
+      tasks.map(
+        (task) async =>
+            MapEntry(task.id, await _subtaskRepository.getForTask(task.id)),
+      ),
+    );
+
     _scheduleReminderStatusRefresh(tasks);
 
     return _TaskViewData(
       tasks: tasks,
       subjects: results[1] as List<AcademicSubject>,
       categories: results[2] as List<TaskCategory>,
+      subtasksByTaskId: Map<String, List<AcademicSubtask>>.fromEntries(
+        subtaskEntries,
+      ),
     );
   }
 
@@ -141,6 +156,15 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     required List<AcademicSubject> subjects,
     required List<TaskCategory> categories,
   }) async {
+    final subtasks =
+        task == null
+            ? const <AcademicSubtask>[]
+            : await _subtaskRepository.getForTask(task.id);
+
+    if (!mounted) {
+      return;
+    }
+
     final result = await showModalBottomSheet<AcademicTaskFormData>(
       context: context,
       isScrollControlled: true,
@@ -151,6 +175,7 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
             task: task,
             subjects: subjects,
             categories: categories,
+            subtasks: subtasks,
           ),
     );
 
@@ -172,6 +197,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           dueAt: result.dueAt,
           priority: result.priority,
           reminderAt: result.reminderAt,
+        );
+
+        await _synchronizeSubtasks(
+          taskId: created.id,
+          previous: const <AcademicSubtask>[],
+          updated: result.subtasks,
         );
 
         if (created.reminderAt != null) {
@@ -199,6 +230,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           ),
         );
 
+        await _synchronizeSubtasks(
+          taskId: updated.id,
+          previous: subtasks,
+          updated: result.subtasks,
+        );
+
         if (updated.reminderAt != null && !updated.isCompleted) {
           final granted = await _prepareReminderPermissions();
 
@@ -221,6 +258,78 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           _processing = false;
         });
       }
+    }
+  }
+
+  Future<void> _synchronizeSubtasks({
+    required String taskId,
+    required List<AcademicSubtask> previous,
+    required List<AcademicSubtask> updated,
+  }) async {
+    final previousById = {for (final subtask in previous) subtask.id: subtask};
+
+    final retainedIds =
+        updated
+            .where((subtask) => !subtask.id.startsWith('draft-'))
+            .map((subtask) => subtask.id)
+            .toSet();
+
+    for (final oldSubtask in previous) {
+      if (!retainedIds.contains(oldSubtask.id)) {
+        await _subtaskRepository.delete(oldSubtask.id);
+      }
+    }
+
+    final persistedInOrder = <AcademicSubtask>[];
+
+    for (final desired in updated) {
+      if (desired.id.startsWith('draft-')) {
+        var created = await _subtaskRepository.create(
+          taskId: taskId,
+          title: desired.title,
+        );
+
+        if (desired.isCompleted) {
+          created = await _subtaskRepository.setCompleted(
+            subtask: created,
+            isCompleted: true,
+          );
+        }
+
+        persistedInOrder.add(created);
+        continue;
+      }
+
+      final original = previousById[desired.id];
+
+      if (original == null) {
+        continue;
+      }
+
+      var current = original;
+
+      if (current.title != desired.title) {
+        current = await _subtaskRepository.updateTitle(
+          subtask: current,
+          title: desired.title,
+        );
+      }
+
+      if (current.isCompleted != desired.isCompleted) {
+        current = await _subtaskRepository.setCompleted(
+          subtask: current,
+          isCompleted: desired.isCompleted,
+        );
+      }
+
+      persistedInOrder.add(current);
+    }
+
+    if (persistedInOrder.isNotEmpty) {
+      await _subtaskRepository.reorder(
+        taskId: taskId,
+        subtasks: persistedInOrder,
+      );
     }
   }
 
@@ -470,6 +579,9 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
                         task: tasks[index],
                         subject: subjectsById[tasks[index].subjectId],
                         category: categoriesById[tasks[index].categoryId],
+                        subtasks:
+                            data.subtasksByTaskId[tasks[index].id] ??
+                            const <AcademicSubtask>[],
                         onAction: (action) {
                           _handleAction(
                             task: tasks[index],
@@ -515,11 +627,13 @@ class _TaskViewData {
     required this.tasks,
     required this.subjects,
     required this.categories,
+    required this.subtasksByTaskId,
   });
 
   final List<AcademicTask> tasks;
   final List<AcademicSubject> subjects;
   final List<TaskCategory> categories;
+  final Map<String, List<AcademicSubtask>> subtasksByTaskId;
 }
 
 class _EmptyTasks extends StatelessWidget {

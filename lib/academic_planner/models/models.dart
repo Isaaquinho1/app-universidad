@@ -5,3 +5,4 @@ export 'class_session.dart';
 export 'task_category.dart';
 export 'task_priority.dart';
 export 'scheduled_class.dart';
+export 'academic_subtask.dart';

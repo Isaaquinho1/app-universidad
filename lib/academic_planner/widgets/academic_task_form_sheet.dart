@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
+import 'package:conecta_itt/academic_planner/models/academic_subtask.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task_status.dart';
 import 'package:conecta_itt/academic_planner/models/task_category.dart';
 import 'package:conecta_itt/academic_planner/models/task_priority.dart';
@@ -16,6 +17,7 @@ class AcademicTaskFormData {
     this.categoryId,
     this.dueAt,
     this.reminderAt,
+    this.subtasks = const [],
   });
 
   final String title;
@@ -24,6 +26,7 @@ class AcademicTaskFormData {
   final String? categoryId;
   final DateTime? dueAt;
   final DateTime? reminderAt;
+  final List<AcademicSubtask> subtasks;
   final TaskPriority priority;
   final AcademicTaskStatus status;
 }
@@ -33,11 +36,13 @@ class AcademicTaskFormSheet extends StatefulWidget {
     super.key,
     required this.subjects,
     required this.categories,
+    this.subtasks = const [],
     this.task,
   });
 
   final List<AcademicSubject> subjects;
   final List<TaskCategory> categories;
+  final List<AcademicSubtask> subtasks;
   final AcademicTask? task;
 
   @override
@@ -54,6 +59,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
   String? _categoryId;
   DateTime? _dueAt;
   DateTime? _reminderAt;
+  late List<AcademicSubtask> _subtasks;
   late TaskPriority _priority;
   late AcademicTaskStatus _status;
 
@@ -75,12 +81,26 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
     _categoryId = task?.categoryId;
     _dueAt = task?.dueAt;
     _reminderAt = task?.reminderAt;
+    _subtasks = List<AcademicSubtask>.from(widget.subtasks);
     _priority = task?.priority ?? TaskPriority.medium;
     _status = task?.status ?? AcademicTaskStatus.pending;
+
+    _titleController.addListener(_onTextChanged);
+    _descriptionController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {});
   }
 
   @override
   void dispose() {
+    _titleController.removeListener(_onTextChanged);
+    _descriptionController.removeListener(_onTextChanged);
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -350,6 +370,233 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
     });
   }
 
+  Future<void> _addSubtask() async {
+    var draftTitle = '';
+
+    final title = await showDialog<String>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Nueva subtarea'),
+            content: TextFormField(
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              maxLength: 120,
+              decoration: const InputDecoration(
+                labelText: 'Descripción',
+                hintText: 'Ej. Preparar diagrama',
+              ),
+              onChanged: (value) {
+                draftTitle = value;
+              },
+              onFieldSubmitted: (value) {
+                final normalized = value.trim();
+
+                if (normalized.isNotEmpty) {
+                  Navigator.of(dialogContext).pop(normalized);
+                }
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  final normalized = draftTitle.trim();
+
+                  if (normalized.isEmpty) {
+                    return;
+                  }
+
+                  Navigator.of(dialogContext).pop(normalized);
+                },
+                child: const Text('Agregar'),
+              ),
+            ],
+          ),
+    );
+
+    if (title == null || !mounted) {
+      return;
+    }
+
+    final now = DateTime.now();
+
+    setState(() {
+      _subtasks.add(
+        AcademicSubtask(
+          id: 'draft-${now.microsecondsSinceEpoch}',
+          taskId: widget.task?.id ?? '',
+          title: title,
+          isCompleted: false,
+          position: _subtasks.length,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+    });
+  }
+
+  Future<void> _editSubtask(AcademicSubtask subtask) async {
+    var draftTitle = subtask.title;
+
+    final title = await showDialog<String>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Editar subtarea'),
+            content: TextFormField(
+              initialValue: subtask.title,
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              maxLength: 120,
+              decoration: const InputDecoration(labelText: 'Descripción'),
+              onChanged: (value) {
+                draftTitle = value;
+              },
+              onFieldSubmitted: (value) {
+                final normalized = value.trim();
+
+                if (normalized.isNotEmpty) {
+                  Navigator.of(dialogContext).pop(normalized);
+                }
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  final normalized = draftTitle.trim();
+
+                  if (normalized.isEmpty) {
+                    return;
+                  }
+
+                  Navigator.of(dialogContext).pop(normalized);
+                },
+                child: const Text('Guardar'),
+              ),
+            ],
+          ),
+    );
+
+    if (title == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      final index = _subtasks.indexWhere((item) => item.id == subtask.id);
+
+      if (index == -1) {
+        return;
+      }
+
+      _subtasks[index] = subtask.copyWith(
+        title: title,
+        updatedAt: DateTime.now(),
+      );
+    });
+  }
+
+  void _toggleSubtask(AcademicSubtask subtask, bool value) {
+    setState(() {
+      final index = _subtasks.indexWhere((item) => item.id == subtask.id);
+
+      if (index == -1) {
+        return;
+      }
+
+      _subtasks[index] = subtask.copyWith(
+        isCompleted: value,
+        updatedAt: DateTime.now(),
+      );
+    });
+  }
+
+  void _deleteSubtask(AcademicSubtask subtask) {
+    setState(() {
+      _subtasks.removeWhere((item) => item.id == subtask.id);
+
+      _subtasks = [
+        for (var index = 0; index < _subtasks.length; index++)
+          _subtasks[index].copyWith(position: index, updatedAt: DateTime.now()),
+      ];
+    });
+  }
+
+  void _reorderSubtasks(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+
+      final item = _subtasks.removeAt(oldIndex);
+      _subtasks.insert(newIndex, item);
+
+      _subtasks = [
+        for (var index = 0; index < _subtasks.length; index++)
+          _subtasks[index].copyWith(position: index, updatedAt: DateTime.now()),
+      ];
+    });
+  }
+
+  bool _sameDateTime(DateTime? first, DateTime? second) {
+    if (first == null || second == null) {
+      return first == second;
+    }
+
+    return first.isAtSameMomentAs(second);
+  }
+
+  bool _sameSubtasks(
+    List<AcademicSubtask> first,
+    List<AcademicSubtask> second,
+  ) {
+    if (first.length != second.length) {
+      return false;
+    }
+
+    for (var index = 0; index < first.length; index++) {
+      final a = first[index];
+      final b = second[index];
+
+      if (a.id != b.id ||
+          a.title != b.title ||
+          a.isCompleted != b.isCompleted) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool get _hasChanges {
+    final task = widget.task;
+
+    if (task == null) {
+      return true;
+    }
+
+    return _titleController.text.trim() != task.title ||
+        _normalizeOptional(_descriptionController.text) != task.description ||
+        _subjectId != task.subjectId ||
+        _categoryId != task.categoryId ||
+        !_sameDateTime(_dueAt, task.dueAt) ||
+        !_sameDateTime(_reminderAt, task.reminderAt) ||
+        _priority != task.priority ||
+        _status != task.status ||
+        !_sameSubtasks(_subtasks, widget.subtasks);
+  }
+
   void _submit() {
     FocusScope.of(context).unfocus();
 
@@ -365,6 +612,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
         categoryId: _categoryId,
         dueAt: _dueAt,
         reminderAt: _reminderAt,
+        subtasks: _subtasks,
         priority: _priority,
         status: _status,
       ),
@@ -618,6 +866,93 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text('Subtareas', style: AppTextStyle.bodyBold),
+                    ),
+                    TextButton.icon(
+                      onPressed: _addSubtask,
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text('Agregar'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                if (_subtasks.isEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: colors.background02,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: colors.deactive.withValues(alpha: 0.18),
+                      ),
+                    ),
+                    child: Text(
+                      'Divide esta tarea en pasos pequeños.',
+                      style: AppTextStyle.body.copyWith(color: colors.deactive),
+                    ),
+                  )
+                else
+                  ReorderableListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    buildDefaultDragHandles: false,
+                    itemCount: _subtasks.length,
+                    onReorder: _reorderSubtasks,
+                    itemBuilder: (context, index) {
+                      final subtask = _subtasks[index];
+
+                      return ListTile(
+                        key: ValueKey(subtask.id),
+                        contentPadding: EdgeInsets.zero,
+                        leading: Checkbox(
+                          value: subtask.isCompleted,
+                          onChanged: (value) {
+                            _toggleSubtask(subtask, value ?? false);
+                          },
+                        ),
+                        title: Text(
+                          subtask.title,
+                          style: AppTextStyle.body.copyWith(
+                            decoration:
+                                subtask.isCompleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                            color:
+                                subtask.isCompleted
+                                    ? colors.deactive
+                                    : colors.active,
+                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: 'Editar subtarea',
+                              onPressed: () => _editSubtask(subtask),
+                              icon: const Icon(Icons.edit_outlined),
+                            ),
+                            IconButton(
+                              tooltip: 'Eliminar subtarea',
+                              onPressed: () => _deleteSubtask(subtask),
+                              icon: const Icon(Icons.delete_outline_rounded),
+                            ),
+                            ReorderableDragStartListener(
+                              index: index,
+                              child: const Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Icon(Icons.drag_handle_rounded),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                const SizedBox(height: AppSpacing.lg),
                 Text('Recordatorio', style: AppTextStyle.bodyBold),
                 const SizedBox(height: AppSpacing.sm),
                 Material(
@@ -665,7 +1000,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
-                    onPressed: _submit,
+                    onPressed: !_isEditing || _hasChanges ? _submit : null,
                     icon: Icon(
                       _isEditing ? Icons.save_rounded : Icons.add_task_rounded,
                     ),
