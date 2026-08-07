@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/view/academic_tasks_view.dart';
 import 'package:conecta_itt/academic_planner/view/daily_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/view/subjects_management_view.dart';
 import 'package:conecta_itt/academic_planner/view/weekly_schedule_view.dart';
@@ -38,6 +39,11 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           selectedIndex: _selectedIndex,
           onSectionSelected: _selectSection,
           child: const WeeklyScheduleView(),
+        ),
+        _PlannerSectionPage(
+          selectedIndex: _selectedIndex,
+          onSectionSelected: _selectSection,
+          child: const AcademicTasksView(),
         ),
         SubjectsManagementView(
           selectedIndex: _selectedIndex,

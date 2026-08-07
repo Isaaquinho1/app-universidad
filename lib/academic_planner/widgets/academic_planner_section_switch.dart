@@ -13,39 +13,47 @@ class AcademicPlannerSectionSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        0,
-        AppSpacing.lg,
-        AppSpacing.sm,
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        child: SegmentedButton<int>(
-          showSelectedIcon: false,
-          segments: const [
-            ButtonSegment<int>(
-              value: 0,
-              icon: Icon(Icons.today_rounded),
-              label: Text('Día'),
-            ),
-            ButtonSegment<int>(
-              value: 1,
-              icon: Icon(Icons.calendar_view_week_rounded),
-              label: Text('Semana'),
-            ),
-            ButtonSegment<int>(
-              value: 2,
-              icon: Icon(Icons.menu_book_rounded),
-              label: Text('Materias'),
-            ),
-          ],
-          selected: {selectedIndex},
-          onSelectionChanged: (selection) {
-            onSelected(selection.first);
-          },
+    return SizedBox(
+      height: 46,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          AppSpacing.lg,
+          AppSpacing.sm,
         ),
+        children: [
+          SegmentedButton<int>(
+            showSelectedIcon: false,
+            segments: const [
+              ButtonSegment<int>(
+                value: 0,
+                icon: Icon(Icons.today_rounded),
+                label: Text('Día'),
+              ),
+              ButtonSegment<int>(
+                value: 1,
+                icon: Icon(Icons.calendar_view_week_rounded),
+                label: Text('Semana'),
+              ),
+              ButtonSegment<int>(
+                value: 2,
+                icon: Icon(Icons.task_alt_rounded),
+                label: Text('Tareas'),
+              ),
+              ButtonSegment<int>(
+                value: 3,
+                icon: Icon(Icons.menu_book_rounded),
+                label: Text('Materias'),
+              ),
+            ],
+            selected: {selectedIndex},
+            onSelectionChanged: (selection) {
+              onSelected(selection.first);
+            },
+          ),
+        ],
       ),
     );
   }
