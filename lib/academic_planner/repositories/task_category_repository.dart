@@ -40,6 +40,52 @@ class TaskCategoryRepository {
     return category;
   }
 
+  Future<TaskCategory> update({
+    required TaskCategory category,
+    required String name,
+    required int colorValue,
+    int? iconCodePoint,
+  }) async {
+    if (category.isSystem) {
+      throw StateError('Las categorías predeterminadas no pueden modificarse.');
+    }
+
+    final normalizedName = name.trim();
+
+    if (normalizedName.isEmpty) {
+      throw ArgumentError.value(
+        name,
+        'name',
+        'La categoría requiere un nombre.',
+      );
+    }
+
+    final updated = TaskCategory(
+      id: category.id,
+      name: normalizedName,
+      colorValue: colorValue,
+      iconCodePoint: iconCodePoint,
+      isSystem: false,
+      createdAt: category.createdAt,
+    );
+
+    final database = await _academicDatabase.database;
+
+    final affectedRows = await database.update(
+      'task_categories',
+      updated.toDatabase(),
+      where: 'id = ?',
+      whereArgs: [updated.id],
+      conflictAlgorithm: ConflictAlgorithm.abort,
+    );
+
+    if (affectedRows != 1) {
+      throw StateError('No se encontró la categoría indicada.');
+    }
+
+    return updated;
+  }
+
   Future<List<TaskCategory>> getAll() async {
     final database = await _academicDatabase.database;
 

@@ -4,3 +4,4 @@ export 'class_session_form_sheet.dart';
 export 'academic_planner_section_switch.dart';
 export 'academic_task_card.dart';
 export 'academic_task_form_sheet.dart';
+export 'task_category_form_sheet.dart';

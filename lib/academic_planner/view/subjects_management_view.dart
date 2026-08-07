@@ -259,6 +259,7 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'academic_subjects_fab',
         onPressed: _processingAction ? null : () => _openSubjectForm(),
         icon: const Icon(Icons.add_rounded),
         label: const Text('Materia'),

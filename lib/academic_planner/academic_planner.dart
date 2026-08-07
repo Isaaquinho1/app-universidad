@@ -8,3 +8,4 @@ export 'view/daily_schedule_view.dart';
 export 'view/subjects_management_view.dart';
 export 'view/weekly_schedule_view.dart';
 export 'view/academic_tasks_view.dart';
+export 'view/task_categories_page.dart';

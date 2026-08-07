@@ -6,6 +6,7 @@ import 'package:conecta_itt/academic_planner/models/task_category.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
+import 'package:conecta_itt/academic_planner/view/task_categories_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
 import 'package:flutter/material.dart';
@@ -299,12 +300,39 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
                   100 + MediaQuery.paddingOf(context).bottom,
                 ),
                 children: [
-                  Text(
-                    'Mis tareas',
-                    style: AppTextStyle.h4.copyWith(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Mis tareas',
+                          style: AppTextStyle.h4.copyWith(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      IconButton.filledTonal(
+                        tooltip: 'Administrar categorías',
+                        onPressed:
+                            _processing
+                                ? null
+                                : () async {
+                                  final changed = await Navigator.of(
+                                    context,
+                                  ).push<bool>(
+                                    MaterialPageRoute<bool>(
+                                      builder:
+                                          (_) => const TaskCategoriesPage(),
+                                    ),
+                                  );
+
+                                  if ((changed ?? false) && mounted) {
+                                    await _refresh();
+                                  }
+                                },
+                        icon: const Icon(Icons.category_outlined),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
@@ -376,6 +404,7 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
               right: AppSpacing.lg,
               bottom: AppSpacing.lg,
               child: FloatingActionButton.extended(
+                heroTag: 'academic_tasks_fab',
                 onPressed:
                     _processing
                         ? null

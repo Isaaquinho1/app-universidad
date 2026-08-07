@@ -204,6 +204,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Sesiones de clase')),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'class_sessions_fab',
         onPressed: _processing ? null : () => _openForm(),
         icon: const Icon(Icons.add_rounded),
         label: const Text('Sesión'),
