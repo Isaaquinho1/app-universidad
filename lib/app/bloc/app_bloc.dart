@@ -33,6 +33,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<RecieveInteractedMessage>(_onRecieveInteractedMessage);
     on<AnnouncementNotificationOpened>(_onAnnouncementNotificationOpened);
     on<AnnouncementNavigationConsumed>(_onAnnouncementNavigationConsumed);
+    on<AcademicTaskNotificationOpened>(_onAcademicTaskNotificationOpened);
+    on<AcademicTaskNavigationConsumed>(_onAcademicTaskNavigationConsumed);
     on<ThemeChanged>(_onThemeChanged);
     on<AppUserChanged>(_onUserChanged);
     on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
@@ -329,6 +331,24 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     emit(state.copyWith(clearPendingAnnouncementId: true));
   }
 
+  void _onAcademicTaskNotificationOpened(
+    AcademicTaskNotificationOpened event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn || event.taskId.isEmpty) {
+      return;
+    }
+
+    emit(state.copyWith(pendingAcademicTaskId: event.taskId));
+  }
+
+  void _onAcademicTaskNavigationConsumed(
+    AcademicTaskNavigationConsumed event,
+    Emitter<AppState> emit,
+  ) {
+    emit(state.copyWith(clearPendingAcademicTaskId: true));
+  }
+
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await LocalNotificationService.instance.initialize(
       onNotificationTap: (data) {
@@ -358,6 +378,21 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
   void _handleNotificationData(Map<String, dynamic> data) {
     Logger().i('Handling local notification tap: $data');
+
+    final type = data['type']?.toString().trim();
+
+    if (type == 'academic_task') {
+      final taskId = data['task_id']?.toString().trim();
+
+      if (taskId == null || taskId.isEmpty) {
+        Logger().w('Academic reminder interaction did not contain a task_id.');
+        return;
+      }
+
+      add(AcademicTaskNotificationOpened(taskId));
+      return;
+    }
+
     _queueAnnouncementNavigation(data);
   }
 

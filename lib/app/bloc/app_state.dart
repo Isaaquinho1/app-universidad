@@ -16,6 +16,7 @@ class AppState extends Equatable {
     this.user = User.anonymous,
     this.institutionalProfile,
     this.pendingAnnouncementId,
+    this.pendingAcademicTaskId,
   });
 
   const AppState.authenticated(
@@ -55,6 +56,11 @@ class AppState extends Equatable {
   /// This value is intentionally not persisted by HydratedBloc.
   final String? pendingAnnouncementId;
 
+  /// Academic task waiting to be opened from a local reminder.
+  ///
+  /// This value is intentionally not persisted by HydratedBloc.
+  final String? pendingAcademicTaskId;
+
   bool get hasInstitutionalProfile => institutionalProfile != null;
 
   AppState copyWith({
@@ -65,6 +71,8 @@ class AppState extends Equatable {
     bool clearInstitutionalProfile = false,
     String? pendingAnnouncementId,
     bool clearPendingAnnouncementId = false,
+    String? pendingAcademicTaskId,
+    bool clearPendingAcademicTaskId = false,
   }) {
     return AppState(
       isAmoled: isAmoled ?? this.isAmoled,
@@ -78,6 +86,10 @@ class AppState extends Equatable {
           clearPendingAnnouncementId
               ? null
               : pendingAnnouncementId ?? this.pendingAnnouncementId,
+      pendingAcademicTaskId:
+          clearPendingAcademicTaskId
+              ? null
+              : pendingAcademicTaskId ?? this.pendingAcademicTaskId,
     );
   }
 
@@ -88,5 +100,6 @@ class AppState extends Equatable {
     user,
     institutionalProfile,
     pendingAnnouncementId,
+    pendingAcademicTaskId,
   ];
 }

@@ -168,6 +168,30 @@ class AcademicTaskCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (task.reminderAt != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_active_outlined,
+                            size: 17,
+                            color: colors.deactive,
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              task.reminderAt!.isAfter(DateTime.now())
+                                  ? 'Recordatorio programado'
+                                  : 'Recordatorio enviado',
+                              style: AppTextStyle.body.copyWith(
+                                fontSize: 12,
+                                color: colors.deactive,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

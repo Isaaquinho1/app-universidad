@@ -33,6 +33,19 @@ class AnnouncementNavigationConsumed extends AppEvent {
   const AnnouncementNavigationConsumed();
 }
 
+class AcademicTaskNotificationOpened extends AppEvent {
+  const AcademicTaskNotificationOpened(this.taskId);
+
+  final String taskId;
+
+  @override
+  List<Object?> get props => [taskId];
+}
+
+class AcademicTaskNavigationConsumed extends AppEvent {
+  const AcademicTaskNavigationConsumed();
+}
+
 class ThemeChanged extends AppEvent {
   const ThemeChanged(this.isAmoled);
 

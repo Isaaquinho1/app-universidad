@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
@@ -6,6 +8,7 @@ import 'package:conecta_itt/academic_planner/models/task_category.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
+import 'package:conecta_itt/academic_planner/services/academic_task_reminder_service.dart';
 import 'package:conecta_itt/academic_planner/view/task_categories_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
@@ -26,8 +29,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
   final TaskCategoryRepository _categoryRepository = TaskCategoryRepository();
 
+  final AcademicTaskReminderService _reminderService =
+      AcademicTaskReminderService();
+
   late Future<_TaskViewData> _dataFuture;
 
+  Timer? _reminderStatusTimer;
   bool _processing = false;
   _TaskFilter _selectedFilter = _TaskFilter.pending;
 
@@ -48,11 +55,53 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
       _categoryRepository.getAll(),
     ]);
 
+    final tasks = results[0] as List<AcademicTask>;
+
+    _scheduleReminderStatusRefresh(tasks);
+
     return _TaskViewData(
-      tasks: results[0] as List<AcademicTask>,
+      tasks: tasks,
       subjects: results[1] as List<AcademicSubject>,
       categories: results[2] as List<TaskCategory>,
     );
+  }
+
+  void _scheduleReminderStatusRefresh(List<AcademicTask> tasks) {
+    _reminderStatusTimer?.cancel();
+
+    final now = DateTime.now();
+
+    final futureReminders =
+        tasks
+            .map((task) => task.reminderAt)
+            .whereType<DateTime>()
+            .where((reminderAt) => reminderAt.isAfter(now))
+            .toList()
+          ..sort();
+
+    if (futureReminders.isEmpty) {
+      _reminderStatusTimer = null;
+      return;
+    }
+
+    final nextReminder = futureReminders.first;
+    final delay = nextReminder.difference(now) + const Duration(seconds: 1);
+
+    _reminderStatusTimer = Timer(delay, () {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {});
+
+      _scheduleReminderStatusRefresh(tasks);
+    });
+  }
+
+  @override
+  void dispose() {
+    _reminderStatusTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -74,6 +123,17 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           .toList(growable: false),
       _TaskFilter.all => tasks,
     };
+  }
+
+  Future<bool> _prepareReminderPermissions() async {
+    final notificationsGranted = await _reminderService.requestPermission();
+
+    if (!notificationsGranted) {
+      return false;
+    }
+
+    await _reminderService.requestExactAlarmPermission();
+    return true;
   }
 
   Future<void> _openTaskForm({
@@ -104,16 +164,25 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
     try {
       if (task == null) {
-        await _taskRepository.create(
+        final created = await _taskRepository.create(
           title: result.title,
           description: result.description,
           subjectId: result.subjectId,
           categoryId: result.categoryId,
           dueAt: result.dueAt,
           priority: result.priority,
+          reminderAt: result.reminderAt,
         );
+
+        if (created.reminderAt != null) {
+          final granted = await _prepareReminderPermissions();
+
+          if (granted) {
+            await _reminderService.synchronize(created);
+          }
+        }
       } else {
-        await _taskRepository.update(
+        final updated = await _taskRepository.update(
           AcademicTask(
             id: task.id,
             title: result.title,
@@ -123,12 +192,22 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
             dueAt: result.dueAt,
             priority: result.priority,
             status: result.status,
-            reminderAt: task.reminderAt,
+            reminderAt: result.reminderAt,
             completedAt: task.completedAt,
             createdAt: task.createdAt,
             updatedAt: task.updatedAt,
           ),
         );
+
+        if (updated.reminderAt != null && !updated.isCompleted) {
+          final granted = await _prepareReminderPermissions();
+
+          if (granted) {
+            await _reminderService.synchronize(updated);
+          }
+        } else {
+          await _reminderService.cancel(updated.id);
+        }
       }
 
       if (!mounted) return;
@@ -180,7 +259,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
               ? AcademicTaskStatus.pending
               : AcademicTaskStatus.completed;
 
-      await _taskRepository.updateStatus(task: task, status: nextStatus);
+      final updated = await _taskRepository.updateStatus(
+        task: task,
+        status: nextStatus,
+      );
+
+      await _reminderService.synchronize(updated);
 
       if (!mounted) return;
       await _refresh();
@@ -226,6 +310,7 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     });
 
     try {
+      await _reminderService.cancel(task.id);
       await _taskRepository.delete(task.id);
 
       if (!mounted) return;

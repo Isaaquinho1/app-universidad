@@ -1,7 +1,7 @@
+import 'package:conecta_itt/app/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:conecta_itt/app/app.dart';
 
 class FirebaseInteractedMessageListener extends StatefulWidget {
   const FirebaseInteractedMessageListener({
@@ -21,6 +21,7 @@ class FirebaseInteractedMessageListener extends StatefulWidget {
 class _FirebaseInteractedMessageListenerState
     extends State<FirebaseInteractedMessageListener> {
   String? _scheduledAnnouncementId;
+  String? _scheduledAcademicTaskId;
   bool _initialStateChecked = false;
 
   @override
@@ -36,10 +37,32 @@ class _FirebaseInteractedMessageListenerState
   }
 
   void _scheduleNavigation(AppState state) {
+    if (!state.status.isLoggedIn) {
+      return;
+    }
+
+    final academicTaskId = state.pendingAcademicTaskId;
+
+    if (academicTaskId != null &&
+        academicTaskId.isNotEmpty &&
+        academicTaskId != _scheduledAcademicTaskId) {
+      _scheduledAcademicTaskId = academicTaskId;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+
+        widget.router.go('/schedule');
+        _scheduledAcademicTaskId = null;
+      });
+
+      return;
+    }
+
     final announcementId = state.pendingAnnouncementId;
 
-    if (!state.status.isLoggedIn ||
-        state.institutionalProfile == null ||
+    if (state.institutionalProfile == null ||
         announcementId == null ||
         announcementId.isEmpty ||
         announcementId == _scheduledAnnouncementId) {
@@ -69,6 +92,7 @@ class _FirebaseInteractedMessageListenerState
       listenWhen:
           (previous, current) =>
               previous.pendingAnnouncementId != current.pendingAnnouncementId ||
+              previous.pendingAcademicTaskId != current.pendingAcademicTaskId ||
               previous.institutionalProfile != current.institutionalProfile ||
               previous.status != current.status,
       listener: (_, state) {

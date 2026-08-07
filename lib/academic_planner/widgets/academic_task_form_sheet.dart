@@ -15,6 +15,7 @@ class AcademicTaskFormData {
     this.subjectId,
     this.categoryId,
     this.dueAt,
+    this.reminderAt,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class AcademicTaskFormData {
   final String? subjectId;
   final String? categoryId;
   final DateTime? dueAt;
+  final DateTime? reminderAt;
   final TaskPriority priority;
   final AcademicTaskStatus status;
 }
@@ -51,6 +53,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
   String? _subjectId;
   String? _categoryId;
   DateTime? _dueAt;
+  DateTime? _reminderAt;
   late TaskPriority _priority;
   late AcademicTaskStatus _status;
 
@@ -71,6 +74,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
     _subjectId = task?.subjectId;
     _categoryId = task?.categoryId;
     _dueAt = task?.dueAt;
+    _reminderAt = task?.reminderAt;
     _priority = task?.priority ?? TaskPriority.medium;
     _status = task?.status ?? AcademicTaskStatus.pending;
   }
@@ -145,6 +149,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
   void _clearDueDate() {
     setState(() {
       _dueAt = null;
+      _reminderAt = null;
     });
   }
 
@@ -161,6 +166,190 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
         '${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(dueAt))}';
   }
 
+  Future<void> _selectReminder() async {
+    final dueAt = _dueAt;
+
+    if (dueAt == null) {
+      await showDialog<void>(
+        context: context,
+        builder:
+            (dialogContext) => AlertDialog(
+              icon: const Icon(Icons.event_busy_rounded),
+              title: const Text('Primero agrega una entrega'),
+              content: const Text(
+                'Selecciona una fecha y hora de entrega antes '
+                'de configurar el recordatorio.',
+              ),
+              actions: [
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Entendido'),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
+    final option = await showModalBottomSheet<_ReminderOption>(
+      context: context,
+      useSafeArea: true,
+      builder:
+          (sheetContext) => SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Recordatorio',
+                    style: AppTextStyle.h4.copyWith(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  for (final option in _ReminderOption.values)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(option.icon),
+                      title: Text(option.label),
+                      onTap: () => Navigator.of(sheetContext).pop(option),
+                    ),
+                ],
+              ),
+            ),
+          ),
+    );
+
+    if (option == null || !mounted) {
+      return;
+    }
+
+    if (option == _ReminderOption.none) {
+      setState(() {
+        _reminderAt = null;
+      });
+      return;
+    }
+
+    if (option == _ReminderOption.custom) {
+      await _selectCustomReminder();
+      return;
+    }
+
+    final offset = option.offset;
+
+    if (offset == null) {
+      return;
+    }
+
+    final candidate = dueAt.subtract(offset);
+
+    if (!candidate.isAfter(DateTime.now())) {
+      await _showInvalidReminder();
+      return;
+    }
+
+    setState(() {
+      _reminderAt = candidate;
+    });
+  }
+
+  Future<void> _selectCustomReminder() async {
+    final now = DateTime.now();
+    final dueAt = _dueAt;
+
+    if (dueAt == null) {
+      return;
+    }
+
+    final initial = _reminderAt ?? dueAt.subtract(const Duration(hours: 1));
+
+    final safeInitial =
+        initial.isAfter(now) ? initial : now.add(const Duration(minutes: 2));
+
+    final selectedDate = await showDatePicker(
+      context: context,
+      initialDate: safeInitial,
+      firstDate: DateTime(now.year, now.month, now.day),
+      lastDate: dueAt,
+      helpText: 'Fecha del recordatorio',
+    );
+
+    if (selectedDate == null || !mounted) {
+      return;
+    }
+
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(safeInitial),
+      helpText: 'Hora del recordatorio',
+    );
+
+    if (selectedTime == null || !mounted) {
+      return;
+    }
+
+    final candidate = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
+
+    if (!candidate.isAfter(now) || candidate.isAfter(dueAt)) {
+      await _showInvalidReminder();
+      return;
+    }
+
+    setState(() {
+      _reminderAt = candidate;
+    });
+  }
+
+  Future<void> _showInvalidReminder() {
+    return showDialog<void>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            icon: const Icon(Icons.warning_amber_rounded),
+            title: const Text('Recordatorio no válido'),
+            content: const Text(
+              'El recordatorio debe programarse en el futuro '
+              'y no puede ser posterior a la entrega.',
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Entendido'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  String _reminderLabel(BuildContext context) {
+    final reminderAt = _reminderAt;
+
+    if (reminderAt == null) {
+      return 'Sin recordatorio';
+    }
+
+    final localizations = MaterialLocalizations.of(context);
+
+    return '${localizations.formatMediumDate(reminderAt)} · '
+        '${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(reminderAt))}';
+  }
+
+  void _clearReminder() {
+    setState(() {
+      _reminderAt = null;
+    });
+  }
+
   void _submit() {
     FocusScope.of(context).unfocus();
 
@@ -175,6 +364,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
         subjectId: _subjectId,
         categoryId: _categoryId,
         dueAt: _dueAt,
+        reminderAt: _reminderAt,
         priority: _priority,
         status: _status,
       ),
@@ -427,6 +617,50 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
                     ),
                   ),
                 ),
+                const SizedBox(height: AppSpacing.lg),
+                Text('Recordatorio', style: AppTextStyle.bodyBold),
+                const SizedBox(height: AppSpacing.sm),
+                Material(
+                  color: colors.background02,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    onTap: _selectReminder,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.md,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colors.deactive.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.notifications_outlined),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Text(
+                              _reminderLabel(context),
+                              style: AppTextStyle.bodyBold,
+                            ),
+                          ),
+                          if (_reminderAt != null)
+                            IconButton(
+                              tooltip: 'Quitar recordatorio',
+                              onPressed: _clearReminder,
+                              icon: const Icon(Icons.close_rounded),
+                            )
+                          else
+                            const Icon(Icons.chevron_right_rounded),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xlg),
                 SizedBox(
                   width: double.infinity,
@@ -447,4 +681,40 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
       ),
     );
   }
+}
+
+enum _ReminderOption {
+  none(label: 'Sin recordatorio', icon: Icons.notifications_off_outlined),
+  atDueTime(
+    label: 'A la hora de entrega',
+    icon: Icons.alarm_rounded,
+    offset: Duration.zero,
+  ),
+  tenMinutes(
+    label: '10 minutos antes',
+    icon: Icons.timer_outlined,
+    offset: Duration(minutes: 10),
+  ),
+  thirtyMinutes(
+    label: '30 minutos antes',
+    icon: Icons.timer_outlined,
+    offset: Duration(minutes: 30),
+  ),
+  oneHour(
+    label: '1 hora antes',
+    icon: Icons.schedule_rounded,
+    offset: Duration(hours: 1),
+  ),
+  oneDay(
+    label: '1 día antes',
+    icon: Icons.event_outlined,
+    offset: Duration(days: 1),
+  ),
+  custom(label: 'Fecha y hora personalizadas', icon: Icons.tune_rounded);
+
+  const _ReminderOption({required this.label, required this.icon, this.offset});
+
+  final String label;
+  final IconData icon;
+  final Duration? offset;
 }
