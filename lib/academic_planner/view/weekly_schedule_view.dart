@@ -27,10 +27,26 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
 
   late Future<Map<int, List<ScheduledClass>>> _weekFuture;
 
+  final ScrollController _weekScrollController = ScrollController();
+
+  int _focusedWeekday = DateTime.now().weekday;
+  bool _initialWeekPositionApplied = false;
+  bool _isSnapping = false;
+
+  static const double _regularColumnWidth = 238;
+  static const double _focusedColumnWidth = 260;
+  static const double _columnGap = AppSpacing.md;
+
   @override
   void initState() {
     super.initState();
     _loadWeek();
+  }
+
+  @override
+  void dispose() {
+    _weekScrollController.dispose();
+    super.dispose();
   }
 
   void _loadWeek() {
@@ -44,6 +60,121 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
 
   String _formatMinutes(BuildContext context, int minutes) {
     return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60).format(context);
+  }
+
+  double _offsetForWeekday(int weekday) {
+    final index = weekday - 1;
+
+    if (index <= 0) {
+      return 0;
+    }
+
+    var offset = 0.0;
+
+    for (var currentIndex = 0; currentIndex < index; currentIndex++) {
+      final currentWeekday = currentIndex + 1;
+      final width =
+          currentWeekday == _focusedWeekday
+              ? _focusedColumnWidth
+              : _regularColumnWidth;
+
+      offset += width + _columnGap;
+    }
+
+    return offset;
+  }
+
+  int _nearestWeekdayForOffset(double offset) {
+    var nearestWeekday = 1;
+    var nearestDistance = double.infinity;
+
+    for (var weekday = 1; weekday <= DateTime.daysPerWeek; weekday++) {
+      final candidateOffset = _offsetForWeekday(weekday);
+      final distance = (candidateOffset - offset).abs();
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestWeekday = weekday;
+      }
+    }
+
+    return nearestWeekday;
+  }
+
+  void _applyInitialWeekPosition() {
+    if (_initialWeekPositionApplied || !_weekScrollController.hasClients) {
+      return;
+    }
+
+    _initialWeekPositionApplied = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_weekScrollController.hasClients) {
+        return;
+      }
+
+      final position = _weekScrollController.position;
+      final target = _offsetForWeekday(
+        _focusedWeekday,
+      ).clamp(position.minScrollExtent, position.maxScrollExtent);
+
+      _weekScrollController.animateTo(
+        target,
+        duration: ConectaMotion.emphasized,
+        curve: ConectaCurves.emphasized,
+      );
+    });
+  }
+
+  Future<void> _snapToNearestWeekday() async {
+    if (_isSnapping || !_weekScrollController.hasClients) {
+      return;
+    }
+
+    _isSnapping = true;
+
+    try {
+      final position = _weekScrollController.position;
+      final weekday = _nearestWeekdayForOffset(position.pixels);
+
+      if (_focusedWeekday != weekday && mounted) {
+        setState(() {
+          _focusedWeekday = weekday;
+        });
+
+        await WidgetsBinding.instance.endOfFrame;
+
+        if (!mounted || !_weekScrollController.hasClients) {
+          return;
+        }
+      }
+
+      final updatedPosition = _weekScrollController.position;
+
+      final target = _offsetForWeekday(
+        weekday,
+      ).clamp(updatedPosition.minScrollExtent, updatedPosition.maxScrollExtent);
+
+      if ((updatedPosition.pixels - target).abs() < 0.5) {
+        return;
+      }
+
+      await _weekScrollController.animateTo(
+        target,
+        duration: ConectaMotion.emphasized,
+        curve: ConectaCurves.emphasized,
+      );
+    } finally {
+      _isSnapping = false;
+    }
+  }
+
+  bool _handleWeekScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification && !_isSnapping) {
+      _snapToNearestWeekday();
+    }
+
+    return false;
   }
 
   @override
@@ -75,6 +206,8 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
             if (totalClasses == 0) {
               return const _EmptyWeeklySchedule();
             }
+
+            _applyInitialWeekPosition();
 
             return ListView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -121,79 +254,85 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
                 const SizedBox(height: AppSpacing.xlg),
                 SizedBox(
                   height: 560,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                      vertical: 8,
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: _handleWeekScrollNotification,
+                    child: ListView.separated(
+                      controller: _weekScrollController,
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 8,
+                      ),
+                      itemCount: DateTime.daysPerWeek,
+                      separatorBuilder:
+                          (context, index) =>
+                              const SizedBox(width: AppSpacing.md),
+                      itemBuilder: (context, index) {
+                        final weekday = index + 1;
+                        final classes =
+                            week[weekday] ?? const <ScheduledClass>[];
+
+                        return ConectaEntrance(
+                          index: index + 1,
+                          offset: const Offset(0.035, 0),
+                          child: _WeekdayColumn(
+                            weekday: weekday,
+                            label: _weekdayLabels[weekday] ?? 'Día',
+                            classes: classes,
+                            isFocused: weekday == _focusedWeekday,
+                            formatMinutes:
+                                (minutes) => _formatMinutes(context, minutes),
+                            onClassTap: (item) async {
+                              await Navigator.of(context).push(
+                                PageRouteBuilder<void>(
+                                  transitionDuration:
+                                      ConectaMotion.sharedTransition,
+                                  reverseTransitionDuration:
+                                      ConectaMotion.emphasized,
+                                  pageBuilder: (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                  ) {
+                                    return SubjectSessionsPage(
+                                      subject: item.subject,
+                                    );
+                                  },
+                                  transitionsBuilder: (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    final curved = CurvedAnimation(
+                                      parent: animation,
+                                      curve: ConectaCurves.emphasized,
+                                      reverseCurve: ConectaCurves.exit,
+                                    );
+
+                                    return FadeTransition(
+                                      opacity: curved,
+                                      child: ScaleTransition(
+                                        scale: Tween<double>(
+                                          begin: 0.985,
+                                          end: 1,
+                                        ).animate(curved),
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+
+                              if (mounted) {
+                                await _refresh();
+                              }
+                            },
+                          ),
+                        );
+                      },
                     ),
-                    itemCount: DateTime.daysPerWeek,
-                    separatorBuilder:
-                        (context, index) =>
-                            const SizedBox(width: AppSpacing.md),
-                    itemBuilder: (context, index) {
-                      final weekday = index + 1;
-                      final classes = week[weekday] ?? const <ScheduledClass>[];
-
-                      return ConectaEntrance(
-                        index: index + 1,
-                        offset: const Offset(0.035, 0),
-                        child: _WeekdayColumn(
-                          weekday: weekday,
-                          label: _weekdayLabels[weekday] ?? 'Día',
-                          classes: classes,
-                          formatMinutes:
-                              (minutes) => _formatMinutes(context, minutes),
-                          onClassTap: (item) async {
-                            await Navigator.of(context).push(
-                              PageRouteBuilder<void>(
-                                transitionDuration:
-                                    ConectaMotion.sharedTransition,
-                                reverseTransitionDuration:
-                                    ConectaMotion.emphasized,
-                                pageBuilder: (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                ) {
-                                  return SubjectSessionsPage(
-                                    subject: item.subject,
-                                  );
-                                },
-                                transitionsBuilder: (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  final curved = CurvedAnimation(
-                                    parent: animation,
-                                    curve: ConectaCurves.emphasized,
-                                    reverseCurve: ConectaCurves.exit,
-                                  );
-
-                                  return FadeTransition(
-                                    opacity: curved,
-                                    child: ScaleTransition(
-                                      scale: Tween<double>(
-                                        begin: 0.985,
-                                        end: 1,
-                                      ).animate(curved),
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-
-                            if (mounted) {
-                              await _refresh();
-                            }
-                          },
-                        ),
-                      );
-                    },
                   ),
                 ),
               ],
@@ -210,6 +349,7 @@ class _WeekdayColumn extends StatelessWidget {
     required this.weekday,
     required this.label,
     required this.classes,
+    required this.isFocused,
     required this.formatMinutes,
     required this.onClassTap,
   });
@@ -217,6 +357,7 @@ class _WeekdayColumn extends StatelessWidget {
   final int weekday;
   final String label;
   final List<ScheduledClass> classes;
+  final bool isFocused;
   final String Function(int) formatMinutes;
   final ValueChanged<ScheduledClass> onClassTap;
 
@@ -227,17 +368,22 @@ class _WeekdayColumn extends StatelessWidget {
 
     return ConectaInteractiveSurface(
       haptics: false,
-      restingScale: isToday ? 1.01 : 0.985,
-      restingOffset: isToday ? const Offset(0, -3) : const Offset(0, 1.5),
-      pressedScale: isToday ? 0.99 : 0.965,
+      restingScale: isFocused ? 1.012 : (isToday ? 1.002 : 0.982),
+      restingOffset:
+          isFocused
+              ? const Offset(0, -4)
+              : (isToday ? const Offset(0, -1.5) : const Offset(0, 1.5)),
+      pressedScale: isFocused ? 0.992 : 0.965,
       child: ConectaSurface(
         level:
-            isToday ? ConectaSurfaceLevel.focused : ConectaSurfaceLevel.raised,
+            isFocused
+                ? ConectaSurfaceLevel.focused
+                : ConectaSurfaceLevel.raised,
         accent: colors.primary,
         borderRadius: BorderRadius.circular(ConectaRadius.floating),
         padding: EdgeInsets.zero,
         child: SizedBox(
-          width: isToday ? 260 : 238,
+          width: isFocused ? 260 : 238,
           child: Column(
             children: [
               Container(

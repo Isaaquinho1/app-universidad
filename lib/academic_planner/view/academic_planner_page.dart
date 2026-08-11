@@ -76,15 +76,21 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
       child: IndexedStack(
         index: _selectedIndex,
         children: [
-          _PlannerSectionPage(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-            child: const DailyScheduleView(),
+          HeroMode(
+            enabled: _selectedIndex == 0,
+            child: _PlannerSectionPage(
+              selectedIndex: _selectedIndex,
+              onSectionSelected: _selectSection,
+              child: const DailyScheduleView(),
+            ),
           ),
-          _PlannerSectionPage(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-            child: const WeeklyScheduleView(),
+          HeroMode(
+            enabled: _selectedIndex == 1,
+            child: _PlannerSectionPage(
+              selectedIndex: _selectedIndex,
+              onSectionSelected: _selectSection,
+              child: const WeeklyScheduleView(),
+            ),
           ),
           _PlannerSectionPage(
             selectedIndex: _selectedIndex,
