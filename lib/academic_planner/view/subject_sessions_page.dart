@@ -3,6 +3,7 @@ import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/class_session.dart';
 import 'package:conecta_itt/academic_planner/repositories/class_session_repository.dart';
 import 'package:conecta_itt/academic_planner/widgets/class_session_form_sheet.dart';
+import 'package:conecta_itt/academic_planner/widgets/conecta_subject_hero.dart';
 import 'package:flutter/material.dart';
 
 class SubjectSessionsPage extends StatefulWidget {
@@ -202,139 +203,94 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
     final subjectColor = Color(widget.subject.colorValue);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sesiones de clase')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: const Text('Sesiones de clase'),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'class_sessions_fab',
         onPressed: _processing ? null : () => _openForm(),
         icon: const Icon(Icons.add_rounded),
         label: const Text('Sesión'),
       ),
-      body: SafeArea(
-        bottom: false,
-        child: FutureBuilder<List<ClassSession>>(
-          future: _sessionsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: ConectaAtmosphere(
+        accent: subjectColor,
+        child: SafeArea(
+          bottom: false,
+          child: FutureBuilder<List<ClassSession>>(
+            future: _sessionsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (snapshot.hasError) {
-              return _SessionsError(onRetry: _refresh);
-            }
+              if (snapshot.hasError) {
+                return _SessionsError(onRetry: _refresh);
+              }
 
-            final sessions = snapshot.data ?? const [];
+              final sessions = snapshot.data ?? const [];
 
-            return RefreshIndicator(
-              onRefresh: _refresh,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(
-                  AppSpacing.lg,
-                  AppSpacing.md,
-                  AppSpacing.lg,
-                  100 + MediaQuery.paddingOf(context).bottom,
-                ),
-                children: [
-                  _SubjectHeader(
-                    subject: widget.subject,
-                    color: subjectColor,
-                    sessionsCount: sessions.length,
+              return RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.lg,
+                    100 + MediaQuery.paddingOf(context).bottom,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (sessions.isEmpty)
-                    _EmptySessions(onCreate: () => _openForm())
-                  else
-                    for (var index = 0; index < sessions.length; index++) ...[
-                      _SessionCard(
-                        session: sessions[index],
+                  children: [
+                    Hero(
+                      tag: 'academic-subject-${widget.subject.id}',
+                      transitionOnUserGestures: true,
+                      createRectTween: (begin, end) {
+                        return MaterialRectArcTween(begin: begin, end: end);
+                      },
+                      child: ConectaSubjectHero(
+                        subject: widget.subject,
                         color: subjectColor,
-                        weekday:
-                            _weekdayLabels[sessions[index].weekday] ?? 'Día',
-                        startLabel: _formatMinutes(
-                          context,
-                          sessions[index].startMinutes,
-                        ),
-                        endLabel: _formatMinutes(
-                          context,
-                          sessions[index].endMinutes,
-                        ),
-                        onEdit: () => _openForm(session: sessions[index]),
-                        onDelete: () => _deleteSession(sessions[index]),
+                        subtitle:
+                            '${sessions.length} '
+                            '${sessions.length == 1 ? 'sesión semanal' : 'sesiones semanales'}',
                       ),
-                      if (index < sessions.length - 1)
-                        const SizedBox(height: AppSpacing.md),
-                    ],
-                ],
-              ),
-            );
-          },
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    if (sessions.isEmpty)
+                      _EmptySessions(onCreate: () => _openForm())
+                    else
+                      for (var index = 0; index < sessions.length; index++) ...[
+                        ConectaEntrance(
+                          index: index + 2,
+                          child: _SessionCard(
+                            session: sessions[index],
+                            color: subjectColor,
+                            weekday:
+                                _weekdayLabels[sessions[index].weekday] ??
+                                'Día',
+                            startLabel: _formatMinutes(
+                              context,
+                              sessions[index].startMinutes,
+                            ),
+                            endLabel: _formatMinutes(
+                              context,
+                              sessions[index].endMinutes,
+                            ),
+                            onEdit: () => _openForm(session: sessions[index]),
+                            onDelete: () => _deleteSession(sessions[index]),
+                          ),
+                        ),
+                        if (index < sessions.length - 1)
+                          const SizedBox(height: AppSpacing.md),
+                      ],
+                  ],
+                ),
+              );
+            },
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _SubjectHeader extends StatelessWidget {
-  const _SubjectHeader({
-    required this.subject,
-    required this.color,
-    required this.sessionsCount,
-  });
-
-  final AcademicSubject subject;
-  final Color color;
-  final int sessionsCount;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColors>()!;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: colors.background02,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.deactive.withValues(alpha: 0.18)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 54,
-            height: 54,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(Icons.menu_book_rounded, color: color),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  subject.name,
-                  style: AppTextStyle.bodyBold.copyWith(fontSize: 18),
-                ),
-                if (subject.teacherName != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subject.teacherName!,
-                    style: AppTextStyle.body.copyWith(color: colors.deactive),
-                  ),
-                ],
-                const SizedBox(height: 4),
-                Text(
-                  '$sessionsCount sesiones semanales',
-                  style: AppTextStyle.body.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
