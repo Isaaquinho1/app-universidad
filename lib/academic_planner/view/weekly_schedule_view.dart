@@ -248,6 +248,43 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
                           color: colors.deactive,
                         ),
                       ),
+                      const SizedBox(height: AppSpacing.md),
+                      AnimatedBuilder(
+                        animation: _weekScrollController,
+                        builder: (context, child) {
+                          final focusedLabel =
+                              _weekdayLabels[_focusedWeekday] ?? 'Día';
+
+                          return AnimatedSwitcher(
+                            duration: ConectaMotion.standard,
+                            switchInCurve: ConectaCurves.emphasized,
+                            switchOutCurve: ConectaCurves.exit,
+                            transitionBuilder: (child, animation) {
+                              final offset = Tween<Offset>(
+                                begin: const Offset(0.08, 0),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: ConectaCurves.emphasized,
+                                ),
+                              );
+
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: offset,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: _WeeklyFocusIndicator(
+                              key: ValueKey(_focusedWeekday),
+                              label: focusedLabel,
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -385,6 +422,47 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _WeeklyFocusIndicator extends StatelessWidget {
+  const _WeeklyFocusIndicator({super.key, required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: BoxDecoration(
+            color: colors.primary,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colors.primary.withValues(alpha: 0.28),
+                blurRadius: 8,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '${label.toUpperCase()} · EN FOCO',
+          style: AppTextStyle.captionS.copyWith(
+            color: colors.deactive,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.9,
+          ),
+        ),
+      ],
     );
   }
 }
