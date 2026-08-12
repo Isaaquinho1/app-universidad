@@ -287,6 +287,122 @@ class LocalNotificationService {
     );
   }
 
+  Future<void> scheduleWeeklyAcademicReminder({
+    required int id,
+    required String title,
+    required String body,
+    required int weekday,
+    required int hour,
+    required int minute,
+    required Map<String, dynamic> payload,
+  }) async {
+    if (kIsWeb) {
+      return;
+    }
+
+    if (!_initialized) {
+      throw StateError(
+        'LocalNotificationService debe inicializarse antes de programar.',
+      );
+    }
+
+    if (weekday < DateTime.monday || weekday > DateTime.sunday) {
+      throw ArgumentError.value(weekday, 'weekday');
+    }
+
+    if (hour < 0 || hour > 23) {
+      throw ArgumentError.value(hour, 'hour');
+    }
+
+    if (minute < 0 || minute > 59) {
+      throw ArgumentError.value(minute, 'minute');
+    }
+
+    _initializeTimeZone();
+
+    final exactAllowed = await canScheduleExactNotifications();
+
+    const androidDetails = AndroidNotificationDetails(
+      academicReminderChannelId,
+      academicReminderChannelName,
+      channelDescription: academicReminderChannelDescription,
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: 'ic_stat_ic_notification',
+      category: AndroidNotificationCategory.reminder,
+      visibility: NotificationVisibility.public,
+    );
+
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
+
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+    );
+
+    final scheduledDate = _nextWeekdayTime(
+      weekday: weekday,
+      hour: hour,
+      minute: minute,
+    );
+
+    await _plugin.zonedSchedule(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: scheduledDate,
+      notificationDetails: details,
+      androidScheduleMode:
+          exactAllowed
+              ? AndroidScheduleMode.exactAllowWhileIdle
+              : AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      payload: jsonEncode(payload),
+    );
+
+    Logger().i(
+      'Weekly academic reminder scheduled: '
+      'id=$id, '
+      'weekday=$weekday, '
+      'time=${hour.toString().padLeft(2, '0')}:'
+      '${minute.toString().padLeft(2, '0')}, '
+      'next=${scheduledDate.toIso8601String()}, '
+      'exact=$exactAllowed.',
+    );
+  }
+
+  tz.TZDateTime _nextWeekdayTime({
+    required int weekday,
+    required int hour,
+    required int minute,
+  }) {
+    final now = tz.TZDateTime.now(tz.local);
+
+    var candidate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+
+    var daysUntil = (weekday - candidate.weekday) % DateTime.daysPerWeek;
+
+    if (daysUntil == 0 && !candidate.isAfter(now)) {
+      daysUntil = DateTime.daysPerWeek;
+    }
+
+    candidate = candidate.add(Duration(days: daysUntil));
+
+    return candidate;
+  }
+
   Future<void> cancelNotification(int id) async {
     if (kIsWeb) {
       return;

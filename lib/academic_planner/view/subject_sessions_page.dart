@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/class_session.dart';
 import 'package:conecta_itt/academic_planner/repositories/class_session_repository.dart';
+import 'package:conecta_itt/academic_planner/services/class_session_reminder_service.dart';
 import 'package:conecta_itt/academic_planner/widgets/class_session_form_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,8 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
   };
 
   final ClassSessionRepository _repository = ClassSessionRepository();
+  final ClassSessionReminderService _reminderService =
+      ClassSessionReminderService();
 
   late Future<List<ClassSession>> _sessionsFuture;
   bool _processing = false;
@@ -60,8 +63,10 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
     });
 
     try {
+      late final ClassSession savedSession;
+
       if (session == null) {
-        await _repository.create(
+        savedSession = await _repository.create(
           subjectId: widget.subject.id,
           weekday: result.weekday,
           startMinutes: result.startMinutes,
@@ -71,7 +76,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
           reminderMinutes: result.reminderMinutes,
         );
       } else {
-        await _repository.update(
+        savedSession = await _repository.update(
           ClassSession(
             id: session.id,
             subjectId: session.subjectId,
@@ -86,6 +91,21 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
             updatedAt: session.updatedAt,
           ),
         );
+      }
+
+      if (savedSession.reminderMinutes != null) {
+        final notificationsGranted = await _reminderService.requestPermission();
+
+        if (notificationsGranted) {
+          await _reminderService.requestExactAlarmPermission();
+
+          await _reminderService.synchronize(
+            session: savedSession,
+            subject: widget.subject,
+          );
+        }
+      } else {
+        await _reminderService.cancel(savedSession.id);
       }
 
       if (!mounted) return;
@@ -156,6 +176,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
     });
 
     try {
+      await _reminderService.cancel(session.id);
       await _repository.delete(session.id);
 
       if (!mounted) return;
