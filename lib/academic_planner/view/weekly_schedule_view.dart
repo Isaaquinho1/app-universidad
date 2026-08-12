@@ -3,6 +3,7 @@ import 'package:conecta_itt/academic_planner/models/scheduled_class.dart';
 import 'package:conecta_itt/academic_planner/repositories/weekly_schedule_repository.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class WeeklyScheduleView extends StatefulWidget {
   const WeeklyScheduleView({super.key});
@@ -45,6 +46,69 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
     return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60).format(context);
   }
 
+  String _buildShareText(
+    BuildContext context,
+    Map<int, List<ScheduledClass>> week,
+  ) {
+    final buffer =
+        StringBuffer()
+          ..writeln('Mi horario semanal — Conecta ITT')
+          ..writeln();
+
+    for (var weekday = DateTime.monday; weekday <= DateTime.sunday; weekday++) {
+      final classes = week[weekday] ?? const <ScheduledClass>[];
+
+      if (classes.isEmpty) {
+        continue;
+      }
+
+      buffer
+        ..writeln(_weekdayLabels[weekday] ?? 'Día')
+        ..writeln();
+
+      for (final item in classes) {
+        final location = [
+          item.session.building,
+          item.session.room,
+        ].whereType<String>().where((value) => value.isNotEmpty).join(' · ');
+
+        buffer
+          ..writeln('• ${item.subject.name}')
+          ..writeln(
+            '  ${_formatMinutes(context, item.startMinutes)} – '
+            '${_formatMinutes(context, item.endMinutes)}',
+          );
+
+        if (location.isNotEmpty) {
+          buffer.writeln('  $location');
+        }
+
+        buffer.writeln();
+      }
+    }
+
+    buffer.write('Compartido desde Conecta ITT');
+
+    return buffer.toString();
+  }
+
+  Future<void> _shareWeek(
+    BuildContext context,
+    Map<int, List<ScheduledClass>> week,
+  ) async {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin =
+        box == null ? null : box.localToGlobal(Offset.zero) & box.size;
+
+    await SharePlus.instance.share(
+      ShareParams(
+        subject: 'Mi horario semanal — Conecta ITT',
+        text: _buildShareText(context, week),
+        sharePositionOrigin: origin,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -80,12 +144,27 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
               AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
             ),
             children: [
-              Text(
-                'Horario semanal',
-                style: AppTextStyle.h4.copyWith(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Horario semanal',
+                      style: AppTextStyle.h4.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  Builder(
+                    builder: (shareContext) {
+                      return IconButton(
+                        tooltip: 'Compartir horario',
+                        onPressed: () => _shareWeek(shareContext, week),
+                        icon: const Icon(Icons.ios_share_rounded),
+                      );
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
