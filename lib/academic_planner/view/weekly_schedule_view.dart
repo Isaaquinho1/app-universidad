@@ -256,80 +256,125 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
                   height: 560,
                   child: NotificationListener<ScrollNotification>(
                     onNotification: _handleWeekScrollNotification,
-                    child: ListView.separated(
-                      controller: _weekScrollController,
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 2,
-                        vertical: 8,
-                      ),
-                      itemCount: DateTime.daysPerWeek,
-                      separatorBuilder:
-                          (context, index) =>
-                              const SizedBox(width: AppSpacing.md),
-                      itemBuilder: (context, index) {
-                        final weekday = index + 1;
-                        final classes =
-                            week[weekday] ?? const <ScheduledClass>[];
-
-                        return ConectaEntrance(
-                          index: index + 1,
-                          offset: const Offset(0.035, 0),
-                          child: _WeekdayColumn(
-                            weekday: weekday,
-                            label: _weekdayLabels[weekday] ?? 'Día',
-                            classes: classes,
-                            isFocused: weekday == _focusedWeekday,
-                            formatMinutes:
-                                (minutes) => _formatMinutes(context, minutes),
-                            onClassTap: (item) async {
-                              await Navigator.of(context).push(
-                                PageRouteBuilder<void>(
-                                  transitionDuration:
-                                      ConectaMotion.sharedTransition,
-                                  reverseTransitionDuration:
-                                      ConectaMotion.emphasized,
-                                  pageBuilder: (
-                                    context,
-                                    animation,
-                                    secondaryAnimation,
-                                  ) {
-                                    return SubjectSessionsPage(
-                                      subject: item.subject,
-                                    );
-                                  },
-                                  transitionsBuilder: (
-                                    context,
-                                    animation,
-                                    secondaryAnimation,
-                                    child,
-                                  ) {
-                                    final curved = CurvedAnimation(
-                                      parent: animation,
-                                      curve: ConectaCurves.emphasized,
-                                      reverseCurve: ConectaCurves.exit,
-                                    );
-
-                                    return FadeTransition(
-                                      opacity: curved,
-                                      child: ScaleTransition(
-                                        scale: Tween<double>(
-                                          begin: 0.985,
-                                          end: 1,
-                                        ).animate(curved),
-                                        child: child,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-
-                              if (mounted) {
-                                await _refresh();
-                              }
-                            },
+                    child: AnimatedBuilder(
+                      animation: _weekScrollController,
+                      builder: (context, child) {
+                        return ListView.separated(
+                          controller: _weekScrollController,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 8,
                           ),
+                          itemCount: DateTime.daysPerWeek,
+                          separatorBuilder:
+                              (context, index) =>
+                                  const SizedBox(width: AppSpacing.md),
+                          itemBuilder: (context, index) {
+                            final weekday = index + 1;
+                            final classes =
+                                week[weekday] ?? const <ScheduledClass>[];
+
+                            const unfocusedWidth = 238.0;
+                            const focusedWidth = 260.0;
+                            const spacing = AppSpacing.md;
+
+                            final currentOffset =
+                                _weekScrollController.hasClients
+                                    ? _weekScrollController.offset
+                                    : 0.0;
+
+                            final viewportWidth =
+                                _weekScrollController.hasClients
+                                    ? _weekScrollController
+                                        .position
+                                        .viewportDimension
+                                    : MediaQuery.sizeOf(context).width;
+
+                            final viewportCenter =
+                                currentOffset + (viewportWidth / 2);
+
+                            final estimatedWidth =
+                                weekday == _focusedWeekday
+                                    ? focusedWidth
+                                    : unfocusedWidth;
+
+                            final itemStart =
+                                index * (unfocusedWidth + spacing);
+
+                            final itemCenter = itemStart + (estimatedWidth / 2);
+
+                            final distance =
+                                (itemCenter - viewportCenter).abs();
+
+                            final normalizedDistance = (distance /
+                                    (unfocusedWidth + spacing))
+                                .clamp(0.0, 1.0);
+
+                            final spatialProgress = 1.0 - normalizedDistance;
+
+                            return ConectaEntrance(
+                              index: index + 1,
+                              offset: const Offset(0.035, 0),
+                              child: _WeekdayColumn(
+                                weekday: weekday,
+                                label: _weekdayLabels[weekday] ?? 'Día',
+                                classes: classes,
+                                isFocused: weekday == _focusedWeekday,
+                                spatialProgress: spatialProgress,
+                                formatMinutes:
+                                    (minutes) =>
+                                        _formatMinutes(context, minutes),
+                                onClassTap: (item) async {
+                                  await Navigator.of(context).push(
+                                    PageRouteBuilder<void>(
+                                      transitionDuration:
+                                          ConectaMotion.sharedTransition,
+                                      reverseTransitionDuration:
+                                          ConectaMotion.emphasized,
+                                      pageBuilder: (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) {
+                                        return SubjectSessionsPage(
+                                          subject: item.subject,
+                                        );
+                                      },
+                                      transitionsBuilder: (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                        child,
+                                      ) {
+                                        final curved = CurvedAnimation(
+                                          parent: animation,
+                                          curve: ConectaCurves.emphasized,
+                                          reverseCurve: ConectaCurves.exit,
+                                        );
+
+                                        return FadeTransition(
+                                          opacity: curved,
+                                          child: ScaleTransition(
+                                            scale: Tween<double>(
+                                              begin: 0.985,
+                                              end: 1,
+                                            ).animate(curved),
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+
+                                  if (mounted) {
+                                    await _refresh();
+                                  }
+                                },
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -350,6 +395,7 @@ class _WeekdayColumn extends StatelessWidget {
     required this.label,
     required this.classes,
     required this.isFocused,
+    required this.spatialProgress,
     required this.formatMinutes,
     required this.onClassTap,
   });
@@ -358,6 +404,7 @@ class _WeekdayColumn extends StatelessWidget {
   final String label;
   final List<ScheduledClass> classes;
   final bool isFocused;
+  final double spatialProgress;
   final String Function(int) formatMinutes;
   final ValueChanged<ScheduledClass> onClassTap;
 
@@ -366,145 +413,159 @@ class _WeekdayColumn extends StatelessWidget {
     final colors = Theme.of(context).extension<AppColors>()!;
     final isToday = DateTime.now().weekday == weekday;
 
-    return ConectaInteractiveSurface(
-      haptics: false,
-      restingScale: isFocused ? 1.012 : (isToday ? 1.002 : 0.982),
-      restingOffset:
-          isFocused
-              ? const Offset(0, -4)
-              : (isToday ? const Offset(0, -1.5) : const Offset(0, 1.5)),
-      pressedScale: isFocused ? 0.992 : 0.965,
-      child: ConectaSurface(
-        level:
-            isFocused
-                ? ConectaSurfaceLevel.focused
-                : ConectaSurfaceLevel.raised,
-        accent: colors.primary,
-        borderRadius: BorderRadius.circular(ConectaRadius.floating),
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          width: isFocused ? 260 : 238,
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.md,
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      isToday
-                          ? colors.primary.withValues(alpha: 0.10)
-                          : Colors.transparent,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(ConectaRadius.floating),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            label.toUpperCase(),
-                            style: AppTextStyle.captionL.copyWith(
-                              color: isToday ? colors.primary : colors.deactive,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            '${classes.length} '
-                            '${classes.length == 1 ? 'clase' : 'clases'}',
-                            style: AppTextStyle.bodyBold.copyWith(
-                              color: colors.active,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
+    final focus = spatialProgress.clamp(0.0, 1.0);
+    final restingScale = 0.972 + (0.040 * focus);
+    final verticalLift = 2.5 - (6.5 * focus);
+    final horizontalParallax = (0.5 - focus) * 5.0;
+    final spatialOpacity = 0.72 + (0.28 * focus);
+
+    return Opacity(
+      opacity: spatialOpacity,
+      child: Transform.translate(
+        offset: Offset(horizontalParallax, 0),
+        child: ConectaInteractiveSurface(
+          haptics: false,
+          restingScale: restingScale,
+          restingOffset: Offset(0, verticalLift),
+          pressedScale: isFocused ? 0.992 : 0.965,
+          child: ConectaSurface(
+            level:
+                isFocused
+                    ? ConectaSurfaceLevel.focused
+                    : ConectaSurfaceLevel.raised,
+            accent: colors.primary,
+            borderRadius: BorderRadius.circular(ConectaRadius.floating),
+            padding: EdgeInsets.zero,
+            child: SizedBox(
+              width: isFocused ? 260 : 238,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          isToday
+                              ? colors.primary.withValues(alpha: 0.10)
+                              : Colors.transparent,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(ConectaRadius.floating),
                       ),
                     ),
-                    if (isToday)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colors.primary,
-                          borderRadius: BorderRadius.circular(
-                            ConectaRadius.pill,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colors.primary.withValues(alpha: 0.22),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          'HOY',
-                          style: AppTextStyle.captionS.copyWith(
-                            color: colors.white,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child:
-                    classes.isEmpty
-                        ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.event_available_outlined,
-                                  size: 30,
-                                  color: colors.deactive,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                label.toUpperCase(),
+                                style: AppTextStyle.captionL.copyWith(
+                                  color:
+                                      isToday
+                                          ? colors.primary
+                                          : colors.deactive,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.1,
                                 ),
-                                const SizedBox(height: AppSpacing.sm),
-                                Text(
-                                  'Sin clases',
-                                  style: AppTextStyle.body.copyWith(
-                                    color: colors.deactive,
-                                  ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                '${classes.length} '
+                                '${classes.length == 1 ? 'clase' : 'clases'}',
+                                style: AppTextStyle.bodyBold.copyWith(
+                                  color: colors.active,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isToday)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colors.primary,
+                              borderRadius: BorderRadius.circular(
+                                ConectaRadius.pill,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: colors.primary.withValues(alpha: 0.22),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                          ),
-                        )
-                        : ListView.separated(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          itemCount: classes.length,
-                          separatorBuilder:
-                              (context, index) =>
-                                  const SizedBox(height: AppSpacing.md),
-                          itemBuilder: (context, index) {
-                            final item = classes[index];
-
-                            return ConectaEntrance(
-                              index: index + 1,
-                              child: _WeeklyClassCard(
-                                item: item,
-                                startLabel: formatMinutes(item.startMinutes),
-                                endLabel: formatMinutes(item.endMinutes),
-                                onTap: () => onClassTap(item),
+                            child: Text(
+                              'HOY',
+                              style: AppTextStyle.captionS.copyWith(
+                                color: colors.white,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.8,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        classes.isEmpty
+                            ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(AppSpacing.lg),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.event_available_outlined,
+                                      size: 30,
+                                      color: colors.deactive,
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    Text(
+                                      'Sin clases',
+                                      style: AppTextStyle.body.copyWith(
+                                        color: colors.deactive,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            : ListView.separated(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              itemCount: classes.length,
+                              separatorBuilder:
+                                  (context, index) =>
+                                      const SizedBox(height: AppSpacing.md),
+                              itemBuilder: (context, index) {
+                                final item = classes[index];
+
+                                return ConectaEntrance(
+                                  index: index + 1,
+                                  child: _WeeklyClassCard(
+                                    item: item,
+                                    startLabel: formatMinutes(
+                                      item.startMinutes,
+                                    ),
+                                    endLabel: formatMinutes(item.endMinutes),
+                                    onTap: () => onClassTap(item),
+                                  ),
+                                );
+                              },
+                            ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
