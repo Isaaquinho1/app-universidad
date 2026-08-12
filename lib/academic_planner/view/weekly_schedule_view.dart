@@ -566,6 +566,8 @@ class _WeekdayColumn extends StatelessWidget {
                                       item.startMinutes,
                                     ),
                                     endLabel: formatMinutes(item.endMinutes),
+                                    isFocused: isFocused,
+                                    spatialProgress: spatialProgress,
                                     onTap: () => onClassTap(item),
                                   ),
                                 );
@@ -724,12 +726,16 @@ class _WeeklyClassCard extends StatelessWidget {
     required this.item,
     required this.startLabel,
     required this.endLabel,
+    required this.isFocused,
+    required this.spatialProgress,
     required this.onTap,
   });
 
   final ScheduledClass item;
   final String startLabel;
   final String endLabel;
+  final bool isFocused;
+  final double spatialProgress;
   final VoidCallback onTap;
 
   @override
@@ -742,116 +748,150 @@ class _WeeklyClassCard extends StatelessWidget {
       item.session.room,
     ].whereType<String>().where((value) => value.isNotEmpty).join(' · ');
 
-    return ConectaInteractiveSurface(
-      onTap: onTap,
-      pressedScale: 0.965,
-      child: Hero(
-        tag: 'academic-subject-${item.subject.id}',
-        transitionOnUserGestures: true,
-        createRectTween: (begin, end) {
-          return MaterialRectArcTween(begin: begin, end: end);
-        },
-        flightShuttleBuilder: (
-          flightContext,
-          animation,
-          flightDirection,
-          fromHeroContext,
-          toHeroContext,
-        ) {
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: const Interval(0, 0.94, curve: Curves.easeOutCubic),
-            ),
-            child: ScaleTransition(
-              scale: Tween<double>(begin: 0.985, end: 1).animate(
-                CurvedAnimation(
+    final progress = spatialProgress.clamp(0.0, 1.0);
+
+    final titleColor =
+        Color.lerp(colors.deactive, colors.active, 0.70 + (0.30 * progress))!;
+
+    final metadataColor =
+        Color.lerp(
+          colors.deactive.withValues(alpha: 0.78),
+          colors.deactive,
+          progress,
+        )!;
+
+    final accentColor =
+        Color.lerp(
+          subjectColor.withValues(alpha: 0.68),
+          subjectColor,
+          0.45 + (0.55 * progress),
+        )!;
+
+    final railGlowAlpha = 0.10 + (0.20 * progress);
+    final railBlur = 4.0 + (7.0 * progress);
+
+    final cardLift = 1.5 - (2.5 * progress);
+    final cardOpacity = 0.84 + (0.16 * progress);
+
+    return Opacity(
+      opacity: cardOpacity,
+      child: Transform.translate(
+        offset: Offset(0, cardLift),
+        child: ConectaInteractiveSurface(
+          onTap: onTap,
+          pressedScale: 0.965,
+          child: Hero(
+            tag: 'academic-subject-${item.subject.id}',
+            transitionOnUserGestures: true,
+            createRectTween: (begin, end) {
+              return MaterialRectArcTween(begin: begin, end: end);
+            },
+            flightShuttleBuilder: (
+              flightContext,
+              animation,
+              flightDirection,
+              fromHeroContext,
+              toHeroContext,
+            ) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
                   parent: animation,
-                  curve: ConectaCurves.emphasized,
+                  curve: const Interval(0, 0.94, curve: Curves.easeOutCubic),
                 ),
-              ),
-              child: ConectaSubjectHero(
-                subject: item.subject,
-                color: subjectColor,
-                compact: flightDirection == HeroFlightDirection.pop,
-                subtitle: '$startLabel – $endLabel',
-              ),
-            ),
-          );
-        },
-        child: ConectaSurface(
-          level: ConectaSurfaceLevel.base,
-          accent: subjectColor,
-          borderRadius: BorderRadius.circular(ConectaRadius.control),
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 5,
-                height: 82,
-                decoration: BoxDecoration(
-                  color: subjectColor,
-                  borderRadius: BorderRadius.circular(ConectaRadius.pill),
-                  boxShadow: [
-                    BoxShadow(
-                      color: subjectColor.withValues(alpha: 0.22),
-                      blurRadius: 8,
-                      spreadRadius: 1,
+                child: ScaleTransition(
+                  scale: Tween<double>(begin: 0.985, end: 1).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: ConectaCurves.emphasized,
                     ),
-                  ],
+                  ),
+                  child: ConectaSubjectHero(
+                    subject: item.subject,
+                    color: subjectColor,
+                    compact: flightDirection == HeroFlightDirection.pop,
+                    subtitle: '$startLabel – $endLabel',
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.subject.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.bodyBold.copyWith(
-                        fontSize: 14,
-                        color: colors.active,
-                        height: 1.15,
-                      ),
+              );
+            },
+            child: ConectaSurface(
+              level:
+                  isFocused
+                      ? ConectaSurfaceLevel.raised
+                      : ConectaSurfaceLevel.base,
+              accent: accentColor,
+              borderRadius: BorderRadius.circular(ConectaRadius.control),
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 5,
+                    height: 82,
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      borderRadius: BorderRadius.circular(ConectaRadius.pill),
+                      boxShadow: [
+                        BoxShadow(
+                          color: subjectColor.withValues(alpha: railGlowAlpha),
+                          blurRadius: railBlur,
+                          spreadRadius: progress * 1.2,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      '$startLabel – $endLabel',
-                      style: AppTextStyle.captionL.copyWith(
-                        color: subjectColor,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    if (location.isNotEmpty) ...[
-                      const SizedBox(height: 7),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: colors.deactive,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.subject.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyle.bodyBold.copyWith(
+                            fontSize: 13.8 + (0.3 * progress),
+                            color: titleColor,
+                            height: 1.15,
                           ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              location,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.captionS.copyWith(
-                                color: colors.deactive,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          '$startLabel – $endLabel',
+                          style: AppTextStyle.captionL.copyWith(
+                            color: accentColor,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (location.isNotEmpty) ...[
+                          const SizedBox(height: 7),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                size: 14,
+                                color: metadataColor,
                               ),
-                            ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  location,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyle.captionS.copyWith(
+                                    color: metadataColor,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  ],
-                ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
