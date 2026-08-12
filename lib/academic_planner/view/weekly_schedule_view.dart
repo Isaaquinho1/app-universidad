@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/scheduled_class.dart';
 import 'package:conecta_itt/academic_planner/repositories/weekly_schedule_repository.dart';
+import 'package:conecta_itt/academic_planner/services/weekly_schedule_image_exporter.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
@@ -24,6 +25,8 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
   };
 
   final WeeklyScheduleRepository _repository = WeeklyScheduleRepository();
+  final WeeklyScheduleImageExporter _imageExporter =
+      const WeeklyScheduleImageExporter();
 
   late Future<Map<int, List<ScheduledClass>>> _weekFuture;
 
@@ -109,6 +112,109 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
     );
   }
 
+  Future<void> _shareWeekAsImage(
+    BuildContext context,
+    Map<int, List<ScheduledClass>> week,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      final file = await _imageExporter.export(
+        week: week,
+        formatMinutes: (minutes) => _formatMinutes(context, minutes),
+      );
+
+      if (!context.mounted) {
+        return;
+      }
+
+      final box = context.findRenderObject() as RenderBox?;
+      final origin =
+          box == null ? null : box.localToGlobal(Offset.zero) & box.size;
+
+      await SharePlus.instance.share(
+        ShareParams(
+          subject: 'Mi horario semanal — Conecta ITT',
+          text: 'Mi horario semanal — Conecta ITT',
+          files: [XFile(file.path, mimeType: 'image/png')],
+          sharePositionOrigin: origin,
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('=== ERROR 11.6B: EXPORTAR HORARIO COMO IMAGEN ===');
+      debugPrint('Tipo: ${error.runtimeType}');
+      debugPrint('Error: $error');
+      debugPrint('StackTrace:');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!context.mounted) {
+        return;
+      }
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'No fue posible generar la imagen del horario. '
+            'Error: ${error.runtimeType}',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _showShareOptions(
+    BuildContext context,
+    Map<int, List<ScheduledClass>> week,
+  ) async {
+    final option = await showModalBottomSheet<_ScheduleShareOption>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.text_snippet_outlined),
+                  title: const Text('Compartir como texto'),
+                  subtitle: const Text(
+                    'Ideal para WhatsApp, Mensajes o correo.',
+                  ),
+                  onTap: () {
+                    Navigator.of(sheetContext).pop(_ScheduleShareOption.text);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.image_outlined),
+                  title: const Text('Compartir como imagen'),
+                  subtitle: const Text(
+                    'Genera una tarjeta PNG de tu horario semanal.',
+                  ),
+                  onTap: () {
+                    Navigator.of(sheetContext).pop(_ScheduleShareOption.image);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (!context.mounted || option == null) {
+      return;
+    }
+
+    switch (option) {
+      case _ScheduleShareOption.text:
+        await _shareWeek(context, week);
+      case _ScheduleShareOption.image:
+        await _shareWeekAsImage(context, week);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -159,7 +265,7 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
                     builder: (shareContext) {
                       return IconButton(
                         tooltip: 'Compartir horario',
-                        onPressed: () => _shareWeek(shareContext, week),
+                        onPressed: () => _showShareOptions(shareContext, week),
                         icon: const Icon(Icons.ios_share_rounded),
                       );
                     },
@@ -217,6 +323,8 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
     );
   }
 }
+
+enum _ScheduleShareOption { text, image }
 
 class _WeekdayColumn extends StatelessWidget {
   const _WeekdayColumn({
