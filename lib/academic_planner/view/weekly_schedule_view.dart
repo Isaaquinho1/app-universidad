@@ -518,80 +518,11 @@ class _WeekdayColumn extends StatelessWidget {
               width: isFocused ? 260 : 238,
               child: Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.md,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          isToday
-                              ? colors.primary.withValues(alpha: 0.10)
-                              : Colors.transparent,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(ConectaRadius.floating),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                label.toUpperCase(),
-                                style: AppTextStyle.captionL.copyWith(
-                                  color:
-                                      isToday
-                                          ? colors.primary
-                                          : colors.deactive,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.1,
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                '${classes.length} '
-                                '${classes.length == 1 ? 'clase' : 'clases'}',
-                                style: AppTextStyle.bodyBold.copyWith(
-                                  color: colors.active,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (isToday)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colors.primary,
-                              borderRadius: BorderRadius.circular(
-                                ConectaRadius.pill,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: colors.primary.withValues(alpha: 0.22),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              'HOY',
-                              style: AppTextStyle.captionS.copyWith(
-                                color: colors.white,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.8,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                  _CinematicWeekdayHeader(
+                    label: label,
+                    classesCount: classes.length,
+                    isToday: isToday,
+                    spatialProgress: spatialProgress,
                   ),
                   Expanded(
                     child:
@@ -647,6 +578,143 @@ class _WeekdayColumn extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CinematicWeekdayHeader extends StatelessWidget {
+  const _CinematicWeekdayHeader({
+    required this.label,
+    required this.classesCount,
+    required this.isToday,
+    required this.spatialProgress,
+  });
+
+  final String label;
+  final int classesCount;
+  final bool isToday;
+  final double spatialProgress;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+    final progress = spatialProgress.clamp(0.0, 1.0);
+
+    final ambientAlpha = 0.025 + (0.055 * progress);
+    final haloAlpha = 0.04 + (0.12 * progress);
+    final haloWidth = 28.0 + (30.0 * progress);
+    final haloHeight = 2.0 + (1.0 * progress);
+
+    final labelColor =
+        Color.lerp(colors.deactive, colors.primary, 0.22 + (0.78 * progress))!;
+
+    final countColor =
+        Color.lerp(colors.deactive, colors.active, 0.55 + (0.45 * progress))!;
+
+    final countSize = 14.5 + (0.8 * progress);
+    final labelSpacing = 1.0 + (0.18 * progress);
+
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.md,
+          ),
+          decoration: BoxDecoration(
+            color:
+                isToday
+                    ? colors.primary.withValues(alpha: 0.08 + (0.04 * progress))
+                    : colors.primary.withValues(alpha: ambientAlpha),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(ConectaRadius.floating),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label.toUpperCase(),
+                      style: AppTextStyle.captionL.copyWith(
+                        color: labelColor,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: labelSpacing,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '$classesCount '
+                      '${classesCount == 1 ? 'clase' : 'clases'}',
+                      style: AppTextStyle.bodyBold.copyWith(
+                        color: countColor,
+                        fontSize: countSize,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isToday)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colors.primary,
+                    borderRadius: BorderRadius.circular(ConectaRadius.pill),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.primary.withValues(
+                          alpha: 0.16 + (0.10 * progress),
+                        ),
+                        blurRadius: 9 + (5 * progress),
+                        offset: Offset(0, 3 + (2 * progress)),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'HOY',
+                    style: AppTextStyle.captionS.copyWith(
+                      color: colors.white,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+
+        // Halo de profundidad: aparece progresivamente cuando
+        // este plano se aproxima al centro del viewport.
+        Positioned(
+          top: 0,
+          left: AppSpacing.md,
+          child: IgnorePointer(
+            child: Container(
+              width: haloWidth,
+              height: haloHeight,
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: haloAlpha),
+                borderRadius: BorderRadius.circular(ConectaRadius.pill),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.primary.withValues(
+                      alpha: 0.08 + (0.10 * progress),
+                    ),
+                    blurRadius: 8 + (8 * progress),
+                    spreadRadius: progress * 0.5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
