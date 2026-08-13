@@ -6,6 +6,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:conecta_itt/app/theme/theme_mode.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_restoration_service.dart';
 import 'package:conecta_itt/app/services/services.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -355,6 +356,10 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         _handleNotificationData(data);
       },
     );
+
+    // Reconcilia recordatorios académicos persistidos con las
+    // notificaciones locales sin bloquear el arranque de la app.
+    unawaited(AcademicReminderRestorationService().restore());
 
     await _foregroundMessageSubscription?.cancel();
     _foregroundMessageSubscription = FirebaseMessaging.onMessage.listen(
