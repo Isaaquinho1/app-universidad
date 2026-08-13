@@ -22,6 +22,7 @@ class _FirebaseInteractedMessageListenerState
     extends State<FirebaseInteractedMessageListener> {
   String? _scheduledAnnouncementId;
   String? _scheduledAcademicTaskId;
+  String? _scheduledClassSessionId;
   bool _initialStateChecked = false;
 
   @override
@@ -60,6 +61,25 @@ class _FirebaseInteractedMessageListenerState
       return;
     }
 
+    final classSessionId = state.pendingClassSessionId;
+
+    if (classSessionId != null &&
+        classSessionId.isNotEmpty &&
+        classSessionId != _scheduledClassSessionId) {
+      _scheduledClassSessionId = classSessionId;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+
+        widget.router.go('/schedule');
+        _scheduledClassSessionId = null;
+      });
+
+      return;
+    }
+
     final announcementId = state.pendingAnnouncementId;
 
     if (state.institutionalProfile == null ||
@@ -93,6 +113,7 @@ class _FirebaseInteractedMessageListenerState
           (previous, current) =>
               previous.pendingAnnouncementId != current.pendingAnnouncementId ||
               previous.pendingAcademicTaskId != current.pendingAcademicTaskId ||
+              previous.pendingClassSessionId != current.pendingClassSessionId ||
               previous.institutionalProfile != current.institutionalProfile ||
               previous.status != current.status,
       listener: (_, state) {

@@ -36,6 +36,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<AnnouncementNavigationConsumed>(_onAnnouncementNavigationConsumed);
     on<AcademicTaskNotificationOpened>(_onAcademicTaskNotificationOpened);
     on<AcademicTaskNavigationConsumed>(_onAcademicTaskNavigationConsumed);
+    on<ClassSessionNotificationOpened>(_onClassSessionNotificationOpened);
+    on<ClassSessionNavigationConsumed>(_onClassSessionNavigationConsumed);
     on<ThemeChanged>(_onThemeChanged);
     on<AppUserChanged>(_onUserChanged);
     on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
@@ -350,6 +352,31 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     emit(state.copyWith(clearPendingAcademicTaskId: true));
   }
 
+  void _onClassSessionNotificationOpened(
+    ClassSessionNotificationOpened event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn ||
+        event.sessionId.isEmpty ||
+        event.subjectId.isEmpty) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        pendingClassSessionId: event.sessionId,
+        pendingClassSubjectId: event.subjectId,
+      ),
+    );
+  }
+
+  void _onClassSessionNavigationConsumed(
+    ClassSessionNavigationConsumed event,
+    Emitter<AppState> emit,
+  ) {
+    emit(state.copyWith(clearPendingClassSession: true));
+  }
+
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await LocalNotificationService.instance.initialize(
       onNotificationTap: (data) {
@@ -395,6 +422,30 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       }
 
       add(AcademicTaskNotificationOpened(taskId));
+      return;
+    }
+
+    if (type == 'class_session') {
+      final sessionId = data['session_id']?.toString().trim();
+      final subjectId = data['subject_id']?.toString().trim();
+
+      if (sessionId == null ||
+          sessionId.isEmpty ||
+          subjectId == null ||
+          subjectId.isEmpty) {
+        Logger().w(
+          'Class reminder interaction did not contain '
+          'session_id and subject_id.',
+        );
+        return;
+      }
+
+      add(
+        ClassSessionNotificationOpened(
+          sessionId: sessionId,
+          subjectId: subjectId,
+        ),
+      );
       return;
     }
 

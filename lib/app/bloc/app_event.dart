@@ -46,6 +46,23 @@ class AcademicTaskNavigationConsumed extends AppEvent {
   const AcademicTaskNavigationConsumed();
 }
 
+class ClassSessionNotificationOpened extends AppEvent {
+  const ClassSessionNotificationOpened({
+    required this.sessionId,
+    required this.subjectId,
+  });
+
+  final String sessionId;
+  final String subjectId;
+
+  @override
+  List<Object?> get props => [sessionId, subjectId];
+}
+
+class ClassSessionNavigationConsumed extends AppEvent {
+  const ClassSessionNavigationConsumed();
+}
+
 class ThemeChanged extends AppEvent {
   const ThemeChanged(this.isAmoled);
 

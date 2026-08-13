@@ -17,6 +17,8 @@ class AppState extends Equatable {
     this.institutionalProfile,
     this.pendingAnnouncementId,
     this.pendingAcademicTaskId,
+    this.pendingClassSessionId,
+    this.pendingClassSubjectId,
   });
 
   const AppState.authenticated(
@@ -61,6 +63,12 @@ class AppState extends Equatable {
   /// This value is intentionally not persisted by HydratedBloc.
   final String? pendingAcademicTaskId;
 
+  /// Class session waiting to be opened from a local reminder.
+  ///
+  /// These values are intentionally not persisted by HydratedBloc.
+  final String? pendingClassSessionId;
+  final String? pendingClassSubjectId;
+
   bool get hasInstitutionalProfile => institutionalProfile != null;
 
   AppState copyWith({
@@ -73,6 +81,9 @@ class AppState extends Equatable {
     bool clearPendingAnnouncementId = false,
     String? pendingAcademicTaskId,
     bool clearPendingAcademicTaskId = false,
+    String? pendingClassSessionId,
+    String? pendingClassSubjectId,
+    bool clearPendingClassSession = false,
   }) {
     return AppState(
       isAmoled: isAmoled ?? this.isAmoled,
@@ -90,6 +101,14 @@ class AppState extends Equatable {
           clearPendingAcademicTaskId
               ? null
               : pendingAcademicTaskId ?? this.pendingAcademicTaskId,
+      pendingClassSessionId:
+          clearPendingClassSession
+              ? null
+              : pendingClassSessionId ?? this.pendingClassSessionId,
+      pendingClassSubjectId:
+          clearPendingClassSession
+              ? null
+              : pendingClassSubjectId ?? this.pendingClassSubjectId,
     );
   }
 
@@ -101,5 +120,7 @@ class AppState extends Equatable {
     institutionalProfile,
     pendingAnnouncementId,
     pendingAcademicTaskId,
+    pendingClassSessionId,
+    pendingClassSubjectId,
   ];
 }
