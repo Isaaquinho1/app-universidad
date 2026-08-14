@@ -1,11 +1,13 @@
 import 'package:conecta_itt/academic_planner/view/academic_tasks_view.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
+import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/view/daily_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/view/subjects_management_view.dart';
 import 'package:conecta_itt/academic_planner/view/weekly_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_planner_section_switch.dart';
 import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,6 +24,8 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
 
   final AcademicSubjectRepository _subjectRepository =
       AcademicSubjectRepository();
+
+  final AcademicTaskRepository _taskRepository = AcademicTaskRepository();
 
   int _selectedIndex = 0;
   bool _initialNavigationChecked = false;
@@ -50,8 +54,15 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
   }
 
   void _openPendingAcademicTask() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) {
+        return;
+      }
+
+      final appBloc = context.read<AppBloc>();
+      final taskId = appBloc.state.pendingAcademicTaskId;
+
+      if (taskId == null || taskId.isEmpty) {
         return;
       }
 
@@ -61,7 +72,36 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         });
       }
 
-      context.read<AppBloc>().add(const AcademicTaskNavigationConsumed());
+      final task = await _taskRepository.getById(taskId);
+
+      if (!mounted) {
+        return;
+      }
+
+      if (task == null) {
+        appBloc.add(const AcademicTaskNavigationConsumed());
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('La tarea ya no está disponible.')),
+        );
+        return;
+      }
+
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder:
+              (_) => AcademicTaskDetailPage(
+                taskId: task.id,
+                onEdit: (task, subjects, categories) async {},
+              ),
+        ),
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      appBloc.add(const AcademicTaskNavigationConsumed());
     });
   }
 
