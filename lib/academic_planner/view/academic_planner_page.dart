@@ -112,7 +112,11 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
 
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => SubjectSessionsPage(subject: subject),
+          builder:
+              (_) => SubjectSessionsPage(
+                subject: subject,
+                highlightedSessionId: sessionId,
+              ),
         ),
       );
 

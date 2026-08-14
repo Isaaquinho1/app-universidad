@@ -7,9 +7,14 @@ import 'package:conecta_itt/academic_planner/widgets/class_session_form_sheet.da
 import 'package:flutter/material.dart';
 
 class SubjectSessionsPage extends StatefulWidget {
-  const SubjectSessionsPage({super.key, required this.subject});
+  const SubjectSessionsPage({
+    super.key,
+    required this.subject,
+    this.highlightedSessionId,
+  });
 
   final AcademicSubject subject;
+  final String? highlightedSessionId;
 
   @override
   State<SubjectSessionsPage> createState() => _SubjectSessionsPageState();
@@ -269,6 +274,8 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
                       _SessionCard(
                         session: sessions[index],
                         color: subjectColor,
+                        highlighted:
+                            sessions[index].id == widget.highlightedSessionId,
                         weekday:
                             _weekdayLabels[sessions[index].weekday] ?? 'Día',
                         startLabel: _formatMinutes(
@@ -365,6 +372,7 @@ class _SessionCard extends StatelessWidget {
   const _SessionCard({
     required this.session,
     required this.color,
+    required this.highlighted,
     required this.weekday,
     required this.startLabel,
     required this.endLabel,
@@ -374,6 +382,7 @@ class _SessionCard extends StatelessWidget {
 
   final ClassSession session;
   final Color color;
+  final bool highlighted;
   final String weekday;
   final String startLabel;
   final String endLabel;
@@ -395,7 +404,13 @@ class _SessionCard extends StatelessWidget {
       color: colors.background02,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: colors.deactive.withValues(alpha: 0.18)),
+        side: BorderSide(
+          color:
+              highlighted
+                  ? color.withValues(alpha: 0.85)
+                  : colors.deactive.withValues(alpha: 0.18),
+          width: highlighted ? 2 : 1,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
