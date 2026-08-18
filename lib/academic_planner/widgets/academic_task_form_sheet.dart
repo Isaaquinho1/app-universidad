@@ -214,33 +214,43 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
     final option = await showModalBottomSheet<_ReminderOption>(
       context: context,
       useSafeArea: true,
-      builder:
-          (sheetContext) => SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Recordatorio',
-                    style: AppTextStyle.h4.copyWith(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w800,
-                    ),
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final bottomSafeArea = MediaQuery.paddingOf(sheetContext).bottom;
+
+        return SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg + bottomSafeArea,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recordatorio',
+                  style: AppTextStyle.h4.copyWith(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  for (final option in _ReminderOption.values)
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Icon(option.icon),
-                      title: Text(option.label),
-                      onTap: () => Navigator.of(sheetContext).pop(option),
-                    ),
-                ],
-              ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                for (final option in _ReminderOption.values)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(option.icon),
+                    title: Text(option.label),
+                    onTap: () => Navigator.of(sheetContext).pop(option),
+                  ),
+              ],
             ),
           ),
+        );
+      },
     );
 
     if (option == null || !mounted) {

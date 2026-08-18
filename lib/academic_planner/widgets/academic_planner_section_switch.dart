@@ -17,12 +17,7 @@ class AcademicPlannerSectionSwitch extends StatelessWidget {
       height: 46,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          0,
-          AppSpacing.lg,
-          AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         children: [
           SegmentedButton<int>(
             showSelectedIcon: false,
