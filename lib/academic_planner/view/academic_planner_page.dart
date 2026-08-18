@@ -29,6 +29,7 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
 
   int _selectedIndex = 0;
   bool _initialNavigationChecked = false;
+  AcademicTaskEditLauncher? _academicTaskEditLauncher;
 
   @override
   void didChangeDependencies() {
@@ -92,7 +93,27 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           builder:
               (_) => AcademicTaskDetailPage(
                 taskId: task.id,
-                onEdit: (task, subjects, categories) async {},
+                onEdit: (task, subjects, categories) async {
+                  final launcher = _academicTaskEditLauncher;
+
+                  if (launcher == null) {
+                    if (!mounted) {
+                      return;
+                    }
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'La edición todavía no está disponible. '
+                          'Intenta nuevamente.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  await launcher(task, subjects, categories);
+                },
               ),
         ),
       );
@@ -212,7 +233,11 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           _PlannerSectionPage(
             selectedIndex: _selectedIndex,
             onSectionSelected: _selectSection,
-            child: const AcademicTasksView(),
+            child: AcademicTasksView(
+              onEditLauncherReady: (launcher) {
+                _academicTaskEditLauncher = launcher;
+              },
+            ),
           ),
           SubjectsManagementView(
             selectedIndex: _selectedIndex,

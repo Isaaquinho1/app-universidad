@@ -17,8 +17,17 @@ import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
 import 'package:flutter/material.dart';
 
+typedef AcademicTaskEditLauncher =
+    Future<void> Function(
+      AcademicTask task,
+      List<AcademicSubject> subjects,
+      List<TaskCategory> categories,
+    );
+
 class AcademicTasksView extends StatefulWidget {
-  const AcademicTasksView({super.key});
+  const AcademicTasksView({super.key, this.onEditLauncherReady});
+
+  final ValueChanged<AcademicTaskEditLauncher>? onEditLauncherReady;
 
   @override
   State<AcademicTasksView> createState() => _AcademicTasksViewState();
@@ -48,6 +57,26 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
   void initState() {
     super.initState();
     _loadData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      widget.onEditLauncherReady?.call(_editTaskFromOutside);
+    });
+  }
+
+  Future<void> _editTaskFromOutside(
+    AcademicTask task,
+    List<AcademicSubject> subjects,
+    List<TaskCategory> categories,
+  ) {
+    return _openTaskForm(
+      task: task,
+      subjects: subjects,
+      categories: categories,
+    );
   }
 
   void _loadData() {
