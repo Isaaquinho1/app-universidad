@@ -10,9 +10,6 @@ class FeedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Publicaciones')),
-      body: const AnnouncementCategoryFeed(),
-    );
+    return const Scaffold(body: AnnouncementCategoryFeed());
   }
 }

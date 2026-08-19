@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/feed/widgets/widgets.dart';
 
 /// Connects the institutional profile with the segmented announcement feed.
 class AnnouncementCategoryFeed extends StatelessWidget {
@@ -117,6 +118,26 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                 controller: widget.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
+                  const SliverToBoxAdapter(child: CampusContextHero()),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.xlg + AppSpacing.sm,
+                      AppSpacing.lg,
+                      0,
+                    ),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        'Publicaciones',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium?.copyWith(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.lg,
