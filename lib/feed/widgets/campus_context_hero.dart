@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/feed/models/campus_weather.dart';
@@ -78,7 +79,12 @@ class _CampusContextHeroState extends State<CampusContextHero> {
           SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 14),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                24,
+                AppSpacing.lg,
+                14,
+              ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Column(
@@ -113,57 +119,19 @@ class _CampusContextHeroState extends State<CampusContextHero> {
                     ),
                     if (_weather != null) ...[
                       const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.cloud_outlined,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              '${_weather!.temperatureLabel} · '
-                              '${_weather!.conditionLabel}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                height: 1.25,
-                                shadows: [
-                                  Shadow(blurRadius: 10, color: Colors.black45),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        _weather!.contextualSummary(now),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.35,
+                          shadows: [
+                            Shadow(blurRadius: 10, color: Colors.black45),
+                          ],
+                        ),
                       ),
                     ],
-                    const SizedBox(height: 8),
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.white,
-                          size: 19,
-                        ),
-                        SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            'TecNM Campus Tlalpan',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              height: 1.25,
-                              shadows: [
-                                Shadow(blurRadius: 10, color: Colors.black45),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),

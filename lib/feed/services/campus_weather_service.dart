@@ -29,6 +29,8 @@ class CampusWeatherService {
           'latitude': _campusLatitude,
           'longitude': _campusLongitude,
           'current': 'temperature_2m,weather_code,is_day',
+          'daily': 'temperature_2m_max',
+          'forecast_days': 1,
           'timezone': 'America/Mexico_City',
         },
         options: Options(
@@ -38,21 +40,29 @@ class CampusWeatherService {
       );
 
       final current = response.data?['current'];
+      final daily = response.data?['daily'];
 
-      if (current is! Map<String, dynamic>) {
+      if (current is! Map<String, dynamic> || daily is! Map<String, dynamic>) {
         return cached;
       }
 
       final temperature = current['temperature_2m'];
       final weatherCode = current['weather_code'];
       final isDay = current['is_day'];
+      final dailyHighs = daily['temperature_2m_max'];
 
-      if (temperature is! num || weatherCode is! num || isDay is! num) {
+      if (temperature is! num ||
+          weatherCode is! num ||
+          isDay is! num ||
+          dailyHighs is! List ||
+          dailyHighs.isEmpty ||
+          dailyHighs.first is! num) {
         return cached;
       }
 
       final weather = CampusWeather(
         temperatureCelsius: temperature.toDouble(),
+        dailyHighCelsius: (dailyHighs.first as num).toDouble(),
         weatherCode: weatherCode.toInt(),
         isDay: isDay.toInt() == 1,
         fetchedAt: DateTime.now(),

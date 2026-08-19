@@ -1,12 +1,14 @@
 class CampusWeather {
   const CampusWeather({
     required this.temperatureCelsius,
+    required this.dailyHighCelsius,
     required this.weatherCode,
     required this.isDay,
     required this.fetchedAt,
   });
 
   final double temperatureCelsius;
+  final double dailyHighCelsius;
   final int weatherCode;
   final bool isDay;
   final DateTime fetchedAt;
@@ -48,5 +50,21 @@ class CampusWeather {
 
   String get temperatureLabel {
     return '${temperatureCelsius.round()} °C';
+  }
+
+  String get dailyHighLabel {
+    return '${dailyHighCelsius.round()} °C';
+  }
+
+  String contextualSummary(DateTime now) {
+    final condition = conditionLabel.toLowerCase();
+
+    final highPhrase = switch (now.hour) {
+      < 15 => 'Hoy alcanzaremos una máxima de $dailyHighLabel.',
+      < 20 => 'La máxima de hoy será de $dailyHighLabel.',
+      _ => 'La máxima de hoy fue de $dailyHighLabel.',
+    };
+
+    return 'Ahora mismo hay $temperatureLabel y $condition. $highPhrase';
   }
 }
