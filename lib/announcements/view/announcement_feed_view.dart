@@ -83,6 +83,39 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
     await Future<void>.delayed(const Duration(milliseconds: 300));
   }
 
+  Widget _buildContextualStatusView({required Widget child}) {
+    return RefreshIndicator(
+      onRefresh: _refreshFeed,
+      child: CustomScrollView(
+        controller: widget.scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: CampusContextHero(refreshToken: _heroRefreshToken),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.xlg + AppSpacing.sm,
+              AppSpacing.lg,
+              0,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Publicaciones',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+          SliverFillRemaining(hasScrollBody: false, child: child),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AnnouncementBloc, AnnouncementState>(
@@ -90,20 +123,28 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
         switch (state.status) {
           case AnnouncementsStatus.initial:
           case AnnouncementsStatus.loading:
-            return const Center(child: CircularProgressIndicator());
+            return _buildContextualStatusView(
+              child: const Center(child: CircularProgressIndicator()),
+            );
 
           case AnnouncementsStatus.failure:
-            return FailureScreen(
-              title: 'Error de carga',
-              description:
-                  'No se pudieron cargar las publicaciones institucionales.',
-              icon: Icons.campaign_outlined,
-              buttonText: 'Reintentar',
-              onButtonPressed: () {
-                context.read<AnnouncementBloc>().add(
-                  const AnnouncementsStarted(),
-                );
-              },
+            return _buildContextualStatusView(
+              child: FailureScreen(
+                title: 'Error de carga',
+                description:
+                    'No se pudieron cargar las publicaciones institucionales.',
+                icon: Icons.campaign_outlined,
+                buttonText: 'Reintentar',
+                onButtonPressed: () {
+                  context.read<AnnouncementBloc>().add(
+                    const AnnouncementsStarted(),
+                  );
+
+                  setState(() {
+                    _heroRefreshToken++;
+                  });
+                },
+              ),
             );
 
           case AnnouncementsStatus.populated:
