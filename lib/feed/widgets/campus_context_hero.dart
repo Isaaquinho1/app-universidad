@@ -185,7 +185,27 @@ class _CampusContextHeroState extends State<CampusContextHero>
   }
 
   String _assetForContext(DateTime dateTime, CampusWeather? weather) {
+    final hour = dateTime.hour;
+
     if (weather != null) {
+      if (weather.isRainy) {
+        return 'assets/campus/campus_lloviendo.png';
+      }
+
+      if (weather.isFoggy && hour >= 17 && hour < 20) {
+        return 'assets/campus/campus_neblina_casi_noche.png';
+      }
+    }
+
+    if (hour < 5) {
+      return 'assets/campus/campus_madrugada.png';
+    }
+
+    if (weather != null) {
+      if (weather.isOvercast) {
+        return 'assets/campus/campus_super_nublado.png';
+      }
+
       if (!weather.isDay) {
         return 'assets/campus/campus_noche.png';
       }
@@ -202,7 +222,27 @@ class _CampusContextHeroState extends State<CampusContextHero>
     DateTime dateTime,
     CampusWeather? weather,
   ) {
+    final hour = dateTime.hour;
+
     if (weather != null) {
+      if (weather.isRainy) {
+        return const Alignment(0, -0.40);
+      }
+
+      if (weather.isFoggy && hour >= 17 && hour < 20) {
+        return const Alignment(0, -0.40);
+      }
+    }
+
+    if (hour < 5) {
+      return const Alignment(0, -0.40);
+    }
+
+    if (weather != null) {
+      if (weather.isOvercast) {
+        return const Alignment(0, -0.40);
+      }
+
       if (!weather.isDay) {
         return const Alignment(0, -0.62);
       }

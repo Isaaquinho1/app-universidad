@@ -13,6 +13,32 @@ class CampusWeather {
   final bool isDay;
   final DateTime fetchedAt;
 
+  bool get isRainy {
+    return switch (weatherCode) {
+      51 ||
+      53 ||
+      55 ||
+      56 ||
+      57 ||
+      61 ||
+      63 ||
+      65 ||
+      66 ||
+      67 ||
+      80 ||
+      81 ||
+      82 ||
+      95 ||
+      96 ||
+      99 => true,
+      _ => false,
+    };
+  }
+
+  bool get isFoggy => weatherCode == 45 || weatherCode == 48;
+
+  bool get isOvercast => weatherCode == 3;
+
   bool get shouldUseCloudyImage {
     if (!isDay) {
       return false;
