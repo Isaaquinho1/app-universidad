@@ -11,6 +11,7 @@ final class WeeklyScheduleImageExporter {
   const WeeklyScheduleImageExporter();
 
   static const _width = 1440.0;
+  static const _exportScale = 2.0;
   static const _horizontalPadding = 88.0;
   static const _topPadding = 82.0;
   static const _bottomPadding = 82.0;
@@ -55,7 +56,13 @@ final class WeeklyScheduleImageExporter {
     );
 
     final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder, Rect.fromLTWH(0, 0, _width, height));
+    final canvas = Canvas(
+      recorder,
+      Rect.fromLTWH(0, 0, _width * _exportScale, height * _exportScale),
+    );
+
+    canvas.save();
+    canvas.scale(_exportScale);
 
     _paintBackground(canvas, height);
 
@@ -81,9 +88,14 @@ final class WeeklyScheduleImageExporter {
 
     _paintFooter(canvas: canvas, y: height - _bottomPadding + 8);
 
+    canvas.restore();
+
     final picture = recorder.endRecording();
 
-    final image = await picture.toImage(_width.round(), height.round());
+    final image = await picture.toImage(
+      (_width * _exportScale).round(),
+      (height * _exportScale).round(),
+    );
 
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
@@ -96,7 +108,7 @@ final class WeeklyScheduleImageExporter {
 
     final directory = await getTemporaryDirectory();
 
-    final file = File('${directory.path}/conecta_itt_horario_semanal.png');
+    final file = File('${directory.path}/Horario semanal - Conecta ITT.png');
 
     await file.writeAsBytes(byteData.buffer.asUint8List(), flush: true);
 

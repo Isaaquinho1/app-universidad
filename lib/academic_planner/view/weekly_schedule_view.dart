@@ -116,7 +116,7 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
     BuildContext context,
     Map<int, List<ScheduledClass>> week,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
+    final messenger = ScaffoldMessenger.maybeOf(context);
 
     try {
       final file = await _imageExporter.export(
@@ -134,8 +134,6 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
 
       await SharePlus.instance.share(
         ShareParams(
-          subject: 'Mi horario semanal — Conecta ITT',
-          text: 'Mi horario semanal — Conecta ITT',
           files: [XFile(file.path, mimeType: 'image/png')],
           sharePositionOrigin: origin,
         ),
@@ -151,13 +149,29 @@ class _WeeklyScheduleViewState extends State<WeeklyScheduleView> {
         return;
       }
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            'No fue posible generar la imagen del horario. '
-            'Error: ${error.runtimeType}',
-          ),
-        ),
+      final message =
+          'No fue posible generar la imagen del horario. '
+          'Error: ${error.runtimeType}';
+
+      if (messenger != null) {
+        messenger.showSnackBar(SnackBar(content: Text(message)));
+        return;
+      }
+
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Conecta ITT'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Aceptar'),
+              ),
+            ],
+          );
+        },
       );
     }
   }
