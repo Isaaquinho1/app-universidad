@@ -5,6 +5,19 @@ import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/feed/models/campus_weather.dart';
 import 'package:conecta_itt/feed/services/campus_weather_service.dart';
 
+enum _CampusHeroScene {
+  rainy,
+  foggyEvening,
+  earlyMorning,
+  sunrise,
+  midday,
+  afternoon,
+  evening,
+  night,
+  overcast,
+  cloudy,
+}
+
 class CampusContextHero extends StatefulWidget {
   const CampusContextHero({this.refreshToken = 0, super.key});
 
@@ -184,120 +197,94 @@ class _CampusContextHeroState extends State<CampusContextHero>
     );
   }
 
-  String _assetForContext(DateTime dateTime, CampusWeather? weather) {
+  _CampusHeroScene _sceneForContext(DateTime dateTime, CampusWeather? weather) {
     final hour = dateTime.hour;
 
-    // La precipitación es la condición visual de mayor prioridad.
+    // La precipitación tiene prioridad sobre cualquier franja horaria.
     if (weather?.isRainy ?? false) {
-      return 'assets/campus/campus_lloviendo.png';
+      return _CampusHeroScene.rainy;
     }
 
-    // Tenemos una escena específica para neblina al caer la noche.
+    // Escena específica de neblina al caer la noche.
     if ((weather?.isFoggy ?? false) && hour >= 17 && hour < 20) {
-      return 'assets/campus/campus_neblina_casi_noche.png';
+      return _CampusHeroScene.foggyEvening;
     }
 
-    // La madrugada mantiene identidad propia incluso si está nublado.
+    // La madrugada mantiene su propia identidad visual.
     if (hour < 5) {
-      return 'assets/campus/campus_madrugada.png';
+      return _CampusHeroScene.earlyMorning;
     }
 
-    // Después de las 20:00 prevalece la escena nocturna.
+    // A partir de las 20:00 prevalece la noche.
     if (hour >= 20) {
-      return 'assets/campus/campus_noche.png';
+      return _CampusHeroScene.night;
     }
 
-    // Las variantes de nubosidad quedan restringidas al periodo diurno.
+    // Las condiciones de nubosidad especial solo sustituyen
+    // fotografías correspondientes al periodo diurno.
     if (weather != null) {
       if (weather.isOvercast) {
-        return 'assets/campus/campus_super_nublado.png';
+        return _CampusHeroScene.overcast;
       }
 
       if (weather.shouldUseCloudyImage) {
-        return 'assets/campus/campus_nublado.png';
+        return _CampusHeroScene.cloudy;
       }
     }
 
-    return _assetForTime(dateTime);
+    if (hour >= 5 && hour < 9) {
+      return _CampusHeroScene.sunrise;
+    }
+
+    if (hour >= 9 && hour < 14) {
+      return _CampusHeroScene.midday;
+    }
+
+    if (hour >= 14 && hour < 18) {
+      return _CampusHeroScene.afternoon;
+    }
+
+    return _CampusHeroScene.evening;
+  }
+
+  String _assetForContext(DateTime dateTime, CampusWeather? weather) {
+    final scene = _sceneForContext(dateTime, weather);
+
+    return switch (scene) {
+      _CampusHeroScene.rainy => 'assets/campus/campus_lloviendo.png',
+      _CampusHeroScene.foggyEvening =>
+        'assets/campus/campus_neblina_casi_noche.png',
+      _CampusHeroScene.earlyMorning => 'assets/campus/campus_madrugada.png',
+      _CampusHeroScene.sunrise => 'assets/campus/campus_amanecer.png',
+      _CampusHeroScene.midday => 'assets/campus/campus_medio_dia.png',
+      _CampusHeroScene.afternoon => 'assets/campus/campus_tarde.png',
+      _CampusHeroScene.evening => 'assets/campus/campus_casi_noche.png',
+      _CampusHeroScene.night => 'assets/campus/campus_noche.png',
+      _CampusHeroScene.overcast => 'assets/campus/campus_super_nublado.png',
+      _CampusHeroScene.cloudy => 'assets/campus/campus_nublado.png',
+    };
   }
 
   Alignment _imageAlignmentForContext(
     DateTime dateTime,
     CampusWeather? weather,
   ) {
-    final hour = dateTime.hour;
+    final scene = _sceneForContext(dateTime, weather);
 
-    if (weather?.isRainy ?? false) {
-      return const Alignment(0, -0.40);
-    }
+    return switch (scene) {
+      _CampusHeroScene.rainy ||
+      _CampusHeroScene.foggyEvening ||
+      _CampusHeroScene.earlyMorning ||
+      _CampusHeroScene.midday ||
+      _CampusHeroScene.afternoon ||
+      _CampusHeroScene.overcast => const Alignment(0, -0.40),
 
-    if ((weather?.isFoggy ?? false) && hour >= 17 && hour < 20) {
-      return const Alignment(0, -0.40);
-    }
+      _CampusHeroScene.sunrise ||
+      _CampusHeroScene.evening ||
+      _CampusHeroScene.cloudy => const Alignment(0, -0.42),
 
-    if (hour < 5) {
-      return const Alignment(0, -0.40);
-    }
-
-    if (hour >= 20) {
-      return const Alignment(0, -0.62);
-    }
-
-    if (weather != null) {
-      if (weather.isOvercast) {
-        return const Alignment(0, -0.40);
-      }
-
-      if (weather.shouldUseCloudyImage) {
-        return const Alignment(0, -0.42);
-      }
-    }
-
-    return _imageAlignmentForTime(dateTime);
-  }
-
-  String _assetForTime(DateTime dateTime) {
-    final hour = dateTime.hour;
-
-    if (hour >= 5 && hour < 9) {
-      return 'assets/campus/campus_amanecer.png';
-    }
-
-    if (hour >= 9 && hour < 14) {
-      return 'assets/campus/campus_medio_dia.png';
-    }
-
-    if (hour >= 14 && hour < 18) {
-      return 'assets/campus/campus_tarde.png';
-    }
-
-    if (hour >= 18 && hour < 20) {
-      return 'assets/campus/campus_casi_noche.png';
-    }
-
-    return 'assets/campus/campus_noche.png';
-  }
-
-  Alignment _imageAlignmentForTime(DateTime dateTime) {
-    final hour = dateTime.hour;
-
-    if (hour >= 5 && hour < 9) {
-      return const Alignment(0, -0.42);
-    }
-
-    if (hour >= 9 && hour < 14) {
-      return const Alignment(0, -0.40);
-    }
-
-    if (hour >= 14 && hour < 18) {
-      return const Alignment(0, -0.40);
-    }
-
-    if (hour >= 18 && hour < 20) {
-      return const Alignment(0, -0.42);
-    }
-
-    return const Alignment(0, -0.62);
+      _CampusHeroScene.night => const Alignment(0, -0.62),
+    };
   }
 
   String _firstName(String value) {
