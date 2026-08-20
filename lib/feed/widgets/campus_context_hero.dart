@@ -6,13 +6,16 @@ import 'package:conecta_itt/feed/models/campus_weather.dart';
 import 'package:conecta_itt/feed/services/campus_weather_service.dart';
 
 class CampusContextHero extends StatefulWidget {
-  const CampusContextHero({super.key});
+  const CampusContextHero({this.refreshToken = 0, super.key});
+
+  final int refreshToken;
 
   @override
   State<CampusContextHero> createState() => _CampusContextHeroState();
 }
 
-class _CampusContextHeroState extends State<CampusContextHero> {
+class _CampusContextHeroState extends State<CampusContextHero>
+    with WidgetsBindingObserver {
   final CampusWeatherService _weatherService = CampusWeatherService();
 
   CampusWeather? _weather;
@@ -20,11 +23,44 @@ class _CampusContextHeroState extends State<CampusContextHero> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadWeather();
   }
 
-  Future<void> _loadWeather() async {
+  @override
+  void didUpdateWidget(covariant CampusContextHero oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.refreshToken != widget.refreshToken) {
+      _loadWeather(forceRefresh: true);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshContextAfterResume();
+    }
+  }
+
+  Future<void> _refreshContextAfterResume() async {
     final weather = await _weatherService.getCurrentWeather();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      if (weather != null) {
+        _weather = weather;
+      }
+    });
+  }
+
+  Future<void> _loadWeather({bool forceRefresh = false}) async {
+    final weather = await _weatherService.getCurrentWeather(
+      forceRefresh: forceRefresh,
+    );
 
     if (!mounted || weather == null) {
       return;
@@ -33,6 +69,12 @@ class _CampusContextHeroState extends State<CampusContextHero> {
     setState(() {
       _weather = weather;
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

@@ -71,6 +71,17 @@ class AnnouncementFeedView extends StatefulWidget {
 
 class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
   _PublicationFeedFilter _filter = _PublicationFeedFilter.all;
+  int _heroRefreshToken = 0;
+
+  Future<void> _refreshFeed() async {
+    context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
+
+    setState(() {
+      _heroRefreshToken++;
+    });
+
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,25 +111,15 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                 .where(_filter.accepts)
                 .toList(growable: false);
 
-            if (state.announcements.isEmpty) {
-              return const _EmptyAnnouncementsView(
-                filter: _PublicationFeedFilter.all,
-              );
-            }
-
             return RefreshIndicator(
-              onRefresh: () async {
-                context.read<AnnouncementBloc>().add(
-                  const AnnouncementsStarted(),
-                );
-
-                await Future<void>.delayed(const Duration(milliseconds: 300));
-              },
+              onRefresh: _refreshFeed,
               child: CustomScrollView(
                 controller: widget.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  const SliverToBoxAdapter(child: CampusContextHero()),
+                  SliverToBoxAdapter(
+                    child: CampusContextHero(refreshToken: _heroRefreshToken),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.lg,
