@@ -28,7 +28,8 @@ class CampusWeatherService {
         queryParameters: const {
           'latitude': _campusLatitude,
           'longitude': _campusLongitude,
-          'current': 'temperature_2m,weather_code,is_day',
+          'current':
+              'temperature_2m,weather_code,is_day,precipitation,cloud_cover',
           'daily': 'temperature_2m_max',
           'forecast_days': 1,
           'timezone': 'America/Mexico_City',
@@ -49,11 +50,15 @@ class CampusWeatherService {
       final temperature = current['temperature_2m'];
       final weatherCode = current['weather_code'];
       final isDay = current['is_day'];
+      final precipitation = current['precipitation'];
+      final cloudCover = current['cloud_cover'];
       final dailyHighs = daily['temperature_2m_max'];
 
       if (temperature is! num ||
           weatherCode is! num ||
           isDay is! num ||
+          precipitation is! num ||
+          cloudCover is! num ||
           dailyHighs is! List ||
           dailyHighs.isEmpty ||
           dailyHighs.first is! num) {
@@ -65,6 +70,8 @@ class CampusWeatherService {
         dailyHighCelsius: (dailyHighs.first as num).toDouble(),
         weatherCode: weatherCode.toInt(),
         isDay: isDay.toInt() == 1,
+        precipitationMillimeters: precipitation.toDouble(),
+        cloudCoverPercent: cloudCover.toDouble(),
         fetchedAt: DateTime.now(),
       );
 

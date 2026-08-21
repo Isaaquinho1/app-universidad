@@ -6,7 +6,7 @@ import 'package:conecta_itt/feed/models/campus_weather.dart';
 import 'package:conecta_itt/feed/services/campus_weather_service.dart';
 
 enum _CampusHeroScene {
-  rainy,
+  heavyRainAfternoon,
   foggyEvening,
   earlyMorning,
   sunrise,
@@ -14,8 +14,8 @@ enum _CampusHeroScene {
   afternoon,
   evening,
   night,
-  overcast,
-  cloudy,
+  cloudyMorning,
+  cloudyAfternoon,
 }
 
 class CampusContextHero extends StatefulWidget {
@@ -200,35 +200,34 @@ class _CampusContextHeroState extends State<CampusContextHero>
   _CampusHeroScene _sceneForContext(DateTime dateTime, CampusWeather? weather) {
     final hour = dateTime.hour;
 
-    // La precipitación tiene prioridad sobre cualquier franja horaria.
-    if (weather?.isRainy ?? false) {
-      return _CampusHeroScene.rainy;
+    // La fotografía de lluvia representa una precipitación fuerte
+    // específicamente durante la tarde.
+    if ((weather?.isHeavyRain ?? false) && hour >= 14 && hour < 18) {
+      return _CampusHeroScene.heavyRainAfternoon;
     }
 
-    // Escena específica de neblina al caer la noche.
+    // Escena específica de neblina durante la transición a la noche.
     if ((weather?.isFoggy ?? false) && hour >= 17 && hour < 20) {
       return _CampusHeroScene.foggyEvening;
     }
 
-    // La madrugada mantiene su propia identidad visual.
     if (hour < 5) {
       return _CampusHeroScene.earlyMorning;
     }
 
-    // A partir de las 20:00 prevalece la noche.
     if (hour >= 20) {
       return _CampusHeroScene.night;
     }
 
-    // Las condiciones de nubosidad especial solo sustituyen
-    // fotografías correspondientes al periodo diurno.
-    if (weather != null) {
-      if (weather.isOvercast) {
-        return _CampusHeroScene.overcast;
+    // La misma condición nublada utiliza fotografías distintas
+    // según la franja horaria.
+    if (weather?.isCloudy ?? false) {
+      if (hour >= 5 && hour < 14) {
+        return _CampusHeroScene.cloudyMorning;
       }
 
-      if (weather.shouldUseCloudyImage) {
-        return _CampusHeroScene.cloudy;
+      if (hour >= 14 && hour < 18) {
+        return _CampusHeroScene.cloudyAfternoon;
       }
     }
 
@@ -251,7 +250,8 @@ class _CampusContextHeroState extends State<CampusContextHero>
     final scene = _sceneForContext(dateTime, weather);
 
     return switch (scene) {
-      _CampusHeroScene.rainy => 'assets/campus/campus_lloviendo.png',
+      _CampusHeroScene.heavyRainAfternoon =>
+        'assets/campus/campus_lloviendo.png',
       _CampusHeroScene.foggyEvening =>
         'assets/campus/campus_neblina_casi_noche.png',
       _CampusHeroScene.earlyMorning => 'assets/campus/campus_madrugada.png',
@@ -260,8 +260,9 @@ class _CampusContextHeroState extends State<CampusContextHero>
       _CampusHeroScene.afternoon => 'assets/campus/campus_tarde.png',
       _CampusHeroScene.evening => 'assets/campus/campus_casi_noche.png',
       _CampusHeroScene.night => 'assets/campus/campus_noche.png',
-      _CampusHeroScene.overcast => 'assets/campus/campus_super_nublado.png',
-      _CampusHeroScene.cloudy => 'assets/campus/campus_nublado.png',
+      _CampusHeroScene.cloudyMorning => 'assets/campus/campus_nublado.png',
+      _CampusHeroScene.cloudyAfternoon =>
+        'assets/campus/campus_super_nublado.png',
     };
   }
 
@@ -272,16 +273,16 @@ class _CampusContextHeroState extends State<CampusContextHero>
     final scene = _sceneForContext(dateTime, weather);
 
     return switch (scene) {
-      _CampusHeroScene.rainy ||
+      _CampusHeroScene.heavyRainAfternoon ||
       _CampusHeroScene.foggyEvening ||
       _CampusHeroScene.earlyMorning ||
       _CampusHeroScene.midday ||
       _CampusHeroScene.afternoon ||
-      _CampusHeroScene.overcast => const Alignment(0, -0.40),
+      _CampusHeroScene.cloudyMorning ||
+      _CampusHeroScene.cloudyAfternoon => const Alignment(0, -0.40),
 
       _CampusHeroScene.sunrise ||
-      _CampusHeroScene.evening ||
-      _CampusHeroScene.cloudy => const Alignment(0, -0.42),
+      _CampusHeroScene.evening => const Alignment(0, -0.42),
 
       _CampusHeroScene.night => const Alignment(0, -0.62),
     };
