@@ -83,7 +83,10 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
     await Future<void>.delayed(const Duration(milliseconds: 300));
   }
 
-  Widget _buildContextualStatusView({required Widget child}) {
+  Widget _buildFeedShell({
+    required List<Widget> contentSlivers,
+    required bool showFilters,
+  }) {
     return RefreshIndicator(
       onRefresh: _refreshFeed,
       child: CustomScrollView(
@@ -110,7 +113,26 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
               ),
             ),
           ),
-          SliverFillRemaining(hasScrollBody: false, child: child),
+          if (showFilters)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.lg,
+                0,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: _PublicationFilterBar(
+                  selectedFilter: _filter,
+                  onChanged: (filter) {
+                    setState(() {
+                      _filter = filter;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ...contentSlivers,
         ],
       ),
     );
@@ -123,28 +145,40 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
         switch (state.status) {
           case AnnouncementsStatus.initial:
           case AnnouncementsStatus.loading:
-            return _buildContextualStatusView(
-              child: const Center(child: CircularProgressIndicator()),
+            return _buildFeedShell(
+              showFilters: false,
+              contentSlivers: const [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ],
             );
 
           case AnnouncementsStatus.failure:
-            return _buildContextualStatusView(
-              child: FailureScreen(
-                title: 'Error de carga',
-                description:
-                    'No se pudieron cargar las publicaciones institucionales.',
-                icon: Icons.campaign_outlined,
-                buttonText: 'Reintentar',
-                onButtonPressed: () {
-                  context.read<AnnouncementBloc>().add(
-                    const AnnouncementsStarted(),
-                  );
+            return _buildFeedShell(
+              showFilters: false,
+              contentSlivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: FailureScreen(
+                    title: 'Error de carga',
+                    description:
+                        'No se pudieron cargar las publicaciones institucionales.',
+                    icon: Icons.campaign_outlined,
+                    buttonText: 'Reintentar',
+                    onButtonPressed: () {
+                      context.read<AnnouncementBloc>().add(
+                        const AnnouncementsStarted(),
+                      );
 
-                  setState(() {
-                    _heroRefreshToken++;
-                  });
-                },
-              ),
+                      setState(() {
+                        _heroRefreshToken++;
+                      });
+                    },
+                  ),
+                ),
+              ],
             );
 
           case AnnouncementsStatus.populated:
@@ -152,92 +186,161 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                 .where(_filter.accepts)
                 .toList(growable: false);
 
-            return RefreshIndicator(
-              onRefresh: _refreshFeed,
-              child: CustomScrollView(
-                controller: widget.scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: CampusContextHero(refreshToken: _heroRefreshToken),
-                  ),
+            return _buildFeedShell(
+              showFilters: true,
+              contentSlivers: [
+                if (publications.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _EmptyAnnouncementsView(filter: _filter),
+                  )
+                else
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg,
-                      AppSpacing.xlg + AppSpacing.sm,
-                      AppSpacing.lg,
-                      0,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: Text(
-                        'Publicaciones',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium?.copyWith(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg,
-                      AppSpacing.lg,
-                      AppSpacing.lg,
-                      0,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: SegmentedButton<_PublicationFeedFilter>(
-                        segments: _PublicationFeedFilter.values
-                            .map(
-                              (filter) => ButtonSegment(
-                                value: filter,
-                                label: Text(filter.label),
-                              ),
-                            )
-                            .toList(growable: false),
-                        selected: {_filter},
-                        showSelectedIcon: false,
-                        onSelectionChanged: (selection) {
-                          setState(() {
-                            _filter = selection.first;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  if (publications.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _EmptyAnnouncementsView(filter: _filter),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      sliver: SliverList.separated(
-                        itemCount: publications.length,
-                        itemBuilder: (context, index) {
-                          final announcement = publications[index];
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    sliver: SliverList.separated(
+                      itemCount: publications.length,
+                      itemBuilder: (context, index) {
+                        final announcement = publications[index];
 
-                          return AnnouncementCard(
-                            announcement: announcement,
-                            receipt:
-                                state.receiptsByAnnouncementId[announcement.id],
-                            assets:
-                                state.assetsByAnnouncementId[announcement.id] ??
-                                const [],
-                          );
-                        },
-                        separatorBuilder:
-                            (_, _) => const SizedBox(height: AppSpacing.lg),
-                      ),
+                        return AnnouncementCard(
+                          announcement: announcement,
+                          receipt:
+                              state.receiptsByAnnouncementId[announcement.id],
+                          assets:
+                              state.assetsByAnnouncementId[announcement.id] ??
+                              const [],
+                        );
+                      },
+                      separatorBuilder:
+                          (_, _) => const SizedBox(height: AppSpacing.lg),
                     ),
-                ],
-              ),
+                  ),
+              ],
             );
         }
       },
+    );
+  }
+}
+
+class _PublicationFilterBar extends StatelessWidget {
+  const _PublicationFilterBar({
+    required this.selectedFilter,
+    required this.onChanged,
+  });
+
+  final _PublicationFeedFilter selectedFilter;
+  final ValueChanged<_PublicationFeedFilter> onChanged;
+
+  Alignment get _selectedAlignment {
+    return switch (selectedFilter) {
+      _PublicationFeedFilter.all => Alignment.centerLeft,
+      _PublicationFeedFilter.news => Alignment.center,
+      _PublicationFeedFilter.announcements => Alignment.centerRight,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      height: 46,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.46),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final itemWidth = constraints.maxWidth / 3;
+
+          return Stack(
+            children: [
+              AnimatedAlign(
+                alignment: _selectedAlignment,
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeOutCubic,
+                child: SizedBox(
+                  width: itemWidth,
+                  height: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            colorScheme.surface.withValues(alpha: 0.94),
+                            colorScheme.surface.withValues(alpha: 0.82),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.045),
+                            blurRadius: 7,
+                            offset: const Offset(0, 1.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                children: _PublicationFeedFilter.values
+                    .map((filter) {
+                      final isSelected = filter == selectedFilter;
+
+                      return Expanded(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              if (!isSelected) {
+                                onChanged(filter);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            splashColor: colorScheme.primary.withValues(
+                              alpha: 0.04,
+                            ),
+                            highlightColor: colorScheme.primary.withValues(
+                              alpha: 0.025,
+                            ),
+                            child: Center(
+                              child: AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 180),
+                                curve: Curves.easeOutCubic,
+                                style: (theme.textTheme.labelLarge ??
+                                        const TextStyle())
+                                    .copyWith(
+                                      fontWeight:
+                                          isSelected
+                                              ? FontWeight.w700
+                                              : FontWeight.w500,
+                                      color:
+                                          isSelected
+                                              ? colorScheme.onSurface
+                                              : colorScheme.onSurfaceVariant
+                                                  .withValues(alpha: 0.82),
+                                    ),
+                                child: Text(filter.label),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(growable: false),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
