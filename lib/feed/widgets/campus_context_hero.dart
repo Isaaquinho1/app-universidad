@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,12 +34,14 @@ class _CampusContextHeroState extends State<CampusContextHero>
   final CampusWeatherService _weatherService = CampusWeatherService();
 
   CampusWeather? _weather;
+  Timer? _weatherRefreshTimer;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadWeather();
+    _startWeatherRefreshTimer();
   }
 
   @override
@@ -56,7 +60,20 @@ class _CampusContextHeroState extends State<CampusContextHero>
     }
   }
 
+  void _startWeatherRefreshTimer() {
+    _weatherRefreshTimer?.cancel();
+
+    _weatherRefreshTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      if (!mounted) {
+        return;
+      }
+
+      _loadWeather(forceRefresh: true);
+    });
+  }
+
   Future<void> _refreshContextAfterResume() async {
+    _startWeatherRefreshTimer();
     final weather = await _weatherService.getCurrentWeather(forceRefresh: true);
 
     if (!mounted) {
@@ -86,6 +103,7 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
   @override
   void dispose() {
+    _weatherRefreshTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
