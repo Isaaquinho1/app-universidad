@@ -57,7 +57,7 @@ class _CampusContextHeroState extends State<CampusContextHero>
   }
 
   Future<void> _refreshContextAfterResume() async {
-    final weather = await _weatherService.getCurrentWeather();
+    final weather = await _weatherService.getCurrentWeather(forceRefresh: true);
 
     if (!mounted) {
       return;
