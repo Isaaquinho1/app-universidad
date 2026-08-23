@@ -202,13 +202,17 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                       itemBuilder: (context, index) {
                         final announcement = publications[index];
 
-                        return AnnouncementCard(
-                          announcement: announcement,
-                          receipt:
-                              state.receiptsByAnnouncementId[announcement.id],
-                          assets:
-                              state.assetsByAnnouncementId[announcement.id] ??
-                              const [],
+                        return _AnimatedPublicationCard(
+                          key: ValueKey('publication-${announcement.id}'),
+                          animationToken: _filter,
+                          child: AnnouncementCard(
+                            announcement: announcement,
+                            receipt:
+                                state.receiptsByAnnouncementId[announcement.id],
+                            assets:
+                                state.assetsByAnnouncementId[announcement.id] ??
+                                const [],
+                          ),
                         );
                       },
                       separatorBuilder:
@@ -218,6 +222,80 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
               ],
             );
         }
+      },
+    );
+  }
+}
+
+class _AnimatedPublicationCard extends StatefulWidget {
+  const _AnimatedPublicationCard({
+    required this.animationToken,
+    required this.child,
+    super.key,
+  });
+
+  final Object animationToken;
+  final Widget child;
+
+  @override
+  State<_AnimatedPublicationCard> createState() =>
+      _AnimatedPublicationCardState();
+}
+
+class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+  late final Animation<double> _offset;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    );
+
+    final animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+
+    _opacity = animation;
+    _offset = Tween<double>(begin: 10, end: 0).animate(animation);
+
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedPublicationCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.animationToken != widget.animationToken) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      child: widget.child,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _opacity.value,
+          child: Transform.translate(
+            offset: Offset(0, _offset.value),
+            child: child,
+          ),
+        );
       },
     );
   }

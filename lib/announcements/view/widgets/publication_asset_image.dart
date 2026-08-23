@@ -30,12 +30,27 @@ class PublicationAssetImage extends StatefulWidget {
 }
 
 class _PublicationAssetImageState extends State<PublicationAssetImage> {
+  static final Map<String, String> _signedUrlCache = <String, String>{};
+  static final Map<String, Future<String>> _pendingSignedUrls =
+      <String, Future<String>>{};
+
   late Future<String> _signedUrlFuture;
+
+  String get _assetCacheKey {
+    return '${widget.asset.id}|'
+        '${widget.asset.storagePath}|'
+        '${widget.asset.updatedAt.toIso8601String()}';
+  }
+
+  String get _imageCacheKey {
+    return 'publication-asset-${widget.asset.id}-'
+        '${widget.asset.updatedAt.millisecondsSinceEpoch}';
+  }
 
   @override
   void initState() {
     super.initState();
-    _signedUrlFuture = _createSignedUrl();
+    _signedUrlFuture = _resolveSignedUrl();
   }
 
   @override
@@ -45,20 +60,48 @@ class _PublicationAssetImageState extends State<PublicationAssetImage> {
     if (oldWidget.asset.id != widget.asset.id ||
         oldWidget.asset.storagePath != widget.asset.storagePath ||
         oldWidget.asset.updatedAt != widget.asset.updatedAt) {
-      _signedUrlFuture = _createSignedUrl();
+      _signedUrlFuture = _resolveSignedUrl();
     }
   }
 
-  Future<String> _createSignedUrl() {
-    return context.read<PublicationAssetRepository>().createSignedUrl(
-      widget.asset,
-      expiresInSeconds: 3600,
-    );
+  Future<String> _resolveSignedUrl() {
+    final key = _assetCacheKey;
+    final cachedUrl = _signedUrlCache[key];
+
+    if (cachedUrl != null && cachedUrl.isNotEmpty) {
+      return Future<String>.value(cachedUrl);
+    }
+
+    final pending = _pendingSignedUrls[key];
+
+    if (pending != null) {
+      return pending;
+    }
+
+    final future = context
+        .read<PublicationAssetRepository>()
+        .createSignedUrl(widget.asset, expiresInSeconds: 3600)
+        .then((url) {
+          if (url.trim().isNotEmpty) {
+            _signedUrlCache[key] = url;
+          }
+
+          _pendingSignedUrls.remove(key);
+          return url;
+        })
+        .catchError((Object error) {
+          _pendingSignedUrls.remove(key);
+          throw error;
+        });
+
+    _pendingSignedUrls[key] = future;
+    return future;
   }
 
   @override
   Widget build(BuildContext context) {
     final borderRadius = widget.borderRadius ?? BorderRadius.zero;
+    final cachedSignedUrl = _signedUrlCache[_assetCacheKey];
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -67,19 +110,24 @@ class _PublicationAssetImageState extends State<PublicationAssetImage> {
         height: widget.height,
         child: FutureBuilder<String>(
           future: _signedUrlFuture,
+          initialData: cachedSignedUrl,
           builder: (context, snapshot) {
-            final signedUrl = snapshot.data;
+            final signedUrl = snapshot.data ?? cachedSignedUrl;
 
-            if (snapshot.connectionState != ConnectionState.done) {
+            if (signedUrl == null || signedUrl.trim().isEmpty) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return _PublicationImagePlaceholder(
+                  icon: widget.placeholderIcon,
+                  showProgress: true,
+                );
+              }
+
               return _PublicationImagePlaceholder(
-                icon: widget.placeholderIcon,
-                showProgress: true,
+                icon: Icons.broken_image_outlined,
               );
             }
 
-            if (snapshot.hasError ||
-                signedUrl == null ||
-                signedUrl.trim().isEmpty) {
+            if (snapshot.hasError) {
               return _PublicationImagePlaceholder(
                 icon: Icons.broken_image_outlined,
               );
@@ -87,10 +135,11 @@ class _PublicationAssetImageState extends State<PublicationAssetImage> {
 
             return CachedNetworkImage(
               imageUrl: signedUrl,
+              cacheKey: _imageCacheKey,
               width: widget.width,
               height: widget.height,
               fit: widget.fit,
-              fadeInDuration: const Duration(milliseconds: 180),
+              fadeInDuration: const Duration(milliseconds: 120),
               placeholder:
                   (context, _) => _PublicationImagePlaceholder(
                     icon: widget.placeholderIcon,
