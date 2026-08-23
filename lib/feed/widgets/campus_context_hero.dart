@@ -35,6 +35,7 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
   CampusWeather? _weather;
   Timer? _weatherRefreshTimer;
+  bool _isLoadingWeather = false;
 
   @override
   void initState() {
@@ -74,31 +75,31 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
   Future<void> _refreshContextAfterResume() async {
     _startWeatherRefreshTimer();
-    final weather = await _weatherService.getCurrentWeather(forceRefresh: true);
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      if (weather != null) {
-        _weather = weather;
-      }
-    });
+    await _loadWeather(forceRefresh: true);
   }
 
   Future<void> _loadWeather({bool forceRefresh = false}) async {
-    final weather = await _weatherService.getCurrentWeather(
-      forceRefresh: forceRefresh,
-    );
-
-    if (!mounted || weather == null) {
+    if (_isLoadingWeather) {
       return;
     }
 
-    setState(() {
-      _weather = weather;
-    });
+    _isLoadingWeather = true;
+
+    try {
+      final weather = await _weatherService.getCurrentWeather(
+        forceRefresh: forceRefresh,
+      );
+
+      if (!mounted || weather == null) {
+        return;
+      }
+
+      setState(() {
+        _weather = weather;
+      });
+    } finally {
+      _isLoadingWeather = false;
+    }
   }
 
   @override
