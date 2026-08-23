@@ -71,6 +71,7 @@ class AnnouncementFeedView extends StatefulWidget {
 
 class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
   _PublicationFeedFilter _filter = _PublicationFeedFilter.all;
+  _PublicationFeedFilter _previousFilter = _PublicationFeedFilter.all;
   int _heroRefreshToken = 0;
 
   Future<void> _refreshFeed() async {
@@ -126,6 +127,7 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                   selectedFilter: _filter,
                   onChanged: (filter) {
                     setState(() {
+                      _previousFilter = _filter;
                       _filter = filter;
                     });
                   },
@@ -205,6 +207,9 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                         return _AnimatedPublicationCard(
                           key: ValueKey('publication-${announcement.id}'),
                           animationToken: _filter,
+                          horizontalDirection: _filter.index.compareTo(
+                            _previousFilter.index,
+                          ),
                           child: AnnouncementCard(
                             announcement: announcement,
                             receipt:
@@ -230,11 +235,13 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
 class _AnimatedPublicationCard extends StatefulWidget {
   const _AnimatedPublicationCard({
     required this.animationToken,
+    required this.horizontalDirection,
     required this.child,
     super.key,
   });
 
   final Object animationToken;
+  final int horizontalDirection;
   final Widget child;
 
   @override
@@ -245,8 +252,8 @@ class _AnimatedPublicationCard extends StatefulWidget {
 class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _opacity;
-  late final Animation<double> _offset;
+  late Animation<double> _opacity;
+  late Animation<double> _horizontalOffset;
 
   @override
   void initState() {
@@ -257,15 +264,24 @@ class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
       duration: const Duration(milliseconds: 320),
     );
 
-    final animation = CurvedAnimation(
+    _configureAnimation();
+    _controller.forward();
+  }
+
+  void _configureAnimation() {
+    final curved = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeOutCubic,
     );
 
-    _opacity = animation;
-    _offset = Tween<double>(begin: 10, end: 0).animate(animation);
+    final direction = widget.horizontalDirection.sign;
 
-    _controller.forward();
+    _opacity = Tween<double>(begin: 0.72, end: 1).animate(curved);
+
+    _horizontalOffset = Tween<double>(
+      begin: 24.0 * direction,
+      end: 0,
+    ).animate(curved);
   }
 
   @override
@@ -273,6 +289,7 @@ class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.animationToken != widget.animationToken) {
+      _configureAnimation();
       _controller.forward(from: 0);
     }
   }
@@ -292,7 +309,7 @@ class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
         return Opacity(
           opacity: _opacity.value,
           child: Transform.translate(
-            offset: Offset(0, _offset.value),
+            offset: Offset(_horizontalOffset.value, 0),
             child: child,
           ),
         );
