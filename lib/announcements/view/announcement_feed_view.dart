@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/feed/widgets/widgets.dart';
@@ -150,10 +151,7 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
             return _buildFeedShell(
               showFilters: false,
               contentSlivers: const [
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
+                SliverToBoxAdapter(child: _PublicationLoadingState()),
               ],
             );
 
@@ -163,13 +161,8 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
               contentSlivers: [
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: FailureScreen(
-                    title: 'Error de carga',
-                    description:
-                        'No se pudieron cargar las publicaciones institucionales.',
-                    icon: Icons.campaign_outlined,
-                    buttonText: 'Reintentar',
-                    onButtonPressed: () {
+                  child: _PublicationErrorState(
+                    onRetry: () {
                       context.read<AnnouncementBloc>().add(
                         const AnnouncementsStarted(),
                       );
@@ -194,7 +187,18 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                 if (publications.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
-                    child: _EmptyAnnouncementsView(filter: _filter),
+                    child: _EmptyAnnouncementsView(
+                      filter: _filter,
+                      onShowAll:
+                          _filter == _PublicationFeedFilter.all
+                              ? null
+                              : () {
+                                setState(() {
+                                  _previousFilter = _filter;
+                                  _filter = _PublicationFeedFilter.all;
+                                });
+                              },
+                    ),
                   )
                 else
                   SliverPadding(
@@ -228,6 +232,179 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
             );
         }
       },
+    );
+  }
+}
+
+class _PublicationErrorState extends StatelessWidget {
+  const _PublicationErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xlg,
+          AppSpacing.xlg,
+          AppSpacing.xlg,
+          AppSpacing.xlg * 2,
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 340),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withValues(alpha: 0.55),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.cloud_off_outlined,
+                  size: 25,
+                  color: colorScheme.onErrorContainer,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                'No pudimos actualizar el feed',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Revisa tu conexión e inténtalo de nuevo. '
+                'Tus publicaciones volverán a aparecer cuando podamos conectarnos.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.45,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              FilledButton.tonalIcon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text(
+                  'Reintentar',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PublicationLoadingState extends StatelessWidget {
+  const _PublicationLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xlg,
+      ),
+      child: Shimmer.fromColors(
+        baseColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.58),
+        highlightColor: colorScheme.surface.withValues(alpha: 0.96),
+        period: const Duration(milliseconds: 1350),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _SkeletonBox(height: 46, borderRadius: 16),
+            SizedBox(height: AppSpacing.lg),
+            _PublicationCardSkeleton(),
+            SizedBox(height: AppSpacing.lg),
+            _PublicationCardSkeleton(imageHeight: 150),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PublicationCardSkeleton extends StatelessWidget {
+  const _PublicationCardSkeleton({this.imageHeight = 185});
+
+  final double imageHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _SkeletonBox(height: imageHeight, borderRadius: 0),
+          const Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SkeletonBox(width: 92, height: 16, borderRadius: 8),
+                SizedBox(height: AppSpacing.md),
+                _SkeletonBox(height: 22, borderRadius: 8),
+                SizedBox(height: AppSpacing.sm),
+                _SkeletonBox(width: 240, height: 16, borderRadius: 8),
+                SizedBox(height: AppSpacing.lg),
+                Row(
+                  children: [
+                    Expanded(child: _SkeletonBox(height: 12, borderRadius: 6)),
+                    SizedBox(width: AppSpacing.xlg),
+                    _SkeletonBox(width: 74, height: 12, borderRadius: 6),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkeletonBox extends StatelessWidget {
+  const _SkeletonBox({
+    required this.height,
+    required this.borderRadius,
+    this.width,
+  });
+
+  final double? width;
+  final double height;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
     );
   }
 }
@@ -934,54 +1111,101 @@ class _PriorityBadge extends StatelessWidget {
 }
 
 class _EmptyAnnouncementsView extends StatelessWidget {
-  const _EmptyAnnouncementsView({required this.filter});
+  const _EmptyAnnouncementsView({required this.filter, this.onShowAll});
 
   final _PublicationFeedFilter filter;
+  final VoidCallback? onShowAll;
 
   @override
   Widget build(BuildContext context) {
-    final (message, icon) = switch (filter) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    final (title, description, icon) = switch (filter) {
       _PublicationFeedFilter.all => (
-        'No hay noticias ni comunicados disponibles para tu perfil.',
-        Icons.article_outlined,
+        'Todo al día',
+        'No hay noticias ni comunicados nuevos para tu perfil.',
+        Icons.check_rounded,
       ),
       _PublicationFeedFilter.news => (
-        'No hay noticias publicadas en este momento.',
+        'Sin noticias por ahora',
+        'Cuando haya nuevas noticias institucionales, aparecerán aquí.',
         Icons.newspaper_outlined,
       ),
       _PublicationFeedFilter.announcements => (
-        'No hay comunicados disponibles para tu perfil.',
+        'Sin comunicados por ahora',
+        'No hay comunicados dirigidos a tu perfil en este momento.',
         Icons.campaign_outlined,
       ),
     };
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xlg),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(icon, size: 56),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(message, textAlign: TextAlign.center),
-                    ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xlg,
+          AppSpacing.xlg,
+          AppSpacing.xlg,
+          AppSpacing.xlg * 2,
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 340),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.55,
                   ),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 25,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
-            ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.45,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              if (onShowAll != null) ...[
+                const SizedBox(height: AppSpacing.lg),
+                TextButton(
+                  onPressed: onShowAll,
+                  style: TextButton.styleFrom(
+                    foregroundColor: colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.sm,
+                    ),
+                  ),
+                  child: const Text(
+                    'Ver todas',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
