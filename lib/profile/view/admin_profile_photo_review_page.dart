@@ -200,7 +200,7 @@ class _AdminProfilePhotoReviewPageState
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (!profile.canManageAnnouncements) {
+    if (!profile.canReviewProfilePhotos) {
       return Scaffold(
         appBar: AppBar(title: const Text('Revisión de fotografías')),
         body: const _UnauthorizedState(),

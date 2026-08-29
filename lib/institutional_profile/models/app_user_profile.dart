@@ -52,7 +52,13 @@ class AppUserProfile {
 
   bool get isSuperAdmin => role == AppUserRole.superAdmin;
 
+  bool get canAccessAdministration => role.canAccessAdministration;
+
   bool get canManageAnnouncements => role.canManageAnnouncements;
+
+  bool get canReviewProfilePhotos => role.canReviewProfilePhotos;
+
+  bool get canValidateStudentIds => role.canValidateStudentIds;
 
   bool get canManageAdmins => role.canManageAdmins;
 

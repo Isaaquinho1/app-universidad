@@ -310,7 +310,7 @@ class _AdminStudentIdValidatorPageState
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (!profile.canManageAnnouncements) {
+    if (!profile.canValidateStudentIds) {
       return Scaffold(
         appBar: AppBar(title: const Text('Validar identificación')),
         body: const _UnauthorizedValidatorState(),

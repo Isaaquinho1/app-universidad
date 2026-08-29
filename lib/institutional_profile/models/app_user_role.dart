@@ -19,9 +19,18 @@ enum AppUserRole {
     }
   }
 
-  /// Whether this role can create and manage institutional announcements.
-  bool get canManageAnnouncements =>
+  /// Whether this role can access the administrative services hub.
+  bool get canAccessAdministration =>
       this == AppUserRole.admin || this == AppUserRole.superAdmin;
+
+  /// Whether this role can create and manage institutional announcements.
+  bool get canManageAnnouncements => canAccessAdministration;
+
+  /// Whether this role can review institutional profile photographs.
+  bool get canReviewProfilePhotos => canAccessAdministration;
+
+  /// Whether this role can validate digital student identifications.
+  bool get canValidateStudentIds => canAccessAdministration;
 
   /// Whether this role can administer other privileged accounts.
   bool get canManageAdmins => this == AppUserRole.superAdmin;

@@ -17,7 +17,7 @@ class ServicesPage extends StatelessWidget {
     final profile = context.watch<AppBloc>().state.institutionalProfile;
 
     final title =
-        profile?.canManageAnnouncements ?? false
+        profile?.canAccessAdministration ?? false
             ? 'Administración'
             : profile?.isTeacher ?? false
             ? 'Docencia'
@@ -213,7 +213,7 @@ class _ServicesViewState extends State<ServicesView>
   Widget build(BuildContext context) {
     final profile = context.watch<AppBloc>().state.institutionalProfile;
 
-    if (profile?.canManageAnnouncements ?? false) {
+    if (profile?.canAccessAdministration ?? false) {
       return _buildAdministrationView();
     }
 
