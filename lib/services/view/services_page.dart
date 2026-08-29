@@ -5,14 +5,26 @@ import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'dart:async';
+import 'package:conecta_itt/app/app.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ServicesPage extends StatelessWidget {
   const ServicesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<AppBloc>().state.institutionalProfile;
+
+    final title =
+        profile?.canManageAnnouncements ?? false
+            ? 'Administración'
+            : profile?.isTeacher ?? false
+            ? 'Docencia'
+            : context.l10n.services;
+
     return Scaffold(
-      appBar: AppBar(elevation: 0, title: Text(context.l10n.services)),
+      appBar: AppBar(elevation: 0, title: Text(title)),
       body: const ServicesView(),
     );
   }
@@ -199,6 +211,20 @@ class _ServicesViewState extends State<ServicesView>
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<AppBloc>().state.institutionalProfile;
+
+    if (profile?.canManageAnnouncements ?? false) {
+      return _buildAdministrationView();
+    }
+
+    if (profile?.isTeacher ?? false) {
+      return _buildTeacherView();
+    }
+
+    return _buildStudentServicesView();
+  }
+
+  Widget _buildStudentServicesView() {
     return Column(
       children: [
         Padding(
@@ -227,6 +253,132 @@ class _ServicesViewState extends State<ServicesView>
               });
             },
             children: [_buildMainTab(), _buildDigitalUniversityTab()],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdministrationView() {
+    return ListView(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
+      ),
+      children: [
+        Text(
+          'Herramientas administrativas',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Gestiona publicaciones y procesos institucionales '
+          'desde un solo lugar.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xlg),
+        _AdministrativeServiceTile(
+          icon: Icons.campaign_outlined,
+          title: 'Gestión de publicaciones',
+          description: 'Crea, edita y revisa publicaciones institucionales.',
+          onTap: () => context.go('/services/announcement-management'),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _AdministrativeServiceTile(
+          icon: Icons.fact_check_outlined,
+          title: 'Revisión de fotografías',
+          description:
+              'Revisa fotografías institucionales enviadas '
+              'por estudiantes.',
+          onTap: () => context.go('/services/photo-review'),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _AdministrativeServiceTile(
+          icon: Icons.qr_code_scanner_rounded,
+          title: 'Validar identificación',
+          description:
+              'Valida identificaciones digitales mediante '
+              'su código QR.',
+          onTap: () => context.go('/services/id-validator'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTeacherView() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return ListView(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
+      ),
+      children: [
+        Text(
+          'Herramientas docentes',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Este espacio reunirá las herramientas académicas '
+          'disponibles para docentes.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xlg),
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.xlg),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  Icons.school_outlined,
+                  size: 32,
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                'Espacio docente en preparación',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Aquí podremos incorporar horario docente, '
+                'grupos, materias y otras herramientas cuando '
+                'estén disponibles en Conecta ITT.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  height: 1.45,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -475,6 +627,74 @@ class _ServicesViewState extends State<ServicesView>
               ],
             );
           }).toList(),
+    );
+  }
+}
+
+class _AdministrativeServiceTile extends StatelessWidget {
+  const _AdministrativeServiceTile({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Material(
+      color: colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: colorScheme.onSurface),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              const Icon(Icons.chevron_right_rounded),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

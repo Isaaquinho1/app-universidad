@@ -20,7 +20,7 @@ class _AdminAnnouncementManagementPageState
 
   Future<void> _openEdit(Announcement announcement) async {
     final successMessage = await context.push<String>(
-      '/profile/announcement-management/'
+      '/services/announcement-management/'
       '${announcement.id}/edit',
     );
 
@@ -34,7 +34,7 @@ class _AdminAnnouncementManagementPageState
 
   Future<void> _openCreate() async {
     final successMessage = await context.push<String>(
-      '/profile/announcement-management/create',
+      '/services/announcement-management/create',
     );
 
     if (!mounted || successMessage == null) {
@@ -466,7 +466,7 @@ class _AnnouncementAdminCard extends StatelessWidget {
                       isProcessing
                           ? null
                           : () => context.go(
-                            '/profile/announcement-management/'
+                            '/services/announcement-management/'
                             '${announcement.id}/results',
                           ),
                   icon: const Icon(Icons.analytics_outlined),

@@ -65,13 +65,8 @@ class WelcomeRoute extends GoRouteData {
     ),
     TypedStatefulShellBranch<ServicesBranchData>(
       routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ServicesRoute>(path: '/services'),
-      ],
-    ),
-    TypedStatefulShellBranch<ProfileBranchData>(
-      routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ProfileRoute>(
-          path: '/profile',
+        TypedGoRoute<ServicesRoute>(
+          path: '/services',
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<AdminAnnouncementManagementRoute>(
               path: 'announcement-management',
@@ -87,6 +82,15 @@ class WelcomeRoute extends GoRouteData {
             ),
             TypedGoRoute<AdminProfilePhotoReviewRoute>(path: 'photo-review'),
             TypedGoRoute<AdminStudentIdValidatorRoute>(path: 'id-validator'),
+          ],
+        ),
+      ],
+    ),
+    TypedStatefulShellBranch<ProfileBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<ProfileRoute>(
+          path: '/profile',
+          routes: <TypedRoute<RouteData>>[
             TypedGoRoute<StudentIdRoute>(path: 'student-id'),
             TypedGoRoute<ProfileEditRoute>(path: 'edit'),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
