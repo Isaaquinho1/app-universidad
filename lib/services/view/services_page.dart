@@ -317,6 +317,15 @@ class _ServicesViewState extends State<ServicesView>
               'de estudiantes.',
           onTap: () => context.go('/services/academic-management'),
         ),
+        const SizedBox(height: AppSpacing.md),
+        _AdministrativeServiceTile(
+          icon: Icons.co_present_outlined,
+          title: 'Gestión docente',
+          description:
+              'Administra materias, asignaciones, grupos y horarios docentes.',
+          onTap: () => context.go('/services/teacher-management'),
+        ),
+        const SizedBox(height: AppSpacing.md),
         if (profile.canManageAdmins) ...[
           const SizedBox(height: AppSpacing.xlg),
           Text(
@@ -346,77 +355,7 @@ class _ServicesViewState extends State<ServicesView>
   }
 
   Widget _buildTeacherView() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return ListView(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.lg,
-        AppSpacing.lg,
-        AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
-      ),
-      children: [
-        Text(
-          'Herramientas docentes',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Este espacio reunirá las herramientas académicas '
-          'disponibles para docentes.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xlg),
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.xlg),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Column(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(
-                  Icons.school_outlined,
-                  size: 32,
-                  color: colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                'Espacio docente en preparación',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Aquí podremos incorporar horario docente, '
-                'grupos, materias y otras herramientas cuando '
-                'estén disponibles en Conecta ITT.',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.45,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+    return const TeacherServicesView();
   }
 
   Widget _buildMainTab() {

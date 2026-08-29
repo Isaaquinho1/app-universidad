@@ -6,3 +6,7 @@ export 'profile_photo_allowance.dart';
 export 'role_management_profile.dart';
 export 'student_id_qr_token.dart';
 export 'student_id_qr_validation_result.dart';
+export 'institutional_subject.dart';
+export 'teacher_assignment.dart';
+export 'teacher_assignment_session.dart';
+export 'teacher_profile_summary.dart';

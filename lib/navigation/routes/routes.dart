@@ -84,6 +84,9 @@ class WelcomeRoute extends GoRouteData {
             TypedGoRoute<AdminStudentAcademicManagementRoute>(
               path: 'academic-management',
             ),
+            TypedGoRoute<AdminTeacherManagementRoute>(
+              path: 'teacher-management',
+            ),
             TypedGoRoute<AdminRoleManagementRoute>(path: 'role-management'),
           ],
         ),
@@ -223,6 +226,15 @@ class AdminStudentAcademicManagementRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const AdminStudentAcademicManagementPage();
+  }
+}
+
+class AdminTeacherManagementRoute extends GoRouteData {
+  const AdminTeacherManagementRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminTeacherManagementPage();
   }
 }
 
