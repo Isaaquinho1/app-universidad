@@ -94,46 +94,90 @@ class AppUserProfileRepository {
     );
   }
 
-  /// Updates academic fields through the protected database function.
-  Future<AppUserProfile> updateProfile({
-    required String uid,
-    String? displayName,
-    String? careerId,
-    int? semester,
-    String? groupId,
-    String? controlNumber,
-    bool? profileCompleted,
-  }) async {
-    _validateCurrentUser(uid);
+  /// Searches student academic profiles visible to administrators.
+  ///
+  /// Authorization is enforced server-side and requires an active admin
+  /// or superAdmin account.
+  Future<List<AdminStudentAcademicProfile>>
+  searchStudentAcademicProfilesAsAdmin({String? query, int limit = 50}) async {
+    final normalizedQuery = query?.trim();
 
-    if (displayName != null) {
-      throw UnsupportedError(
-        'The institutional display name is defined during registration '
-        'and cannot be updated from the client.',
+    final response = await _supabaseClient.rpc(
+      'search_student_academic_profiles_as_admin',
+      params: {
+        'p_query':
+            normalizedQuery == null || normalizedQuery.isEmpty
+                ? null
+                : normalizedQuery,
+        'p_limit': limit,
+      },
+    );
+
+    if (response is! List) {
+      throw StateError('Student academic search returned an invalid response.');
+    }
+
+    return response
+        .whereType<Map>()
+        .map(
+          (row) => AdminStudentAcademicProfile.fromSupabase(
+            Map<String, dynamic>.from(row),
+          ),
+        )
+        .where((profile) => profile.id.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  /// Updates a student's academic placement through the audited
+  /// administrative RPC.
+  ///
+  /// Career, semester and group consistency is validated by Supabase.
+  Future<AppUserProfile> updateStudentAcademicProfileAsAdmin({
+    required String uid,
+    required String careerId,
+    required int semester,
+    String? groupId,
+  }) async {
+    final normalizedUid = uid.trim();
+    final normalizedCareerId = careerId.trim().toLowerCase();
+    final normalizedGroupId = groupId?.trim();
+
+    if (normalizedUid.isEmpty) {
+      throw ArgumentError.value(uid, 'uid', 'User ID cannot be empty.');
+    }
+
+    if (normalizedCareerId.isEmpty) {
+      throw ArgumentError.value(
+        careerId,
+        'careerId',
+        'Career ID cannot be empty.',
       );
     }
 
-    if (controlNumber != null) {
-      throw UnsupportedError(
-        'The control number is generated from the institutional email '
-        'and cannot be updated from the client.',
+    if (semester < 1 || semester > 14) {
+      throw ArgumentError.value(
+        semester,
+        'semester',
+        'Semester must be between 1 and 14.',
       );
     }
 
     final response = await _supabaseClient.rpc(
-      'update_own_profile',
+      'update_student_academic_profile_as_admin',
       params: {
-        'p_display_name': null,
-        'p_career_id': careerId,
+        'p_user_id': normalizedUid,
+        'p_career_id': normalizedCareerId,
         'p_semester': semester,
-        'p_group_id': groupId,
-        'p_profile_completed': profileCompleted,
+        'p_group_id':
+            normalizedGroupId == null || normalizedGroupId.isEmpty
+                ? null
+                : normalizedGroupId,
       },
     );
 
     if (response is! Map) {
       throw StateError(
-        'The profile update did not return the updated institutional profile.',
+        'Academic profile update returned an invalid institutional profile.',
       );
     }
 

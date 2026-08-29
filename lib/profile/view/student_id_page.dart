@@ -27,12 +27,32 @@ class _StudentIdPageState extends State<StudentIdPage>
 
   int _selectedSide = 0;
   bool _brightnessEnabled = false;
+  bool _studentAuthorized = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    unawaited(_enableMaximumBrightness());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final profile = context.read<AppBloc>().state.institutionalProfile;
+    final authorized = profile?.isStudent ?? false;
+
+    if (_studentAuthorized == authorized) {
+      return;
+    }
+
+    _studentAuthorized = authorized;
+
+    if (authorized) {
+      unawaited(_enableMaximumBrightness());
+    } else {
+      unawaited(_restoreBrightness());
+    }
   }
 
   Future<void> _enableMaximumBrightness() async {
@@ -63,7 +83,9 @@ class _StudentIdPageState extends State<StudentIdPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        unawaited(_enableMaximumBrightness());
+        if (_studentAuthorized) {
+          unawaited(_enableMaximumBrightness());
+        }
       case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
@@ -96,6 +118,14 @@ class _StudentIdPageState extends State<StudentIdPage>
             if (profile == null) {
               return const _UnavailableIdentification(
                 message: 'No fue posible consultar tu perfil institucional.',
+              );
+            }
+
+            if (!profile.isStudent) {
+              return const _UnavailableIdentification(
+                message:
+                    'La identificación digital está disponible únicamente '
+                    'para cuentas de estudiante.',
               );
             }
 

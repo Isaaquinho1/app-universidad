@@ -308,6 +308,15 @@ class _ServicesViewState extends State<ServicesView>
               'su código QR.',
           onTap: () => context.go('/services/id-validator'),
         ),
+        const SizedBox(height: AppSpacing.md),
+        _AdministrativeServiceTile(
+          icon: Icons.school_outlined,
+          title: 'Gestión académica de estudiantes',
+          description:
+              'Consulta y actualiza carrera, semestre y grupo '
+              'de estudiantes.',
+          onTap: () => context.go('/services/academic-management'),
+        ),
         if (profile.canManageAdmins) ...[
           const SizedBox(height: AppSpacing.xlg),
           Text(

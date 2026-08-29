@@ -11,7 +11,6 @@ import 'package:conecta_itt/feed/feed.dart';
 import 'package:conecta_itt/onboarding/view/onboarding_page.dart';
 import 'package:conecta_itt/welcome/welcome.dart';
 import 'package:conecta_itt/profile/view/profile_settings_page.dart';
-import 'package:conecta_itt/profile/view/profile_edit_page.dart';
 import 'package:conecta_itt/profile/view/student_id_page.dart';
 
 import 'package:conecta_itt/services/view/view.dart';
@@ -82,6 +81,9 @@ class WelcomeRoute extends GoRouteData {
             ),
             TypedGoRoute<AdminProfilePhotoReviewRoute>(path: 'photo-review'),
             TypedGoRoute<AdminStudentIdValidatorRoute>(path: 'id-validator'),
+            TypedGoRoute<AdminStudentAcademicManagementRoute>(
+              path: 'academic-management',
+            ),
             TypedGoRoute<AdminRoleManagementRoute>(path: 'role-management'),
           ],
         ),
@@ -93,7 +95,6 @@ class WelcomeRoute extends GoRouteData {
           path: '/profile',
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<StudentIdRoute>(path: 'student-id'),
-            TypedGoRoute<ProfileEditRoute>(path: 'edit'),
             TypedGoRoute<AboutAppRoute>(path: 'about'),
             TypedGoRoute<ProfileSettingsRoute>(path: 'settings'),
           ],
@@ -216,6 +217,15 @@ class AdminAnnouncementResultsRoute extends GoRouteData {
   }
 }
 
+class AdminStudentAcademicManagementRoute extends GoRouteData {
+  const AdminStudentAcademicManagementRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminStudentAcademicManagementPage();
+  }
+}
+
 class AdminRoleManagementRoute extends GoRouteData {
   const AdminRoleManagementRoute();
 
@@ -249,15 +259,6 @@ class StudentIdRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const StudentIdPage();
-  }
-}
-
-class ProfileEditRoute extends GoRouteData {
-  const ProfileEditRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const ProfileEditPage();
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/constants/institutional_careers.dart';
-import 'package:conecta_itt/institutional_profile/models/models.dart';
 import 'package:conecta_itt/login/login.dart';
 import 'package:conecta_itt/profile/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -64,26 +63,11 @@ class _AuthenticatedProfile extends StatelessWidget {
           roleLabel: _roleLabel(profile?.role.value),
           active: profile?.active ?? true,
           profileCompleted: profile?.profileCompleted ?? false,
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        SizedBox(
-          height: 50,
-          child: OutlinedButton.icon(
-            onPressed: () => context.go('/profile/edit'),
-            icon: const Icon(Icons.edit_outlined),
-            label: const Text('Editar perfil'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF003B5C),
-              side: const BorderSide(color: Color(0xFF003B5C)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
+          isStudent: profile?.isStudent ?? false,
         ),
         const SizedBox(height: AppSpacing.xlg),
 
-        if (_hasAcademicIdentity(profile)) ...[
+        if (profile?.isStudent ?? false) ...[
           SettingsSection(
             title: 'Información académica',
             children: [
@@ -119,6 +103,33 @@ class _AuthenticatedProfile extends StatelessWidget {
                 icon: Icons.groups_outlined,
                 label: 'Grupo',
                 value: _displayValue(profile?.groupId).toUpperCase(),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xlg),
+        ] else if (profile != null) ...[
+          SettingsSection(
+            title: 'Información institucional',
+            children: [
+              _ProfileDataRow(
+                icon: Icons.manage_accounts_outlined,
+                label: 'Rol institucional',
+                value: _roleLabel(profile.role.value),
+              ),
+              const Divider(height: 24, thickness: 0.5),
+              _ProfileDataRow(
+                icon: Icons.alternate_email_rounded,
+                label: 'Correo institucional',
+                value: email,
+              ),
+              const Divider(height: 24, thickness: 0.5),
+              _ProfileDataRow(
+                icon:
+                    profile.active
+                        ? Icons.verified_outlined
+                        : Icons.block_outlined,
+                label: 'Estado de la cuenta',
+                value: profile.active ? 'Cuenta activa' : 'Cuenta inactiva',
               ),
             ],
           ),
@@ -178,6 +189,7 @@ class _ProfileHeader extends StatelessWidget {
     required this.roleLabel,
     required this.active,
     required this.profileCompleted,
+    required this.isStudent,
   });
 
   final String displayName;
@@ -185,6 +197,7 @@ class _ProfileHeader extends StatelessWidget {
   final String roleLabel;
   final bool active;
   final bool profileCompleted;
+  final bool isStudent;
 
   @override
   Widget build(BuildContext context) {
@@ -260,8 +273,11 @@ class _ProfileHeader extends StatelessWidget {
           if (!profileCompleted) ...[
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Completa tu información académica para recibir contenido '
-              'segmentado correctamente.',
+              isStudent
+                  ? 'Completa tu información académica para recibir contenido '
+                      'segmentado correctamente.'
+                  : 'Completa tu información institucional para mantener '
+                      'actualizado tu perfil.',
               textAlign: TextAlign.center,
               style: AppTextStyle.captionL.copyWith(
                 color: Colors.white.withValues(alpha: 0.78),
@@ -420,18 +436,6 @@ class _UnauthenticatedProfile extends StatelessWidget {
       ),
     );
   }
-}
-
-bool _hasAcademicIdentity(AppUserProfile? profile) {
-  if (profile == null) {
-    return false;
-  }
-
-  return profile.isStudent ||
-      (profile.controlNumber?.trim().isNotEmpty ?? false) ||
-      (profile.careerId?.trim().isNotEmpty ?? false) ||
-      profile.semester != null ||
-      (profile.groupId?.trim().isNotEmpty ?? false);
 }
 
 String _careerLabel(String? careerId) {
