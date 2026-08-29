@@ -82,6 +82,7 @@ class WelcomeRoute extends GoRouteData {
             ),
             TypedGoRoute<AdminProfilePhotoReviewRoute>(path: 'photo-review'),
             TypedGoRoute<AdminStudentIdValidatorRoute>(path: 'id-validator'),
+            TypedGoRoute<AdminRoleManagementRoute>(path: 'role-management'),
           ],
         ),
       ],
@@ -212,6 +213,15 @@ class AdminAnnouncementResultsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AdminAnnouncementResultsPage(announcementId: announcementId);
+  }
+}
+
+class AdminRoleManagementRoute extends GoRouteData {
+  const AdminRoleManagementRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdminRoleManagementPage();
   }
 }
 

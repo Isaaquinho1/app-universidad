@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:conecta_itt/app/app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 
 class ServicesPage extends StatelessWidget {
   const ServicesPage({super.key});
@@ -214,7 +215,7 @@ class _ServicesViewState extends State<ServicesView>
     final profile = context.watch<AppBloc>().state.institutionalProfile;
 
     if (profile?.canAccessAdministration ?? false) {
-      return _buildAdministrationView();
+      return _buildAdministrationView(profile!);
     }
 
     if (profile?.isTeacher ?? false) {
@@ -259,7 +260,7 @@ class _ServicesViewState extends State<ServicesView>
     );
   }
 
-  Widget _buildAdministrationView() {
+  Widget _buildAdministrationView(AppUserProfile profile) {
     return ListView(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -307,6 +308,30 @@ class _ServicesViewState extends State<ServicesView>
               'su código QR.',
           onTap: () => context.go('/services/id-validator'),
         ),
+        if (profile.canManageAdmins) ...[
+          const SizedBox(height: AppSpacing.xlg),
+          Text(
+            'Superadministración',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Herramientas exclusivas para la administración '
+            'de accesos institucionales.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _AdministrativeServiceTile(
+            icon: Icons.manage_accounts_outlined,
+            title: 'Gestión de usuarios y roles',
+            description: 'Consulta cuentas y administra roles institucionales.',
+            onTap: () => context.go('/services/role-management'),
+          ),
+        ],
       ],
     );
   }

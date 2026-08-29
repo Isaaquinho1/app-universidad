@@ -140,17 +140,75 @@ class AppUserProfileRepository {
     return AppUserProfile.fromSupabase(Map<String, dynamic>.from(response));
   }
 
-  /// Updates the role of a user.
+  /// Searches institutional accounts visible to role management.
   ///
-  /// Roles cannot be changed directly from the mobile client. A dedicated
-  /// superAdmin RPC or trusted backend flow will be implemented later.
-  Future<void> updateRole({
+  /// Authorization is enforced server-side and requires an active
+  /// superAdmin account.
+  Future<List<RoleManagementProfile>> searchRoleManagementProfiles({
+    String? query,
+    int limit = 50,
+  }) async {
+    final normalizedQuery = query?.trim();
+
+    final response = await _supabaseClient.rpc(
+      'search_role_management_profiles',
+      params: {
+        'p_query':
+            normalizedQuery == null || normalizedQuery.isEmpty
+                ? null
+                : normalizedQuery,
+        'p_limit': limit,
+      },
+    );
+
+    if (response is! List) {
+      throw StateError('Role management search returned an invalid response.');
+    }
+
+    return response
+        .whereType<Map>()
+        .map(
+          (row) => RoleManagementProfile.fromSupabase(
+            Map<String, dynamic>.from(row),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  /// Updates one institutional role through the trusted superAdmin RPC.
+  ///
+  /// The backend prevents self-demotion, modification of existing
+  /// superAdmin accounts and assignment of the superAdmin role.
+  Future<AppUserProfile> updateRole({
     required String uid,
     required AppUserRole role,
   }) async {
-    throw UnsupportedError(
-      'Institutional roles must be changed through a trusted admin flow.',
+    final normalizedUid = uid.trim();
+
+    if (normalizedUid.isEmpty) {
+      throw ArgumentError.value(uid, 'uid', 'User ID cannot be empty.');
+    }
+
+    if (role == AppUserRole.superAdmin) {
+      throw ArgumentError.value(
+        role,
+        'role',
+        'The mobile client cannot assign the superAdmin role.',
+      );
+    }
+
+    final response = await _supabaseClient.rpc(
+      'update_profile_role_as_super_admin',
+      params: {'p_user_id': normalizedUid, 'p_role': role.value},
     );
+
+    if (response is! Map) {
+      throw StateError(
+        'Role update returned an invalid institutional profile.',
+      );
+    }
+
+    return AppUserProfile.fromSupabase(Map<String, dynamic>.from(response));
   }
 
   /// Registers or transfers an FCM token to the active account.
