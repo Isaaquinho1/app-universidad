@@ -39,21 +39,21 @@ class AboutAppPage extends StatelessWidget {
               icon: Icons.groups_outlined,
               children: [
                 _Contributor(
-                  name: 'Esteban Isaac Méndez Vázquez',
+                  name: 'Isaac Méndez',
                   description:
                       'Desarrollador Fullstack de la '
                       'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
-                  name: 'Jessica Vianney Sánchez Díaz',
+                  name: 'Vianney Sánchez',
                   description: 
                         'Desarrolladora Frontend de la '
                         'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
-                  name: 'Jesús Ali Lucas Mendoza',
+                  name: 'Ali Lucas',
                   description: 
                         'Desarrollador Backend de la '
                         'aplicación móvil.',
