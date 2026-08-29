@@ -208,10 +208,13 @@ class _ServicesViewState extends State<ServicesView>
             AppSpacing.lg,
             AppSpacing.sm,
           ),
-          child: CategoryAnimatedTabBar(
-            tabs: _categories,
-            selectedIndex: _selectedIndex,
-            onTap: _onCategorySelected,
+          child: ConectaSegmentedSelector<int>(
+            selectedValue: _selectedIndex,
+            onChanged: _onCategorySelected,
+            items: [
+              for (var index = 0; index < _categories.length; index++)
+                ConectaSegmentedItem(value: index, label: _categories[index]),
+            ],
           ),
         ),
         Expanded(

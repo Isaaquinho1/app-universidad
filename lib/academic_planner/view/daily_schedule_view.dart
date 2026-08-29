@@ -1,8 +1,11 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/scheduled_class.dart';
 import 'package:conecta_itt/academic_planner/repositories/daily_schedule_repository.dart';
+import 'package:conecta_itt/academic_planner/repositories/weekly_schedule_repository.dart';
+import 'package:conecta_itt/academic_planner/services/weekly_schedule_image_exporter.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DailyScheduleView extends StatefulWidget {
   const DailyScheduleView({super.key});
@@ -33,6 +36,11 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
   };
 
   final DailyScheduleRepository _repository = DailyScheduleRepository();
+  final WeeklyScheduleRepository _weeklyRepository = WeeklyScheduleRepository();
+  final WeeklyScheduleImageExporter _imageExporter =
+      const WeeklyScheduleImageExporter();
+
+  bool _isExportingImage = false;
 
   late int _selectedWeekday;
   late Future<List<ScheduledClass>> _classesFuture;
@@ -46,6 +54,92 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
 
   void _loadClasses() {
     _classesFuture = _repository.getByWeekday(_selectedWeekday);
+  }
+
+  Future<void> _exportScheduleImage(BuildContext context) async {
+    if (_isExportingImage) {
+      return;
+    }
+
+    setState(() {
+      _isExportingImage = true;
+    });
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    final materialLocalizations = MaterialLocalizations.of(context);
+    final alwaysUse24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
+
+    String formatMinutes(int minutes) {
+      return materialLocalizations.formatTimeOfDay(
+        TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+        alwaysUse24HourFormat: alwaysUse24HourFormat,
+      );
+    }
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    final sharePositionOrigin =
+        renderBox == null
+            ? null
+            : renderBox.localToGlobal(Offset.zero) & renderBox.size;
+
+    try {
+      final week = await _weeklyRepository.getWeek();
+
+      final totalClasses = week.values.fold<int>(
+        0,
+        (total, classes) => total + classes.length,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (totalClasses == 0) {
+        messenger?.showSnackBar(
+          const SnackBar(
+            content: Text('Agrega clases antes de exportar tu horario.'),
+          ),
+        );
+        return;
+      }
+
+      final file = await _imageExporter.export(
+        week: week,
+        formatMinutes: formatMinutes,
+      );
+
+      if (!mounted) {
+        return;
+      }
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path, mimeType: 'image/png')],
+          sharePositionOrigin: sharePositionOrigin,
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('=== ERROR: EXPORTAR HORARIO COMO PNG ===');
+      debugPrint('Tipo: ${error.runtimeType}');
+      debugPrint('Error: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      if (!mounted) {
+        return;
+      }
+
+      messenger?.showSnackBar(
+        const SnackBar(
+          content: Text('No fue posible generar la imagen del horario.'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isExportingImage = false;
+        });
+      }
+    }
   }
 
   Future<void> _refresh() async {
@@ -125,12 +219,32 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
                 onSelected: _selectWeekday,
               ),
               const SizedBox(height: AppSpacing.xlg),
-              Text(
-                _dateLabel(),
-                style: AppTextStyle.h4.copyWith(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _dateLabel(),
+                      style: AppTextStyle.h4.copyWith(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Exportar horario como PNG',
+                    onPressed:
+                        _isExportingImage
+                            ? null
+                            : () => _exportScheduleImage(context),
+                    icon:
+                        _isExportingImage
+                            ? const SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : const Icon(Icons.image_outlined),
+                  ),
+                ],
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(

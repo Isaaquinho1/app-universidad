@@ -6,14 +6,7 @@ import 'package:conecta_itt/academic_planner/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class SubjectsManagementView extends StatefulWidget {
-  const SubjectsManagementView({
-    super.key,
-    required this.selectedIndex,
-    required this.onSectionSelected,
-  });
-
-  final int selectedIndex;
-  final ValueChanged<int> onSectionSelected;
+  const SubjectsManagementView({super.key});
 
   @override
   State<SubjectsManagementView> createState() => _SubjectsManagementViewState();
@@ -226,38 +219,6 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Horario'),
-        actions: [
-          IconButton(
-            tooltip:
-                _showArchived
-                    ? 'Ocultar materias archivadas'
-                    : 'Mostrar materias archivadas',
-            onPressed:
-                _processingAction
-                    ? null
-                    : () {
-                      setState(() {
-                        _showArchived = !_showArchived;
-                        _loadSubjects();
-                      });
-                    },
-            icon: Icon(
-              _showArchived
-                  ? Icons.inventory_2_rounded
-                  : Icons.inventory_2_outlined,
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(54),
-          child: AcademicPlannerSectionSwitch(
-            selectedIndex: widget.selectedIndex,
-            onSelected: widget.onSectionSelected,
-          ),
-        ),
-      ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'academic_subjects_fab',
         onPressed: _processingAction ? null : () => _openSubjectForm(),
@@ -307,6 +268,13 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
                     return _SubjectsHeader(
                       total: subjects.length,
                       showingArchived: _showArchived,
+                      processingAction: _processingAction,
+                      onToggleArchived: () {
+                        setState(() {
+                          _showArchived = !_showArchived;
+                          _loadSubjects();
+                        });
+                      },
                     );
                   }
 
@@ -336,10 +304,17 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
 }
 
 class _SubjectsHeader extends StatelessWidget {
-  const _SubjectsHeader({required this.total, required this.showingArchived});
+  const _SubjectsHeader({
+    required this.total,
+    required this.showingArchived,
+    required this.processingAction,
+    required this.onToggleArchived,
+  });
 
   final int total;
   final bool showingArchived;
+  final bool processingAction;
+  final VoidCallback onToggleArchived;
 
   @override
   Widget build(BuildContext context) {
@@ -348,12 +323,30 @@ class _SubjectsHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Mis materias',
-          style: AppTextStyle.h4.copyWith(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Mis materias',
+                style: AppTextStyle.h4.copyWith(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            IconButton(
+              tooltip:
+                  showingArchived
+                      ? 'Ocultar materias archivadas'
+                      : 'Mostrar materias archivadas',
+              onPressed: processingAction ? null : onToggleArchived,
+              icon: Icon(
+                showingArchived
+                    ? Icons.inventory_2_rounded
+                    : Icons.inventory_2_outlined,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(

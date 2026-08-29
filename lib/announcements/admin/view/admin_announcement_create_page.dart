@@ -1023,118 +1023,85 @@ class _AdminAnnouncementCreatePageState
     final theme = Theme.of(context);
     final isNews = _contentType.isNews;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Tipo de publicación',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Tipo de publicación',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        ConectaSegmentedSelector<PublicationContentType>(
+          selectedValue: _contentType,
+          onChanged:
+              _isSubmitting
+                  ? null
+                  : (type) {
+                    _setFormState(() {
+                      _contentType = type;
+
+                      if (type.isNews) {
+                        _allUsers = true;
+                        _specificRecipients = false;
+                        _selectedRoles.clear();
+                        _selectedCareerIds.clear();
+                        _selectedSemesters.clear();
+                        _allSemesters = true;
+                        _groupsController.clear();
+                        _selectedRecipients.clear();
+                        _recipientSearchResults = const [];
+                        _recipientSearchController.clear();
+                        _recipientSearchError = null;
+                        _priority = AnnouncementPriority.normal;
+                      } else {
+                        _featured = false;
+                        _newsCategoryController.clear();
+                      }
+                    });
+                  },
+          items: const [
+            ConectaSegmentedItem(
+              value: PublicationContentType.announcement,
+              label: 'Comunicado',
             ),
-            const SizedBox(height: AppSpacing.sm),
-            SegmentedButton<PublicationContentType>(
-              segments: const [
-                ButtonSegment<PublicationContentType>(
-                  value: PublicationContentType.announcement,
-                  icon: Icon(Icons.campaign_outlined),
-                  label: Text('Comunicado'),
-                ),
-                ButtonSegment<PublicationContentType>(
-                  value: PublicationContentType.news,
-                  icon: Icon(Icons.newspaper_outlined),
-                  label: Text('Noticia'),
-                ),
-              ],
-              selected: {_contentType},
-              onSelectionChanged:
-                  _isSubmitting
-                      ? null
-                      : (selection) {
-                        final type = selection.first;
-
-                        _setFormState(() {
-                          _contentType = type;
-
-                          if (type.isNews) {
-                            _allUsers = true;
-                            _specificRecipients = false;
-                            _selectedRoles.clear();
-                            _selectedCareerIds.clear();
-                            _selectedSemesters.clear();
-                            _allSemesters = true;
-                            _groupsController.clear();
-                            _selectedRecipients.clear();
-                            _recipientSearchResults = const [];
-                            _recipientSearchController.clear();
-                            _recipientSearchError = null;
-                            _priority = AnnouncementPriority.normal;
-                          } else {
-                            _featured = false;
-                            _newsCategoryController.clear();
-                          }
-                        });
-                      },
+            ConectaSegmentedItem(
+              value: PublicationContentType.news,
+              label: 'Noticia',
             ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              isNews
-                  ? 'Las noticias son globales y estarán disponibles para '
-                      'todos los usuarios activos.'
-                  : 'Los comunicados pueden publicarse para toda la comunidad '
-                      'o para una audiencia segmentada.',
-              style: theme.textTheme.bodySmall,
-            ),
-            if (isNews) ...[
-              const SizedBox(height: AppSpacing.lg),
-              TextFormField(
-                controller: _newsCategoryController,
-                enabled: !_isSubmitting,
-                textCapitalization: TextCapitalization.words,
-                maxLength: 80,
-                decoration: const InputDecoration(
-                  labelText: 'Categoría editorial',
-                  hintText: 'Ej. Vida académica, Cultura o Institucional',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (!_contentType.isNews) {
-                    return null;
-                  }
-
-                  final category = value?.trim() ?? '';
-
-                  if (category.isEmpty) {
-                    return 'Selecciona o escribe una categoría para la noticia.';
-                  }
-
-                  return null;
-                },
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Noticia destacada'),
-                subtitle: const Text(
-                  'Se mostrará con mayor prioridad visual en el feed.',
-                ),
-                value: _featured,
-                onChanged:
-                    _isSubmitting
-                        ? null
-                        : (value) {
-                          _setFormState(() {
-                            _featured = value;
-                          });
-                        },
-              ),
-            ],
           ],
         ),
-      ),
+        const SizedBox(height: AppSpacing.sm),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          child: Text(
+            isNews
+                ? 'Las noticias son globales y estarán disponibles para '
+                    'todos los usuarios activos.'
+                : 'Los comunicados pueden publicarse para toda la comunidad '
+                    'o para una audiencia segmentada.',
+            key: ValueKey(isNews),
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
+        if (isNews) ...[
+          const SizedBox(height: AppSpacing.lg),
+          TextFormField(
+            controller: _newsCategoryController,
+            enabled: !_isSubmitting,
+            textCapitalization: TextCapitalization.words,
+            maxLength: 80,
+            decoration: const InputDecoration(
+              labelText: 'Categoría',
+              hintText: 'Ej. Comunidad, Cultura, Deporte',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ],
     );
   }
 

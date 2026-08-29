@@ -4,7 +4,6 @@ import 'package:conecta_itt/academic_planner/repositories/academic_subject_repos
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/view/daily_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/view/subjects_management_view.dart';
-import 'package:conecta_itt/academic_planner/view/weekly_schedule_view.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_planner_section_switch.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart';
@@ -19,8 +18,8 @@ class AcademicPlannerPage extends StatefulWidget {
 }
 
 class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
-  static const _tasksIndex = 2;
-  static const _subjectsIndex = 3;
+  static const _tasksIndex = 1;
+  static const _subjectsIndex = 2;
 
   final AcademicSubjectRepository _subjectRepository =
       AcademicSubjectRepository();
@@ -217,63 +216,33 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           _openPendingClassSession();
         }
       },
-      child: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          _PlannerSectionPage(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-            child: const DailyScheduleView(),
-          ),
-          _PlannerSectionPage(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-            child: const WeeklyScheduleView(),
-          ),
-          _PlannerSectionPage(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-            child: AcademicTasksView(
-              onEditLauncherReady: (launcher) {
-                _academicTaskEditLauncher = launcher;
-              },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Horario'),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(54),
+            child: AcademicPlannerSectionSwitch(
+              selectedIndex: _selectedIndex,
+              onSelected: _selectSection,
             ),
           ),
-          SubjectsManagementView(
-            selectedIndex: _selectedIndex,
-            onSectionSelected: _selectSection,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlannerSectionPage extends StatelessWidget {
-  const _PlannerSectionPage({
-    required this.selectedIndex,
-    required this.onSectionSelected,
-    required this.child,
-  });
-
-  final int selectedIndex;
-  final ValueChanged<int> onSectionSelected;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Horario'),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(54),
-          child: AcademicPlannerSectionSwitch(
-            selectedIndex: selectedIndex,
-            onSelected: onSectionSelected,
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: IndexedStack(
+            index: _selectedIndex,
+            children: [
+              const DailyScheduleView(),
+              AcademicTasksView(
+                onEditLauncherReady: (launcher) {
+                  _academicTaskEditLauncher = launcher;
+                },
+              ),
+              const SubjectsManagementView(),
+            ],
           ),
         ),
       ),
-      body: SafeArea(bottom: false, child: child),
     );
   }
 }

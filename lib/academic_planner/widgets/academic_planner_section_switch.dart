@@ -13,41 +13,15 @@ class AcademicPlannerSectionSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 46,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        children: [
-          SegmentedButton<int>(
-            showSelectedIcon: false,
-            segments: const [
-              ButtonSegment<int>(
-                value: 0,
-                icon: Icon(Icons.today_rounded),
-                label: Text('Día'),
-              ),
-              ButtonSegment<int>(
-                value: 1,
-                icon: Icon(Icons.calendar_view_week_rounded),
-                label: Text('Semana'),
-              ),
-              ButtonSegment<int>(
-                value: 2,
-                icon: Icon(Icons.task_alt_rounded),
-                label: Text('Tareas'),
-              ),
-              ButtonSegment<int>(
-                value: 3,
-                icon: Icon(Icons.menu_book_rounded),
-                label: Text('Materias'),
-              ),
-            ],
-            selected: {selectedIndex},
-            onSelectionChanged: (selection) {
-              onSelected(selection.first);
-            },
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: ConectaSegmentedSelector<int>(
+        selectedValue: selectedIndex,
+        onChanged: onSelected,
+        items: const [
+          ConectaSegmentedItem(value: 0, label: 'Día'),
+          ConectaSegmentedItem(value: 1, label: 'Tareas'),
+          ConectaSegmentedItem(value: 2, label: 'Materias'),
         ],
       ),
     );

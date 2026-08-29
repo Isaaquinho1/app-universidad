@@ -591,31 +591,27 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SegmentedButton<_TaskFilter>(
-                      showSelectedIcon: false,
-                      segments: const [
-                        ButtonSegment(
-                          value: _TaskFilter.pending,
-                          label: Text('Pendientes'),
-                        ),
-                        ButtonSegment(
-                          value: _TaskFilter.completed,
-                          label: Text('Completadas'),
-                        ),
-                        ButtonSegment(
-                          value: _TaskFilter.all,
-                          label: Text('Todas'),
-                        ),
-                      ],
-                      selected: {_selectedFilter},
-                      onSelectionChanged: (selection) {
-                        setState(() {
-                          _selectedFilter = selection.first;
-                        });
-                      },
-                    ),
+                  ConectaSegmentedSelector<_TaskFilter>(
+                    selectedValue: _selectedFilter,
+                    onChanged: (filter) {
+                      setState(() {
+                        _selectedFilter = filter;
+                      });
+                    },
+                    items: const [
+                      ConectaSegmentedItem(
+                        value: _TaskFilter.pending,
+                        label: 'Pendientes',
+                      ),
+                      ConectaSegmentedItem(
+                        value: _TaskFilter.completed,
+                        label: 'Completadas',
+                      ),
+                      ConectaSegmentedItem(
+                        value: _TaskFilter.all,
+                        label: 'Todas',
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   if (tasks.isEmpty)
