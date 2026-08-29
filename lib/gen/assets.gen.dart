@@ -47,10 +47,69 @@ class $AssetsBrandingGen {
       ];
 }
 
+class $AssetsCampusGen {
+  const $AssetsCampusGen();
+
+  /// File path: assets/campus/campus_amanecer.png
+  AssetGenImage get campusAmanecer =>
+      const AssetGenImage('assets/campus/campus_amanecer.png');
+
+  /// File path: assets/campus/campus_casi_noche.png
+  AssetGenImage get campusCasiNoche =>
+      const AssetGenImage('assets/campus/campus_casi_noche.png');
+
+  /// File path: assets/campus/campus_lloviendo.png
+  AssetGenImage get campusLloviendo =>
+      const AssetGenImage('assets/campus/campus_lloviendo.png');
+
+  /// File path: assets/campus/campus_madrugada.png
+  AssetGenImage get campusMadrugada =>
+      const AssetGenImage('assets/campus/campus_madrugada.png');
+
+  /// File path: assets/campus/campus_medio_dia.png
+  AssetGenImage get campusMedioDia =>
+      const AssetGenImage('assets/campus/campus_medio_dia.png');
+
+  /// File path: assets/campus/campus_neblina_casi_noche.png
+  AssetGenImage get campusNeblinaCasiNoche =>
+      const AssetGenImage('assets/campus/campus_neblina_casi_noche.png');
+
+  /// File path: assets/campus/campus_noche.png
+  AssetGenImage get campusNoche =>
+      const AssetGenImage('assets/campus/campus_noche.png');
+
+  /// File path: assets/campus/campus_nublado.png
+  AssetGenImage get campusNublado =>
+      const AssetGenImage('assets/campus/campus_nublado.png');
+
+  /// File path: assets/campus/campus_super_nublado.png
+  AssetGenImage get campusSuperNublado =>
+      const AssetGenImage('assets/campus/campus_super_nublado.png');
+
+  /// File path: assets/campus/campus_tarde.png
+  AssetGenImage get campusTarde =>
+      const AssetGenImage('assets/campus/campus_tarde.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        campusAmanecer,
+        campusCasiNoche,
+        campusLloviendo,
+        campusMadrugada,
+        campusMedioDia,
+        campusNeblinaCasiNoche,
+        campusNoche,
+        campusNublado,
+        campusSuperNublado,
+        campusTarde
+      ];
+}
+
 class Assets {
   Assets._();
 
   static const $AssetsBrandingGen branding = $AssetsBrandingGen();
+  static const $AssetsCampusGen campus = $AssetsCampusGen();
 }
 
 class AssetGenImage {
