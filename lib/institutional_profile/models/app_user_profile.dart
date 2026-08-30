@@ -60,6 +60,10 @@ class AppUserProfile {
 
   bool get canValidateStudentIds => role.canValidateStudentIds;
 
+  bool get canManageStudentAcademics => role.canManageStudentAcademics;
+
+  bool get canManageTeaching => role.canManageTeaching;
+
   bool get canManageAdmins => role.canManageAdmins;
 
   bool get hasProfilePhoto => photoPath?.trim().isNotEmpty ?? false;

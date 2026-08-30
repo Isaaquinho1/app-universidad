@@ -32,6 +32,12 @@ enum AppUserRole {
   /// Whether this role can validate digital student identifications.
   bool get canValidateStudentIds => canAccessAdministration;
 
+  /// Whether this role can manage institutional student academics.
+  bool get canManageStudentAcademics => canAccessAdministration;
+
+  /// Whether this role can manage institutional teaching structures.
+  bool get canManageTeaching => canAccessAdministration;
+
   /// Whether this role can administer other privileged accounts.
   bool get canManageAdmins => this == AppUserRole.superAdmin;
 

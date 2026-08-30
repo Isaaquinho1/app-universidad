@@ -213,7 +213,7 @@ class _AdminTeacherManagementPageState
   Widget build(BuildContext context) {
     final profile = context.watch<AppBloc>().state.institutionalProfile;
 
-    if (profile == null || !profile.canAccessAdministration) {
+    if (profile == null || !profile.canManageTeaching) {
       return Scaffold(
         appBar: AppBar(title: const Text('Gestión docente')),
         body: const Center(

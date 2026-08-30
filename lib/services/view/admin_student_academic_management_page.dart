@@ -122,7 +122,7 @@ class _AdminStudentAcademicManagementPageState
   Widget build(BuildContext context) {
     final currentProfile = context.watch<AppBloc>().state.institutionalProfile;
 
-    if (currentProfile == null || !currentProfile.canAccessAdministration) {
+    if (currentProfile == null || !currentProfile.canManageStudentAcademics) {
       return Scaffold(
         appBar: AppBar(title: const Text('Gestión académica de estudiantes')),
         body: const Center(

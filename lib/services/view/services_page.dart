@@ -309,23 +309,27 @@ class _ServicesViewState extends State<ServicesView>
           onTap: () => context.go('/services/id-validator'),
         ),
         const SizedBox(height: AppSpacing.md),
-        _AdministrativeServiceTile(
-          icon: Icons.school_outlined,
-          title: 'Gestión académica de estudiantes',
-          description:
-              'Consulta y actualiza carrera, semestre y grupo '
-              'de estudiantes.',
-          onTap: () => context.go('/services/academic-management'),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        _AdministrativeServiceTile(
-          icon: Icons.co_present_outlined,
-          title: 'Gestión docente',
-          description:
-              'Administra materias, asignaciones, grupos y horarios docentes.',
-          onTap: () => context.go('/services/teacher-management'),
-        ),
-        const SizedBox(height: AppSpacing.md),
+        if (profile.canManageStudentAcademics) ...[
+          _AdministrativeServiceTile(
+            icon: Icons.school_outlined,
+            title: 'Gestión académica de estudiantes',
+            description:
+                'Consulta y actualiza carrera, semestre y grupo '
+                'de estudiantes.',
+            onTap: () => context.go('/services/academic-management'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        if (profile.canManageTeaching) ...[
+          _AdministrativeServiceTile(
+            icon: Icons.co_present_outlined,
+            title: 'Gestión docente',
+            description:
+                'Administra materias, asignaciones, grupos y horarios docentes.',
+            onTap: () => context.go('/services/teacher-management'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
         if (profile.canManageAdmins) ...[
           const SizedBox(height: AppSpacing.xlg),
           Text(
