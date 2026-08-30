@@ -19,30 +19,54 @@ class _AdminAnnouncementManagementPageState
   bool _isProcessing = false;
 
   Future<void> _openEdit(Announcement announcement) async {
-    final successMessage = await context.push<String>(
-      '/services/announcement-management/'
-      '${announcement.id}/edit',
-    );
-
-    if (!mounted || successMessage == null) {
+    if (_isProcessing) {
       return;
     }
 
-    setState(() {});
-    await _showMessage(successMessage);
+    setState(() => _isProcessing = true);
+
+    try {
+      final successMessage = await context.push<String>(
+        '/services/announcement-management/'
+        '${announcement.id}/edit',
+      );
+
+      if (!mounted || successMessage == null) {
+        return;
+      }
+
+      setState(() {});
+      await _showMessage(successMessage);
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
   }
 
   Future<void> _openCreate() async {
-    final successMessage = await context.push<String>(
-      '/services/announcement-management/create',
-    );
-
-    if (!mounted || successMessage == null) {
+    if (_isProcessing) {
       return;
     }
 
-    setState(() {});
-    await _showMessage(successMessage);
+    setState(() => _isProcessing = true);
+
+    try {
+      final successMessage = await context.push<String>(
+        '/services/announcement-management/create',
+      );
+
+      if (!mounted || successMessage == null) {
+        return;
+      }
+
+      setState(() {});
+      await _showMessage(successMessage);
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
   }
 
   Future<void> _publish(Announcement announcement) async {

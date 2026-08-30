@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminAnnouncementCreatePage extends StatefulWidget {
   const AdminAnnouncementCreatePage({super.key, this.initialAnnouncement});
@@ -516,6 +517,7 @@ class _AdminAnnouncementCreatePageState
 
     final isPublished = initial.status == AnnouncementStatus.published;
     final label = _contentType.label.toLowerCase();
+    final labeledArticle = _contentType.isNews ? 'de la $label' : 'del $label';
     final audienceText =
         _contentType.isNews
             ? 'a toda la comunidad activa'
@@ -528,9 +530,9 @@ class _AdminAnnouncementCreatePageState
           title: const Text('Confirmar actualización'),
           content: Text(
             isPublished
-                ? 'Se creará una nueva versión de la $label y se enviará '
+                ? 'Se creará una nueva versión $labeledArticle y se enviará '
                     'otra notificación push $audienceText.'
-                : 'Se guardarán los cambios de la $label. No se enviará '
+                : 'Se guardarán los cambios $labeledArticle. No se enviará '
                     'una notificación mientras no esté publicada.',
           ),
           actions: [
@@ -722,7 +724,7 @@ class _AdminAnnouncementCreatePageState
         _initialStateReady = true;
       });
 
-      if (!publish) {
+      if (nextStatus != AnnouncementStatus.published) {
         _showMessage(
           wasPersisted
               ? 'Borrador actualizado correctamente.'
@@ -731,14 +733,16 @@ class _AdminAnnouncementCreatePageState
         return;
       }
 
-      final publicationLabel = _contentType.label;
-
       final successMessage =
-          wasPersisted
-              ? '$publicationLabel actualizada correctamente.'
-              : '$publicationLabel publicada correctamente.';
+          _contentType.isNews
+              ? wasPersisted
+                  ? 'Noticia actualizada correctamente.'
+                  : 'Noticia publicada correctamente.'
+              : wasPersisted
+              ? 'Comunicado actualizado correctamente.'
+              : 'Comunicado publicado correctamente.';
 
-      Navigator.of(context).pop(successMessage);
+      context.pop(successMessage);
     } catch (error) {
       if (!mounted) {
         return;
