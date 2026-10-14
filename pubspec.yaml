@@ -160,6 +160,7 @@ dev_dependencies:
   dart_style: 2.3.6
   build_verify: any
   custom_lint: any
+  sqflite_common_ffi: ^2.4.0+3
 
 
 
