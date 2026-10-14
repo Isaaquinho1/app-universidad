@@ -240,11 +240,17 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     final nextStatus =
         user.isNewUser ? AppStatus.onboardingRequired : AppStatus.authenticated;
 
+    // No conservar navegación pendiente de una cuenta anterior.
+    final accountChanged = state.user.id != user.id;
+
     emit(
       state.copyWith(
         status: nextStatus,
         user: user,
         institutionalProfile: profile,
+        clearPendingAnnouncementId: accountChanged,
+        clearPendingAcademicTaskId: accountChanged,
+        clearPendingClassSession: accountChanged,
       ),
     );
 
