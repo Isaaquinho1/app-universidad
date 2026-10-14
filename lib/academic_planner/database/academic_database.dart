@@ -1,13 +1,25 @@
+import 'package:conecta_itt/academic_planner/database/academic_database_identity.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
 class AcademicDatabase {
-  AcademicDatabase._();
+  AcademicDatabase._(this._databaseName);
 
-  static const _databaseName = 'conecta_itt_academic.db';
+  /// Prepara una conexión independiente para un usuario.
+  /// No abre ni modifica la base heredada.
+  AcademicDatabase.forUser(String userId)
+    : this._(AcademicDatabaseIdentity.databaseNameForUser(userId));
+
   static const _databaseVersion = 2;
 
-  static final AcademicDatabase instance = AcademicDatabase._();
+  /// Mantiene el comportamiento anterior hasta completar la migración.
+  static final AcademicDatabase instance = AcademicDatabase._(
+    AcademicDatabaseIdentity.legacyDatabaseName,
+  );
+
+  final String _databaseName;
+
+  String get databaseName => _databaseName;
 
   Database? _database;
 
