@@ -1,8 +1,10 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:conecta_itt/app/bloc/app_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:conecta_itt/academic_planner/academic_planner.dart';
+import 'package:conecta_itt/academic_planner/view/academic_account_route_boundary.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/home/view/home_page.dart';
 import 'package:conecta_itt/profile/profile.dart';
@@ -158,7 +160,23 @@ class AcademicPlannerRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const AcademicPlannerPage();
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, appState) {
+        final uid = appState.user.id.trim();
+
+        if (!appState.status.isLoggedIn || uid.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final revision = context.read<AppBloc>().authRevision;
+
+        return AcademicAccountRouteBoundary(
+          key: ValueKey<String>('academic:$uid:$revision'),
+          userId: uid,
+          authRevision: revision,
+        );
+      },
+    );
   }
 }
 

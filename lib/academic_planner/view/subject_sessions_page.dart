@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/class_session.dart';
@@ -5,14 +6,18 @@ import 'package:conecta_itt/academic_planner/repositories/class_session_reposito
 import 'package:conecta_itt/academic_planner/services/class_session_reminder_service.dart';
 import 'package:conecta_itt/academic_planner/widgets/class_session_form_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:conecta_itt/app/bloc/app_bloc.dart';
 
 class SubjectSessionsPage extends StatefulWidget {
   const SubjectSessionsPage({
     super.key,
+    required this.account,
     required this.subject,
     this.highlightedSessionId,
   });
 
+  final AcademicAccountScope account;
   final AcademicSubject subject;
   final String? highlightedSessionId;
 
@@ -21,6 +26,19 @@ class SubjectSessionsPage extends StatefulWidget {
 }
 
 class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
+  late final AppBloc _appBloc;
+  late final int _accountAuthRevision;
+
+  bool get _isCurrentSession {
+    if (!mounted || _appBloc.isClosed) return false;
+
+    final state = _appBloc.state;
+
+    return _appBloc.authRevision == _accountAuthRevision &&
+        state.status.isLoggedIn &&
+        state.user.id.trim() == widget.account.userId;
+  }
+
   static const _weekdayLabels = <int, String>{
     DateTime.monday: 'Lunes',
     DateTime.tuesday: 'Martes',
@@ -31,7 +49,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
     DateTime.sunday: 'Domingo',
   };
 
-  final ClassSessionRepository _repository = ClassSessionRepository();
+  late final ClassSessionRepository _repository;
   final ClassSessionReminderService _reminderService =
       ClassSessionReminderService();
 
@@ -41,11 +59,16 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
   @override
   void initState() {
     super.initState();
+    _appBloc = context.read<AppBloc>();
+    _accountAuthRevision = _appBloc.authRevision;
+    _repository = widget.account.sessions;
     _loadSessions();
   }
 
   void _loadSessions() {
-    _sessionsFuture = _repository.getBySubject(widget.subject.id);
+    _sessionsFuture = widget.account.run(
+      () => _repository.getBySubject(widget.subject.id),
+    );
   }
 
   Future<void> _refresh() async {
@@ -61,7 +84,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
       builder: (_) => ClassSessionFormSheet(session: session),
     );
 
-    if (result == null || !mounted) return;
+    if (result == null || !_isCurrentSession) return;
 
     setState(() {
       _processing = true;
@@ -71,38 +94,48 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
       late final ClassSession savedSession;
 
       if (session == null) {
-        savedSession = await _repository.create(
-          subjectId: widget.subject.id,
-          weekday: result.weekday,
-          startMinutes: result.startMinutes,
-          endMinutes: result.endMinutes,
-          building: result.building,
-          room: result.room,
-          reminderMinutes: result.reminderMinutes,
-        );
-      } else {
-        savedSession = await _repository.update(
-          ClassSession(
-            id: session.id,
-            subjectId: session.subjectId,
+        savedSession = await widget.account.run(
+          () => _repository.create(
+            subjectId: widget.subject.id,
             weekday: result.weekday,
             startMinutes: result.startMinutes,
             endMinutes: result.endMinutes,
             building: result.building,
             room: result.room,
             reminderMinutes: result.reminderMinutes,
-            isActive: session.isActive,
-            createdAt: session.createdAt,
-            updatedAt: session.updatedAt,
+          ),
+        );
+      } else {
+        savedSession = await widget.account.run(
+          () => _repository.update(
+            ClassSession(
+              id: session.id,
+              subjectId: session.subjectId,
+              weekday: result.weekday,
+              startMinutes: result.startMinutes,
+              endMinutes: result.endMinutes,
+              building: result.building,
+              room: result.room,
+              reminderMinutes: result.reminderMinutes,
+              isActive: session.isActive,
+              createdAt: session.createdAt,
+              updatedAt: session.updatedAt,
+            ),
           ),
         );
       }
 
+      if (!_isCurrentSession) return;
+
       if (savedSession.reminderMinutes != null) {
         final notificationsGranted = await _reminderService.requestPermission();
 
+        if (!_isCurrentSession) return;
+
         if (notificationsGranted) {
           await _reminderService.requestExactAlarmPermission();
+
+          if (!_isCurrentSession) return;
 
           await _reminderService.synchronize(
             session: savedSession,
@@ -113,7 +146,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
         await _reminderService.cancel(savedSession.id);
       }
 
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
       await _refresh();
     } on ClassScheduleConflictException {
       if (!mounted) return;
@@ -174,7 +207,7 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
           ),
     );
 
-    if (!(confirmed ?? false) || !mounted) return;
+    if (!(confirmed ?? false) || !_isCurrentSession) return;
 
     setState(() {
       _processing = true;
@@ -182,9 +215,9 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
 
     try {
       await _reminderService.cancel(session.id);
-      await _repository.delete(session.id);
+      await widget.account.run(() => _repository.delete(session.id));
 
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
       await _refresh();
     } catch (_) {
       if (!mounted) return;

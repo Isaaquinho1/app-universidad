@@ -6,7 +6,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:conecta_itt/app/theme/theme_mode.dart';
-import 'package:conecta_itt/academic_planner/services/academic_reminder_restoration_service.dart';
 import 'package:conecta_itt/app/services/services.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +24,7 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }) : _firebaseMessaging = firebaseMessaging,
        _userRepository = userRepository,
        _appUserProfileRepository = appUserProfileRepository,
+       _latestAuthUserId = user.id,
        super(
          user == User.anonymous
              ? const AppState.unauthenticated()
@@ -40,6 +40,7 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<ClassSessionNavigationConsumed>(_onClassSessionNavigationConsumed);
     on<ThemeChanged>(_onThemeChanged);
     on<AppUserChanged>(_onUserChanged);
+    on<AppProfileRetryRequested>(_onProfileRetryRequested);
     on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
 
@@ -49,6 +50,15 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   final UserRepository _userRepository;
   final FirebaseMessaging _firebaseMessaging;
   final AppUserProfileRepository _appUserProfileRepository;
+  String _latestAuthUserId;
+  User? _retryUser;
+  int _authRevision = 0;
+  final StreamController<int> _authRevisionController =
+      StreamController<int>.broadcast(sync: true);
+
+  int get authRevision => _authRevision;
+
+  Stream<int> get authRevisionChanges => _authRevisionController.stream;
 
   late final StreamSubscription<User> _userSubscription;
   StreamSubscription<AppUserProfile?>? _institutionalProfileSubscription;
@@ -58,10 +68,23 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   static const _notificationDeviceIdKey =
       'institutional_notification_device_id';
 
-  void _userChanged(User user) => add(AppUserChanged(user));
+  void _userChanged(User user) {
+    _latestAuthUserId = user.id;
+    _authRevision++;
 
-  Future<void> _registerNotificationsForUser(String uid) async {
-    if (uid.isEmpty) {
+    _authRevisionController.add(_authRevision);
+
+    add(AppUserChanged(user, revision: _authRevision));
+  }
+
+  bool _isCurrentAuth(String uid, int revision) =>
+      !isClosed &&
+      uid.isNotEmpty &&
+      _latestAuthUserId == uid &&
+      _authRevision == revision;
+
+  Future<void> _registerNotificationsForUser(String uid, int revision) async {
+    if (!_isCurrentAuth(uid, revision)) {
       return;
     }
 
@@ -72,6 +95,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         sound: true,
         provisional: false,
       );
+
+      if (!_isCurrentAuth(uid, revision)) return;
 
       final authorizationGranted =
           settings.authorizationStatus == AuthorizationStatus.authorized ||
@@ -91,9 +116,11 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         await _waitForApplePushToken();
+        if (!_isCurrentAuth(uid, revision)) return;
       }
 
       final token = await _firebaseMessaging.getToken();
+      if (!_isCurrentAuth(uid, revision)) return;
 
       if (token == null || token.trim().isEmpty) {
         Logger().w('Firebase Messaging did not return an FCM token.');
@@ -101,6 +128,7 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       }
 
       final deviceId = await _getOrCreateNotificationDeviceId();
+      if (!_isCurrentAuth(uid, revision)) return;
       final platform = _notificationPlatform();
 
       await _appUserProfileRepository.updateFcmToken(
@@ -110,12 +138,20 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         platform: platform,
       );
 
-      await _fcmTokenRefreshSubscription?.cancel();
+      if (!_isCurrentAuth(uid, revision)) return;
+
+      final previousSubscription = _fcmTokenRefreshSubscription;
+      _fcmTokenRefreshSubscription = null;
+      await previousSubscription?.cancel();
+
+      if (!_isCurrentAuth(uid, revision)) return;
 
       _fcmTokenRefreshSubscription = _firebaseMessaging.onTokenRefresh.listen(
         (refreshedToken) {
+          if (!_isCurrentAuth(uid, revision)) return;
           unawaited(
             _persistRefreshedFcmToken(
+              revision: revision,
               uid: uid,
               deviceId: deviceId,
               platform: platform,
@@ -142,11 +178,14 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }
 
   Future<void> _persistRefreshedFcmToken({
+    required int revision,
     required String uid,
     required String deviceId,
     required String platform,
     required String token,
   }) async {
+    if (!_isCurrentAuth(uid, revision)) return;
+
     try {
       await _appUserProfileRepository.updateFcmToken(
         uid: uid,
@@ -214,28 +253,104 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     };
   }
 
+  void _onProfileRetryRequested(
+    AppProfileRetryRequested event,
+    Emitter<AppState> emit,
+  ) {
+    if (state.status != AppStatus.profileLoadFailed) return;
+
+    final user = _retryUser;
+    if (user == null ||
+        user == User.anonymous ||
+        user.id != _latestAuthUserId) {
+      return;
+    }
+
+    add(AppUserChanged(user, revision: _authRevision));
+  }
+
   Future<void> _onUserChanged(
     AppUserChanged event,
     Emitter<AppState> emit,
   ) async {
     final user = event.user;
 
-    await _institutionalProfileSubscription?.cancel();
+    if (emit.isDone ||
+        _latestAuthUserId != user.id ||
+        event.revision != _authRevision) {
+      return;
+    }
+
+    _retryUser = user;
+
+    // No mantener visible la cuenta anterior mientras se carga
+    // el perfil institucional de una cuenta diferente.
+    if ((state.status.isLoggedIn && state.user.id != user.id) ||
+        (user != User.anonymous &&
+            state.status == AppStatus.profileLoadFailed)) {
+      emit(
+        AppState(status: AppStatus.switchingAccount, isAmoled: state.isAmoled),
+      );
+    }
+
+    // Desvincular las suscripciones de la sesión anterior.
+    final previousProfileSubscription = _institutionalProfileSubscription;
+    final previousTokenSubscription = _fcmTokenRefreshSubscription;
     _institutionalProfileSubscription = null;
+    _fcmTokenRefreshSubscription = null;
+
+    await previousProfileSubscription?.cancel();
+    await previousTokenSubscription?.cancel();
+
+    if (emit.isDone ||
+        _latestAuthUserId != user.id ||
+        event.revision != _authRevision) {
+      return;
+    }
 
     if (user == User.anonymous) {
-      await _fcmTokenRefreshSubscription?.cancel();
-      _fcmTokenRefreshSubscription = null;
+      if (emit.isDone ||
+          _latestAuthUserId != user.id ||
+          event.revision != _authRevision) {
+        return;
+      }
 
       emit(AppState.unauthenticated(isAmoled: state.isAmoled));
       return;
     }
 
-    final profile = await _appUserProfileRepository.ensureStudentProfile(
-      uid: user.id,
-      email: user.email,
-      displayName: user.name,
-    );
+    late final AppUserProfile profile;
+
+    try {
+      profile = await _appUserProfileRepository.ensureStudentProfile(
+        uid: user.id,
+        email: user.email,
+        displayName: user.name,
+      );
+    } catch (error, stackTrace) {
+      if (emit.isDone ||
+          _latestAuthUserId != user.id ||
+          event.revision != _authRevision) {
+        return;
+      }
+
+      Logger().w(
+        'No se pudo cargar el perfil institucional.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      emit(
+        AppState(status: AppStatus.profileLoadFailed, isAmoled: state.isAmoled),
+      );
+      return;
+    }
+
+    if (emit.isDone ||
+        _latestAuthUserId != user.id ||
+        event.revision != _authRevision) {
+      return;
+    }
 
     final nextStatus =
         user.isNewUser ? AppStatus.onboardingRequired : AppStatus.authenticated;
@@ -254,13 +369,19 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       ),
     );
 
-    unawaited(_registerNotificationsForUser(user.id));
+    unawaited(_registerNotificationsForUser(user.id, event.revision));
 
     _institutionalProfileSubscription = _appUserProfileRepository
         .watchProfile(user.id)
         .listen(
           (profile) {
-            add(AppInstitutionalProfileChanged(profile));
+            add(
+              AppInstitutionalProfileChanged(
+                profile,
+                userId: user.id,
+                revision: event.revision,
+              ),
+            );
           },
           onError: (Object error, StackTrace stackTrace) {
             addError(error, stackTrace);
@@ -272,7 +393,10 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     AppInstitutionalProfileChanged event,
     Emitter<AppState> emit,
   ) {
-    if (!state.status.isLoggedIn) {
+    if (!state.status.isLoggedIn ||
+        event.userId != state.user.id ||
+        event.userId != _latestAuthUserId ||
+        event.revision != _authRevision) {
       return;
     }
 
@@ -294,6 +418,7 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     await _fcmTokenRefreshSubscription?.cancel();
     await _institutionalProfileSubscription?.cancel();
     await _userSubscription.cancel();
+    await _authRevisionController.close();
     return super.close();
   }
 
@@ -355,6 +480,12 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     AcademicTaskNavigationConsumed event,
     Emitter<AppState> emit,
   ) {
+    if (!state.status.isLoggedIn ||
+        event.authRevision != _authRevision ||
+        state.pendingAcademicTaskId != event.taskId) {
+      return;
+    }
+
     emit(state.copyWith(clearPendingAcademicTaskId: true));
   }
 
@@ -380,6 +511,13 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     ClassSessionNavigationConsumed event,
     Emitter<AppState> emit,
   ) {
+    if (!state.status.isLoggedIn ||
+        event.authRevision != _authRevision ||
+        state.pendingClassSessionId != event.sessionId ||
+        state.pendingClassSubjectId != event.subjectId) {
+      return;
+    }
+
     emit(state.copyWith(clearPendingClassSession: true));
   }
 
@@ -392,7 +530,8 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
     // Reconcilia recordatorios académicos persistidos con las
     // notificaciones locales sin bloquear el arranque de la app.
-    unawaited(AcademicReminderRestorationService().restore());
+    // Restauración académica pendiente de aislamiento por UID.
+    // No consultar automáticamente la base SQLite heredada.
 
     await _foregroundMessageSubscription?.cancel();
     _foregroundMessageSubscription = FirebaseMessaging.onMessage.listen(
@@ -482,10 +621,9 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   @override
   AppState? fromJson(Map<String, dynamic> json) {
     try {
-      return AppState(
-        isAmoled: json['isAmoled'] as bool? ?? false,
-        status: AppStatus.values[json['status'] as int? ?? 0],
-      );
+      // Firebase Authentication determina la identidad.
+      // El almacenamiento local solo restaura preferencias visuales.
+      return state.copyWith(isAmoled: json['isAmoled'] as bool? ?? false);
     } catch (_) {
       return null;
     }
@@ -493,10 +631,6 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
   @override
   Map<String, dynamic>? toJson(AppState state) {
-    try {
-      return {'isAmoled': state.isAmoled, 'status': state.status.index};
-    } catch (_) {
-      return null;
-    }
+    return {'isAmoled': state.isAmoled};
   }
 }

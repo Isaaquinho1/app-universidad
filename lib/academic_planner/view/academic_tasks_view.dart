@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
@@ -10,12 +11,15 @@ import 'package:conecta_itt/academic_planner/repositories/academic_subject_repos
 import 'package:conecta_itt/academic_planner/repositories/academic_subtask_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
+import 'package:conecta_itt/academic_planner/services/academic_task_atomic_save_service.dart';
 import 'package:conecta_itt/academic_planner/services/academic_task_reminder_service.dart';
 import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart';
 import 'package:conecta_itt/academic_planner/view/task_categories_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
+import 'package:conecta_itt/app/bloc/app_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 typedef AcademicTaskEditLauncher =
     Future<void> Function(
@@ -25,7 +29,13 @@ typedef AcademicTaskEditLauncher =
     );
 
 class AcademicTasksView extends StatefulWidget {
-  const AcademicTasksView({super.key, this.onEditLauncherReady});
+  const AcademicTasksView({
+    required this.account,
+    super.key,
+    this.onEditLauncherReady,
+  });
+
+  final AcademicAccountScope account;
 
   final ValueChanged<AcademicTaskEditLauncher>? onEditLauncherReady;
 
@@ -34,20 +44,17 @@ class AcademicTasksView extends StatefulWidget {
 }
 
 class _AcademicTasksViewState extends State<AcademicTasksView> {
-  final AcademicTaskRepository _taskRepository = AcademicTaskRepository();
-
-  final AcademicSubtaskRepository _subtaskRepository =
-      AcademicSubtaskRepository();
-
-  final AcademicSubjectRepository _subjectRepository =
-      AcademicSubjectRepository();
-
-  final TaskCategoryRepository _categoryRepository = TaskCategoryRepository();
+  late final AcademicTaskRepository _taskRepository;
+  late final AcademicSubtaskRepository _subtaskRepository;
+  late final AcademicSubjectRepository _subjectRepository;
+  late final TaskCategoryRepository _categoryRepository;
 
   final AcademicTaskReminderService _reminderService =
       AcademicTaskReminderService();
 
   late Future<_TaskViewData> _dataFuture;
+  late final AcademicTaskAtomicSaveService _atomicSaveService =
+      AcademicTaskAtomicSaveService(account: widget.account);
 
   Timer? _reminderStatusTimer;
   bool _processing = false;
@@ -56,6 +63,10 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
   @override
   void initState() {
     super.initState();
+    _taskRepository = widget.account.tasks;
+    _subtaskRepository = widget.account.subtasks;
+    _subjectRepository = widget.account.subjects;
+    _categoryRepository = widget.account.categories;
     _loadData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -83,32 +94,36 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     _dataFuture = _fetchData();
   }
 
-  Future<_TaskViewData> _fetchData() async {
-    final results = await Future.wait<Object>([
-      _taskRepository.getAll(),
-      _subjectRepository.getAll(),
-      _categoryRepository.getAll(),
-    ]);
+  Future<_TaskViewData> _fetchData() {
+    return widget.account.run(() async {
+      final results = await Future.wait<Object>([
+        _taskRepository.getAll(),
+        _subjectRepository.getAll(),
+        _categoryRepository.getAll(),
+      ]);
 
-    final tasks = results[0] as List<AcademicTask>;
+      final tasks = results[0] as List<AcademicTask>;
 
-    final subtaskEntries = await Future.wait(
-      tasks.map(
-        (task) async =>
-            MapEntry(task.id, await _subtaskRepository.getForTask(task.id)),
-      ),
-    );
+      final subtaskEntries = await Future.wait(
+        tasks.map(
+          (task) async =>
+              MapEntry(task.id, await _subtaskRepository.getForTask(task.id)),
+        ),
+      );
 
-    _scheduleReminderStatusRefresh(tasks);
+      if (mounted) {
+        _scheduleReminderStatusRefresh(tasks);
+      }
 
-    return _TaskViewData(
-      tasks: tasks,
-      subjects: results[1] as List<AcademicSubject>,
-      categories: results[2] as List<TaskCategory>,
-      subtasksByTaskId: Map<String, List<AcademicSubtask>>.fromEntries(
-        subtaskEntries,
-      ),
-    );
+      return _TaskViewData(
+        tasks: tasks,
+        subjects: results[1] as List<AcademicSubject>,
+        categories: results[2] as List<TaskCategory>,
+        subtasksByTaskId: Map<String, List<AcademicSubtask>>.fromEntries(
+          subtaskEntries,
+        ),
+      );
+    });
   }
 
   void _scheduleReminderStatusRefresh(List<AcademicTask> tasks) {
@@ -170,22 +185,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     };
   }
 
-  Future<bool> _prepareReminderPermissions() async {
-    final notificationsGranted = await _reminderService.requestPermission();
-
-    if (!notificationsGranted) {
-      return false;
-    }
-
-    await _reminderService.requestExactAlarmPermission();
-    return true;
-  }
-
   Future<void> _openTaskDetail(AcademicTask task) async {
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder:
             (_) => AcademicTaskDetailPage(
+              account: widget.account,
               taskId: task.id,
               onEdit: (task, subjects, categories) async {
                 await _openTaskForm(
@@ -210,12 +215,26 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     required List<AcademicSubject> subjects,
     required List<TaskCategory> categories,
   }) async {
+    final appBloc = context.read<AppBloc>();
+    final openingRevision = appBloc.authRevision;
+
+    bool isCurrentAccount() {
+      final state = appBloc.state;
+      return mounted &&
+          state.status.isLoggedIn &&
+          state.user.id.trim() == widget.account.userId &&
+          appBloc.authRevision == openingRevision;
+    }
+
+    if (!isCurrentAccount()) return;
     final subtasks =
         task == null
             ? const <AcademicSubtask>[]
-            : await _subtaskRepository.getForTask(task.id);
+            : await widget.account.run(
+              () => _subtaskRepository.getForTask(task.id),
+            );
 
-    if (!mounted) {
+    if (!mounted || !isCurrentAccount()) {
       return;
     }
 
@@ -233,7 +252,7 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           ),
     );
 
-    if (result == null || !mounted) {
+    if (result == null || !isCurrentAccount()) {
       return;
     }
 
@@ -242,64 +261,13 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     });
 
     try {
-      if (task == null) {
-        final created = await _taskRepository.create(
-          title: result.title,
-          description: result.description,
-          subjectId: result.subjectId,
-          categoryId: result.categoryId,
-          dueAt: result.dueAt,
-          priority: result.priority,
-          reminderAt: result.reminderAt,
-        );
+      if (!isCurrentAccount()) return;
 
-        await _synchronizeSubtasks(
-          taskId: created.id,
-          previous: const <AcademicSubtask>[],
-          updated: result.subtasks,
-        );
-
-        if (created.reminderAt != null) {
-          final granted = await _prepareReminderPermissions();
-
-          if (granted) {
-            await _reminderService.synchronize(created);
-          }
-        }
-      } else {
-        final updated = await _taskRepository.update(
-          AcademicTask(
-            id: task.id,
-            title: result.title,
-            description: result.description,
-            subjectId: result.subjectId,
-            categoryId: result.categoryId,
-            dueAt: result.dueAt,
-            priority: result.priority,
-            status: result.status,
-            reminderAt: result.reminderAt,
-            completedAt: task.completedAt,
-            createdAt: task.createdAt,
-            updatedAt: task.updatedAt,
-          ),
-        );
-
-        await _synchronizeSubtasks(
-          taskId: updated.id,
-          previous: subtasks,
-          updated: result.subtasks,
-        );
-
-        if (updated.reminderAt != null && !updated.isCompleted) {
-          final granted = await _prepareReminderPermissions();
-
-          if (granted) {
-            await _reminderService.synchronize(updated);
-          }
-        } else {
-          await _reminderService.cancel(updated.id);
-        }
-      }
+      await _atomicSaveService.save(
+        form: result,
+        previousTask: task,
+        originalSubtasks: task == null ? null : subtasks,
+      );
 
       if (!mounted) return;
       await _refresh();
@@ -312,78 +280,6 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
           _processing = false;
         });
       }
-    }
-  }
-
-  Future<void> _synchronizeSubtasks({
-    required String taskId,
-    required List<AcademicSubtask> previous,
-    required List<AcademicSubtask> updated,
-  }) async {
-    final previousById = {for (final subtask in previous) subtask.id: subtask};
-
-    final retainedIds =
-        updated
-            .where((subtask) => !subtask.id.startsWith('draft-'))
-            .map((subtask) => subtask.id)
-            .toSet();
-
-    for (final oldSubtask in previous) {
-      if (!retainedIds.contains(oldSubtask.id)) {
-        await _subtaskRepository.delete(oldSubtask.id);
-      }
-    }
-
-    final persistedInOrder = <AcademicSubtask>[];
-
-    for (final desired in updated) {
-      if (desired.id.startsWith('draft-')) {
-        var created = await _subtaskRepository.create(
-          taskId: taskId,
-          title: desired.title,
-        );
-
-        if (desired.isCompleted) {
-          created = await _subtaskRepository.setCompleted(
-            subtask: created,
-            isCompleted: true,
-          );
-        }
-
-        persistedInOrder.add(created);
-        continue;
-      }
-
-      final original = previousById[desired.id];
-
-      if (original == null) {
-        continue;
-      }
-
-      var current = original;
-
-      if (current.title != desired.title) {
-        current = await _subtaskRepository.updateTitle(
-          subtask: current,
-          title: desired.title,
-        );
-      }
-
-      if (current.isCompleted != desired.isCompleted) {
-        current = await _subtaskRepository.setCompleted(
-          subtask: current,
-          isCompleted: desired.isCompleted,
-        );
-      }
-
-      persistedInOrder.add(current);
-    }
-
-    if (persistedInOrder.isNotEmpty) {
-      await _subtaskRepository.reorder(
-        taskId: taskId,
-        subtasks: persistedInOrder,
-      );
     }
   }
 

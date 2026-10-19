@@ -27,6 +27,7 @@ linter:
 
 analyzer:
   exclude:
+    - "build/**"
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "reference/**"
@@ -35,7 +36,6 @@ analyzer:
   errors:
     invalid_annotation_target: ignore
     todo: ignore
-    final_class_extended_outside_of_library: ignore
   plugins:
     - custom_lint
 # Additional information about this file can be found at

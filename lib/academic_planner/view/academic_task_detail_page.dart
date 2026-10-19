@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subtask.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
@@ -9,7 +10,9 @@ import 'package:conecta_itt/academic_planner/repositories/academic_subject_repos
 import 'package:conecta_itt/academic_planner/repositories/academic_subtask_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_task_repository.dart';
 import 'package:conecta_itt/academic_planner/repositories/task_category_repository.dart';
+import 'package:conecta_itt/app/bloc/app_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 typedef AcademicTaskDetailEditCallback =
     Future<void> Function(
@@ -21,10 +24,12 @@ typedef AcademicTaskDetailEditCallback =
 class AcademicTaskDetailPage extends StatefulWidget {
   const AcademicTaskDetailPage({
     super.key,
+    required this.account,
     required this.taskId,
     required this.onEdit,
   });
 
+  final AcademicAccountScope account;
   final String taskId;
   final AcademicTaskDetailEditCallback onEdit;
 
@@ -33,21 +38,34 @@ class AcademicTaskDetailPage extends StatefulWidget {
 }
 
 class _AcademicTaskDetailPageState extends State<AcademicTaskDetailPage> {
-  final AcademicTaskRepository _taskRepository = AcademicTaskRepository();
+  late final AcademicTaskRepository _taskRepository = widget.account.tasks;
 
-  final AcademicSubtaskRepository _subtaskRepository =
-      AcademicSubtaskRepository();
+  late final AcademicSubtaskRepository _subtaskRepository =
+      widget.account.subtasks;
 
-  final AcademicSubjectRepository _subjectRepository =
-      AcademicSubjectRepository();
+  late final AcademicSubjectRepository _subjectRepository =
+      widget.account.subjects;
 
-  final TaskCategoryRepository _categoryRepository = TaskCategoryRepository();
+  late final TaskCategoryRepository _categoryRepository =
+      widget.account.categories;
 
   late Future<_AcademicTaskDetailData?> _dataFuture;
+  late final AppBloc _appBloc;
+  late final int _openingAuthRevision;
+
+  bool get _isCurrentAccount {
+    final state = _appBloc.state;
+    return mounted &&
+        state.status.isLoggedIn &&
+        state.user.id.trim() == widget.account.userId &&
+        _appBloc.authRevision == _openingAuthRevision;
+  }
 
   @override
   void initState() {
     super.initState();
+    _appBloc = context.read<AppBloc>();
+    _openingAuthRevision = _appBloc.authRevision;
     _load();
   }
 
@@ -55,53 +73,59 @@ class _AcademicTaskDetailPageState extends State<AcademicTaskDetailPage> {
     _dataFuture = _fetchData();
   }
 
-  Future<_AcademicTaskDetailData?> _fetchData() async {
-    final task = await _taskRepository.getById(widget.taskId);
+  Future<_AcademicTaskDetailData?> _fetchData() {
+    return widget.account.run(() async {
+      final task = await _taskRepository.getById(widget.taskId);
 
-    if (task == null) {
-      return null;
-    }
-
-    final results = await Future.wait<Object>([
-      _subjectRepository.getAll(),
-      _categoryRepository.getAll(),
-      _subtaskRepository.getForTask(task.id),
-    ]);
-
-    final subjects = results[0] as List<AcademicSubject>;
-    final categories = results[1] as List<TaskCategory>;
-    final subtasks = results[2] as List<AcademicSubtask>;
-
-    AcademicSubject? subject;
-    for (final item in subjects) {
-      if (item.id == task.subjectId) {
-        subject = item;
-        break;
+      if (task == null) {
+        return null;
       }
-    }
 
-    TaskCategory? category;
-    for (final item in categories) {
-      if (item.id == task.categoryId) {
-        category = item;
-        break;
+      final results = await Future.wait<Object>([
+        _subjectRepository.getAll(),
+        _categoryRepository.getAll(),
+        _subtaskRepository.getForTask(task.id),
+      ]);
+
+      final subjects = results[0] as List<AcademicSubject>;
+      final categories = results[1] as List<TaskCategory>;
+      final subtasks = results[2] as List<AcademicSubtask>;
+
+      AcademicSubject? subject;
+      for (final item in subjects) {
+        if (item.id == task.subjectId) {
+          subject = item;
+          break;
+        }
       }
-    }
 
-    return _AcademicTaskDetailData(
-      task: task,
-      subject: subject,
-      category: category,
-      subjects: subjects,
-      categories: categories,
-      subtasks: subtasks,
-    );
+      TaskCategory? category;
+      for (final item in categories) {
+        if (item.id == task.categoryId) {
+          category = item;
+          break;
+        }
+      }
+
+      return _AcademicTaskDetailData(
+        task: task,
+        subject: subject,
+        category: category,
+        subjects: subjects,
+        categories: categories,
+        subtasks: subtasks,
+      );
+    });
   }
 
   Future<void> _edit(_AcademicTaskDetailData data) async {
+    if (!_isCurrentAccount) {
+      return;
+    }
+
     await widget.onEdit(data.task, data.subjects, data.categories);
 
-    if (!mounted) {
+    if (!_isCurrentAccount) {
       return;
     }
 
@@ -136,30 +160,45 @@ class _AcademicTaskDetailPageState extends State<AcademicTaskDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detalle de tarea')),
-      body: FutureBuilder<_AcademicTaskDetailData?>(
-        future: _dataFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final data = snapshot.data;
-
-          if (data == null) {
-            return const Center(child: Text('La tarea ya no está disponible.'));
-          }
-
-          return _TaskDetailContent(
-            data: data,
-            priorityLabel: _priorityLabel(data.task.priority),
-            statusLabel: _statusLabel(data.task.status),
-            dateTimeLabel: (dateTime) => _dateTimeLabel(context, dateTime),
-            onEdit: () => _edit(data),
+    return BlocBuilder<AppBloc, AppState>(
+      bloc: _appBloc,
+      builder: (context, state) {
+        if (!_isCurrentAccount) {
+          return const Scaffold(
+            body: Center(
+              child: Text('La sesión académica ya no está disponible.'),
+            ),
           );
-        },
-      ),
+        }
+
+        return Scaffold(
+          appBar: AppBar(title: const Text('Detalle de tarea')),
+          body: FutureBuilder<_AcademicTaskDetailData?>(
+            future: _dataFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final data = snapshot.data;
+
+              if (data == null) {
+                return const Center(
+                  child: Text('La tarea ya no está disponible.'),
+                );
+              }
+
+              return _TaskDetailContent(
+                data: data,
+                priorityLabel: _priorityLabel(data.task.priority),
+                statusLabel: _statusLabel(data.task.status),
+                dateTimeLabel: (dateTime) => _dateTimeLabel(context, dateTime),
+                onEdit: () => _edit(data),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

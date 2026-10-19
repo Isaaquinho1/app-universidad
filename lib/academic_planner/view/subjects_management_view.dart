@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
@@ -6,7 +7,9 @@ import 'package:conecta_itt/academic_planner/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class SubjectsManagementView extends StatefulWidget {
-  const SubjectsManagementView({super.key});
+  const SubjectsManagementView({required this.account, super.key});
+
+  final AcademicAccountScope account;
 
   @override
   State<SubjectsManagementView> createState() => _SubjectsManagementViewState();
@@ -285,7 +288,11 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => SubjectSessionsPage(subject: subject),
+                          builder:
+                              (_) => SubjectSessionsPage(
+                                account: widget.account,
+                                subject: subject,
+                              ),
                         ),
                       );
                     },

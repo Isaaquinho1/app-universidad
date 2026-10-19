@@ -43,7 +43,16 @@ class AcademicTaskNotificationOpened extends AppEvent {
 }
 
 class AcademicTaskNavigationConsumed extends AppEvent {
-  const AcademicTaskNavigationConsumed();
+  const AcademicTaskNavigationConsumed({
+    required this.taskId,
+    required this.authRevision,
+  });
+
+  final String taskId;
+  final int authRevision;
+
+  @override
+  List<Object?> get props => [taskId, authRevision];
 }
 
 class ClassSessionNotificationOpened extends AppEvent {
@@ -60,7 +69,18 @@ class ClassSessionNotificationOpened extends AppEvent {
 }
 
 class ClassSessionNavigationConsumed extends AppEvent {
-  const ClassSessionNavigationConsumed();
+  const ClassSessionNavigationConsumed({
+    required this.sessionId,
+    required this.subjectId,
+    required this.authRevision,
+  });
+
+  final String sessionId;
+  final String subjectId;
+  final int authRevision;
+
+  @override
+  List<Object?> get props => [sessionId, subjectId, authRevision];
 }
 
 class ThemeChanged extends AppEvent {
@@ -72,23 +92,34 @@ class ThemeChanged extends AppEvent {
   List<Object?> get props => [isAmoled];
 }
 
+class AppProfileRetryRequested extends AppEvent {
+  const AppProfileRetryRequested();
+}
+
 class AppUserChanged extends AppEvent {
-  const AppUserChanged(this.user);
+  const AppUserChanged(this.user, {required this.revision});
 
   final User user;
+  final int revision;
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, revision];
 }
 
 /// Emitted whenever the institutional Firestore profile changes.
 class AppInstitutionalProfileChanged extends AppEvent {
-  const AppInstitutionalProfileChanged(this.profile);
+  const AppInstitutionalProfileChanged(
+    this.profile, {
+    required this.userId,
+    required this.revision,
+  });
 
   final AppUserProfile? profile;
+  final String userId;
+  final int revision;
 
   @override
-  List<Object?> get props => [profile];
+  List<Object?> get props => [profile, userId, revision];
 }
 
 class AppLogoutRequested extends AppEvent {

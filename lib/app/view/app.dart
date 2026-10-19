@@ -165,7 +165,87 @@ class _AppViewState extends State<_AppView> {
                                 (context, child) => Theme(
                                   data: theme,
                                   child: ResponsiveBreakpoints.builder(
-                                    child: child!,
+                                    child: BlocBuilder<AppBloc, AppState>(
+                                      buildWhen:
+                                          (previous, current) =>
+                                              previous.status !=
+                                                  current.status &&
+                                              (previous.status ==
+                                                      AppStatus
+                                                          .switchingAccount ||
+                                                  current.status ==
+                                                      AppStatus
+                                                          .switchingAccount ||
+                                                  previous.status ==
+                                                      AppStatus
+                                                          .profileLoadFailed ||
+                                                  current.status ==
+                                                      AppStatus
+                                                          .profileLoadFailed),
+                                      builder: (context, state) {
+                                        final loading =
+                                            state.status ==
+                                            AppStatus.switchingAccount;
+                                        final failed =
+                                            state.status ==
+                                            AppStatus.profileLoadFailed;
+
+                                        return Stack(
+                                          children: [
+                                            child!,
+                                            if (loading || failed)
+                                              Positioned.fill(
+                                                child: Material(
+                                                  color:
+                                                      theme
+                                                          .scaffoldBackgroundColor,
+                                                  child: Center(
+                                                    child:
+                                                        loading
+                                                            ? const CircularProgressIndicator()
+                                                            : Padding(
+                                                              padding:
+                                                                  const EdgeInsets.all(
+                                                                    24,
+                                                                  ),
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  const Text(
+                                                                    'No se pudo cargar tu perfil institucional.',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 16,
+                                                                  ),
+                                                                  ElevatedButton(
+                                                                    onPressed: () {
+                                                                      context
+                                                                          .read<
+                                                                            AppBloc
+                                                                          >()
+                                                                          .add(
+                                                                            const AppProfileRetryRequested(),
+                                                                          );
+                                                                    },
+                                                                    child: const Text(
+                                                                      'Reintentar',
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        );
+                                      },
+                                    ),
                                     breakpoints: const [
                                       Breakpoint(
                                         start: 0,
@@ -195,10 +275,16 @@ class _AppViewState extends State<_AppView> {
                           return BlocListener<AppBloc, AppState>(
                             listenWhen:
                                 (previous, current) =>
-                                    previous.status != current.status,
+                                    previous.status != current.status &&
+                                    (current.status ==
+                                            AppStatus.unauthenticated ||
+                                        previous.status ==
+                                            AppStatus.switchingAccount),
                             listener: (context, state) {
-                              if (!state.status.isLoggedIn) {
+                              if (state.status == AppStatus.unauthenticated) {
                                 _router.go('/welcome');
+                              } else if (state.status.isLoggedIn) {
+                                _router.go('/feed');
                               }
                             },
                             child: FirebaseInteractedMessageListener(

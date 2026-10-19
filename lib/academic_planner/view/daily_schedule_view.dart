@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/scheduled_class.dart';
 import 'package:conecta_itt/academic_planner/repositories/daily_schedule_repository.dart';
@@ -8,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DailyScheduleView extends StatefulWidget {
-  const DailyScheduleView({super.key});
+  const DailyScheduleView({required this.account, super.key});
+
+  final AcademicAccountScope account;
 
   @override
   State<DailyScheduleView> createState() => _DailyScheduleViewState();
@@ -35,8 +38,8 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
     DateTime.sunday: 'D',
   };
 
-  final DailyScheduleRepository _repository = DailyScheduleRepository();
-  final WeeklyScheduleRepository _weeklyRepository = WeeklyScheduleRepository();
+  late final DailyScheduleRepository _repository;
+  late final WeeklyScheduleRepository _weeklyRepository;
   final WeeklyScheduleImageExporter _imageExporter =
       const WeeklyScheduleImageExporter();
 
@@ -48,12 +51,18 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
   @override
   void initState() {
     super.initState();
+
+    _repository = widget.account.dailySchedule;
+    _weeklyRepository = widget.account.weeklySchedule;
+
     _selectedWeekday = DateTime.now().weekday;
     _loadClasses();
   }
 
   void _loadClasses() {
-    _classesFuture = _repository.getByWeekday(_selectedWeekday);
+    _classesFuture = widget.account.run(
+      () => _repository.getByWeekday(_selectedWeekday),
+    );
   }
 
   Future<void> _exportScheduleImage(BuildContext context) async {
@@ -84,7 +93,7 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
             : renderBox.localToGlobal(Offset.zero) & renderBox.size;
 
     try {
-      final week = await _weeklyRepository.getWeek();
+      final week = await widget.account.run(() => _weeklyRepository.getWeek());
 
       final totalClasses = week.values.fold<int>(
         0,
@@ -288,6 +297,7 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
                         MaterialPageRoute<void>(
                           builder:
                               (_) => SubjectSessionsPage(
+                                account: widget.account,
                                 subject: classes[index].subject,
                               ),
                         ),

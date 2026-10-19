@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:conecta_itt/academic_planner/view/academic_tasks_view.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:conecta_itt/academic_planner/repositories/academic_subject_repository.dart';
@@ -11,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AcademicPlannerPage extends StatefulWidget {
-  const AcademicPlannerPage({super.key});
+  const AcademicPlannerPage({required this.account, super.key});
+
+  final AcademicAccountScope account;
 
   @override
   State<AcademicPlannerPage> createState() => _AcademicPlannerPageState();
@@ -21,13 +24,34 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
   static const _tasksIndex = 1;
   static const _subjectsIndex = 2;
 
-  final AcademicSubjectRepository _subjectRepository =
-      AcademicSubjectRepository();
+  late final AcademicSubjectRepository _subjectRepository =
+      widget.account.subjects;
 
-  final AcademicTaskRepository _taskRepository = AcademicTaskRepository();
+  late final AcademicTaskRepository _taskRepository = widget.account.tasks;
 
   int _selectedIndex = 0;
   bool _initialNavigationChecked = false;
+
+  late final AppBloc _appBloc;
+  late final int _openingAuthRevision;
+
+  bool get _isCurrentAccount {
+    if (!mounted) return false;
+
+    final state = _appBloc.state;
+
+    return state.status.isLoggedIn &&
+        state.user.id.trim() == widget.account.userId &&
+        _appBloc.authRevision == _openingAuthRevision;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _appBloc = context.read<AppBloc>();
+    _openingAuthRevision = _appBloc.authRevision;
+  }
+
   AcademicTaskEditLauncher? _academicTaskEditLauncher;
 
   @override
@@ -55,11 +79,11 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
 
   void _openPendingAcademicTask() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
-      final appBloc = context.read<AppBloc>();
+      final appBloc = _appBloc;
       final taskId = appBloc.state.pendingAcademicTaskId;
 
       if (taskId == null || taskId.isEmpty) {
@@ -72,14 +96,35 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         });
       }
 
-      final task = await _taskRepository.getById(taskId);
+      final task =
+          await (() async {
+            try {
+              return await widget.account.run(
+                () => _taskRepository.getById(taskId),
+              );
+            } on StateError {
+              if (!mounted || !_isCurrentAccount) {
+                return null;
+              }
+              rethrow;
+            }
+          })();
 
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
+        return;
+      }
+
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
       if (task == null) {
-        appBloc.add(const AcademicTaskNavigationConsumed());
+        appBloc.add(
+          AcademicTaskNavigationConsumed(
+            taskId: taskId,
+            authRevision: _openingAuthRevision,
+          ),
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('La tarea ya no está disponible.')),
@@ -91,6 +136,7 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         MaterialPageRoute<void>(
           builder:
               (_) => AcademicTaskDetailPage(
+                account: widget.account,
                 taskId: task.id,
                 onEdit: (task, subjects, categories) async {
                   final launcher = _academicTaskEditLauncher;
@@ -117,21 +163,26 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         ),
       );
 
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
-      appBloc.add(const AcademicTaskNavigationConsumed());
+      appBloc.add(
+        AcademicTaskNavigationConsumed(
+          taskId: taskId,
+          authRevision: _openingAuthRevision,
+        ),
+      );
     });
   }
 
   void _openPendingClassSession() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
-      final appBloc = context.read<AppBloc>();
+      final appBloc = _appBloc;
       final state = appBloc.state;
 
       final subjectId = state.pendingClassSubjectId;
@@ -150,14 +201,36 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         });
       }
 
-      final subject = await _subjectRepository.getById(subjectId);
+      final subject =
+          await (() async {
+            try {
+              return await widget.account.run(
+                () => _subjectRepository.getById(subjectId),
+              );
+            } on StateError {
+              if (!mounted || !_isCurrentAccount) {
+                return null;
+              }
+              rethrow;
+            }
+          })();
 
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
+        return;
+      }
+
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
       if (subject == null) {
-        appBloc.add(const ClassSessionNavigationConsumed());
+        appBloc.add(
+          ClassSessionNavigationConsumed(
+            sessionId: sessionId,
+            subjectId: subjectId,
+            authRevision: _openingAuthRevision,
+          ),
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -174,17 +247,24 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
         MaterialPageRoute<void>(
           builder:
               (_) => SubjectSessionsPage(
+                account: widget.account,
                 subject: subject,
                 highlightedSessionId: sessionId,
               ),
         ),
       );
 
-      if (!mounted) {
+      if (!mounted || !_isCurrentAccount) {
         return;
       }
 
-      appBloc.add(const ClassSessionNavigationConsumed());
+      appBloc.add(
+        ClassSessionNavigationConsumed(
+          sessionId: sessionId,
+          subjectId: subjectId,
+          authRevision: _openingAuthRevision,
+        ),
+      );
     });
   }
 
@@ -232,13 +312,14 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           child: IndexedStack(
             index: _selectedIndex,
             children: [
-              const DailyScheduleView(),
+              DailyScheduleView(account: widget.account),
               AcademicTasksView(
+                account: widget.account,
                 onEditLauncherReady: (launcher) {
                   _academicTaskEditLauncher = launcher;
                 },
               ),
-              const SubjectsManagementView(),
+              SubjectsManagementView(account: widget.account),
             ],
           ),
         ),

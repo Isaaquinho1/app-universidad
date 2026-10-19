@@ -296,6 +296,10 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
       return;
     }
 
+    final appBloc = context.read<AppBloc>();
+    final requestRevision = appBloc.authRevision;
+    final requestUid = widget.profile.uid;
+
     ProfilePhotoAllowance allowance;
 
     try {
@@ -359,23 +363,32 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
         replacing: widget.profile.hasProfilePhoto,
       );
 
-      if (!confirmed || !mounted) {
+      if (!confirmed ||
+          !mounted ||
+          appBloc.authRevision != requestRevision ||
+          appBloc.state.user.id != requestUid) {
         return;
       }
 
       setState(() => _isSubmitting = true);
 
       final updatedProfile = await repository.submitPhoto(
-        uid: widget.profile.uid,
+        uid: requestUid,
         file: selectedFile,
       );
 
-      if (!mounted) {
+      if (!mounted ||
+          appBloc.authRevision != requestRevision ||
+          appBloc.state.user.id != requestUid) {
         return;
       }
 
-      context.read<AppBloc>().add(
-        AppInstitutionalProfileChanged(updatedProfile),
+      appBloc.add(
+        AppInstitutionalProfileChanged(
+          updatedProfile,
+          userId: requestUid,
+          revision: requestRevision,
+        ),
       );
 
       _reloadAllowance();

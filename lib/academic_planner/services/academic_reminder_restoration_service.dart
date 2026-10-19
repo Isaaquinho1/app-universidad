@@ -1,3 +1,4 @@
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
 import 'package:conecta_itt/academic_planner/repositories/repositories.dart';
 import 'package:conecta_itt/academic_planner/services/academic_task_reminder_service.dart';
 import 'package:conecta_itt/academic_planner/services/class_session_reminder_service.dart';
@@ -11,19 +12,31 @@ import 'package:logger/logger.dart';
 /// únicamente cuando el modelo sigue requiriendo un recordatorio.
 class AcademicReminderRestorationService {
   AcademicReminderRestorationService({
-    AcademicTaskRepository? taskRepository,
-    AcademicSubjectRepository? subjectRepository,
-    ClassSessionRepository? classSessionRepository,
+    required AcademicTaskRepository taskRepository,
+    required AcademicSubjectRepository subjectRepository,
+    required ClassSessionRepository classSessionRepository,
     AcademicTaskReminderService? taskReminderService,
     ClassSessionReminderService? classSessionReminderService,
-  }) : _taskRepository = taskRepository ?? AcademicTaskRepository(),
-       _subjectRepository = subjectRepository ?? AcademicSubjectRepository(),
-       _classSessionRepository =
-           classSessionRepository ?? ClassSessionRepository(),
+  }) : _taskRepository = taskRepository,
+       _subjectRepository = subjectRepository,
+       _classSessionRepository = classSessionRepository,
        _taskReminderService =
            taskReminderService ?? AcademicTaskReminderService(),
        _classSessionReminderService =
            classSessionReminderService ?? ClassSessionReminderService();
+
+  /// Utiliza exclusivamente los repositorios de la cuenta indicada.
+  ///
+  /// No ejecuta la restauración al construir el servicio.
+  factory AcademicReminderRestorationService.forAccount(
+    AcademicAccountScope account,
+  ) {
+    return AcademicReminderRestorationService(
+      taskRepository: account.tasks,
+      subjectRepository: account.subjects,
+      classSessionRepository: account.sessions,
+    );
+  }
 
   final AcademicTaskRepository _taskRepository;
   final AcademicSubjectRepository _subjectRepository;
