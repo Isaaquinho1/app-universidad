@@ -5,6 +5,8 @@ import 'package:conecta_itt/academic_planner/repositories/academic_subject_repos
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:conecta_itt/app/bloc/app_bloc.dart';
 
 class SubjectsManagementView extends StatefulWidget {
   const SubjectsManagementView({required this.account, super.key});
@@ -16,8 +18,18 @@ class SubjectsManagementView extends StatefulWidget {
 }
 
 class _SubjectsManagementViewState extends State<SubjectsManagementView> {
-  final AcademicSubjectRepository _subjectRepository =
-      AcademicSubjectRepository();
+  late final AppBloc _appBloc;
+  late final int _accountAuthRevision;
+
+  AcademicSubjectRepository get _subjectRepository => widget.account.subjects;
+
+  bool get _isCurrentSession {
+    if (!mounted || _appBloc.isClosed) return false;
+    final state = _appBloc.state;
+    return _appBloc.authRevision == _accountAuthRevision &&
+        state.status.isLoggedIn &&
+        state.user.id.trim() == widget.account.userId;
+  }
 
   late Future<List<AcademicSubject>> _subjectsFuture;
 
@@ -27,14 +39,19 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
   @override
   void initState() {
     super.initState();
+    _appBloc = context.read<AppBloc>();
+    _accountAuthRevision = _appBloc.authRevision;
     _loadSubjects();
   }
 
   void _loadSubjects() {
-    _subjectsFuture = _subjectRepository.getAll(includeArchived: _showArchived);
+    _subjectsFuture = widget.account.run(
+      () => _subjectRepository.getAll(includeArchived: _showArchived),
+    );
   }
 
   Future<void> _refreshSubjects() async {
+    if (!_isCurrentSession) return;
     setState(_loadSubjects);
     await _subjectsFuture;
   }
@@ -48,7 +65,7 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
       builder: (_) => AcademicSubjectFormSheet(subject: subject),
     );
 
-    if (result == null || !mounted) {
+    if (result == null || !_isCurrentSession || _processingAction) {
       return;
     }
 
@@ -58,37 +75,41 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
 
     try {
       if (subject == null) {
-        await _subjectRepository.create(
-          name: result.name,
-          code: result.code,
-          teacherName: result.teacherName,
-          colorValue: result.colorValue,
-          notes: result.notes,
-        );
-      } else {
-        await _subjectRepository.update(
-          AcademicSubject(
-            id: subject.id,
+        await widget.account.run(
+          () => _subjectRepository.create(
             name: result.name,
             code: result.code,
             teacherName: result.teacherName,
             colorValue: result.colorValue,
             notes: result.notes,
-            isArchived: subject.isArchived,
-            createdAt: subject.createdAt,
-            updatedAt: subject.updatedAt,
+          ),
+        );
+      } else {
+        await widget.account.run(
+          () => _subjectRepository.update(
+            AcademicSubject(
+              id: subject.id,
+              name: result.name,
+              code: result.code,
+              teacherName: result.teacherName,
+              colorValue: result.colorValue,
+              notes: result.notes,
+              isArchived: subject.isArchived,
+              createdAt: subject.createdAt,
+              updatedAt: subject.updatedAt,
+            ),
           ),
         );
       }
 
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
 
       await _refreshSubjects();
     } catch (error) {
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
       await _showError(error);
     } finally {
-      if (mounted) {
+      if (_isCurrentSession) {
         setState(() {
           _processingAction = false;
         });
@@ -119,23 +140,26 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
     AcademicSubject subject, {
     required bool archived,
   }) async {
-    if (_processingAction) return;
+    if (_processingAction || !_isCurrentSession) return;
 
     setState(() {
       _processingAction = true;
     });
 
     try {
-      await _subjectRepository.setArchived(id: subject.id, archived: archived);
+      await widget.account.run(
+        () =>
+            _subjectRepository.setArchived(id: subject.id, archived: archived),
+      );
 
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
 
       await _refreshSubjects();
     } catch (error) {
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
       await _showError(error);
     } finally {
-      if (mounted) {
+      if (_isCurrentSession) {
         setState(() {
           _processingAction = false;
         });
@@ -169,7 +193,7 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
           ),
     );
 
-    if (!(confirmed ?? false) || !mounted || _processingAction) {
+    if (!(confirmed ?? false) || !_isCurrentSession || _processingAction) {
       return;
     }
 
@@ -178,16 +202,16 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
     });
 
     try {
-      await _subjectRepository.delete(subject.id);
+      await widget.account.run(() => _subjectRepository.delete(subject.id));
 
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
 
       await _refreshSubjects();
     } catch (error) {
-      if (!mounted) return;
+      if (!_isCurrentSession) return;
       await _showError(error);
     } finally {
-      if (mounted) {
+      if (_isCurrentSession) {
         setState(() {
           _processingAction = false;
         });
@@ -224,7 +248,10 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'academic_subjects_fab',
-        onPressed: _processingAction ? null : () => _openSubjectForm(),
+        onPressed:
+            _processingAction || !_isCurrentSession
+                ? null
+                : () => _openSubjectForm(),
         icon: const Icon(Icons.add_rounded),
         label: const Text('Materia'),
       ),
@@ -248,7 +275,11 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
               if (subjects.isEmpty) {
                 return _EmptySubjects(
                   showingArchived: _showArchived,
-                  onCreate: () => _openSubjectForm(),
+                  onCreate: () {
+                    if (_isCurrentSession && !_processingAction) {
+                      _openSubjectForm();
+                    }
+                  },
                 );
               }
 
@@ -286,6 +317,7 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
                   return AcademicSubjectCard(
                     subject: subject,
                     onTap: () {
+                      if (!_isCurrentSession) return;
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder:
@@ -297,7 +329,9 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
                       );
                     },
                     onAction: (action) {
-                      _handleAction(subject, action);
+                      if (_isCurrentSession && !_processingAction) {
+                        _handleAction(subject, action);
+                      }
                     },
                   );
                 },
