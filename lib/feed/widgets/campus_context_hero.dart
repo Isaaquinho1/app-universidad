@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:app_ui/app_ui.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:conecta_itt/app/app.dart';
+import 'package:flutter/services.dart';
 import 'package:conecta_itt/feed/models/campus_weather.dart';
 import 'package:conecta_itt/feed/services/campus_weather_service.dart';
 
@@ -112,106 +110,134 @@ class _CampusContextHeroState extends State<CampusContextHero>
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final appState = context.watch<AppBloc>().state;
+    final scene = _sceneForContext(now, _weather);
+    final useLightText = switch (scene) {
+      _CampusHeroScene.earlyMorning ||
+      _CampusHeroScene.evening ||
+      _CampusHeroScene.night ||
+      _CampusHeroScene.foggyEvening ||
+      _CampusHeroScene.heavyRainAfternoon => true,
+      _ => false,
+    };
+    final baseAlignment = _imageAlignmentForContext(now, _weather);
+    final heroAlignment = Alignment(
+      baseAlignment.x,
+      (baseAlignment.y - 0.48).clamp(-1.0, 1.0),
+    );
 
-    final institutionalName =
-        appState.institutionalProfile?.displayName?.trim() ?? '';
-    final userName = appState.user.name?.trim() ?? '';
-
-    final displayName =
-        institutionalName.isNotEmpty ? institutionalName : userName;
-
-    final firstName = _firstName(displayName);
-
-    return SizedBox(
-      height: 390,
-      width: double.infinity,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            _assetForContext(now, _weather),
-            fit: BoxFit.cover,
-            alignment: _imageAlignmentForContext(now, _weather),
-          ),
-
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.16),
-                  Colors.black.withValues(alpha: 0.28),
-                  Colors.black.withValues(alpha: 0.72),
-                ],
-                stops: const [0.0, 0.48, 1.0],
+    // BLOQUE_13_7C
+    // BLOQUE_13_10A_APLICADO
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: useLightText ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness:
+            useLightText ? Brightness.light : Brightness.dark,
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
+        child: SizedBox(
+          height: 238,
+          width: double.infinity,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                _assetForContext(now, _weather),
+                fit: BoxFit.cover,
+                alignment: heroAlignment,
               ),
-            ),
-          ),
-
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                24,
-                AppSpacing.lg,
-                14,
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _formattedDate(now),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
-                        shadows: [
-                          Shadow(blurRadius: 10, color: Colors.black45),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 34, 20, 6),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 262),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'CONECTA ITT',
+                            style: TextStyle(
+                              fontSize: 11,
+                              letterSpacing: 3.0,
+                              fontWeight: FontWeight.w700,
+                              color:
+                                  useLightText
+                                      ? Colors.white
+                                      : Color(0xFF27334E),
+                              shadows:
+                                  useLightText
+                                      ? const [
+                                        Shadow(
+                                          color: Colors.black54,
+                                          blurRadius: 8,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ]
+                                      : null,
+                            ),
+                          ),
+                          const SizedBox(height: 22),
+                          Text(
+                            'Publicaciones',
+                            style: TextStyle(
+                              fontSize: 29,
+                              height: 1.05,
+                              letterSpacing: -1.1,
+                              fontWeight: FontWeight.w800,
+                              color:
+                                  useLightText
+                                      ? Colors.white
+                                      : Color(0xFF111827),
+                              shadows:
+                                  useLightText
+                                      ? const [
+                                        Shadow(
+                                          color: Colors.black54,
+                                          blurRadius: 8,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ]
+                                      : null,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+                          Text(
+                            'Mantente al día con las últimas noticias, '
+                            'comunicados y eventos de tu universidad.',
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              height: 1.32,
+                              fontWeight: FontWeight.w400,
+                              color:
+                                  useLightText
+                                      ? Colors.white
+                                      : Color(0xFF384253),
+                              shadows:
+                                  useLightText
+                                      ? const [
+                                        Shadow(
+                                          color: Colors.black54,
+                                          blurRadius: 8,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ]
+                                      : null,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      _greeting(now, firstName),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        height: 1.08,
-                        letterSpacing: -0.6,
-                        shadows: [
-                          Shadow(blurRadius: 12, color: Colors.black54),
-                        ],
-                      ),
-                    ),
-                    if (_weather != null) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        _weather!.contextualSummary(now),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.35,
-                          shadows: [
-                            Shadow(blurRadius: 10, color: Colors.black45),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -305,71 +331,5 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
       _CampusHeroScene.night => const Alignment(0, -0.62),
     };
-  }
-
-  String _firstName(String value) {
-    final normalized = value.trim();
-
-    if (normalized.isEmpty) {
-      return '';
-    }
-
-    return normalized.split(RegExp(r'\s+')).first;
-  }
-
-  String _greeting(DateTime dateTime, String firstName) {
-    final hour = dateTime.hour;
-
-    final greeting = switch (hour) {
-      >= 5 && < 12 => 'Buenos días',
-      >= 12 && < 19 => 'Buenas tardes',
-      _ => 'Buenas noches',
-    };
-
-    if (firstName.isEmpty) {
-      return '$greeting!';
-    }
-
-    return '$greeting, $firstName!';
-  }
-
-  String _formattedDate(DateTime dateTime) {
-    const weekdays = [
-      'lunes',
-      'martes',
-      'miércoles',
-      'jueves',
-      'viernes',
-      'sábado',
-      'domingo',
-    ];
-
-    const months = [
-      'enero',
-      'febrero',
-      'marzo',
-      'abril',
-      'mayo',
-      'junio',
-      'julio',
-      'agosto',
-      'septiembre',
-      'octubre',
-      'noviembre',
-      'diciembre',
-    ];
-
-    final weekday = weekdays[dateTime.weekday - 1];
-    final month = months[dateTime.month - 1];
-
-    return '${_capitalize(weekday)}, ${dateTime.day} de $month';
-  }
-
-  String _capitalize(String value) {
-    if (value.isEmpty) {
-      return value;
-    }
-
-    return '${value[0].toUpperCase()}${value.substring(1)}';
   }
 }

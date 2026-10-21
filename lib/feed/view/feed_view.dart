@@ -10,6 +10,9 @@ class FeedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: AnnouncementCategoryFeed());
+    return const Scaffold(
+      backgroundColor: Color(0xFFF7F8FA),
+      body: AnnouncementCategoryFeed(),
+    );
   }
 }

@@ -98,31 +98,9 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
           SliverToBoxAdapter(
             child: CampusContextHero(refreshToken: _heroRefreshToken),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              AppSpacing.xlg + AppSpacing.sm,
-              AppSpacing.lg,
-              0,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Publicaciones',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ),
           if (showFilters)
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.lg,
-                0,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
               sliver: SliverToBoxAdapter(
                 child: _PublicationFilterBar(
                   selectedFilter: _filter,
@@ -202,7 +180,7 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    padding: const EdgeInsets.fromLTRB(16, 15, 16, 100),
                     sliver: SliverList.separated(
                       itemCount: publications.length,
                       itemBuilder: (context, index) {
@@ -224,8 +202,7 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
                           ),
                         );
                       },
-                      separatorBuilder:
-                          (_, _) => const SizedBox(height: AppSpacing.lg),
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
                     ),
                   ),
               ],
@@ -554,66 +531,76 @@ class _AnimatedPublicationCardState extends State<_AnimatedPublicationCard>
   }
 }
 
+/// REDISENO MINIMALISTA 13.2-13.3
 class _PublicationFilterBar extends StatelessWidget {
   const _PublicationFilterBar({
     required this.selectedFilter,
     required this.onChanged,
   });
-
   final _PublicationFeedFilter selectedFilter;
   final ValueChanged<_PublicationFeedFilter> onChanged;
 
-  Alignment get _selectedAlignment {
-    return switch (selectedFilter) {
-      _PublicationFeedFilter.all => Alignment.centerLeft,
-      _PublicationFeedFilter.news => Alignment.center,
-      _PublicationFeedFilter.announcements => Alignment.centerRight,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      height: 46,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.46),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final itemWidth = constraints.maxWidth / 3;
-
-          return Stack(
-            children: [
-              AnimatedAlign(
-                alignment: _selectedAlignment,
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeOutCubic,
-                child: SizedBox(
-                  width: itemWidth,
-                  height: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            colorScheme.surface.withValues(alpha: 0.94),
-                            colorScheme.surface.withValues(alpha: 0.82),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.045),
-                            blurRadius: 7,
-                            offset: const Offset(0, 1.5),
+    return LayoutBuilder(
+      builder: (context, dimensions) {
+        final compact = dimensions.maxWidth < 355;
+        return Row(
+          children: [
+            for (final filter in _PublicationFeedFilter.values) ...[
+              if (filter != _PublicationFeedFilter.all)
+                const SizedBox(width: 7),
+              Expanded(
+                child: Material(
+                  color:
+                      filter == selectedFilter
+                          ? const Color(0xFF192B50)
+                          : Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap:
+                        filter == selectedFilter
+                            ? null
+                            : () => onChanged(filter),
+                    child: SizedBox(
+                      height: 40,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            switch (filter) {
+                              _PublicationFeedFilter.all =>
+                                Icons.grid_view_rounded,
+                              _PublicationFeedFilter.news =>
+                                Icons.article_outlined,
+                              _PublicationFeedFilter.announcements =>
+                                Icons.campaign_outlined,
+                            },
+                            size: compact ? 15 : 16,
+                            color:
+                                filter == selectedFilter
+                                    ? Colors.white
+                                    : const Color(0xFF27334E),
+                          ),
+                          SizedBox(width: compact ? 4 : 6),
+                          Flexible(
+                            child: Text(
+                              filter.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: compact ? 12 : 13,
+                                fontWeight:
+                                    filter == selectedFilter
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                color:
+                                    filter == selectedFilter
+                                        ? Colors.white
+                                        : const Color(0xFF27334E),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -621,61 +608,18 @@ class _PublicationFilterBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Row(
-                children: _PublicationFeedFilter.values
-                    .map((filter) {
-                      final isSelected = filter == selectedFilter;
-
-                      return Expanded(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              if (!isSelected) {
-                                onChanged(filter);
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            splashColor: colorScheme.primary.withValues(
-                              alpha: 0.04,
-                            ),
-                            highlightColor: colorScheme.primary.withValues(
-                              alpha: 0.025,
-                            ),
-                            child: Center(
-                              child: AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 180),
-                                curve: Curves.easeOutCubic,
-                                style: (theme.textTheme.labelLarge ??
-                                        const TextStyle())
-                                    .copyWith(
-                                      fontWeight:
-                                          isSelected
-                                              ? FontWeight.w700
-                                              : FontWeight.w500,
-                                      color:
-                                          isSelected
-                                              ? colorScheme.onSurface
-                                              : colorScheme.onSurfaceVariant
-                                                  .withValues(alpha: 0.82),
-                                    ),
-                                child: Text(filter.label),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    })
-                    .toList(growable: false),
-              ),
             ],
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 }
 
+// BLOQUE_13_5D
+// BLOQUE_13_5E
+// BLOQUE_13_8B
+// BLOQUE_13_8C
 class AnnouncementCard extends StatelessWidget {
   const AnnouncementCard({
     required this.announcement,
@@ -688,13 +632,32 @@ class AnnouncementCard extends StatelessWidget {
   final AnnouncementReceipt? receipt;
   final List<PublicationAsset> assets;
 
+  String? get publicationDateLabel {
+    final date = announcement.publishedAt ?? announcement.createdAt;
+    if (date.year < 2000) return null;
+
+    const months = [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ];
+
+    final local = date.toLocal();
+    return '${local.day} ${months[local.month - 1]}. ${local.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final description =
-        announcement.summary?.trim().isNotEmpty ?? false
-            ? announcement.summary!
-            : announcement.body;
     final cover = _coverAsset;
 
     final isFeatured = announcement.isCurrentlyFeatured;
@@ -702,19 +665,13 @@ class AnnouncementCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      elevation: isFeatured ? 1.5 : 0,
+      elevation: 0,
       shadowColor: Colors.black.withValues(alpha: 0.10),
       surfaceTintColor: Colors.transparent,
       color: theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: BorderSide(
-          color:
-              isFeatured
-                  ? Colors.amber.shade400.withValues(alpha: 0.40)
-                  : theme.colorScheme.outlineVariant.withValues(alpha: 0.35),
-          width: 1,
-        ),
+        borderRadius: BorderRadius.circular(22),
+        side: BorderSide(color: const Color(0xFFE9EDF3), width: 1),
       ),
       child: InkWell(
         onTap: () async {
@@ -768,131 +725,400 @@ class AnnouncementCard extends StatelessWidget {
 
           context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (cover != null)
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: PublicationAssetImage(
-                  asset: cover,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 350;
+            final thumbnailSize = compact ? 117.0 : 130.0;
+            // BLOQUE_13_10G
+            final thumbnailHeight = thumbnailSize * 1.10;
+            // BLOQUE_13_10F
+            // BLOQUE_13_10I
+            final hasVisual = cover != null || announcement.isAnnouncement;
+
+            final previewText =
+                announcement.summary?.trim().isNotEmpty == true
+                    ? announcement.summary!.trim()
+                    : announcement.body.trim();
+
+            final thumbnailWidth = compact ? 117.0 : 130.0;
+
+            // BLOQUE_13_10J3_COMPACTO
+            // BLOQUE_13_10L_APLICADO
+            // BLOQUE_13_10J7
+            // BLOQUE_13_10J6_CORREGIDO
+            // BLOQUE_13_10J5_APLICADO
+            // Diseño exclusivo para comunicados sin portada real.
+            if (cover == null && announcement.isAnnouncement) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(23),
+                child: SizedBox(
+                  height: compact ? 114 : 108,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Wrap(
-                          spacing: AppSpacing.sm,
-                          runSpacing: AppSpacing.xs,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            _PublicationTypeBadge(announcement: announcement),
-                            if (announcement.isNews &&
-                                announcement.newsCategory?.trim().isNotEmpty ==
-                                    true)
-                              _NewsCategoryBadge(
-                                category: announcement.newsCategory!.trim(),
+                      SizedBox(
+                        width: compact ? 68 : 74,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
+                          child: const ColoredBox(
+                            color: Color(0xFFEAF4EF),
+                            child: Center(
+                              child: Icon(
+                                Icons.fact_check_outlined,
+                                size: 32,
+                                color: Color(0xFF379B71),
                               ),
-                          ],
+                            ),
+                          ),
                         ),
                       ),
-                      if (announcement.isCurrentlyFeatured) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        const _FeaturedBadge(),
-                      ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  _PublicationTypeBadge(
+                                    announcement: announcement,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: FittedBox(
+                                        alignment: Alignment.centerRight,
+                                        fit: BoxFit.scaleDown,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            _PriorityBadge(
+                                              priority: announcement.priority,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            _ReceiptBadge(
+                                              receipt: receipt,
+                                              contentVersion:
+                                                  announcement.contentVersion,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                announcement.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: 13.8,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.15,
+                                  color: const Color(0xFF111827),
+                                ),
+                              ),
+                              if (previewText.isNotEmpty) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  previewText,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 9.8,
+                                    height: 1.15,
+                                    color: Color(0xFF586174),
+                                  ),
+                                ),
+                              ],
+                              const Spacer(),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.account_circle_outlined,
+                                    size: 11,
+                                    color: Color(0xFF586174),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Expanded(
+                                    child: Text(
+                                      announcement.authorName ??
+                                          'TecNM Campus Tlalpan',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 8,
+                                        color: Color(0xFF586174),
+                                      ),
+                                    ),
+                                  ),
+                                  if (_attachmentCount > 0)
+                                    const Icon(
+                                      Icons.attach_file,
+                                      size: 10,
+                                      color: Color(0xFF586174),
+                                    ),
+                                  if (publicationDateLabel != null) ...[
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      publicationDateLabel!,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                        fontSize: 8,
+                                        color: Color(0xFF788397),
+                                      ),
+                                    ),
+                                  ],
+                                  const Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 15,
+                                    color: Color(0xFF192B50),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  if (announcement.isAnnouncement) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    Wrap(
-                      spacing: AppSpacing.sm,
-                      runSpacing: AppSpacing.xs,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        _PriorityBadge(priority: announcement.priority),
-                        _ReceiptBadge(
-                          receipt: receipt,
-                          contentVersion: announcement.contentVersion,
+                ),
+              );
+            }
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(23),
+              child: IntrinsicHeight(
+                child: Row(
+                  // BLOQUE_13_10K
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (hasVisual)
+                      SizedBox(
+                        width: thumbnailWidth,
+                        child:
+                            cover != null
+                                ? ClipRRect(
+                                  // BLOQUE_13_10J1
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(16),
+                                    bottomRight: Radius.circular(16),
+                                  ),
+                                  child: SizedBox(
+                                    height: thumbnailHeight,
+                                    child: PublicationAssetImage(
+                                      asset: cover,
+                                      width: thumbnailWidth,
+                                      height: thumbnailHeight,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                                : const ColoredBox(
+                                  color: Color(0xFFEAF4EF),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.fact_check_outlined,
+                                      size: 46,
+                                      color: Color(0xFF379B71),
+                                    ),
+                                  ),
+                                ),
+                      ),
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          // BLOQUE_13_10J2
+                          minHeight: cover != null ? thumbnailHeight : 0,
                         ),
-                      ],
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            hasVisual ? 12 : 14,
+                            10,
+                            11,
+                            10,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (announcement.isAnnouncement)
+                                    Row(
+                                      children: [
+                                        _PublicationTypeBadge(
+                                          announcement: announcement,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: FittedBox(
+                                              alignment: Alignment.centerRight,
+                                              fit: BoxFit.scaleDown,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  _PriorityBadge(
+                                                    priority:
+                                                        announcement.priority,
+                                                  ),
+                                                  const SizedBox(width: 5),
+                                                  _ReceiptBadge(
+                                                    receipt: receipt,
+                                                    contentVersion:
+                                                        announcement
+                                                            .contentVersion,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  else
+                                    Row(
+                                      children: [
+                                        _PublicationTypeBadge(
+                                          announcement: announcement,
+                                        ),
+                                        if (isFeatured) ...[
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: const _FeaturedBadge(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    announcement.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: compact ? 12.8 : 13.8,
+                                          height: 1.15,
+                                          letterSpacing: -0.25,
+                                          color: const Color(0xFF111827),
+                                        ),
+                                  ),
+                                  if (announcement.isNews &&
+                                      announcement.newsCategory
+                                              ?.trim()
+                                              .isNotEmpty ==
+                                          true) ...[
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.sell_outlined,
+                                          size: 12,
+                                          color: Color(0xFF586174),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            announcement.newsCategory!.trim(),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 9.5,
+                                              color: Color(0xFF586174),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                  if (previewText.isNotEmpty) ...[
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      previewText,
+                                      maxLines: cover != null ? 2 : 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 9.8,
+                                        height: 1.25,
+                                        color: Color(0xFF586174),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.account_circle_outlined,
+                                      size: 12,
+                                      color: Color(0xFF586174),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Expanded(
+                                      child: Text(
+                                        announcement.authorName ??
+                                            'TecNM Campus Tlalpan',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 8.6,
+                                          color: Color(0xFF586174),
+                                        ),
+                                      ),
+                                    ),
+                                    if (_attachmentCount > 0)
+                                      const Icon(
+                                        Icons.attach_file,
+                                        size: 11,
+                                        color: Color(0xFF586174),
+                                      ),
+                                    if (publicationDateLabel != null) ...[
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        publicationDateLabel!,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 8.6,
+                                          color: Color(0xFF788397),
+                                        ),
+                                      ),
+                                    ],
+                                    const Icon(
+                                      Icons.chevron_right_rounded,
+                                      size: 16,
+                                      color: Color(0xFF192B50),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    announcement.title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      height: 1.18,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.account_circle_outlined,
-                        size: 17,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Expanded(
-                        child: Text(
-                          announcement.authorName ?? 'TecNM Campus Tlalpan',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      if (_attachmentCount > 0) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        Icon(
-                          Icons.attach_file,
-                          size: 17,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          '$_attachmentCount',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(width: AppSpacing.sm),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: 20,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -938,24 +1164,6 @@ class _PublicationTypeBadge extends StatelessWidget {
   }
 }
 
-class _NewsCategoryBadge extends StatelessWidget {
-  const _NewsCategoryBadge({required this.category});
-
-  final String category;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return _FeedBadge(
-      label: category,
-      icon: Icons.sell_outlined,
-      backgroundColor: theme.colorScheme.surfaceContainerHighest,
-      foregroundColor: theme.colorScheme.onSurfaceVariant,
-    );
-  }
-}
-
 class _FeaturedBadge extends StatelessWidget {
   const _FeaturedBadge();
 
@@ -993,20 +1201,18 @@ class _FeedBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15, color: foregroundColor),
+            Icon(icon, size: 12, color: foregroundColor),
             const SizedBox(width: AppSpacing.xs),
             Text(
               label,
               style: theme.textTheme.labelMedium?.copyWith(
                 color: foregroundColor,
                 fontWeight: FontWeight.w700,
+                fontSize: 9.5,
               ),
             ),
           ],
@@ -1079,20 +1285,18 @@ class _ReceiptBadge extends StatelessWidget {
                 : Border.all(color: borderColor),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: foregroundColor),
+            Icon(icon, size: 13, color: foregroundColor),
             const SizedBox(width: AppSpacing.xs),
             Text(
               label,
               style: theme.textTheme.labelMedium?.copyWith(
                 color: foregroundColor,
                 fontWeight: FontWeight.w700,
+                fontSize: 10.5,
               ),
             ),
           ],
@@ -1153,15 +1357,13 @@ class _PriorityBadge extends StatelessWidget {
                 : Border.all(color: borderColor),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
         child: Text(
           label,
           style: theme.textTheme.labelMedium?.copyWith(
             color: foregroundColor,
             fontWeight: FontWeight.w700,
+            fontSize: 10.5,
           ),
         ),
       ),

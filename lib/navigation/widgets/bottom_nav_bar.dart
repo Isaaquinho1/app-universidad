@@ -1,8 +1,5 @@
-import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
 
 /// Animates the bottom navigation bar to slide up/down based on scroll direction
@@ -69,118 +66,103 @@ class _AnimatedBottomNavigationBarState
   }
 }
 
-class AppBottomNavigationBar extends StatefulWidget {
+class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
     super.key,
     required this.index,
     required this.onClick,
   });
 
-  final Function(int) onClick;
   final int index;
+  final ValueChanged<int> onClick;
 
-  @override
-  State<AppBottomNavigationBar> createState() => _AppBottomNavigationBarState();
-}
+  static const _blue = Color(0xFF2864FF);
+  static const _dark = Color(0xFF17223A);
 
-class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
+  static const _labels = ['Publicaciones', 'Horario', 'Servicios', 'Perfil'];
+
+  static const _icons = [
+    Icons.article_outlined,
+    Icons.calendar_month_outlined,
+    Icons.grid_view_rounded,
+    Icons.account_circle_outlined,
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return DotNavigationBar(
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          spreadRadius: 1,
-          blurRadius: 12,
-          offset: const Offset(0, 4),
-        ),
-      ],
-      currentIndex: widget.index,
-      onTap: (index) {
-        HapticFeedback.lightImpact();
-        widget.onClick(index);
-      },
-      dotIndicatorColor: AppColors.dark.primary,
-      backgroundColor: Theme.of(context).extension<AppColors>()!.background03,
-      borderRadius: 18,
-      enablePaddingAnimation: false,
-      marginR: const EdgeInsets.only(left: 24, right: 24),
-      paddingR: const EdgeInsets.only(bottom: 5, top: 7),
-      splashBorderRadius: 50,
-      items: [
-        _buildNavBarItem(
-          0,
-          Assets.icons.hugeicons.news.svg(
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).extension<AppColors>()!.active,
-              BlendMode.srcIn,
-            ),
+    return Container(
+      height: 76,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFCFCFE),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: const Color(0xFFECEFF4)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.075),
+            blurRadius: 26,
+            offset: const Offset(0, 8),
           ),
-        ),
-        _buildNavBarItem(
-          1,
-          Icon(
-            Icons.calendar_month_rounded,
-            color: Theme.of(context).extension<AppColors>()!.active,
-          ),
-        ),
-        _buildNavBarItem(
-          2,
-          Assets.icons.hugeicons.dashboardSquare01.svg(
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).extension<AppColors>()!.active,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
-        _buildNavBarItem(
-          3,
-          Assets.icons.hugeicons.userAccount.svg(
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).extension<AppColors>()!.active,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+        ],
+      ),
+      child: Row(
+        children: List.generate(4, (i) {
+          final selected = index == i;
 
-  DotNavigationBarItem _buildNavBarItem(int index, Widget icon) {
-    bool isSelected = index == widget.index;
-
-    return DotNavigationBarItem(
-      icon:
-          isSelected
-              ? icon
-                  .animate()
-                  .scale(
-                    begin: const Offset(1.0, 1.0),
-                    end: const Offset(1.03, 1.03),
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeInOut,
-                  )
-                  .moveY(
-                    begin: 0,
-                    end: -2,
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeInOut,
-                  )
-                  .then()
-                  .scale(
-                    begin: const Offset(1.03, 1.03),
-                    end: const Offset(1.0, 1.0),
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeInOut,
-                  )
-                  .moveY(
-                    begin: -2,
-                    end: 0,
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeInOut,
-                  )
-              : icon,
-      selectedColor: AppColors.dark.primary,
+          return Expanded(
+            child: Semantics(
+              label: _labels[i],
+              selected: selected,
+              button: true,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    onClick(i);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _icons[i],
+                        size: 23,
+                        color: selected ? _blue : _dark,
+                      ),
+                      const SizedBox(height: 3),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          _labels[i],
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
+                            color: selected ? _blue : _dark,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: selected ? _blue : Colors.transparent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
     );
   }
 }
