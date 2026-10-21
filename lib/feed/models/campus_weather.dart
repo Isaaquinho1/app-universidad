@@ -117,12 +117,12 @@ class CampusWeather {
 
       if (temperatureCelsius < 16 && cloudCoverPercent >= 80) {
         return 'El campus abre a las 7:00. '
-            'Mañana fresca y nublada; lleva algo ligero.';
+            'Mañana fresca y nublada, lleva algo ligero.';
       }
 
       if (temperatureCelsius < 16) {
         return 'El campus abre a las 7:00. '
-            'La mañana viene fresca; abrígate un poco.';
+            'La mañana viene fresca, abrígate un poco.';
       }
 
       if (cloudCoverPercent >= 80) {
@@ -179,13 +179,13 @@ class CampusWeather {
       }
 
       if (temperatureCelsius < 16 && cloudCoverPercent >= 80) {
-        return '$moment fresca y muy nublada; '
-            'una capa ligera puede venirte bien.';
+        return '$moment fresca y muy nublada, '
+            'algo abrigador puede venirte bien.';
       }
 
       if (temperatureCelsius < 16) {
-        return '$moment fresca en el campus; '
-            'una capa ligera puede venirte bien.';
+        return '$moment fresca en el campus, '
+            'algo abrigador puede venirte bien.';
       }
 
       if (cloudCoverPercent >= 80) {

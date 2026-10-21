@@ -107,6 +107,26 @@ class _CampusContextHeroState extends State<CampusContextHero>
     super.dispose();
   }
 
+  String _formatHeroClimateText(String text) {
+    final normalized = text.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    final campusPattern = RegExp(r'\s+en el campus\.?$', caseSensitive: false);
+
+    if (campusPattern.hasMatch(normalized)) {
+      return normalized.replaceFirst(campusPattern, '\nen el campus.');
+    }
+
+    return normalized;
+  }
+
+  String _heroClimateSummary(DateTime now) {
+    final summary =
+        _weather?.contextualSummary(now) ??
+        'Consultando el clima del campus...';
+
+    return _formatHeroClimateText(summary);
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -119,12 +139,8 @@ class _CampusContextHeroState extends State<CampusContextHero>
       _CampusHeroScene.heavyRainAfternoon => true,
       _ => false,
     };
-    final baseAlignment = _imageAlignmentForContext(now, _weather);
-    final heroAlignment = Alignment(
-      baseAlignment.x,
-      (baseAlignment.y - 0.48).clamp(-1.0, 1.0),
-    );
-
+    // BLOQUE_13_11C
+    // BLOQUE_13_11D
     // BLOQUE_13_7C
     // BLOQUE_13_10A_APLICADO
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -137,24 +153,78 @@ class _CampusContextHeroState extends State<CampusContextHero>
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
         child: SizedBox(
-          height: 238,
+          // BLOQUE_13_11E
+          height: 220,
           width: double.infinity,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset(
-                _assetForContext(now, _weather),
-                fit: BoxFit.cover,
-                alignment: heroAlignment,
+              // BLOQUE_13_11F
+              // Zoom del 20%, anclado al borde superior.
+              Transform.scale(
+                scale: 1.12,
+                alignment: Alignment.topRight,
+                child: Image.asset(
+                  _assetForContext(now, _weather),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topRight,
+                ),
+              ),
+              // BLOQUE_13_11B
+              // Contraste suave para los textos sobre las fotografías.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    stops: const [0.0, 0.55, 1.0],
+                    colors:
+                        useLightText
+                            ? [
+                              Colors.black.withValues(alpha: 0.48),
+                              Colors.black.withValues(alpha: 0.12),
+                              Colors.transparent,
+                            ]
+                            : [
+                              Colors.white.withValues(alpha: 0.76),
+                              Colors.white.withValues(alpha: 0.22),
+                              Colors.transparent,
+                            ],
+                  ),
+                ),
+              ),
+              // BLOQUE_13_11H1
+              // Resplandor localizado para mejorar la lectura.
+              // Claro de día y oscuro en escenas nocturnas.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.45, 0.65),
+                    radius: 0.95,
+                    stops: const [0.0, 0.45, 1.0],
+                    colors:
+                        useLightText
+                            ? [
+                              Colors.black.withValues(alpha: 0.42),
+                              Colors.black.withValues(alpha: 0.18),
+                              Colors.transparent,
+                            ]
+                            : [
+                              Colors.white.withValues(alpha: 0.58),
+                              Colors.white.withValues(alpha: 0.30),
+                              Colors.transparent,
+                            ],
+                  ),
+                ),
               ),
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 34, 20, 6),
+                  padding: const EdgeInsets.fromLTRB(18, 2, 20, 14),
                   child: Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topLeft,
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 262),
+                      constraints: const BoxConstraints(maxWidth: 238),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +232,7 @@ class _CampusContextHeroState extends State<CampusContextHero>
                           Text(
                             'CONECTA ITT',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 10.5,
                               letterSpacing: 3.0,
                               fontWeight: FontWeight.w700,
                               color:
@@ -181,11 +251,11 @@ class _CampusContextHeroState extends State<CampusContextHero>
                                       : null,
                             ),
                           ),
-                          const SizedBox(height: 22),
+                          const SizedBox(height: 6),
                           Text(
                             'Publicaciones',
                             style: TextStyle(
-                              fontSize: 29,
+                              fontSize: 26.5,
                               height: 1.05,
                               letterSpacing: -1.1,
                               fontWeight: FontWeight.w800,
@@ -205,12 +275,16 @@ class _CampusContextHeroState extends State<CampusContextHero>
                                       : null,
                             ),
                           ),
-                          const SizedBox(height: 7),
+                          const SizedBox(height: 4.0),
+                          // BLOQUE_13_11I_APLICADO
                           Text(
-                            'Mantente al día con las últimas noticias, '
-                            'comunicados y eventos de tu universidad.',
+                            maxLines: 2,
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+
+                            _heroClimateSummary(now),
                             style: TextStyle(
-                              fontSize: 12.5,
+                              fontSize: 11.5,
                               height: 1.32,
                               fontWeight: FontWeight.w400,
                               color:
@@ -308,28 +382,6 @@ class _CampusContextHeroState extends State<CampusContextHero>
       _CampusHeroScene.cloudyMorning => 'assets/campus/campus_nublado.png',
       _CampusHeroScene.cloudyAfternoon =>
         'assets/campus/campus_super_nublado.png',
-    };
-  }
-
-  Alignment _imageAlignmentForContext(
-    DateTime dateTime,
-    CampusWeather? weather,
-  ) {
-    final scene = _sceneForContext(dateTime, weather);
-
-    return switch (scene) {
-      _CampusHeroScene.heavyRainAfternoon ||
-      _CampusHeroScene.foggyEvening ||
-      _CampusHeroScene.earlyMorning ||
-      _CampusHeroScene.midday ||
-      _CampusHeroScene.afternoon ||
-      _CampusHeroScene.cloudyMorning ||
-      _CampusHeroScene.cloudyAfternoon => const Alignment(0, -0.40),
-
-      _CampusHeroScene.sunrise ||
-      _CampusHeroScene.evening => const Alignment(0, -0.42),
-
-      _CampusHeroScene.night => const Alignment(0, -0.62),
     };
   }
 }
