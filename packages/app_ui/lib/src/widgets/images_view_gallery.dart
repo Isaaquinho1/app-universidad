@@ -48,7 +48,7 @@ class _ImagesViewGalleryState extends State<ImagesViewGallery> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               title: const Text(
-                'Просмотр изображений',
+                'Galería de imágenes',
               ),
             )
           : null,
@@ -65,7 +65,8 @@ class _ImagesViewGalleryState extends State<ImagesViewGallery> {
                   initialScale: PhotoViewComputedScale.contained * 0.8,
                   minScale: PhotoViewComputedScale.contained * 0.6,
                   maxScale: PhotoViewComputedScale.covered * 5.9,
-                  heroAttributes: PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
+                  heroAttributes:
+                      PhotoViewHeroAttributes(tag: widget.imageUrls[index]),
                 );
               },
               itemCount: widget.imageUrls.length,
@@ -74,13 +75,18 @@ class _ImagesViewGalleryState extends State<ImagesViewGallery> {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                    value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+                    value: event == null
+                        ? 0
+                        : event.cumulativeBytesLoaded /
+                            event.expectedTotalBytes!,
                   ),
                 ),
               ),
               backgroundDecoration: widget.imageUrls.length == 1
                   ? BoxDecoration(
-                      color: Theme.of(context).extension<AppColors>()!.background01,
+                      color: Theme.of(context)
+                          .extension<AppColors>()!
+                          .background01,
                     )
                   : null,
               pageController: _pageController,

@@ -35,7 +35,7 @@ class CopyTextBlockWithLabel extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   padding: EdgeInsets.all(4),
-                  content: Text('Текст скопирован!'),
+                  content: Text('¡Texto copiado!'),
                 ),
               );
             },

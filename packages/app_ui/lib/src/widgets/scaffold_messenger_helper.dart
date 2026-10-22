@@ -74,7 +74,8 @@ class ScaffoldMessengerHelper {
           ..showSnackBar(resultSnackBar);
       }
     } catch (error) {
-      if (error is FlutterError && error.diagnostics.first.level == DiagnosticLevel.info) {
+      if (error is FlutterError &&
+          error.diagnostics.first.level == DiagnosticLevel.info) {
         return;
       }
       final errorSnackBar = SnackBar(
@@ -86,7 +87,7 @@ class ScaffoldMessengerHelper {
             const SizedBox(width: 16),
             const Expanded(
               child: Text(
-                'Ошибка загрузки',
+                'Error de carga',
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -110,7 +111,9 @@ class ScaffoldMessengerHelper {
         shape: BoxShape.circle,
       ),
       child: HugeIcon(
-        icon: isSuccess ? HugeIcons.strokeRoundedCheckmarkCircle01 : HugeIcons.strokeRoundedAlertCircle,
+        icon: isSuccess
+            ? HugeIcons.strokeRoundedCheckmarkCircle01
+            : HugeIcons.strokeRoundedAlertCircle,
         color: isSuccess
             ? Theme.of(context).extension<AppColors>()!.colorful05
             : Theme.of(context).extension<AppColors>()!.colorful07,
@@ -134,7 +137,9 @@ class ScaffoldMessengerHelper {
             shape: BoxShape.circle,
           ),
           child: HugeIcon(
-            icon: isSuccess ? HugeIcons.strokeRoundedCheckmarkCircle01 : HugeIcons.strokeRoundedAlertCircle,
+            icon: isSuccess
+                ? HugeIcons.strokeRoundedCheckmarkCircle01
+                : HugeIcons.strokeRoundedAlertCircle,
             color: isSuccess
                 ? Theme.of(context).extension<AppColors>()!.active
                 : Theme.of(context).extension<AppColors>()!.colorful07,

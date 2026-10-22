@@ -55,7 +55,9 @@ class _GalleryImageItemState extends State<GalleryImageItem> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Не удалось открыть изображение: $e'), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text('No se pudo abrir la imagen: $e'),
+              backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -78,7 +80,12 @@ class _GalleryImageItemState extends State<GalleryImageItem> {
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: colors.primary.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          boxShadow: [
+            BoxShadow(
+                color: colors.primary.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2))
+          ],
         ),
         child: Stack(
           children: [
@@ -98,7 +105,9 @@ class _GalleryImageItemState extends State<GalleryImageItem> {
                 ),
                 errorWidget: (context, url, error) => ColoredBox(
                   color: colors.background03,
-                  child: Center(child: Icon(Icons.broken_image_rounded, color: colors.deactive)),
+                  child: Center(
+                      child: Icon(Icons.broken_image_rounded,
+                          color: colors.deactive)),
                 ),
               ),
             ),
@@ -122,7 +131,7 @@ class _GalleryImageItemState extends State<GalleryImageItem> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Открытие...',
+                            'Abriendo...',
                             style: AppTextStyle.body.copyWith(
                               color: colors.white,
                               fontWeight: FontWeight.bold,

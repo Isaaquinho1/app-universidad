@@ -74,7 +74,9 @@ class MultiSelectChip<T> extends StatelessWidget {
     final defaultUnselectedColor = colors.background03;
 
     // Применяем ограничение количества элементов, если задано
-    final displayedItems = maxItems != null && items.length > maxItems! ? items.sublist(0, maxItems) : items;
+    final displayedItems = maxItems != null && items.length > maxItems!
+        ? items.sublist(0, maxItems)
+        : items;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +100,8 @@ class MultiSelectChip<T> extends StatelessWidget {
             final itemColor = chipColorBuilder?.call(item);
 
             // Для выбранного чипа используем заданный цвет или цвет элемента, или цвет по умолчанию
-            final activeColor = selectedColor ?? itemColor ?? defaultSelectedColor;
+            final activeColor =
+                selectedColor ?? itemColor ?? defaultSelectedColor;
             // Для невыбранного чипа используем заданный цвет или прозрачный фон
             final inactiveColor = unselectedColor ?? defaultUnselectedColor;
 
@@ -162,7 +165,7 @@ class MultiSelectChip<T> extends StatelessWidget {
         if (maxItems != null && items.length > maxItems!) ...[
           const SizedBox(height: 8),
           Text(
-            'Ещё ${items.length - maxItems!} элемент(ов)',
+            '${items.length - maxItems!} elementos más',
             style: AppTextStyle.captionL.copyWith(
               color: colors.deactive,
             ),

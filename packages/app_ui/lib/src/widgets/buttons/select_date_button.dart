@@ -28,14 +28,14 @@ class _SelectDateButtonState extends State<SelectDateButton> {
   Future<void> _showDatePicker(BuildContext context) async {
     final d = await showDatePicker(
       context: context,
-      locale: const Locale('ru', 'RU'),
+      locale: const Locale('es', 'MX'),
       initialDate: DateTime.now(),
       firstDate: widget.firstDate ?? DateTime(2019),
       lastDate: widget.lastDate ?? DateTime(2022),
     );
     if (d != null) {
       setState(() {
-        _selectedTextDate = DateFormat.yMMMMd('ru_RU').format(d);
+        _selectedTextDate = DateFormat.yMMMMd('es_MX').format(d);
         widget.onDateSelected(d);
       });
     }
@@ -43,7 +43,7 @@ class _SelectDateButtonState extends State<SelectDateButton> {
 
   @override
   void initState() {
-    _selectedTextDate = widget.text ?? 'Выберите дату';
+    _selectedTextDate = widget.text ?? 'Seleccionar fecha';
     super.initState();
   }
 

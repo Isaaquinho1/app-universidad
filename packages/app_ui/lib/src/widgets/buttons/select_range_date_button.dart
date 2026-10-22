@@ -28,7 +28,7 @@ class _SelectRangeDateButtonState extends State<SelectRangeDateButton> {
 
   @override
   void initState() {
-    _selectedTextDate = widget.text ?? 'Выберите даты';
+    _selectedTextDate = widget.text ?? 'Seleccionar fechas';
     super.initState();
   }
 
@@ -37,7 +37,7 @@ class _SelectRangeDateButtonState extends State<SelectRangeDateButton> {
       final firstDate = DateFormat('dd.MM.yyyy').format(startDate!);
       final lastDate = DateFormat('dd.MM.yyyy').format(endDate!);
 
-      _selectedTextDate = 'с $firstDate по $lastDate';
+      _selectedTextDate = 'Del $firstDate al $lastDate';
     });
   }
 
@@ -87,7 +87,8 @@ class _SelectRangeDateButtonState extends State<SelectRangeDateButton> {
         context: context,
         builder: (context) {
           return Dialog(
-            backgroundColor: Theme.of(context).extension<AppColors>()!.background02,
+            backgroundColor:
+                Theme.of(context).extension<AppColors>()!.background02,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -96,7 +97,8 @@ class _SelectRangeDateButtonState extends State<SelectRangeDateButton> {
               child: CalendarDatePicker2(
                 config: CalendarDatePicker2Config(
                   calendarType: CalendarDatePicker2Type.range,
-                  selectedDayHighlightColor: Theme.of(context).extension<AppColors>()!.primary,
+                  selectedDayHighlightColor:
+                      Theme.of(context).extension<AppColors>()!.primary,
                   dayTextStyle: AppTextStyle.body,
                   controlsTextStyle: AppTextStyle.buttonS,
                   rangeBidirectional: true,
