@@ -46,5 +46,5 @@ El desarrollo activo está enfocado exclusivamente en Android e iOS.
 ## Atribución
 
 Este proyecto parte de un repositorio de aplicación universitaria previamente
-existente. Las licencias, atribuciones y material histórico necesarios se
-conservan en el repositorio y dentro de `reference/`.
+existente. El aviso de licencia y copyright del proyecto original se conserva
+en `LICENSE`. El historial anterior permanece accesible mediante Git.

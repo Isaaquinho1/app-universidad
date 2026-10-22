@@ -2,8 +2,8 @@
 
 Todos los cambios relevantes de Conecta ITT se documentan en este archivo.
 
-El historial técnico del repositorio base se conserva en
-`reference/original_project/CHANGELOG_MIREA.md`.
+El historial técnico del repositorio original permanece disponible
+en los commits anteriores de Git.
 
 ## No publicado
 
