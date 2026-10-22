@@ -740,7 +740,9 @@ class AnnouncementCard extends StatelessWidget {
                     ? announcement.summary!.trim()
                     : announcement.body.trim();
 
-            final thumbnailWidth = compact ? 117.0 : 130.0;
+            // BLOQUE_13_12_APLICADO
+            // Portadas más anchas, manteniendo su altura.
+            final thumbnailWidth = compact ? 134.0 : 148.0;
 
             // BLOQUE_13_10J3_COMPACTO
             // BLOQUE_13_10L_APLICADO
@@ -750,7 +752,7 @@ class AnnouncementCard extends StatelessWidget {
             // Diseño exclusivo para comunicados sin portada real.
             if (cover == null && announcement.isAnnouncement) {
               return ClipRRect(
-                borderRadius: BorderRadius.circular(23),
+                borderRadius: BorderRadius.circular(22),
                 child: SizedBox(
                   height: compact ? 114 : 108,
                   child: Row(
@@ -760,8 +762,8 @@ class AnnouncementCard extends StatelessWidget {
                         width: compact ? 68 : 74,
                         child: ClipRRect(
                           borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
+                            topRight: Radius.circular(22),
+                            bottomRight: Radius.circular(22),
                           ),
                           child: const ColoredBox(
                             color: Color(0xFFEAF4EF),
@@ -832,8 +834,9 @@ class AnnouncementCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 9.8,
+                                    fontWeight: FontWeight.w600,
                                     height: 1.15,
-                                    color: Color(0xFF586174),
+                                    color: Color(0xFF39465B),
                                   ),
                                 ),
                               ],
@@ -843,7 +846,7 @@ class AnnouncementCard extends StatelessWidget {
                                   const Icon(
                                     Icons.account_circle_outlined,
                                     size: 11,
-                                    color: Color(0xFF586174),
+                                    color: Color(0xFF39465B),
                                   ),
                                   const SizedBox(width: 3),
                                   Expanded(
@@ -854,7 +857,8 @@ class AnnouncementCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         fontSize: 8,
-                                        color: Color(0xFF586174),
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF39465B),
                                       ),
                                     ),
                                   ),
@@ -862,7 +866,7 @@ class AnnouncementCard extends StatelessWidget {
                                     const Icon(
                                       Icons.attach_file,
                                       size: 10,
-                                      color: Color(0xFF586174),
+                                      color: Color(0xFF39465B),
                                     ),
                                   if (publicationDateLabel != null) ...[
                                     const SizedBox(width: 4),
@@ -871,7 +875,8 @@ class AnnouncementCard extends StatelessWidget {
                                       maxLines: 1,
                                       style: const TextStyle(
                                         fontSize: 8,
-                                        color: Color(0xFF788397),
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF49566A),
                                       ),
                                     ),
                                   ],
@@ -893,7 +898,7 @@ class AnnouncementCard extends StatelessWidget {
             }
 
             return ClipRRect(
-              borderRadius: BorderRadius.circular(23),
+              borderRadius: BorderRadius.circular(22),
               child: IntrinsicHeight(
                 child: Row(
                   // BLOQUE_13_10K
@@ -907,8 +912,8 @@ class AnnouncementCard extends StatelessWidget {
                                 ? ClipRRect(
                                   // BLOQUE_13_10J1
                                   borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(16),
-                                    bottomRight: Radius.circular(16),
+                                    topRight: Radius.circular(22),
+                                    bottomRight: Radius.circular(22),
                                   ),
                                   child: SizedBox(
                                     height: thumbnailHeight,
@@ -1030,7 +1035,7 @@ class AnnouncementCard extends StatelessWidget {
                                         const Icon(
                                           Icons.sell_outlined,
                                           size: 12,
-                                          color: Color(0xFF586174),
+                                          color: Color(0xFF39465B),
                                         ),
                                         const SizedBox(width: 4),
                                         Expanded(
@@ -1040,7 +1045,8 @@ class AnnouncementCard extends StatelessWidget {
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
                                               fontSize: 9.5,
-                                              color: Color(0xFF586174),
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF39465B),
                                             ),
                                           ),
                                         ),
@@ -1055,8 +1061,9 @@ class AnnouncementCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         fontSize: 9.8,
+                                        fontWeight: FontWeight.w600,
                                         height: 1.25,
-                                        color: Color(0xFF586174),
+                                        color: Color(0xFF39465B),
                                       ),
                                     ),
                                   ],
@@ -1069,7 +1076,7 @@ class AnnouncementCard extends StatelessWidget {
                                     const Icon(
                                       Icons.account_circle_outlined,
                                       size: 12,
-                                      color: Color(0xFF586174),
+                                      color: Color(0xFF39465B),
                                     ),
                                     const SizedBox(width: 3),
                                     Expanded(
@@ -1080,7 +1087,8 @@ class AnnouncementCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           fontSize: 8.6,
-                                          color: Color(0xFF586174),
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF39465B),
                                         ),
                                       ),
                                     ),
@@ -1088,7 +1096,7 @@ class AnnouncementCard extends StatelessWidget {
                                       const Icon(
                                         Icons.attach_file,
                                         size: 11,
-                                        color: Color(0xFF586174),
+                                        color: Color(0xFF39465B),
                                       ),
                                     if (publicationDateLabel != null) ...[
                                       const SizedBox(width: 5),
@@ -1097,7 +1105,8 @@ class AnnouncementCard extends StatelessWidget {
                                         maxLines: 1,
                                         style: const TextStyle(
                                           fontSize: 8.6,
-                                          color: Color(0xFF788397),
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF49566A),
                                         ),
                                       ),
                                     ],

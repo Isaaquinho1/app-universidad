@@ -11,6 +11,14 @@ import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+const _titleStyle = TextStyle(
+  fontSize: 26.5,
+  height: 1.05,
+  letterSpacing: -1.1,
+  fontWeight: FontWeight.w800,
+  color: Color(0xFF111827),
+);
+
 class AcademicPlannerPage extends StatefulWidget {
   const AcademicPlannerPage({required this.account, super.key});
 
@@ -298,7 +306,7 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Horario'),
+          title: const Text('Horario', style: _titleStyle),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(54),
             child: AcademicPlannerSectionSwitch(

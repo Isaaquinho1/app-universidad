@@ -115,8 +115,14 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       }
 
       if (defaultTargetPlatform == TargetPlatform.iOS) {
-        await _waitForApplePushToken();
+        final apnsReady = await _waitForApplePushToken();
+
         if (!_isCurrentAuth(uid, revision)) return;
+
+        if (!apnsReady) {
+          Logger().w('FCM registration deferred: APNs token is unavailable.');
+          return;
+        }
       }
 
       final token = await _firebaseMessaging.getToken();
@@ -204,18 +210,29 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     }
   }
 
-  Future<void> _waitForApplePushToken() async {
+  Future<bool> _waitForApplePushToken() async {
     for (var attempt = 0; attempt < 10; attempt++) {
-      final token = await _firebaseMessaging.getAPNSToken();
+      try {
+        final token = await _firebaseMessaging.getAPNSToken();
 
-      if (token != null && token.isNotEmpty) {
-        return;
+        if (token != null && token.isNotEmpty) {
+          Logger().i('APNs token is available.');
+          return true;
+        }
+      } catch (error, stackTrace) {
+        Logger().w(
+          'Could not obtain the APNs token.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        return false;
       }
 
       await Future<void>.delayed(Duration(milliseconds: 300 * (attempt + 1)));
     }
 
-    Logger().w('APNs token was not available before requesting the FCM token.');
+    Logger().w('APNs token was not available after registration attempts.');
+    return false;
   }
 
   Future<String> _getOrCreateNotificationDeviceId() async {

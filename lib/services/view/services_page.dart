@@ -10,6 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 
+const _titleStyle = TextStyle(
+  fontSize: 26.5,
+  height: 1.05,
+  letterSpacing: -1.1,
+  fontWeight: FontWeight.w800,
+  color: Color(0xFF111827),
+);
+
 class ServicesPage extends StatelessWidget {
   const ServicesPage({super.key});
 
@@ -25,7 +33,7 @@ class ServicesPage extends StatelessWidget {
             : context.l10n.services;
 
     return Scaffold(
-      appBar: AppBar(elevation: 0, title: Text(title)),
+      appBar: AppBar(elevation: 0, title: Text(title, style: _titleStyle)),
       body: const ServicesView(),
     );
   }

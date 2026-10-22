@@ -7,6 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+const _titleStyle = TextStyle(
+  fontSize: 26.5,
+  height: 1.05,
+  letterSpacing: -1.1,
+  fontWeight: FontWeight.w800,
+  color: Color(0xFF111827),
+);
+
 /// Displays the institutional account and academic profile.
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -16,7 +24,7 @@ class ProfilePage extends StatelessWidget {
     final appState = context.watch<AppBloc>().state;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Perfil')),
+      appBar: AppBar(title: const Text('Perfil', style: _titleStyle)),
       body: SafeArea(
         bottom: false,
         child:
