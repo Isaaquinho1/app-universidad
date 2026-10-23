@@ -1,16 +1,16 @@
 /// {@template notification_exception}
-/// Исключение клиента уведомлений.
+/// Excepción del cliente de notificaciones.
 /// {@endtemplate}
 abstract class NotificationException implements Exception {
   /// {@macro notification_exception}
   const NotificationException(this.error);
 
-  /// Связанная ошибка.
+  /// Error asociado.
   final Object error;
 }
 
 /// {@template subscribe_to_category_failure}
-/// Выбрасывается при ошибке подписки на категорию.
+/// Se produce cuando falla la suscripción a una categoría.
 /// {@endtemplate}
 class SubscribeToCategoryFailure extends NotificationException {
   /// {@macro subscribe_to_category_failure}
@@ -18,7 +18,7 @@ class SubscribeToCategoryFailure extends NotificationException {
 }
 
 /// {@template unsubscribe_from_category_failure}
-/// Выбрасывается при ошибке отписки от категории.
+/// Se produce cuando falla la cancelación de una suscripción.
 /// {@endtemplate}
 class UnsubscribeFromCategoryFailure extends NotificationException {
   /// {@macro unsubscribe_from_category_failure}
@@ -26,12 +26,12 @@ class UnsubscribeFromCategoryFailure extends NotificationException {
 }
 
 /// {@template notifications_client}
-/// Клиент для работы с уведомлениями.
+/// Interfaz para gestionar suscripciones de notificaciones.
 /// {@endtemplate}
 abstract class NotificationsClient {
-  /// Подписывает пользователя на группу уведомлений на основе [category].
+  /// Suscribe al usuario a las notificaciones de [category].
   Future<void> subscribeToCategory(String category);
 
-  /// Отписывает пользователя от группы уведомлений на основе [category].
+  /// Cancela la suscripción del usuario a [category].
   Future<void> unsubscribeFromCategory(String category);
 }

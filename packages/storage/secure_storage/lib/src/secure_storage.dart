@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:storage/storage.dart';
 
 /// {@template secure_storage}
-/// Хранилище, использующее [FlutterSecureStorage] для хранения данных.
+/// Implementación de [Storage] mediante [FlutterSecureStorage].
 /// {@endtemplate}
 class SecureStorage implements Storage {
   /// {@macro secure_storage}

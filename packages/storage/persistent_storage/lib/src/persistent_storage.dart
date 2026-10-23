@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storage/storage.dart';
 
 /// {@template persistent_storage}
-/// Хранилище, релазизующее [Storage] с помощью `SharedPreferences`.
+/// Implementación de [Storage] mediante `SharedPreferences`.
 /// {@endtemplate}
 class PersistentStorage implements Storage {
   /// {@macro persistent_storage}
