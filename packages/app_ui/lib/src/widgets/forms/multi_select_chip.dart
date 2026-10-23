@@ -22,49 +22,49 @@ class MultiSelectChip<T> extends StatelessWidget {
     this.label,
   });
 
-  /// Список всех доступных элементов
+  /// Lista de elementos disponibles.
   final List<T> items;
 
-  /// Список выбранных элементов
+  /// Lista de elementos seleccionados.
   final List<T> selectedItems;
 
-  /// Вызывается при изменении выбора
+  /// Se ejecuta cuando cambia la selección.
   final Function(List<T>) onSelectionChanged;
 
-  /// Функция для создания текста чипа
+  /// Genera el texto de cada chip.
   final String Function(T item) labelBuilder;
 
-  /// Функция для создания цвета чипа (опционально)
+  /// Genera el color de cada chip (opcional).
   final Color? Function(T item)? chipColorBuilder;
 
-  /// Цвет выбранного чипа
+  /// Color del chip seleccionado.
   final Color? selectedColor;
 
-  /// Цвет невыбранного чипа
+  /// Color del chip no seleccionado.
   final Color? unselectedColor;
 
-  /// Радиус скругления чипов
+  /// Radio de las esquinas de los chips.
   final double borderRadius;
 
-  /// Горизонтальный отступ между чипами
+  /// Espacio horizontal entre chips.
   final double spacing;
 
-  /// Вертикальный отступ между строками чипов
+  /// Espacio vertical entre filas de chips.
   final double runSpacing;
 
-  /// Максимальное количество отображаемых чипов
+  /// Número máximo de chips visibles.
   final int? maxItems;
 
-  /// Направление списка чипов
+  /// Dirección de distribución de los chips.
   final Axis direction;
 
-  /// Иконка для чипов (опционально)
+  /// Ícono de los chips (opcional).
   final dynamic icon;
 
-  /// Если true, можно выбрать только один элемент
+  /// Si es true, permite seleccionar solo un elemento.
   final bool isSingleSelect;
 
-  /// Заголовок для группы чипов (опционально)
+  /// Título del grupo de chips (opcional).
   final String? label;
 
   @override
@@ -73,7 +73,7 @@ class MultiSelectChip<T> extends StatelessWidget {
     final defaultSelectedColor = colors.primary;
     final defaultUnselectedColor = colors.background03;
 
-    // Применяем ограничение количества элементов, если задано
+    // Limitamos la cantidad de elementos si corresponde.
     final displayedItems = maxItems != null && items.length > maxItems!
         ? items.sublist(0, maxItems)
         : items;
@@ -99,10 +99,10 @@ class MultiSelectChip<T> extends StatelessWidget {
             final isSelected = selectedItems.contains(item);
             final itemColor = chipColorBuilder?.call(item);
 
-            // Для выбранного чипа используем заданный цвет или цвет элемента, или цвет по умолчанию
+            // Usamos el color configurado, el del elemento o el predeterminado.
             final activeColor =
                 selectedColor ?? itemColor ?? defaultSelectedColor;
-            // Для невыбранного чипа используем заданный цвет или прозрачный фон
+            // Usamos el color configurado o el predeterminado.
             final inactiveColor = unselectedColor ?? defaultUnselectedColor;
 
             return ChoiceChip(
@@ -139,7 +139,7 @@ class MultiSelectChip<T> extends StatelessWidget {
               onSelected: (selected) {
                 var newSelectedItems = <T>[...selectedItems];
 
-                // Для режима единственного выбора
+                // Modo de selección única.
                 if (isSingleSelect) {
                   if (selected) {
                     newSelectedItems = [item];
@@ -147,7 +147,7 @@ class MultiSelectChip<T> extends StatelessWidget {
                     newSelectedItems = [];
                   }
                 } else {
-                  // Для множественного выбора
+                  // Modo de selección múltiple.
                   if (selected) {
                     newSelectedItems.add(item);
                   } else {
@@ -161,7 +161,7 @@ class MultiSelectChip<T> extends StatelessWidget {
           }).toList(),
         ),
 
-        // Показываем "Ещё X элементов" если есть ограничение
+        // Indicamos los elementos adicionales cuando existe un límite.
         if (maxItems != null && items.length > maxItems!) ...[
           const SizedBox(height: 8),
           Text(

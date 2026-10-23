@@ -17,7 +17,7 @@ getStudyWeekTest() {
     DateTime startFirstSemester = DateTime(2020, DateTime.september, 2);
     DateTime startSecondSemester = DateTime(2021, DateTime.february, 9);
 
-    // TODO Протестить последние недели
+    // TODO: agregar pruebas para las últimas semanas del semestre
     test('First week in September', () {
       expect(m_cal.CalendarUtils.getCurrentWeek(mCurrentDate: startFirstSemester), 1);
     });

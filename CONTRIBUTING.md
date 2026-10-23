@@ -1,137 +1,111 @@
-# Добро пожаловать
-Радостно видеть, что вам интересен этот проект. Прежде всего стоит отметить, что мы всегда рады новым участникам и готовы помочь вам внести свой вклад в развитие. В этом файле вы найдёте информацию о том, как это сделать. Не стесняйтесь создавать новые [issues](https://github.com/0niel/university-app/issues) и [дискуссии](https://github.com/0niel/university-app/discussions), если у вас возникли вопросы или проблемы, даже если они кажутся вам незначительными.
+# Contribuir a Conecta ITT
 
-## Участники
-Всех участники проекта, которые внесли хоть какой-то вклад, отображаются в мобильном приложении в разделе "О приложении". Это происходит автоматически, как только ваш Pull Request будет принят и включён в релиз.
+Gracias por tu interés en Conecta ITT, aplicación móvil para la
+comunidad del Tecnológico Nacional de México Campus Tlalpan.
 
-# Ваше участие
-Каждый может внести свой вклад в развитие данного проекта. Мы с удовольствием рассмотрим ваш Pull Request, ознакомимся с вашими проблемами и вопросами.
+## Alcance
 
-Есть несколько принципов, которых нужно придерживаться:
-1. Уважайте чужой труд. Если вы что-то откуда-то заимствуете, то обязательно указывайте источники.
-2. Тщательно документируйте свой код.
-3. Придерживайтесь стандартов оформления кода. Например, таких, как [Effective Dart: Style](https://dart.dev/guides/language/effective-dart/style)
+El desarrollo activo está dirigido exclusivamente a Android e iOS.
 
+La aplicación incluye comunicados institucionales, notificaciones,
+perfiles, gestión académica personal y servicios estudiantiles.
 
-# DCO 
-Мы используем Developer Certificate of Origin (DCO) в качестве дополнительной защиты от недобросовестных участников. Это значит, что каждый коммит должен быть подписан автором, используя `git commit -s`.  Подробнее о DCO можно прочитать [здесь](https://developercertificate.org/). Узнать, как подписать свой коммит, можно [здесь](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
+## Tecnologías
 
+- Flutter y Dart.
+- Supabase.
+- Firebase.
+- BLoC y Cubit.
+- Paquetes internos en `packages/`.
 
-# Установка и конфигурация проекта
-Для сборки и запуска данного проекта необходима **Java 17**.  
+## Repositorio
 
-1. [Установите стабильную версию Flutter](https://docs.flutter.dev/get-started/install) для своей операционной системы, если вы этого ещё не сделали. Используйте `flutter doctor` для проверки установки и конфигурации Flutter.
+Clonar el proyecto:
 
-Этот проект использует некотоыре пакеты, которые необходимо установить перед началом работы:
-- [fvm](https://pub.dev/packages/fvm) для управления версиями Flutter.
-- [melos](https://pub.dev/packages/melos) для управления подпакетами.
+    git clone https://github.com/Isaaquinho1/app-universidad.git
+    cd app-universidad
 
-2. Клонирование репозитория:
-```bash
-git clone https://github.com/0niel/university-app.git
-```
-или форкните репозиторий и клонируйте свой форк.
+Rama estable de desarrollo:
 
-2.1. Инициализация и обновление submodules:
-В проекте используются *Git submodules* (в директории packages/neon и других). После клонирования репозитория необходимо проинициализировать и обновить submodules:
-```bash
-git submodule update --init --recursive
-```
+    refactor/conecta-itt-identity
 
-3. Установите fvm и melos:
-```bash
-dart pub global activate fvm
-dart pub global activate melos
-```
+Antes de desarrollar, comprobar la rama y el estado de Git:
 
-4. Используйте fvm в корневой директории проекта для установки версии Flutter, необходимой для работы над проектом:
-```bash
-fvm install
-fvm flutter precache
-```
+    git branch --show-current
+    git status --short
 
-5. Используйте melos в корневой директории проекта для установки зависимостей всех подпакетов:
-```bash
-melos bootstrap
-```
+## Preparación del entorno
 
-Важно: Если ваш терминал не распознает команды `fvm` и `melos`, убедитесь, что Pub Cache находится в вашем `PATH`. Подробнее об этом можно прочитать [здесь](https://dart.dev/tools/pub/cmd/pub-global).
+Instalar Flutter, Dart y las herramientas de Android o iOS.
 
-6. После установки всех зависимостей, вы можете запустить проект, выполнив команду:
-```bash
-fvm flutter run
-```
+El proyecto utiliza FVM para administrar Flutter.
 
-### Дополнительные команды
-- Используйте одну из этих команд для сборки проекта:
-```bash
-fvm flutter build apk
-fvm flutter build ios
-fvm flutter build appbundle
-```
+    fvm install
+    fvm flutter pub get
 
-- Используйте melos для запуска команд во всех подпакетах:
-```bash
-melos run
-```
+Ejecutar la configuración de desarrollo:
 
-- Если возникнут какие-либо проблемы при выполнении предыдущих действий, выполните приведенную ниже команду для анализа и устанения неполадок: -->
-```bash
-flutter doctor
-```
+    fvm flutter run --flavor development -t lib/main/main_development.dart
 
+La ejecución de servicios externos requiere configuración autorizada.
 
-## Генерация кода
-Проект использует [build_runner](https://pub.dev/packages/build_runner) для генерации кода, например, сериализаторов JSON и маршалинга.
+No publicar credenciales ni claves privadas.
 
-Используйте `melos run` для запуска команды `flutter pub run build_runner build` во всех подпакетах.
+## Validación
 
+Antes de proponer modificaciones:
 
-## Конфигурация Firebase Analytics
-Пропустите этот шаг, если вы не планируете распространять свою собственную сборку приложения.
+    fvm flutter analyze
+    fvm flutter test
 
-1. Зарегистрируйте приложение в [Firebase](https://console.firebase.google.com/).
-2. Выполните шаги для генерации `firebase_options.dart` файла с помощью [FlutterFire CLI](https://firebase.flutter.dev/docs/cli).
-3. Firebase Analytics для Android не поддерживает Dart-only конфигурацию. Как только ваше приложение для Android будет зарегистрировано в Firebase, загрузите файл конфигурации с консоли Firebase (файл называется `google-services.json`). Добавьте этот файл в каталог `android/app`.
-4. Проект готов для использования с Firebase Analytics и Crashlytics.
+Distinguir las advertencias existentes de errores introducidos
+por los cambios.
 
+Verificar en Android e iOS cuando corresponda.
 
-## Переменные окружения
-Приложение использует переменные среды для хранения конфиденциальных данных, таких как ключи API и токены. См. файл `.env.example`.
+## Convenciones
 
-### Переменные приложения, используемые в проекте:
-- `SENTRY_DSN` - DSN для отправки отчетов об ошибках в Sentry (необязательно).
-- `STORYLY_ID` - API ключ для работы Сторис через Storyly (необязательно).
-- `MAPKIT_API_KEY` - API ключ для работы с Яндекс Картами (Yandex MapKit) (необязательно).
+- Organizar el código por funcionalidades.
+- Documentar las decisiones importantes.
+- Utilizar nombres descriptivos.
+- Escribir los textos visibles en español de México.
+- Mantener la compatibilidad de los datos persistidos.
+- No introducir integraciones institucionales sin autorización.
+- No incluir credenciales en el código fuente.
+- Revisar el impacto antes de modificar migraciones o esquemas.
 
+## Commits
 
-# Запуск API сервера
-В папке `api` расположен исходный код сервера, который используется для получения расписания, новостей, данных о сообществе. В качестве бэкенд-фреймворка используется [dart_frog](https://github.com/VeryGoodOpenSource/dart_frog). Сервер и мобильное приложение используют общую кодовую базу, а API-клиенты, с помощью которых приложение взаимодействует с сервером, определены в `./api/lib/src/client/api_client.dart`.
+Utilizar commits pequeños y descriptivos, preferentemente con
+el estilo Conventional Commits.
 
-## Запуск сервера
-1. Установите зависимости сервера:
-```bash
-cd api
-dart pub get
-```
+Ejemplos:
 
-2. Установите dart_frog_cli:
-```bash
-dart pub global activate dart_frog_cli
-```
+- feat: nueva funcionalidad
+- fix: corrección funcional
+- refactor: reorganización de código
+- docs: actualización documental
+- chore: mantenimiento del proyecto
 
-3. Запустите сервер:
-```bash
-dart_frog dev
-```
+Verificar los cambios antes de confirmar:
 
-Создание production-сборки сервера:
-```bash
-dart_frog build
-```
+    git status --short
+    git diff --check
 
-Используйте `ApiClient.localhost()` для взаимодействия с сервером во время разработки https://github.com/0niel/university-app/blob/eea141fc7ce7a5f26e1486822eaec0d2d2983059/lib/main.dart#L170.
+No incluir archivos temporales, respaldos personales ni
+configuraciones locales ajenas a la modificación.
 
+## Licencias y atribución
 
-# Соглашение о коммитах
-Мы используем семантическое именование коммитов, чтобы упростить процесс релизов и автоматизировать генерацию changelog'ов. Придерживайтесь правил, определённых в [Conventional Commits](https://www.conventionalcommits.org/).
+Conecta ITT parte de software previamente existente.
+
+Se deben respetar las condiciones de licencia y los avisos
+de copyright conservados en `LICENSE`.
+
+El historial anterior permanece disponible mediante Git.
+
+## Seguridad
+
+No compartir datos personales de estudiantes, tokens FCM,
+claves privadas, credenciales de Supabase o Firebase ni
+información institucional restringida.

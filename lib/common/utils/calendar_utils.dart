@@ -38,17 +38,17 @@ abstract class CalendarUtils {
 
     DateTime semStart = getSemesterStart(mCurrentDate: mCurrentDate);
 
-    // Понедельник недели начала семестра
+    // Lunes de la semana en que comienza el semestre
     var firstDayOfWeek = semStart.subtract(
       Duration(days: semStart.weekday - 1),
     );
 
-    // Прибавляем сколько días прошло с начала семестра
+    // Calculamos el inicio de la semana seleccionada
     var firstDayOfChosenWeek = firstDayOfWeek.add(
       Duration(days: (week - 1) * 7),
     );
 
-    // Добавляем дни в массив, увеличивая счётчик на 1 día
+    // Agregamos los días, avanzando uno por uno
     for (int i = 0; i < 7; ++i) {
       daysInWeek.add(firstDayOfChosenWeek);
       firstDayOfChosenWeek = firstDayOfChosenWeek.add(const Duration(days: 1));
