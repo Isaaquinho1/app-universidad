@@ -18,33 +18,31 @@ void main() {
       permissionClient = const PermissionClient();
       calls = [];
 
-      TestDefaultBinaryMessengerBinding
-          .instance.defaultBinaryMessenger
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
-        calls.add(call);
+            calls.add(call);
 
-        if (call.method == 'checkPermissionStatus') {
-          return PermissionStatus.granted.index;
-        }
+            if (call.method == 'checkPermissionStatus') {
+              return PermissionStatus.granted.index;
+            }
 
-        if (call.method == 'requestPermissions') {
-          return <dynamic, dynamic>{
-            for (final key in call.arguments as List<dynamic>)
-              key: PermissionStatus.granted.index,
-          };
-        }
+            if (call.method == 'requestPermissions') {
+              return <dynamic, dynamic>{
+                for (final key in call.arguments as List<dynamic>)
+                  key: PermissionStatus.granted.index,
+              };
+            }
 
-        if (call.method == 'openAppSettings') {
-          return true;
-        }
+            if (call.method == 'openAppSettings') {
+              return true;
+            }
 
-        return null;
-      });
+            return null;
+          });
     });
 
     tearDown(() {
-      TestDefaultBinaryMessengerBinding
-          .instance.defaultBinaryMessenger
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, null);
     });
 

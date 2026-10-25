@@ -1,6 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 
-export 'package:permission_handler/permission_handler.dart' show PermissionStatus, PermissionStatusGetters;
+export 'package:permission_handler/permission_handler.dart'
+    show PermissionStatus, PermissionStatusGetters;
 
 /// {@template permission_client}
 /// Cliente para solicitar permisos del dispositivo.
@@ -11,10 +12,12 @@ class PermissionClient {
 
   /// Solicita permiso para recibir notificaciones,
   /// si todavía no se ha concedido.
-  Future<PermissionStatus> requestNotifications() => Permission.notification.request();
+  Future<PermissionStatus> requestNotifications() =>
+      Permission.notification.request();
 
   /// Devuelve el estado del permiso de notificaciones.
-  Future<PermissionStatus> notificationsStatus() => Permission.notification.status;
+  Future<PermissionStatus> notificationsStatus() =>
+      Permission.notification.status;
 
   /// Abre la configuración de la aplicación.
   ///
