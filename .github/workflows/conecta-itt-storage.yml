@@ -1,4 +1,4 @@
-name: Conecta ITT - Pruebas de almacenamiento
+name: Conecta ITT - Pruebas de almacenamiento y permisos
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - refactor/conecta-itt-identity
     paths:
       - 'packages/storage/**'
+      - 'packages/permission_client/**'
       - '.github/workflows/conecta-itt-storage.yml'
 
   pull_request:
@@ -14,6 +15,7 @@ on:
       - refactor/conecta-itt-identity
     paths:
       - 'packages/storage/**'
+      - 'packages/permission_client/**'
       - '.github/workflows/conecta-itt-storage.yml'
 
 permissions:
@@ -21,7 +23,7 @@ permissions:
 
 jobs:
   storage-tests:
-    name: Validar almacenamiento
+    name: Validar almacenamiento y permisos
     runs-on: ubuntu-latest
 
     steps:
@@ -38,9 +40,10 @@ jobs:
       - name: Instalar dependencias del workspace
         run: flutter pub get
 
-      - name: Ejecutar pruebas de almacenamiento
+      - name: Ejecutar pruebas de almacenamiento y permisos
         run: |
           flutter test \
             packages/storage/storage/test/storage_test.dart \
             packages/storage/persistent_storage/test/persistent_storage_test.dart \
-            packages/storage/secure_storage/test/secure_storage_test.dart
+            packages/storage/secure_storage/test/secure_storage_test.dart \
+            packages/permission_client/test/src/permission_client_test.dart
