@@ -8,6 +8,8 @@ class _FakeFlutterSecureStorage implements FlutterSecureStorage {
 
   bool failRead = false;
   bool failWrite = false;
+  bool failDelete = false;
+  bool failDeleteAll = false;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,11 +31,17 @@ class _FakeFlutterSecureStorage implements FlutterSecureStorage {
         return Future<void>.value();
 
       case #delete:
+        if (failDelete) {
+          return Future<void>.error(Exception('Error de eliminación'));
+        }
         final key = invocation.namedArguments[#key] as String;
         values.remove(key);
         return Future<void>.value();
 
       case #deleteAll:
+        if (failDeleteAll) {
+          return Future<void>.error(Exception('Error de limpieza'));
+        }
         values.clear();
         return Future<void>.value();
     }
@@ -102,6 +110,24 @@ void main() {
 
       await expectLater(
         storage.write(key: 'materia', value: 'Matemáticas'),
+        throwsA(isA<StorageException>()),
+      );
+    });
+
+    test('convierte errores de eliminación en StorageException', () async {
+      fake.failDelete = true;
+
+      await expectLater(
+        storage.delete(key: 'materia'),
+        throwsA(isA<StorageException>()),
+      );
+    });
+
+    test('convierte errores de limpieza en StorageException', () async {
+      fake.failDeleteAll = true;
+
+      await expectLater(
+        storage.clear(),
         throwsA(isA<StorageException>()),
       );
     });
