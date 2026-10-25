@@ -29,7 +29,7 @@ class MultiSelectChip<T> extends StatelessWidget {
   final List<T> selectedItems;
 
   /// Se ejecuta cuando cambia la selección.
-  final Function(List<T>) onSelectionChanged;
+  final void Function(List<T>) onSelectionChanged;
 
   /// Genera el texto de cada chip.
   final String Function(T item) labelBuilder;

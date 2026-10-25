@@ -13,7 +13,7 @@ class SelectRangeDateButton extends StatefulWidget {
     this.text,
   });
 
-  final Function(List<DateTime> dates) onDateSelected;
+  final void Function(List<DateTime> dates) onDateSelected;
   final DateTime? firstDate;
   final DateTime? lastDate;
   final List<DateTime?> initialValue;
@@ -83,7 +83,7 @@ class _SelectRangeDateButtonState extends State<SelectRangeDateButton> {
           ],
         ),
       ),
-      onPressed: () => showDialog(
+      onPressed: () => showDialog<void>(
         context: context,
         builder: (context) {
           return Dialog(

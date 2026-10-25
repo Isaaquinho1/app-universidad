@@ -44,15 +44,6 @@ class CustomChip extends StatelessWidget {
     final colors = Theme.of(context).extension<AppColors>()!;
     final chipColor = color ?? colors.primary;
 
-    final decoration = AppTheme.chipDecoration(
-      context,
-      isSelected: isSelected,
-      color: chipColor,
-    );
-
-    final horizontalPadding = small ? 10.0 : 12.0;
-    final verticalPadding = small ? 4.0 : 6.0;
-
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
     final backgroundColor = isLightTheme ? colors.white : colors.background03;
 
@@ -79,7 +70,8 @@ class CustomChip extends StatelessWidget {
             Flexible(
               child: Text(
                 label,
-                style: (small ? AppTextStyle.captionL : AppTextStyle.body).copyWith(
+                style: (small ? AppTextStyle.captionL : AppTextStyle.body)
+                    .copyWith(
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: isSelected ? chipColor : colors.active,
                 ),

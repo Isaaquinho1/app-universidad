@@ -12,7 +12,7 @@ class SelectDateButton extends StatefulWidget {
     this.text,
   });
 
-  final Function(DateTime date) onDateSelected;
+  final void Function(DateTime date) onDateSelected;
   final bool isRange;
   final DateTime? firstDate;
   final DateTime? lastDate;
