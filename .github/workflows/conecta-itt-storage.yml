@@ -59,10 +59,21 @@ jobs:
             packages/permission_client/lib \
             packages/permission_client/test
 
-      - name: Ejecutar pruebas de almacenamiento y permisos
+      - name: Ejecutar pruebas y generar cobertura
         run: |
-          flutter test \
+          mkdir -p "$RUNNER_TEMP/conecta-itt-coverage"
+          flutter test --coverage \
+            --coverage-path="$RUNNER_TEMP/conecta-itt-coverage/lcov.info" \
+            --coverage-package='^(storage|persistent_storage|secure_storage|permission_client)$' \
             packages/storage/storage/test/storage_test.dart \
             packages/storage/persistent_storage/test/persistent_storage_test.dart \
             packages/storage/secure_storage/test/secure_storage_test.dart \
             packages/permission_client/test/src/permission_client_test.dart
+
+      - name: Conservar informe de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: conecta-itt-package-coverage
+          path: ${{ runner.temp }}/conecta-itt-coverage/lcov.info
+          if-no-files-found: error
+          retention-days: 30
