@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_client/permission_client.dart';
@@ -9,23 +7,34 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('PermissionClient', () {
+    const channel = MethodChannel(
+      'flutter.baseflow.com/permissions/methods',
+    );
+
     late PermissionClient permissionClient;
     late List<MethodCall> calls;
 
     setUp(() {
-      permissionClient = PermissionClient();
+      permissionClient = const PermissionClient();
       calls = [];
 
-      MethodChannel('flutter.baseflow.com/permissions/methods').setMockMethodCallHandler((call) async {
+      TestDefaultBinaryMessengerBinding
+          .instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
         calls.add(call);
 
         if (call.method == 'checkPermissionStatus') {
           return PermissionStatus.granted.index;
-        } else if (call.method == 'requestPermissions') {
+        }
+
+        if (call.method == 'requestPermissions') {
           return <dynamic, dynamic>{
-            for (final key in call.arguments as List<dynamic>) key: PermissionStatus.granted.index,
+            for (final key in call.arguments as List<dynamic>)
+              key: PermissionStatus.granted.index,
           };
-        } else if (call.method == 'openAppSettings') {
+        }
+
+        if (call.method == 'openAppSettings') {
           return true;
         }
 
@@ -33,21 +42,36 @@ void main() {
       });
     });
 
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding
+          .instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, null);
+    });
+
     Matcher permissionWasRequested(Permission permission) => contains(
       isA<MethodCall>()
-          .having((c) => c.method, 'method', 'requestPermissions')
-          .having((c) => c.arguments, 'arguments', contains(permission.value)),
+          .having((call) => call.method, 'method', 'requestPermissions')
+          .having(
+            (call) => call.arguments,
+            'arguments',
+            contains(permission.value),
+          ),
     );
 
     Matcher permissionWasChecked(Permission permission) => contains(
       isA<MethodCall>()
-          .having((c) => c.method, 'method', 'checkPermissionStatus')
-          .having((c) => c.arguments, 'arguments', equals(permission.value)),
+          .having((call) => call.method, 'method', 'checkPermissionStatus')
+          .having(
+            (call) => call.arguments,
+            'arguments',
+            equals(permission.value),
+          ),
     );
 
     group('requestNotifications', () {
       test('calls correct method', () async {
         await permissionClient.requestNotifications();
+
         expect(calls, permissionWasRequested(Permission.notification));
       });
     });
@@ -55,6 +79,7 @@ void main() {
     group('notificationsStatus', () {
       test('calls correct method', () async {
         await permissionClient.notificationsStatus();
+
         expect(calls, permissionWasChecked(Permission.notification));
       });
     });
@@ -63,7 +88,16 @@ void main() {
       test('calls correct method', () async {
         await permissionClient.openPermissionSettings();
 
-        expect(calls, contains(isA<MethodCall>().having((c) => c.method, 'method', 'openAppSettings')));
+        expect(
+          calls,
+          contains(
+            isA<MethodCall>().having(
+              (call) => call.method,
+              'method',
+              'openAppSettings',
+            ),
+          ),
+        );
       });
     });
   });
