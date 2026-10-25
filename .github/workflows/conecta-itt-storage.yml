@@ -1,0 +1,46 @@
+name: Conecta ITT - Pruebas de almacenamiento
+
+on:
+  push:
+    branches:
+      - refactor/conecta-itt-identity
+    paths:
+      - 'packages/storage/**'
+      - '.github/workflows/conecta-itt-storage.yml'
+
+  pull_request:
+    branches:
+      - main
+      - refactor/conecta-itt-identity
+    paths:
+      - 'packages/storage/**'
+      - '.github/workflows/conecta-itt-storage.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  storage-tests:
+    name: Validar almacenamiento
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.9'
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias del workspace
+        run: flutter pub get
+
+      - name: Ejecutar pruebas de almacenamiento
+        run: |
+          flutter test \
+            packages/storage/storage/test/storage_test.dart \
+            packages/storage/persistent_storage/test/persistent_storage_test.dart \
+            packages/storage/secure_storage/test/secure_storage_test.dart
