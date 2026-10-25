@@ -57,33 +57,34 @@ void main() {
         verify(
           () => firebaseAnalytics.logEvent(
             name: event.name,
-            parameters: event.properties?.map((key, value) => MapEntry(key, value as Object)),
+            parameters: event.properties?.map(
+              (key, value) => MapEntry(key, value as Object),
+            ),
           ),
         ).called(1);
+      });
 
-        test(
-            'throws TrackEventFailure '
-            'when logEvent throws exception', () async {
-          when(
-            () => firebaseAnalytics.logEvent(
-              name: any(named: 'name'),
-              parameters: any(named: 'parameters'),
-            ),
-          ).thenThrow(Exception());
+      test('throws TrackEventFailure '
+          'when logEvent throws exception', () async {
+        when(
+          () => firebaseAnalytics.logEvent(
+            name: any(named: 'name'),
+            parameters: any(named: 'parameters'),
+          ),
+        ).thenThrow(Exception());
 
-          const analyticEvent1 = AnalyticsEvent(
-            'event1',
-            properties: <String, dynamic>{
-              'property1': 'value1',
-              'property2': 'value2',
-            },
-          );
+        const analyticEvent1 = AnalyticsEvent(
+          'event1',
+          properties: <String, dynamic>{
+            'property1': 'value1',
+            'property2': 'value2',
+          },
+        );
 
-          expect(
-            () => analyticsRepository.track(analyticEvent1),
-            throwsA(isA<TrackEventFailure>()),
-          );
-        });
+        expect(
+          () => analyticsRepository.track(analyticEvent1),
+          throwsA(isA<TrackEventFailure>()),
+        );
       });
 
       group('setUserId', () {
@@ -92,13 +93,10 @@ void main() {
 
           analyticsRepository.setUserId(userId);
 
-          verify(
-            () => firebaseAnalytics.setUserId(id: userId),
-          ).called(1);
+          verify(() => firebaseAnalytics.setUserId(id: userId)).called(1);
         });
 
-        test(
-            'throws SetUserIdFailure '
+        test('throws SetUserIdFailure '
             'when setUserId throws exception', () async {
           when(
             () => firebaseAnalytics.setUserId(id: any(named: 'id')),
