@@ -40,6 +40,25 @@ jobs:
       - name: Instalar dependencias del workspace
         run: flutter pub get
 
+      - name: Verificar análisis estático
+        run: |
+          dart analyze packages/storage/storage
+          dart analyze packages/storage/persistent_storage
+          dart analyze packages/storage/secure_storage
+          dart analyze packages/permission_client
+
+      - name: Verificar formato Dart
+        run: |
+          dart format --page-width=80 --output=none --set-exit-if-changed \
+            packages/storage/storage/lib \
+            packages/storage/storage/test \
+            packages/storage/persistent_storage/lib \
+            packages/storage/persistent_storage/test \
+            packages/storage/secure_storage/lib \
+            packages/storage/secure_storage/test \
+            packages/permission_client/lib \
+            packages/permission_client/test
+
       - name: Ejecutar pruebas de almacenamiento y permisos
         run: |
           flutter test \
