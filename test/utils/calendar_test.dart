@@ -12,7 +12,7 @@ void main() {
 }
 
 /// getCurrentWeek() test
-getStudyWeekTest() {
+void getStudyWeekTest() {
   group('Get study week number |', () {
     DateTime startFirstSemester = DateTime(2020, DateTime.september, 2);
     DateTime startSecondSemester = DateTime(2021, DateTime.february, 9);
@@ -35,7 +35,7 @@ getStudyWeekTest() {
 }
 
 /// getSemesterStart() test
-getSemesterStart() {
+void getSemesterStart() {
   group('Get start of semester |', () {
     DateTime startSecondHalf = DateTime(2021, DateTime.march, 3);
 
@@ -58,7 +58,7 @@ getSemesterStart() {
 }
 
 /// week days test
-getWeekDaysTest() {
+void getWeekDaysTest() {
   group('Get days in week |', () {
     test('First week in September', () {
       DateTime startFirstSemester = DateTime(2020, DateTime.september, 2);
@@ -89,7 +89,7 @@ getWeekDaysTest() {
   });
 }
 
-getCurrentDayOfWeek() {
+void getCurrentDayOfWeek() {
   test('27.08.2021 is Friday', () {
     final mockClock = Clock.fixed(DateTime(2021, 8, 27));
     int testDayOfWeek = m_cal.CalendarUtils.getCurrentDayOfWeek(clock: mockClock);
