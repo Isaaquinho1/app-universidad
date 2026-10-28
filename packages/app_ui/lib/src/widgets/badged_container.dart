@@ -1,9 +1,15 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
+/// Displays a compact card with a label and its value.
 class BadgedContainer extends StatelessWidget {
+  /// Creates a card with the required label and text.
   const BadgedContainer({required this.label, required this.text, super.key});
+
+  /// Descriptive label displayed above the value.
   final String label;
+
+  /// Value displayed inside the card.
   final String text;
 
   @override
@@ -13,7 +19,7 @@ class BadgedContainer extends StatelessWidget {
       height: 90,
       child: Card(
         color: Theme.of(context).extension<AppColors>()!.background02,
-        margin: const EdgeInsets.all(0),
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -29,7 +35,8 @@ class BadgedContainer extends StatelessWidget {
                     Text(
                       label,
                       style: AppTextStyle.bodyBold.copyWith(
-                        color: Theme.of(context).extension<AppColors>()!.deactive,
+                        color:
+                            Theme.of(context).extension<AppColors>()!.deactive,
                         fontSize: 12,
                         letterSpacing: 0.2,
                       ),
