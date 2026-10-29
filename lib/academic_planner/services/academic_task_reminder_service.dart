@@ -18,6 +18,10 @@ class AcademicTaskReminderService {
     return _localNotificationService.requestExactAlarmPermission();
   }
 
+  Future<bool> canScheduleExactNotifications() {
+    return _localNotificationService.canScheduleExactNotifications();
+  }
+
   Future<void> synchronize(AcademicTask task) async {
     await cancel(task.id);
 

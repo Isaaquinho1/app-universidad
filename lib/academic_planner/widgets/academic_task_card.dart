@@ -239,7 +239,7 @@ class AcademicTaskCard extends StatelessWidget {
                             child: Text(
                               task.reminderAt!.isAfter(DateTime.now())
                                   ? 'Recordatorio programado'
-                                  : 'Recordatorio enviado',
+                                  : 'Hora del recordatorio alcanzada',
                               style: AppTextStyle.body.copyWith(
                                 fontSize: 12,
                                 color: colors.deactive,

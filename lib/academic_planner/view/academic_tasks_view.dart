@@ -58,6 +58,7 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
   Timer? _reminderStatusTimer;
   bool _processing = false;
+  bool _exactAlarmPromptShown = false;
   _TaskFilter _selectedFilter = _TaskFilter.pending;
 
   @override
@@ -256,6 +257,10 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
       return;
     }
 
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+
     setState(() {
       _processing = true;
     });
@@ -263,13 +268,107 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     try {
       if (!isCurrentAccount()) return;
 
-      await _atomicSaveService.save(
+      final savedTask = await _atomicSaveService.save(
         form: result,
         previousTask: task,
         originalSubtasks: task == null ? null : subtasks,
       );
 
-      if (!mounted) return;
+      if (!isCurrentAccount()) return;
+
+      try {
+        final reminderAt = savedTask.reminderAt;
+        final hasFutureReminder =
+            reminderAt != null &&
+            reminderAt.isAfter(DateTime.now()) &&
+            (savedTask.status == AcademicTaskStatus.pending ||
+                savedTask.status == AcademicTaskStatus.inProgress);
+
+        if (hasFutureReminder) {
+          try {
+            final notificationsGranted =
+                await _reminderService.requestPermission();
+
+            if (!isCurrentAccount()) return;
+
+            if (!notificationsGranted) {
+              messenger.showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Activa las notificaciones de Conecta ITT '
+                    'para recibir los recordatorios.',
+                  ),
+                ),
+              );
+            } else if (!_exactAlarmPromptShown) {
+              final exactAllowed =
+                  await _reminderService.canScheduleExactNotifications();
+
+              if (!isCurrentAccount()) return;
+
+              if (!exactAllowed) {
+                _exactAlarmPromptShown = true;
+
+                if (!mounted) return;
+
+                final enableExact = await showDialog<bool>(
+                  context: context,
+                  builder:
+                      (dialogContext) => AlertDialog(
+                        title: const Text('Recordatorios puntuales'),
+                        content: const Text(
+                          'Conecta ITT puede avisarte a la hora '
+                          'programada si autorizas las alarmas exactas '
+                          'en Android. Sin este permiso, el recordatorio '
+                          'puede llegar más tarde.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed:
+                                () => Navigator.of(dialogContext).pop(false),
+                            child: const Text('Continuar sin activar'),
+                          ),
+                          FilledButton(
+                            onPressed:
+                                () => Navigator.of(dialogContext).pop(true),
+                            child: const Text('Activar precisión'),
+                          ),
+                        ],
+                      ),
+                );
+
+                if (!isCurrentAccount()) return;
+
+                if (enableExact == true) {
+                  await _reminderService.requestExactAlarmPermission();
+
+                  if (!isCurrentAccount()) return;
+                }
+              }
+            }
+          } catch (_) {
+            // Un fallo al solicitar permisos no debe impedir
+            // programar el recordatorio de manera aproximada.
+          }
+        }
+
+        if (!isCurrentAccount()) return;
+
+        await _reminderService.synchronize(savedTask);
+      } catch (_) {
+        if (!mounted || !isCurrentAccount()) return;
+
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'La tarea se guardó, pero no fue posible programar '
+              'su recordatorio.',
+            ),
+          ),
+        );
+      }
+
+      if (!isCurrentAccount()) return;
       await _refresh();
     } catch (_) {
       if (!mounted) return;
