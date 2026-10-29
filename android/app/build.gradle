@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId "mx.tecnm.tlalpan.conectaitt"
         minSdk 26
-        targetSdk 34
+        targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
