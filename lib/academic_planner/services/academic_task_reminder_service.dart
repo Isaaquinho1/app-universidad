@@ -1,13 +1,24 @@
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task_status.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_notification_identity.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_schedule_identity.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_operation_coordinator.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_verified_cancellation_service.dart';
 import 'package:conecta_itt/app/services/local_notification_service.dart';
 
 class AcademicTaskReminderService {
   AcademicTaskReminderService({
+    required this.userId,
+    this.coordinator,
+    this.authRevision,
     LocalNotificationService? localNotificationService,
-  }) : _localNotificationService =
+  }) : assert((coordinator == null) == (authRevision == null)),
+       _localNotificationService =
            localNotificationService ?? LocalNotificationService.instance;
 
+  final String userId;
+  final AcademicReminderOperationCoordinator? coordinator;
+  final int? authRevision;
   final LocalNotificationService _localNotificationService;
 
   Future<bool> requestPermission() {
@@ -22,33 +33,162 @@ class AcademicTaskReminderService {
     return _localNotificationService.canScheduleExactNotifications();
   }
 
-  Future<void> synchronize(AcademicTask task) async {
-    await cancel(task.id);
+  Future<void> synchronize(AcademicTask task) =>
+      _synchronize(task, preserveMatching: false);
 
-    if (!_shouldSchedule(task)) {
-      return;
-    }
+  Future<void> _synchronize(
+    AcademicTask task, {
+    required bool preserveMatching,
+  }) {
+    return _execute((lease) async {
+      if (preserveMatching && _shouldSchedule(task)) {
+        lease?.ensureCurrent();
 
-    final reminderAt = task.reminderAt!;
+        final pending =
+            await _localNotificationService.pendingNotificationRequests();
 
-    await _localNotificationService.scheduleAcademicReminder(
-      id: notificationIdForTask(task.id),
-      title: 'Tarea próxima',
-      body: task.title,
-      scheduledAt: reminderAt,
-      payload: {'type': 'academic_task', 'task_id': task.id},
-    );
+        lease?.ensureCurrent();
+
+        final id = AcademicReminderNotificationIdentity.forTask(
+          userId: userId,
+          taskId: task.id,
+        );
+
+        final sameSlot = pending.where((request) => request.id == id).toList();
+
+        final signature = AcademicReminderScheduleIdentity.forTask(
+          title: task.title,
+          scheduledAt: task.reminderAt!,
+        );
+
+        if (sameSlot.length == 1 &&
+            AcademicReminderVerifiedCancellationService.isMatchingSchedule(
+              id: sameSlot.single.id,
+              payload: sameSlot.single.payload,
+              userId: userId,
+              recordId: task.id,
+              isTask: true,
+              expectedSignature: signature,
+            )) {
+          lease?.ensureCurrent();
+          return;
+        }
+      }
+
+      // Primero comprobar colisiones. Nunca cancelar una alarma
+      // propia si el mismo ID está ocupado por otra identidad.
+      await AcademicReminderVerifiedCancellationService(
+        localNotificationService: _localNotificationService,
+      ).ensureSlotAvailable(
+        userId: userId,
+        recordId: task.id,
+        isTask: true,
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      lease?.ensureCurrent();
+      await _cancelDirect(task.id, lease);
+
+      lease?.ensureCurrent();
+
+      if (!_shouldSchedule(task)) {
+        return;
+      }
+
+      final reminderAt = task.reminderAt!;
+
+      lease?.ensureCurrent();
+
+      await AcademicReminderVerifiedCancellationService(
+        localNotificationService: _localNotificationService,
+      ).ensureSlotAvailable(
+        userId: userId,
+        recordId: task.id,
+        isTask: true,
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      lease?.ensureCurrent();
+
+      await _localNotificationService.scheduleAcademicReminder(
+        id: AcademicReminderNotificationIdentity.forTask(
+          userId: userId,
+          taskId: task.id,
+        ),
+        title: 'Tarea próxima',
+        body: task.title,
+        scheduledAt: reminderAt,
+        payload: {
+          'type': 'academic_task',
+          'task_id': task.id,
+          'user_id': userId,
+          AcademicReminderScheduleIdentity.versionKey:
+              AcademicReminderScheduleIdentity.version,
+          AcademicReminderScheduleIdentity
+              .signatureKey: AcademicReminderScheduleIdentity.forTask(
+            title: task.title,
+            scheduledAt: reminderAt,
+          ),
+        },
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      // El plugin pudo terminar después de un cambio de cuenta.
+      // La reconciliación posterior atenderá cualquier alarma tardía.
+      lease?.ensureCurrent();
+    });
   }
 
   Future<void> cancel(String taskId) {
-    return _localNotificationService.cancelNotification(
-      notificationIdForTask(taskId),
+    return _execute((lease) => _cancelDirect(taskId, lease));
+  }
+
+  Future<void> _cancelDirect(
+    String taskId,
+    AcademicReminderOperationLease? lease,
+  ) async {
+    lease?.ensureCurrent();
+
+    await AcademicReminderVerifiedCancellationService(
+      localNotificationService: _localNotificationService,
+    ).cancelOwned(
+      userId: userId,
+      recordId: taskId,
+      isTask: true,
+      ensureCurrent: lease?.ensureCurrent,
+    );
+
+    lease?.ensureCurrent();
+  }
+
+  Future<void> _execute(
+    Future<void> Function(AcademicReminderOperationLease? lease) operation,
+  ) async {
+    final activeCoordinator = coordinator;
+
+    if (activeCoordinator == null) {
+      if (authRevision != null) {
+        throw StateError('Falta el coordinador académico.');
+      }
+      await operation(null);
+      return;
+    }
+
+    final revision = authRevision;
+    if (revision == null) {
+      throw StateError('Falta la revisión de autenticación.');
+    }
+
+    await activeCoordinator.run(
+      userId: userId,
+      revision: revision,
+      operation: (lease) => operation(lease),
     );
   }
 
   Future<void> restore(Iterable<AcademicTask> tasks) async {
     for (final task in tasks) {
-      await synchronize(task);
+      await _synchronize(task, preserveMatching: true);
     }
   }
 

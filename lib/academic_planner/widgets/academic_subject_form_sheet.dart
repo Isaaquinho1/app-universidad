@@ -43,6 +43,7 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
   ];
 
   final _formKey = GlobalKey<FormState>();
+  final _notesFocusNode = FocusNode();
 
   late final TextEditingController _nameController;
   late final TextEditingController _codeController;
@@ -75,6 +76,7 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
     _codeController.dispose();
     _teacherController.dispose();
     _notesController.dispose();
+    _notesFocusNode.dispose();
     super.dispose();
   }
 
@@ -136,6 +138,7 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
           AppSpacing.lg + keyboardInset,
         ),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Column(
@@ -172,6 +175,7 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.xlg),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _nameController,
                   autofocus: !_isEditing,
                   textCapitalization: TextCapitalization.sentences,
@@ -196,6 +200,7 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _codeController,
                   textCapitalization: TextCapitalization.characters,
                   textInputAction: TextInputAction.next,
@@ -208,7 +213,9 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _teacherController,
+                  onFieldSubmitted: (_) => _notesFocusNode.requestFocus(),
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   maxLength: 100,
@@ -239,7 +246,9 @@ class _AcademicSubjectFormSheetState extends State<AcademicSubjectFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.xlg),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _notesController,
+                  focusNode: _notesFocusNode,
                   textCapitalization: TextCapitalization.sentences,
                   minLines: 3,
                   maxLines: 5,

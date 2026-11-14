@@ -12,7 +12,6 @@ const _titleStyle = TextStyle(
   height: 1.05,
   letterSpacing: -1.1,
   fontWeight: FontWeight.w800,
-  color: Color(0xFF111827),
 );
 
 /// Displays the institutional account and academic profile.

@@ -1,4 +1,9 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:conecta_itt/app/app.dart';
+import 'package:conecta_itt/institutional_profile/repositories/admin_profile_photo_repository.dart';
+import 'package:conecta_itt/institutional_profile/services/profile_photo_review_badge_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
 
@@ -30,6 +35,24 @@ class _AnimatedBottomNavigationBarState
       if (mounted) setState(() {});
     };
     _controller.addListener(_visibilityListener);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final profile = context.watch<AppBloc>().state.institutionalProfile;
+
+    final badge = ProfilePhotoReviewBadgeController.instance;
+
+    if (profile != null && profile.canReviewProfilePhotos) {
+      badge.bind(
+        userId: profile.uid,
+        repository: context.read<AdminProfilePhotoRepository>(),
+      );
+    } else {
+      badge.unbind();
+    }
   }
 
   @override
@@ -90,14 +113,25 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final surfaceColor =
+        isDark
+            ? (theme.extension<AppColors>()?.surfaceHigh ??
+                theme.colorScheme.surfaceContainerHigh)
+            : const Color(0xFFFCFCFE);
+    final inactiveColor = isDark ? theme.colorScheme.onSurface : _dark;
+
     return Container(
       height: 76,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFFCFCFE),
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFFECEFF4)),
+        border: Border.all(
+          color: isDark ? surfaceColor : const Color(0xFFECEFF4),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.075),
@@ -126,10 +160,59 @@ class AppBottomNavigationBar extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        _icons[i],
-                        size: 23,
-                        color: selected ? _blue : _dark,
+                      SizedBox(
+                        width: 48,
+                        height: 30,
+                        child: ValueListenableBuilder<int>(
+                          valueListenable:
+                              ProfilePhotoReviewBadgeController
+                                  .instance
+                                  .unseenCount,
+                          builder: (context, count, _) {
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.center,
+                              children: [
+                                Icon(
+                                  _icons[i],
+                                  size: 23,
+                                  color: selected ? _blue : inactiveColor,
+                                ),
+                                if (i == 2 && count > 0)
+                                  Positioned(
+                                    top: -5,
+                                    right: -3,
+                                    child: Container(
+                                      constraints: const BoxConstraints(
+                                        minWidth: 20,
+                                        minHeight: 20,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFDC2626),
+                                        borderRadius: BorderRadius.circular(
+                                          100,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        count > 99 ? '99+' : '$count',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                       const SizedBox(height: 3),
                       FittedBox(
@@ -141,7 +224,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                             fontSize: 11,
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
-                            color: selected ? _blue : _dark,
+                            color: selected ? _blue : inactiveColor,
                           ),
                         ),
                       ),

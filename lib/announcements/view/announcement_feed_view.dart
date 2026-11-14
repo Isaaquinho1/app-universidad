@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:clock/clock.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,58 +73,162 @@ class AnnouncementFeedView extends StatefulWidget {
   State<AnnouncementFeedView> createState() => _AnnouncementFeedViewState();
 }
 
-class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
+class _AnnouncementFeedViewState extends State<AnnouncementFeedView>
+    with WidgetsBindingObserver {
   _PublicationFeedFilter _filter = _PublicationFeedFilter.all;
   _PublicationFeedFilter _previousFilter = _PublicationFeedFilter.all;
   int _heroRefreshToken = 0;
+  Future<void>? _refreshFuture;
+  Timer? _expirationTimer;
 
-  Future<void> _refreshFeed() async {
-    context.read<AnnouncementBloc>().add(const AnnouncementsStarted());
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Cover feeds mounted with an already populated AnnouncementBloc.
+    // Access the Bloc after the first frame, when context is available.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      _scheduleNextExpiration(
+        context.read<AnnouncementBloc>().state.announcements,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _expirationTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !mounted) {
+      return;
+    }
+
+    setState(() {});
+
+    _scheduleNextExpiration(
+      context.read<AnnouncementBloc>().state.announcements,
+    );
+  }
+
+  void _scheduleNextExpiration(List<Announcement> announcements) {
+    _expirationTimer?.cancel();
+    _expirationTimer = null;
+
+    if (!mounted) return;
+
+    final now = clock.now();
+    DateTime? nextExpiration;
+
+    for (final publication in announcements) {
+      if (publication.status != AnnouncementStatus.published) {
+        continue;
+      }
+
+      final expiration = publication.expiresAt;
+
+      if (expiration == null || !expiration.isAfter(now)) {
+        continue;
+      }
+
+      if (nextExpiration == null || expiration.isBefore(nextExpiration)) {
+        nextExpiration = expiration;
+      }
+    }
+
+    if (nextExpiration == null) return;
+
+    final delay = nextExpiration.difference(clock.now());
+
+    _expirationTimer = Timer(delay.isNegative ? Duration.zero : delay, () {
+      if (!mounted) return;
+
+      setState(() {});
+
+      _scheduleNextExpiration(
+        context.read<AnnouncementBloc>().state.announcements,
+      );
+    });
+  }
+
+  Future<void> _refreshFeed() {
+    final pending = _refreshFuture;
+    if (pending != null) return pending;
 
     setState(() {
       _heroRefreshToken++;
     });
 
-    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return _refreshFuture = context
+        .read<AnnouncementBloc>()
+        .refresh()
+        .onError((Object error, StackTrace stackTrace) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'No fue posible actualizar el feed. Intenta nuevamente.',
+                ),
+              ),
+            );
+        })
+        .whenComplete(() => _refreshFuture = null);
   }
 
   Widget _buildFeedShell({
     required List<Widget> contentSlivers,
     required bool showFilters,
   }) {
-    return RefreshIndicator(
-      onRefresh: _refreshFeed,
-      child: CustomScrollView(
-        controller: widget.scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: CampusContextHero(refreshToken: _heroRefreshToken),
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+      child: RefreshIndicator(
+        onRefresh: _refreshFeed,
+        child: CustomScrollView(
+          controller: widget.scrollController,
+          // Keep the hero in place on iOS and allow refresh on short feeds.
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: ClampingScrollPhysics(),
           ),
-          if (showFilters)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-              sliver: SliverToBoxAdapter(
-                child: _PublicationFilterBar(
-                  selectedFilter: _filter,
-                  onChanged: (filter) {
-                    setState(() {
-                      _previousFilter = _filter;
-                      _filter = filter;
-                    });
-                  },
+          slivers: [
+            SliverToBoxAdapter(
+              child: CampusContextHero(refreshToken: _heroRefreshToken),
+            ),
+            if (showFilters)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _PublicationFilterBar(
+                    selectedFilter: _filter,
+                    onChanged: (filter) {
+                      setState(() {
+                        _previousFilter = _filter;
+                        _filter = filter;
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-          ...contentSlivers,
-        ],
+            ...contentSlivers,
+          ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnnouncementBloc, AnnouncementState>(
+    return BlocConsumer<AnnouncementBloc, AnnouncementState>(
+      listener: (context, state) {
+        _scheduleNextExpiration(state.announcements);
+      },
       builder: (context, state) {
         switch (state.status) {
           case AnnouncementsStatus.initial:
@@ -139,24 +246,18 @@ class _AnnouncementFeedViewState extends State<AnnouncementFeedView> {
               contentSlivers: [
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: _PublicationErrorState(
-                    onRetry: () {
-                      context.read<AnnouncementBloc>().add(
-                        const AnnouncementsStarted(),
-                      );
-
-                      setState(() {
-                        _heroRefreshToken++;
-                      });
-                    },
-                  ),
+                  child: _PublicationErrorState(onRetry: _refreshFeed),
                 ),
               ],
             );
 
           case AnnouncementsStatus.populated:
             final publications = state.announcements
-                .where(_filter.accepts)
+                .where(
+                  (publication) =>
+                      publication.isVisibleToStudents &&
+                      _filter.accepts(publication),
+                )
                 .toList(growable: false);
 
             return _buildFeedShell(
@@ -658,6 +759,21 @@ class AnnouncementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryText =
+        isDark ? theme.colorScheme.onSurface : const Color(0xFF111827);
+    final secondaryText =
+        isDark
+            ? (theme.extension<AppColors>()?.deactive ??
+                theme.colorScheme.onSurfaceVariant)
+            : const Color(0xFF39465B);
+    final dateText = isDark ? secondaryText : const Color(0xFF49566A);
+    final arrowColor = isDark ? secondaryText : const Color(0xFF192B50);
+    final cardBackground =
+        isDark
+            ? (theme.extension<AppColors>()?.surfaceHigh ??
+                theme.colorScheme.surfaceContainerHigh)
+            : theme.colorScheme.surface;
     final cover = _coverAsset;
 
     final isFeatured = announcement.isCurrentlyFeatured;
@@ -668,10 +784,13 @@ class AnnouncementCard extends StatelessWidget {
       elevation: 0,
       shadowColor: Colors.black.withValues(alpha: 0.10),
       surfaceTintColor: Colors.transparent,
-      color: theme.colorScheme.surface,
+      color: cardBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(22),
-        side: BorderSide(color: const Color(0xFFE9EDF3), width: 1),
+        side: BorderSide(
+          color: isDark ? cardBackground : const Color(0xFFE9EDF3),
+          width: 1,
+        ),
       ),
       child: InkWell(
         onTap: () async {
@@ -823,7 +942,7 @@ class AnnouncementCard extends StatelessWidget {
                                   fontSize: 13.8,
                                   fontWeight: FontWeight.w800,
                                   height: 1.15,
-                                  color: const Color(0xFF111827),
+                                  color: primaryText,
                                 ),
                               ),
                               if (previewText.isNotEmpty) ...[
@@ -832,21 +951,21 @@ class AnnouncementCard extends StatelessWidget {
                                   previewText,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 9.8,
                                     fontWeight: FontWeight.w600,
                                     height: 1.15,
-                                    color: Color(0xFF39465B),
+                                    color: secondaryText,
                                   ),
                                 ),
                               ],
                               const Spacer(),
                               Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.account_circle_outlined,
                                     size: 11,
-                                    color: Color(0xFF39465B),
+                                    color: secondaryText,
                                   ),
                                   const SizedBox(width: 3),
                                   Expanded(
@@ -855,35 +974,35 @@ class AnnouncementCard extends StatelessWidget {
                                           'TecNM Campus Tlalpan',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 8,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF39465B),
+                                        color: secondaryText,
                                       ),
                                     ),
                                   ),
                                   if (_attachmentCount > 0)
-                                    const Icon(
+                                    Icon(
                                       Icons.attach_file,
                                       size: 10,
-                                      color: Color(0xFF39465B),
+                                      color: secondaryText,
                                     ),
                                   if (publicationDateLabel != null) ...[
                                     const SizedBox(width: 4),
                                     Text(
                                       publicationDateLabel!,
                                       maxLines: 1,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 8,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF49566A),
+                                        color: dateText,
                                       ),
                                     ),
                                   ],
-                                  const Icon(
+                                  Icon(
                                     Icons.chevron_right_rounded,
                                     size: 15,
-                                    color: Color(0xFF192B50),
+                                    color: arrowColor,
                                   ),
                                 ],
                               ),
@@ -1021,7 +1140,7 @@ class AnnouncementCard extends StatelessWidget {
                                           fontSize: compact ? 12.8 : 13.8,
                                           height: 1.15,
                                           letterSpacing: -0.25,
-                                          color: const Color(0xFF111827),
+                                          color: primaryText,
                                         ),
                                   ),
                                   if (announcement.isNews &&
@@ -1032,10 +1151,10 @@ class AnnouncementCard extends StatelessWidget {
                                     const SizedBox(height: 6),
                                     Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.sell_outlined,
                                           size: 12,
-                                          color: Color(0xFF39465B),
+                                          color: secondaryText,
                                         ),
                                         const SizedBox(width: 4),
                                         Expanded(
@@ -1043,10 +1162,10 @@ class AnnouncementCard extends StatelessWidget {
                                             announcement.newsCategory!.trim(),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 9.5,
                                               fontWeight: FontWeight.w600,
-                                              color: Color(0xFF39465B),
+                                              color: secondaryText,
                                             ),
                                           ),
                                         ),
@@ -1059,11 +1178,11 @@ class AnnouncementCard extends StatelessWidget {
                                       previewText,
                                       maxLines: cover != null ? 2 : 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 9.8,
                                         fontWeight: FontWeight.w600,
                                         height: 1.25,
-                                        color: Color(0xFF39465B),
+                                        color: secondaryText,
                                       ),
                                     ),
                                   ],
@@ -1073,10 +1192,10 @@ class AnnouncementCard extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.account_circle_outlined,
                                       size: 12,
-                                      color: Color(0xFF39465B),
+                                      color: secondaryText,
                                     ),
                                     const SizedBox(width: 3),
                                     Expanded(
@@ -1085,35 +1204,35 @@ class AnnouncementCard extends StatelessWidget {
                                             'TecNM Campus Tlalpan',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 8.6,
                                           fontWeight: FontWeight.w600,
-                                          color: Color(0xFF39465B),
+                                          color: secondaryText,
                                         ),
                                       ),
                                     ),
                                     if (_attachmentCount > 0)
-                                      const Icon(
+                                      Icon(
                                         Icons.attach_file,
                                         size: 11,
-                                        color: Color(0xFF39465B),
+                                        color: secondaryText,
                                       ),
                                     if (publicationDateLabel != null) ...[
                                       const SizedBox(width: 5),
                                       Text(
                                         publicationDateLabel!,
                                         maxLines: 1,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 8.6,
                                           fontWeight: FontWeight.w600,
-                                          color: Color(0xFF49566A),
+                                          color: dateText,
                                         ),
                                       ),
                                     ],
-                                    const Icon(
+                                    Icon(
                                       Icons.chevron_right_rounded,
                                       size: 16,
-                                      color: Color(0xFF192B50),
+                                      color: arrowColor,
                                     ),
                                   ],
                                 ),

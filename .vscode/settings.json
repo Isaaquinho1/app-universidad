@@ -1,5 +1,10 @@
+
 {
   "dart.lineLength": 120,
+  "dart.flutterSdkPath": ".fvm/flutter_sdk",
+  "dart.analysisExcludedFolders": [
+    "build"
+  ],
   "files.insertFinalNewline": true,
   "java.configuration.updateBuildConfiguration": "interactive",
   "cmake.configureOnOpen": false,
@@ -30,7 +35,6 @@
     "**/coverage": true,
     "**/packages/neon": true
   },
-  "dart.flutterSdkPath": ".fvm/versions/3.38.9",
   "deno.enablePaths": [
     "supabase/functions"
   ],

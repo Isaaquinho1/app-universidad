@@ -181,7 +181,8 @@ class AppColors extends ThemeExtension<AppColors> {
       cardShadowLight: Color.lerp(cardShadowLight, other.cardShadowLight, t)!,
       cardShadowDark: Color.lerp(cardShadowDark, other.cardShadowDark, t)!,
       shimmerBase: Color.lerp(shimmerBase, other.shimmerBase, t)!,
-      shimmerHighlight: Color.lerp(shimmerHighlight, other.shimmerHighlight, t)!,
+      shimmerHighlight:
+          Color.lerp(shimmerHighlight, other.shimmerHighlight, t)!,
     );
   }
 
@@ -211,7 +212,7 @@ class AppColors extends ThemeExtension<AppColors> {
     accent: Color(0xFF4F7FFF),
     success: Color(0xFF4CAF50),
     warning: Color(0xFFFFC107),
-    error: Color(0xFFFF5252),
+    error: Color(0xFFB3261E),
     info: Color(0xFF2196F3),
     borderLight: Color(0xFFEAEAEA),
     borderMedium: Color(0xFFD0D0D0),

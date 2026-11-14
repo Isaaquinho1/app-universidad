@@ -18,6 +18,9 @@ class AppState extends Equatable {
     this.user = User.anonymous,
     this.institutionalProfile,
     this.pendingAnnouncementId,
+    this.pendingPhotoReviewDecision,
+    this.pendingPhotoReviewUserId,
+    this.pendingPhotoReviewAuthRevision,
     this.pendingAcademicTaskId,
     this.pendingClassSessionId,
     this.pendingClassSubjectId,
@@ -60,6 +63,12 @@ class AppState extends Equatable {
   /// This value is intentionally not persisted by HydratedBloc.
   final String? pendingAnnouncementId;
 
+  /// Photograph-review notification awaiting secure navigation.
+  /// Never persisted by HydratedBloc.
+  final String? pendingPhotoReviewDecision;
+  final String? pendingPhotoReviewUserId;
+  final int? pendingPhotoReviewAuthRevision;
+
   /// Academic task waiting to be opened from a local reminder.
   ///
   /// This value is intentionally not persisted by HydratedBloc.
@@ -81,6 +90,10 @@ class AppState extends Equatable {
     bool clearInstitutionalProfile = false,
     String? pendingAnnouncementId,
     bool clearPendingAnnouncementId = false,
+    String? pendingPhotoReviewDecision,
+    String? pendingPhotoReviewUserId,
+    int? pendingPhotoReviewAuthRevision,
+    bool clearPendingPhotoReview = false,
     String? pendingAcademicTaskId,
     bool clearPendingAcademicTaskId = false,
     String? pendingClassSessionId,
@@ -99,6 +112,19 @@ class AppState extends Equatable {
           clearPendingAnnouncementId
               ? null
               : pendingAnnouncementId ?? this.pendingAnnouncementId,
+      pendingPhotoReviewDecision:
+          clearPendingPhotoReview
+              ? null
+              : pendingPhotoReviewDecision ?? this.pendingPhotoReviewDecision,
+      pendingPhotoReviewUserId:
+          clearPendingPhotoReview
+              ? null
+              : pendingPhotoReviewUserId ?? this.pendingPhotoReviewUserId,
+      pendingPhotoReviewAuthRevision:
+          clearPendingPhotoReview
+              ? null
+              : pendingPhotoReviewAuthRevision ??
+                  this.pendingPhotoReviewAuthRevision,
       pendingAcademicTaskId:
           clearPendingAcademicTaskId
               ? null
@@ -121,6 +147,9 @@ class AppState extends Equatable {
     user,
     institutionalProfile,
     pendingAnnouncementId,
+    pendingPhotoReviewDecision,
+    pendingPhotoReviewUserId,
+    pendingPhotoReviewAuthRevision,
     pendingAcademicTaskId,
     pendingClassSessionId,
     pendingClassSubjectId,

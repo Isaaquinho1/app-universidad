@@ -18,6 +18,22 @@ class _TaskCategoriesPageState extends State<TaskCategoriesPage> {
   bool _processing = false;
   bool _changed = false;
 
+  Future<List<TaskCategory>>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    _pullToRefreshData = _categoriesFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -219,7 +235,9 @@ class _TaskCategoriesPageState extends State<TaskCategoriesPage> {
           child: FutureBuilder<List<TaskCategory>>(
             future: _categoriesFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  !(snapshot.hasData &&
+                      identical(_categoriesFuture, _pullToRefreshData))) {
                 return const Center(child: CircularProgressIndicator());
               }
 
@@ -235,8 +253,8 @@ class _TaskCategoriesPageState extends State<TaskCategoriesPage> {
 
               final categories = snapshot.data ?? const <TaskCategory>[];
 
-              return RefreshIndicator(
-                onRefresh: _refresh,
+              return RefreshIndicator.adaptive(
+                onRefresh: _pullToRefresh,
                 child: ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.fromLTRB(

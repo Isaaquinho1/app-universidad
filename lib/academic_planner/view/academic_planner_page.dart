@@ -8,6 +8,7 @@ import 'package:conecta_itt/academic_planner/view/subjects_management_view.dart'
 import 'package:conecta_itt/academic_planner/widgets/academic_planner_section_switch.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart';
+import 'package:conecta_itt/academic_planner/widgets/academic_notice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +17,6 @@ const _titleStyle = TextStyle(
   height: 1.05,
   letterSpacing: -1.1,
   fontWeight: FontWeight.w800,
-  color: Color(0xFF111827),
 );
 
 class AcademicPlannerPage extends StatefulWidget {
@@ -134,8 +134,9 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           ),
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('La tarea ya no está disponible.')),
+        AcademicNotice.show(
+          context,
+          message: 'La tarea ya no está disponible.',
         );
         return;
       }
@@ -154,13 +155,10 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
                       return;
                     }
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'La edición todavía no está disponible. '
-                          'Intenta nuevamente.',
-                        ),
-                      ),
+                    AcademicNotice.show(
+                      context,
+                      message:
+                          'La edición todavía no está disponible. Intenta nuevamente.',
                     );
                     return;
                   }
@@ -240,12 +238,10 @@ class _AcademicPlannerPageState extends State<AcademicPlannerPage> {
           ),
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
+        AcademicNotice.show(
+          context,
+          message:
               'La materia asociada a este recordatorio ya no está disponible.',
-            ),
-          ),
         );
 
         return;

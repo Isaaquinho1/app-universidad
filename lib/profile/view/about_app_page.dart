@@ -1,3 +1,4 @@
+import 'package:conecta_itt/profile/view/report_problem_page.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -47,16 +48,16 @@ class AboutAppPage extends StatelessWidget {
                 Divider(height: 28),
                 _Contributor(
                   name: 'Vianney Sánchez',
-                  description: 
-                        'Desarrolladora Frontend de la '
-                        'aplicación móvil.',
+                  description:
+                      'Desarrolladora Frontend de la '
+                      'aplicación móvil.',
                 ),
                 Divider(height: 28),
                 _Contributor(
                   name: 'Ali Lucas',
-                  description: 
-                        'Desarrollador Backend de la '
-                        'aplicación móvil.',
+                  description:
+                      'Desarrollador Backend de la '
+                      'aplicación móvil.',
                 ),
               ],
             ),
@@ -76,12 +77,9 @@ class AboutAppPage extends StatelessWidget {
               height: 52,
               child: FilledButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'El canal institucional de soporte estará '
-                        'disponible próximamente.',
-                      ),
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ReportProblemPage(),
                     ),
                   );
                 },

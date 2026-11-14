@@ -21,6 +21,7 @@ class FirebaseInteractedMessageListener extends StatefulWidget {
 class _FirebaseInteractedMessageListenerState
     extends State<FirebaseInteractedMessageListener> {
   String? _scheduledAnnouncementId;
+  String? _scheduledPhotoReviewKey;
   String? _scheduledAcademicTaskId;
   String? _scheduledClassSessionId;
   bool _initialStateChecked = false;
@@ -80,6 +81,60 @@ class _FirebaseInteractedMessageListenerState
       return;
     }
 
+    // Photograph notifications are bound to the active account.
+    final photoDecision = state.pendingPhotoReviewDecision;
+    final photoOwner = state.pendingPhotoReviewUserId;
+    final photoRevision = state.pendingPhotoReviewAuthRevision;
+
+    if (photoDecision != null &&
+        photoOwner != null &&
+        photoRevision != null &&
+        state.status == AppStatus.authenticated &&
+        state.institutionalProfile != null &&
+        state.user.id == photoOwner &&
+        (photoDecision == 'approved' || photoDecision == 'rejected')) {
+      final appBloc = context.read<AppBloc>();
+
+      if (appBloc.authRevision == photoRevision) {
+        final navigationKey = '$photoOwner:$photoRevision:$photoDecision';
+
+        if (_scheduledPhotoReviewKey != navigationKey) {
+          _scheduledPhotoReviewKey = navigationKey;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+
+            final currentBloc = context.read<AppBloc>();
+            final current = currentBloc.state;
+
+            if (current.status != AppStatus.authenticated ||
+                current.institutionalProfile == null ||
+                current.user.id != photoOwner ||
+                currentBloc.authRevision != photoRevision ||
+                current.pendingPhotoReviewUserId != photoOwner ||
+                current.pendingPhotoReviewAuthRevision != photoRevision ||
+                current.pendingPhotoReviewDecision != photoDecision) {
+              _scheduledPhotoReviewKey = null;
+              return;
+            }
+
+            widget.router.go('/profile/student-id');
+
+            currentBloc.add(
+              ProfilePhotoReviewNavigationConsumed(
+                userId: photoOwner,
+                authRevision: photoRevision,
+              ),
+            );
+
+            _scheduledPhotoReviewKey = null;
+          });
+        }
+
+        return;
+      }
+    }
+
     final announcementId = state.pendingAnnouncementId;
 
     if (state.institutionalProfile == null ||
@@ -112,6 +167,12 @@ class _FirebaseInteractedMessageListenerState
       listenWhen:
           (previous, current) =>
               previous.pendingAnnouncementId != current.pendingAnnouncementId ||
+              previous.pendingPhotoReviewDecision !=
+                  current.pendingPhotoReviewDecision ||
+              previous.pendingPhotoReviewUserId !=
+                  current.pendingPhotoReviewUserId ||
+              previous.pendingPhotoReviewAuthRevision !=
+                  current.pendingPhotoReviewAuthRevision ||
               previous.pendingAcademicTaskId != current.pendingAcademicTaskId ||
               previous.pendingClassSessionId != current.pendingClassSessionId ||
               previous.institutionalProfile != current.institutionalProfile ||

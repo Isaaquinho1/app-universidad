@@ -20,35 +20,48 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final foreground =
+        enabled ? Theme.of(context).colorScheme.onPrimary : Colors.white;
     return ConstrainedBox(
-      constraints: const BoxConstraints.tightFor(width: double.infinity, height: 48),
+      constraints:
+          const BoxConstraints.tightFor(width: double.infinity, height: 48),
       child: PlatformElevatedButton(
         material: (_, __) => MaterialElevatedButtonData(
           onLongPress: enabled ? onLongPress : null,
           style: ElevatedButton.styleFrom(
+            foregroundColor: foreground,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
             ),
-            backgroundColor: enabled ? Theme.of(context).extension<AppColors>()!.primary : Colors.grey,
+            backgroundColor: enabled
+                ? Theme.of(context).extension<AppColors>()!.primary
+                : Colors.grey,
           ),
         ),
         cupertino: (_, __) => CupertinoElevatedButtonData(
           padding: EdgeInsets.zero,
           borderRadius: BorderRadius.circular(24),
-          color: enabled ? Theme.of(context).extension<AppColors>()!.primary : Colors.grey,
+          color: enabled
+              ? Theme.of(context).extension<AppColors>()!.primary
+              : Colors.grey,
         ),
         onPressed: enabled ? onPressed : null,
-        color: enabled ? Theme.of(context).extension<AppColors>()!.primary : Colors.grey,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) icon!,
-            if (icon != null) const SizedBox(width: 8),
-            Text(
-              text,
-              style: AppTextStyle.buttonS.copyWith(color: Colors.white),
-            ),
-          ],
+        color: enabled
+            ? Theme.of(context).extension<AppColors>()!.primary
+            : Colors.grey,
+        child: IconTheme.merge(
+          data: IconThemeData(color: foreground),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) icon!,
+              if (icon != null) const SizedBox(width: 8),
+              Text(
+                text,
+                style: AppTextStyle.buttonS.copyWith(color: foreground),
+              ),
+            ],
+          ),
         ),
       ),
     );

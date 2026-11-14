@@ -41,6 +41,33 @@ class AdminProfilePhotoRepository {
         .toList(growable: false);
   }
 
+  /// Counts new pending photograph submissions for the current admin.
+  Future<int> fetchUnseenPhotoReviewCount() async {
+    final response = await _supabaseClient.rpc(
+      'get_unseen_profile_photo_review_count',
+    );
+
+    if (response is! num) {
+      throw StateError(
+        'El servidor devolvió un contador de fotografías inválido.',
+      );
+    }
+
+    final count = response.toInt();
+
+    if (count < 0 || response != count) {
+      throw StateError('El contador de fotografías no es válido.');
+    }
+
+    return count;
+  }
+
+  /// Marks photograph review notifications as seen for this admin.
+  /// Does not approve, reject, or modify student photographs.
+  Future<void> markPhotoReviewsSeen() async {
+    await _supabaseClient.rpc('mark_profile_photo_reviews_seen');
+  }
+
   /// Approves one pending institutional photograph.
   Future<AppUserProfile> approvePhoto({required String profileId}) {
     return _reviewPhoto(profileId: profileId, decision: 'approved');

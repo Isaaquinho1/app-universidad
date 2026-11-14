@@ -119,6 +119,10 @@ class _ThemeOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.extension<AppColors>()!;
+    final selectionColor =
+        theme.brightness == Brightness.dark
+            ? colors.primary
+            : const Color(0xFF075578);
 
     return Material(
       color:
@@ -134,7 +138,7 @@ class _ThemeOption extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected ? const Color(0xFF075578) : colors.background03,
+              color: selected ? selectionColor : colors.background03,
               width: selected ? 1.6 : 1,
             ),
           ),
@@ -178,7 +182,7 @@ class _ThemeOption extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Icon(
                 selected ? Icons.check_circle_rounded : Icons.circle_outlined,
-                color: selected ? const Color(0xFF075578) : colors.deactive,
+                color: selected ? selectionColor : colors.deactive,
               ),
             ],
           ),

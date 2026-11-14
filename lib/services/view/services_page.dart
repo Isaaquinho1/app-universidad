@@ -1,3 +1,4 @@
+import 'package:conecta_itt/services/view/admin_problem_reports_page.dart';
 import 'package:flutter/material.dart';
 import 'package:conecta_itt/l10n/l10n.dart';
 import 'package:conecta_itt/services/services.dart';
@@ -9,13 +10,13 @@ import 'package:conecta_itt/app/app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/institutional_profile/services/profile_photo_review_badge_controller.dart';
 
 const _titleStyle = TextStyle(
   fontSize: 26.5,
   height: 1.05,
   letterSpacing: -1.1,
   fontWeight: FontWeight.w800,
-  color: Color(0xFF111827),
 );
 
 class ServicesPage extends StatelessWidget {
@@ -299,13 +300,20 @@ class _ServicesViewState extends State<ServicesView>
           onTap: () => context.go('/services/announcement-management'),
         ),
         const SizedBox(height: AppSpacing.md),
-        _AdministrativeServiceTile(
-          icon: Icons.fact_check_outlined,
-          title: 'Revisión de fotografías',
-          description:
-              'Revisa fotografías institucionales enviadas '
-              'por estudiantes.',
-          onTap: () => context.go('/services/photo-review'),
+        ValueListenableBuilder<int>(
+          valueListenable:
+              ProfilePhotoReviewBadgeController.instance.unseenCount,
+          builder: (context, count, _) {
+            return _AdministrativeServiceTile(
+              icon: Icons.fact_check_outlined,
+              title: 'Revisión de fotografías',
+              description:
+                  'Revisa fotografías institucionales enviadas '
+                  'por estudiantes.',
+              badgeCount: count,
+              onTap: () => context.go('/services/photo-review'),
+            );
+          },
         ),
         const SizedBox(height: AppSpacing.md),
         _AdministrativeServiceTile(
@@ -315,6 +323,21 @@ class _ServicesViewState extends State<ServicesView>
               'Valida identificaciones digitales mediante '
               'su código QR.',
           onTap: () => context.go('/services/id-validator'),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _AdministrativeServiceTile(
+          icon: Icons.support_agent_outlined,
+          title: 'Gestión de reportes',
+          description:
+              'Consulta incidencias enviadas por estudiantes y '
+              'administra su seguimiento.',
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const AdminProblemReportsPage(),
+              ),
+            );
+          },
         ),
         const SizedBox(height: AppSpacing.md),
         if (profile.canManageStudentAcademics) ...[
@@ -622,12 +645,14 @@ class _AdministrativeServiceTile extends StatelessWidget {
     required this.title,
     required this.description,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   final IconData icon;
   final String title;
   final String description;
   final VoidCallback onTap;
+  final int badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -644,14 +669,52 @@ class _AdministrativeServiceTile extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              Container(
+              SizedBox(
                 width: 48,
                 height: 48,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(16),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(icon, color: colorScheme.onSurface),
+                    ),
+                    if (badgeCount > 0)
+                      Positioned(
+                        top: -6,
+                        right: -6,
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 20,
+                            minHeight: 20,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDC2626),
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text(
+                            badgeCount > 99 ? '99+' : '$badgeCount',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              height: 1.1,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                child: Icon(icon, color: colorScheme.onSurface),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

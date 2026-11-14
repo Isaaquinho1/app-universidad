@@ -1,13 +1,24 @@
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/class_session.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_notification_identity.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_schedule_identity.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_operation_coordinator.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_verified_cancellation_service.dart';
 import 'package:conecta_itt/app/services/local_notification_service.dart';
 
 class ClassSessionReminderService {
   ClassSessionReminderService({
+    required this.userId,
+    this.coordinator,
+    this.authRevision,
     LocalNotificationService? localNotificationService,
-  }) : _localNotificationService =
+  }) : assert((coordinator == null) == (authRevision == null)),
+       _localNotificationService =
            localNotificationService ?? LocalNotificationService.instance;
 
+  final String userId;
+  final AcademicReminderOperationCoordinator? coordinator;
+  final int? authRevision;
   final LocalNotificationService _localNotificationService;
 
   Future<bool> requestPermission() {
@@ -21,33 +32,166 @@ class ClassSessionReminderService {
   Future<void> synchronize({
     required ClassSession session,
     required AcademicSubject subject,
-  }) async {
-    await cancel(session.id);
+  }) =>
+      _synchronize(session: session, subject: subject, preserveMatching: false);
 
-    if (!_shouldSchedule(session)) {
-      return;
-    }
+  Future<void> _synchronize({
+    required ClassSession session,
+    required AcademicSubject subject,
+    required bool preserveMatching,
+  }) {
+    return _execute((lease) async {
+      if (preserveMatching && _shouldSchedule(session)) {
+        lease?.ensureCurrent();
 
-    final reminder = _calculateReminderTime(session);
+        final pending =
+            await _localNotificationService.pendingNotificationRequests();
 
-    await _localNotificationService.scheduleWeeklyAcademicReminder(
-      id: notificationIdForSession(session.id),
-      title: 'Clase próxima',
-      body: _buildBody(subject: subject, session: session),
-      weekday: reminder.weekday,
-      hour: reminder.hour,
-      minute: reminder.minute,
-      payload: {
-        'type': 'class_session',
-        'session_id': session.id,
-        'subject_id': subject.id,
-      },
-    );
+        lease?.ensureCurrent();
+
+        final id = AcademicReminderNotificationIdentity.forClassSession(
+          userId: userId,
+          sessionId: session.id,
+        );
+
+        final sameSlot = pending.where((request) => request.id == id).toList();
+
+        final reminder = _calculateReminderTime(session);
+
+        final signature = AcademicReminderScheduleIdentity.forClassSession(
+          body: _buildBody(subject: subject, session: session),
+          weekday: reminder.weekday,
+          hour: reminder.hour,
+          minute: reminder.minute,
+        );
+
+        if (sameSlot.length == 1 &&
+            AcademicReminderVerifiedCancellationService.isMatchingSchedule(
+              id: sameSlot.single.id,
+              payload: sameSlot.single.payload,
+              userId: userId,
+              recordId: session.id,
+              isTask: false,
+              expectedSignature: signature,
+            )) {
+          lease?.ensureCurrent();
+          return;
+        }
+      }
+
+      // La validación debe preceder a toda cancelación,
+      // incluso durante las ediciones explícitas.
+      await AcademicReminderVerifiedCancellationService(
+        localNotificationService: _localNotificationService,
+      ).ensureSlotAvailable(
+        userId: userId,
+        recordId: session.id,
+        isTask: false,
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      lease?.ensureCurrent();
+      await _cancelDirect(session.id, lease);
+
+      lease?.ensureCurrent();
+
+      if (!_shouldSchedule(session)) {
+        return;
+      }
+
+      final reminder = _calculateReminderTime(session);
+
+      lease?.ensureCurrent();
+
+      await AcademicReminderVerifiedCancellationService(
+        localNotificationService: _localNotificationService,
+      ).ensureSlotAvailable(
+        userId: userId,
+        recordId: session.id,
+        isTask: false,
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      lease?.ensureCurrent();
+
+      await _localNotificationService.scheduleWeeklyAcademicReminder(
+        id: AcademicReminderNotificationIdentity.forClassSession(
+          userId: userId,
+          sessionId: session.id,
+        ),
+        title: 'Clase próxima',
+        body: _buildBody(subject: subject, session: session),
+        weekday: reminder.weekday,
+        hour: reminder.hour,
+        minute: reminder.minute,
+        payload: {
+          'type': 'class_session',
+          'session_id': session.id,
+          'subject_id': subject.id,
+          'user_id': userId,
+          AcademicReminderScheduleIdentity.versionKey:
+              AcademicReminderScheduleIdentity.version,
+          AcademicReminderScheduleIdentity
+              .signatureKey: AcademicReminderScheduleIdentity.forClassSession(
+            body: _buildBody(subject: subject, session: session),
+            weekday: reminder.weekday,
+            hour: reminder.hour,
+            minute: reminder.minute,
+          ),
+        },
+        ensureCurrent: lease?.ensureCurrent,
+      );
+
+      // El plugin pudo terminar después de un cambio de cuenta.
+      // La reconciliación posterior atenderá cualquier alarma tardía.
+      lease?.ensureCurrent();
+    });
   }
 
   Future<void> cancel(String sessionId) {
-    return _localNotificationService.cancelNotification(
-      notificationIdForSession(sessionId),
+    return _execute((lease) => _cancelDirect(sessionId, lease));
+  }
+
+  Future<void> _cancelDirect(
+    String sessionId,
+    AcademicReminderOperationLease? lease,
+  ) async {
+    lease?.ensureCurrent();
+
+    await AcademicReminderVerifiedCancellationService(
+      localNotificationService: _localNotificationService,
+    ).cancelOwned(
+      userId: userId,
+      recordId: sessionId,
+      isTask: false,
+      ensureCurrent: lease?.ensureCurrent,
+    );
+
+    lease?.ensureCurrent();
+  }
+
+  Future<void> _execute(
+    Future<void> Function(AcademicReminderOperationLease? lease) operation,
+  ) async {
+    final activeCoordinator = coordinator;
+
+    if (activeCoordinator == null) {
+      if (authRevision != null) {
+        throw StateError('Falta el coordinador académico.');
+      }
+      await operation(null);
+      return;
+    }
+
+    final revision = authRevision;
+    if (revision == null) {
+      throw StateError('Falta la revisión de autenticación.');
+    }
+
+    await activeCoordinator.run(
+      userId: userId,
+      revision: revision,
+      operation: (lease) => operation(lease),
     );
   }
 
@@ -62,7 +206,11 @@ class ClassSessionReminderService {
         continue;
       }
 
-      await synchronize(session: session, subject: subject);
+      await _synchronize(
+        session: session,
+        subject: subject,
+        preserveMatching: true,
+      );
     }
   }
 

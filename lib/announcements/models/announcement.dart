@@ -1,3 +1,5 @@
+import 'package:clock/clock.dart';
+
 import 'announcement_priority.dart';
 import 'announcement_status.dart';
 import 'announcement_target.dart';
@@ -60,7 +62,7 @@ class Announcement {
 
     final limit = featuredUntil;
 
-    return limit == null || limit.isAfter(DateTime.now());
+    return limit == null || limit.isAfter(clock.now());
   }
 
   bool get isArchived => status == AnnouncementStatus.archived;
@@ -74,7 +76,7 @@ class Announcement {
       return false;
     }
 
-    return expiration.isBefore(DateTime.now());
+    return !clock.now().isBefore(expiration);
   }
 
   bool get isVisibleToStudents => status.isVisibleToStudents && !isExpired;

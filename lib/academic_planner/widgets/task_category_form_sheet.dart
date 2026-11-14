@@ -84,6 +84,7 @@ class _TaskCategoryFormSheetState extends State<TaskCategoryFormSheet> {
           AppSpacing.lg + keyboardInset,
         ),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Column(
@@ -115,6 +116,7 @@ class _TaskCategoryFormSheetState extends State<TaskCategoryFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.xlg),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _nameController,
                   autofocus: !_isEditing,
                   textCapitalization: TextCapitalization.sentences,

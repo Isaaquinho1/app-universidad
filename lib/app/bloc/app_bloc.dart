@@ -12,6 +12,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:user_repository/user_repository.dart';
 
+import 'package:conecta_itt/academic_planner/repositories/academic_account_scope.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_account_reconciler.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_reconciliation_orchestrator.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_startup_account_runner.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_operation_coordinator.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_pending_cleanup_service.dart';
+import 'package:conecta_itt/academic_planner/services/academic_reminder_session_cleanup_controller.dart';
+
 part 'app_event.dart';
 part 'app_state.dart';
 
@@ -21,7 +29,23 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     required UserRepository userRepository,
     required AppUserProfileRepository appUserProfileRepository,
     required User user,
-  }) : _firebaseMessaging = firebaseMessaging,
+    AcademicReminderPendingCleanupService? academicCleanupService,
+    Future<void> Function(
+      void Function(Map<String, dynamic>) onNotificationTap,
+    )?
+    initializeLocalNotifications,
+    Future<void> Function()? configureRemoteMessaging,
+    bool enableAcademicStartupReconciliation = false,
+    Future<bool> Function(String userId, int authRevision)?
+    academicStartupReconciliationOverride,
+  }) : _academicCleanupService = academicCleanupService,
+       _initializeLocalNotifications = initializeLocalNotifications,
+       _configureRemoteMessaging = configureRemoteMessaging,
+       _enableAcademicStartupReconciliation =
+           enableAcademicStartupReconciliation,
+       _academicStartupReconciliationOverride =
+           academicStartupReconciliationOverride,
+       _firebaseMessaging = firebaseMessaging,
        _userRepository = userRepository,
        _appUserProfileRepository = appUserProfileRepository,
        _latestAuthUserId = user.id,
@@ -34,6 +58,12 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<RecieveInteractedMessage>(_onRecieveInteractedMessage);
     on<AnnouncementNotificationOpened>(_onAnnouncementNotificationOpened);
     on<AnnouncementNavigationConsumed>(_onAnnouncementNavigationConsumed);
+    on<ProfilePhotoReviewNotificationOpened>(
+      _onProfilePhotoReviewNotificationOpened,
+    );
+    on<ProfilePhotoReviewNavigationConsumed>(
+      _onProfilePhotoReviewNavigationConsumed,
+    );
     on<AcademicTaskNotificationOpened>(_onAcademicTaskNotificationOpened);
     on<AcademicTaskNavigationConsumed>(_onAcademicTaskNavigationConsumed);
     on<ClassSessionNotificationOpened>(_onClassSessionNotificationOpened);
@@ -44,17 +74,62 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     on<AppInstitutionalProfileChanged>(_onInstitutionalProfileChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
 
+    academicReminderCoordinator.updateSession(
+      userId: user == User.anonymous ? null : user.id,
+      revision: _authRevision,
+    );
+
     _userSubscription = _userRepository.user.listen(_userChanged);
+
+    // Procesar también una sesión restaurada al arrancar.
+    // Si el repositorio emite otra sesión, la revisión invalidará
+    // automáticamente cualquier resultado anterior.
+    if (user != User.anonymous && user.id.trim().isNotEmpty) {
+      add(AppUserChanged(user, revision: _authRevision));
+    }
   }
 
   final UserRepository _userRepository;
   final FirebaseMessaging _firebaseMessaging;
   final AppUserProfileRepository _appUserProfileRepository;
+  final AcademicReminderPendingCleanupService? _academicCleanupService;
+  final Future<void> Function()? _configureRemoteMessaging;
+  final bool _enableAcademicStartupReconciliation;
+  final Future<bool> Function(String userId, int authRevision)?
+  _academicStartupReconciliationOverride;
+  bool _academicNotificationsReady = false;
+  final Set<(String, int)> _completedStartupReconciliations = {};
+
+  late final AcademicReminderStartupAccountRunner _startupAccountRunner =
+      AcademicReminderStartupAccountRunner(
+        coordinator: academicReminderCoordinator,
+      );
+
+  late final AcademicReminderReconciliationOrchestrator
+  _startupReconciliationOrchestrator =
+      AcademicReminderReconciliationOrchestrator(
+        coordinator: academicReminderCoordinator,
+      );
+  final Future<void> Function(
+    void Function(Map<String, dynamic>) onNotificationTap,
+  )?
+  _initializeLocalNotifications;
+
+  late final AcademicReminderSessionCleanupController
+  _academicCleanupController = AcademicReminderSessionCleanupController(
+    coordinator: academicReminderCoordinator,
+    cleanupService:
+        _academicCleanupService ?? AcademicReminderPendingCleanupService(),
+  );
+
   String _latestAuthUserId;
   User? _retryUser;
   int _authRevision = 0;
   final StreamController<int> _authRevisionController =
       StreamController<int>.broadcast(sync: true);
+
+  final AcademicReminderOperationCoordinator academicReminderCoordinator =
+      AcademicReminderOperationCoordinator();
 
   int get authRevision => _authRevision;
 
@@ -69,8 +144,26 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       'institutional_notification_device_id';
 
   void _userChanged(User user) {
+    // Evitar que una emisión idéntica reinicie una sesión
+    // cuyo perfil institucional ya fue validado.
+    //
+    // No se deduplican sesiones en transición ni usuarios
+    // con información diferente.
+    if (!isClosed &&
+        state.status.isLoggedIn &&
+        state.institutionalProfile != null &&
+        _latestAuthUserId == user.id &&
+        state.user == user) {
+      return;
+    }
+
     _latestAuthUserId = user.id;
     _authRevision++;
+
+    academicReminderCoordinator.updateSession(
+      userId: user == User.anonymous ? null : user.id,
+      revision: _authRevision,
+    );
 
     _authRevisionController.add(_authRevision);
 
@@ -82,6 +175,86 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
       uid.isNotEmpty &&
       _latestAuthUserId == uid &&
       _authRevision == revision;
+
+  Future<void> _requestAcademicStartup() async {
+    if (!_enableAcademicStartupReconciliation) {
+      await _requestAcademicCleanup();
+      return;
+    }
+
+    final currentState = state;
+    final uid = currentState.user.id.trim();
+    final revision = _authRevision;
+    final key = (uid, revision);
+
+    if (!_academicNotificationsReady ||
+        !currentState.status.isLoggedIn ||
+        currentState.institutionalProfile == null ||
+        !_isCurrentAuth(uid, revision) ||
+        _completedStartupReconciliations.contains(key)) {
+      return;
+    }
+
+    try {
+      final completed = await _startupAccountRunner.run(
+        userId: uid,
+        authRevision: revision,
+        reconcile: (AcademicAccountScope account) {
+          final override = _academicStartupReconciliationOverride;
+          if (override != null) {
+            return override(account.userId, revision);
+          }
+
+          return AcademicReminderAccountReconciler.forAccount(
+            account: account,
+            authRevision: revision,
+            coordinator: academicReminderCoordinator,
+            orchestrator: _startupReconciliationOrchestrator,
+          ).reconcile();
+        },
+      );
+
+      if (completed && _isCurrentAuth(uid, revision)) {
+        _completedStartupReconciliations.add(key);
+      }
+    } catch (error, stackTrace) {
+      // La restauración académica no debe impedir la autenticación.
+      // No registrar un éxito: una solicitud posterior puede reintentar.
+      Logger().w(
+        'No se pudo completar la reconciliación académica inicial.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _requestAcademicCleanup() async {
+    final currentState = state;
+    final uid = currentState.user.id.trim();
+    final revision = _authRevision;
+
+    if (!currentState.status.isLoggedIn ||
+        currentState.institutionalProfile == null ||
+        !_isCurrentAuth(uid, revision)) {
+      return;
+    }
+
+    try {
+      await _academicCleanupController.request(
+        userId: uid,
+        authRevision: revision,
+        authenticated: true,
+      );
+    } catch (error, stackTrace) {
+      // Un error del plugin no debe impedir iniciar sesión.
+      // El controlador permite reintentos posteriores.
+      Logger().w(
+        'No se pudo completar la limpieza académica de la sesión.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
 
   Future<void> _registerNotificationsForUser(String uid, int revision) async {
     if (!_isCurrentAuth(uid, revision)) {
@@ -381,10 +554,15 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         user: user,
         institutionalProfile: profile,
         clearPendingAnnouncementId: accountChanged,
+        clearPendingPhotoReview: accountChanged,
         clearPendingAcademicTaskId: accountChanged,
         clearPendingClassSession: accountChanged,
       ),
     );
+
+    // La cuenta y su perfil ya fueron validados.
+    // La barrera de inicialización evita limpiar antes del plugin.
+    unawaited(_requestAcademicStartup());
 
     unawaited(_registerNotificationsForUser(user.id, event.revision));
 
@@ -431,6 +609,15 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
   @override
   Future<void> close() async {
+    // Invalidar inmediatamente las operaciones académicas pendientes.
+    // No cancela notificaciones ni modifica SQLite.
+    _authRevision++;
+    _latestAuthUserId = '';
+    academicReminderCoordinator.updateSession(
+      userId: null,
+      revision: _authRevision,
+    );
+
     await _foregroundMessageSubscription?.cancel();
     await _fcmTokenRefreshSubscription?.cancel();
     await _institutionalProfileSubscription?.cancel();
@@ -461,7 +648,7 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   ) {
     final data = event.message.data;
     Logger().i('Handling message: $data');
-    _queueAnnouncementNavigation(data);
+    _handleNotificationData(data);
   }
 
   void _onAnnouncementNotificationOpened(
@@ -482,11 +669,50 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
     emit(state.copyWith(clearPendingAnnouncementId: true));
   }
 
+  void _onProfilePhotoReviewNotificationOpened(
+    ProfilePhotoReviewNotificationOpened event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn ||
+        state.institutionalProfile == null ||
+        state.user.id != event.userId ||
+        !_isCurrentAuth(event.userId, event.authRevision) ||
+        (event.decision != 'approved' && event.decision != 'rejected')) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        pendingPhotoReviewDecision: event.decision,
+        pendingPhotoReviewUserId: event.userId,
+        pendingPhotoReviewAuthRevision: event.authRevision,
+      ),
+    );
+  }
+
+  void _onProfilePhotoReviewNavigationConsumed(
+    ProfilePhotoReviewNavigationConsumed event,
+    Emitter<AppState> emit,
+  ) {
+    if (!state.status.isLoggedIn ||
+        state.user.id != event.userId ||
+        !_isCurrentAuth(event.userId, event.authRevision) ||
+        state.pendingPhotoReviewUserId != event.userId ||
+        state.pendingPhotoReviewAuthRevision != event.authRevision) {
+      return;
+    }
+
+    emit(state.copyWith(clearPendingPhotoReview: true));
+  }
+
   void _onAcademicTaskNotificationOpened(
     AcademicTaskNotificationOpened event,
     Emitter<AppState> emit,
   ) {
-    if (!state.status.isLoggedIn || event.taskId.isEmpty) {
+    if (!state.status.isLoggedIn ||
+        event.taskId.isEmpty ||
+        state.user.id != event.userId ||
+        !_isCurrentAuth(event.userId, event.authRevision)) {
       return;
     }
 
@@ -512,7 +738,9 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   ) {
     if (!state.status.isLoggedIn ||
         event.sessionId.isEmpty ||
-        event.subjectId.isEmpty) {
+        event.subjectId.isEmpty ||
+        state.user.id != event.userId ||
+        !_isCurrentAuth(event.userId, event.authRevision)) {
       return;
     }
 
@@ -539,16 +767,33 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
   }
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
-    await LocalNotificationService.instance.initialize(
-      onNotificationTap: (data) {
-        _handleNotificationData(data);
-      },
-    );
+    final initializer = _initializeLocalNotifications;
 
-    // Reconcilia recordatorios académicos persistidos con las
-    // notificaciones locales sin bloquear el arranque de la app.
-    // Restauración académica pendiente de aislamiento por UID.
-    // No consultar automáticamente la base SQLite heredada.
+    if (initializer == null) {
+      await LocalNotificationService.instance.initialize(
+        onNotificationTap: _handleNotificationData,
+      );
+    } else {
+      await initializer(_handleNotificationData);
+    }
+
+    // Solo se habilita después de inicializar correctamente el plugin.
+    _academicCleanupController.markNotificationsReady();
+    _academicNotificationsReady = true;
+
+    // Funciona también si la autenticación terminó antes que AppOpened.
+    unawaited(_requestAcademicStartup());
+
+    // La reconciliación académica se ejecuta únicamente cuando
+    // el interruptor experimental está habilitado.
+
+    // Las pruebas pueden sustituir la configuración remota.
+    // En producción se mantienen los listeners FCM originales.
+    final configureRemote = _configureRemoteMessaging;
+    if (configureRemote != null) {
+      await configureRemote();
+      return;
+    }
 
     await _foregroundMessageSubscription?.cancel();
     _foregroundMessageSubscription = FirebaseMessaging.onMessage.listen(
@@ -575,6 +820,25 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
 
     final type = data['type']?.toString().trim();
 
+    // Los recordatorios académicos deben acreditar su propietario.
+    // Los payloads heredados sin UID no habilitan navegación automática.
+    String? academicOwner;
+    int? academicRevision;
+
+    if (type == 'academic_task' || type == 'class_session') {
+      academicOwner = data['user_id']?.toString().trim();
+      academicRevision = _authRevision;
+
+      if (academicOwner == null ||
+          academicOwner.isEmpty ||
+          !state.status.isLoggedIn ||
+          state.user.id != academicOwner ||
+          !_isCurrentAuth(academicOwner, academicRevision)) {
+        Logger().w('Academic notification ignored: missing or inactive owner.');
+        return;
+      }
+    }
+
     if (type == 'academic_task') {
       final taskId = data['task_id']?.toString().trim();
 
@@ -583,7 +847,13 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         return;
       }
 
-      add(AcademicTaskNotificationOpened(taskId));
+      add(
+        AcademicTaskNotificationOpened(
+          taskId,
+          userId: academicOwner!,
+          authRevision: academicRevision!,
+        ),
+      );
       return;
     }
 
@@ -606,6 +876,34 @@ class AppBloc extends HydratedBloc<AppEvent, AppState> {
         ClassSessionNotificationOpened(
           sessionId: sessionId,
           subjectId: subjectId,
+          userId: academicOwner!,
+          authRevision: academicRevision!,
+        ),
+      );
+      return;
+    }
+
+    if (type == 'profile_photo_review') {
+      final owner = data['user_id']?.toString().trim();
+      final decision = data['decision']?.toString().trim();
+
+      if (owner == null ||
+          owner.isEmpty ||
+          (decision != 'approved' && decision != 'rejected') ||
+          !state.status.isLoggedIn ||
+          state.user.id != owner ||
+          !_isCurrentAuth(owner, _authRevision)) {
+        Logger().w(
+          'Photo review notification ignored: invalid or inactive owner.',
+        );
+        return;
+      }
+
+      add(
+        ProfilePhotoReviewNotificationOpened(
+          decision: decision!,
+          userId: owner,
+          authRevision: _authRevision,
         ),
       );
       return;

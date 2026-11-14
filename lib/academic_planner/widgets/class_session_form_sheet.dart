@@ -1,3 +1,4 @@
+import 'package:conecta_itt/common/widgets/conecta_time_picker.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/class_session.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _ClassSessionFormSheetState extends State<ClassSessionFormSheet> {
   }
 
   Future<void> _selectStartTime() async {
-    final selected = await showTimePicker(
+    final selected = await showConectaTimePicker(
       context: context,
       initialTime: _startTime,
       helpText: 'Hora de inicio',
@@ -111,7 +112,7 @@ class _ClassSessionFormSheetState extends State<ClassSessionFormSheet> {
   }
 
   Future<void> _selectEndTime() async {
-    final selected = await showTimePicker(
+    final selected = await showConectaTimePicker(
       context: context,
       initialTime: _endTime,
       helpText: 'Hora de término',
@@ -195,6 +196,7 @@ class _ClassSessionFormSheetState extends State<ClassSessionFormSheet> {
           AppSpacing.lg + keyboardInset,
         ),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Column(
@@ -267,6 +269,7 @@ class _ClassSessionFormSheetState extends State<ClassSessionFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _buildingController,
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
@@ -279,9 +282,11 @@ class _ClassSessionFormSheetState extends State<ClassSessionFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _roomController,
                   textCapitalization: TextCapitalization.characters,
                   textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   maxLength: 40,
                   decoration: _decoration(
                     label: 'Salón o aula',

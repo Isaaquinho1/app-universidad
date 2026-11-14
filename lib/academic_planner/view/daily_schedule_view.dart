@@ -5,6 +5,7 @@ import 'package:conecta_itt/academic_planner/repositories/daily_schedule_reposit
 import 'package:conecta_itt/academic_planner/repositories/weekly_schedule_repository.dart';
 import 'package:conecta_itt/academic_planner/services/weekly_schedule_image_exporter.dart';
 import 'package:conecta_itt/academic_planner/view/subject_sessions_page.dart';
+import 'package:conecta_itt/academic_planner/widgets/academic_notice.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -48,6 +49,22 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
   late int _selectedWeekday;
   late Future<List<ScheduledClass>> _classesFuture;
 
+  Future<List<ScheduledClass>>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    _pullToRefreshData = _classesFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -73,8 +90,6 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
     setState(() {
       _isExportingImage = true;
     });
-
-    final messenger = ScaffoldMessenger.maybeOf(context);
 
     final materialLocalizations = MaterialLocalizations.of(context);
     final alwaysUse24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
@@ -105,10 +120,10 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
       }
 
       if (totalClasses == 0) {
-        messenger?.showSnackBar(
-          const SnackBar(
-            content: Text('Agrega clases antes de exportar tu horario.'),
-          ),
+        if (!context.mounted) return;
+        AcademicNotice.show(
+          context,
+          message: 'Agrega clases antes de exportar tu horario.',
         );
         return;
       }
@@ -137,10 +152,10 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
         return;
       }
 
-      messenger?.showSnackBar(
-        const SnackBar(
-          content: Text('No fue posible generar la imagen del horario.'),
-        ),
+      if (!context.mounted) return;
+      AcademicNotice.show(
+        context,
+        message: 'No fue posible generar la imagen del horario.',
       );
     } finally {
       if (mounted) {
@@ -206,8 +221,8 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refresh,
+    return RefreshIndicator.adaptive(
+      onRefresh: _pullToRefresh,
       child: FutureBuilder<List<ScheduledClass>>(
         future: _classesFuture,
         builder: (context, snapshot) {
@@ -265,7 +280,9 @@ class _DailyScheduleViewState extends State<DailyScheduleView> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              if (snapshot.connectionState == ConnectionState.waiting)
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  !(snapshot.hasData &&
+                      identical(_classesFuture, _pullToRefreshData)))
                 const Padding(
                   padding: EdgeInsets.only(top: 72),
                   child: Center(child: CircularProgressIndicator()),

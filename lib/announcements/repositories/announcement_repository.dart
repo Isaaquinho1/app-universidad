@@ -1,9 +1,16 @@
 import 'dart:async';
 
 import 'package:conecta_itt/announcements/models/models.dart';
+import 'package:conecta_itt/announcements/models/publication_expiration_policy.dart';
 import 'package:conecta_itt/institutional_profile/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
+
+/// Resultado de una operación de guardado confirmada por Supabase.
+///
+/// La notificación es null para borradores.
+typedef AnnouncementSaveResult =
+    ({String id, Map<String, dynamic>? notification});
 
 /// Repository that manages institutional announcements and user receipts.
 class AnnouncementRepository {
@@ -160,7 +167,9 @@ class AnnouncementRepository {
   }
 
   /// Creates an announcement and its audience targets atomically.
-  Future<String> createAnnouncement(Announcement announcement) async {
+  Future<AnnouncementSaveResult> createAnnouncement(
+    Announcement announcement,
+  ) async {
     _requireAnnouncementManager();
 
     final values = announcement.toSupabase();
@@ -198,15 +207,18 @@ class AnnouncementRepository {
       );
     }
 
-    if (announcement.status == AnnouncementStatus.published) {
-      await sendAnnouncementNotification(response);
-    }
+    final notification =
+        announcement.status == AnnouncementStatus.published
+            ? await _notificationResultAfterSaved(response)
+            : null;
 
-    return response;
+    return (id: response, notification: notification);
   }
 
   /// Updates an announcement and its audience targets atomically.
-  Future<void> updateAnnouncement(Announcement announcement) async {
+  Future<AnnouncementSaveResult> updateAnnouncement(
+    Announcement announcement,
+  ) async {
     _requireAnnouncementManager();
 
     if (announcement.id.isEmpty) {
@@ -223,7 +235,10 @@ class AnnouncementRepository {
       'update_announcement_with_targets',
       params: {
         'p_announcement_id': announcement.id,
-        'p_announcement': announcement.toSupabase(),
+        'p_announcement': {
+          ...announcement.toSupabase(),
+          'expected_content_version': announcement.contentVersion,
+        },
         'p_target': {
           'roles': target.roles
               .map((role) => role.value)
@@ -244,9 +259,12 @@ class AnnouncementRepository {
       );
     }
 
-    if (announcement.status == AnnouncementStatus.published) {
-      await sendAnnouncementNotification(announcement.id);
-    }
+    final notification =
+        announcement.status == AnnouncementStatus.published
+            ? await _notificationResultAfterSaved(announcement.id)
+            : null;
+
+    return (id: announcement.id, notification: notification);
   }
 
   /// Resolves the recipients eligible for an announcement reminder.
@@ -339,22 +357,161 @@ class AnnouncementRepository {
     return data.map((key, value) => MapEntry(key.toString(), value));
   }
 
-  /// Publishes an announcement and sends its segmented notification.
-  Future<Map<String, dynamic>> publishAnnouncement(
+  /// Valida FCM sin confundir su resultado con el guardado.
+  Future<Map<String, dynamic>> _notificationResultAfterSaved(
     String announcementId,
   ) async {
-    _requireAnnouncementManager();
-    _validateAnnouncementId(announcementId);
+    // La publicación ya fue confirmada por Supabase.
+    // Un fallo posterior de FCM no debe presentarse como
+    // un fallo de persistencia.
+    try {
+      final notification = await sendAnnouncementNotification(announcementId);
 
-    await _supabaseClient
+      // HTTP 2xx no basta para confirmar el resultado de FCM.
+      // La Edge Function debe devolver un despacho identificable
+      // y contadores completos, enteros y no negativos.
+      const countFields = [
+        'audience_count',
+        'token_count',
+        'sent_count',
+        'failed_count',
+        'no_token_count',
+        'invalid_token_count',
+      ];
+
+      final dispatchId = notification['dispatch_id'];
+
+      final validDispatch =
+          dispatchId is String && dispatchId.trim().isNotEmpty;
+
+      final validCounts = countFields.every((field) {
+        final value = notification[field];
+        return value is int && value >= 0;
+      });
+
+      if (!validDispatch || !validCounts) {
+        throw const FormatException(
+          'Respuesta de notificaciones incompleta o inválida.',
+        );
+      }
+
+      final audienceCount = notification['audience_count'] as int;
+      final tokenCount = notification['token_count'] as int;
+      final sentCount = notification['sent_count'] as int;
+      final failedCount = notification['failed_count'] as int;
+      final noTokenCount = notification['no_token_count'] as int;
+      final invalidTokenCount = notification['invalid_token_count'] as int;
+
+      if (sentCount + failedCount != tokenCount ||
+          invalidTokenCount > failedCount ||
+          noTokenCount > audienceCount) {
+        throw const FormatException(
+          'Las métricas del despacho FCM son inconsistentes.',
+        );
+      }
+
+      return {
+        ...notification,
+        'publication_saved': true,
+        'notification_issue': false,
+      };
+    } catch (error) {
+      return {
+        'publication_saved': true,
+        'notification_issue': true,
+        'notification_error': error.toString(),
+      };
+    }
+  }
+
+  /// Publishes an announcement and sends its segmented notification.
+  Future<Map<String, dynamic>> publishAnnouncement(
+    Announcement announcement,
+  ) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(announcement.id);
+
+    if (announcement.status != AnnouncementStatus.draft &&
+        announcement.status != AnnouncementStatus.scheduled) {
+      throw StateError(
+        'Solo se pueden publicar borradores o publicaciones programadas.',
+      );
+    }
+
+    final now = DateTime.now().toUtc();
+
+    final expiration =
+        announcement.expiresAt ??
+        PublicationExpirationPolicy.defaultExpiration(
+          contentType: announcement.contentType,
+          publishedAt: now,
+        );
+
+    if (!expiration.isAfter(now)) {
+      throw StateError(
+        'La fecha de vencimiento debe ser posterior a la publicación.',
+      );
+    }
+
+    final updatedRows = await _supabaseClient
         .from(_announcementsTable)
         .update({
           'status': AnnouncementStatus.published.value,
-          'published_at': DateTime.now().toUtc().toIso8601String(),
+          'published_at': now.toIso8601String(),
+          'expires_at': expiration.toUtc().toIso8601String(),
         })
-        .eq('id', announcementId);
+        .eq('id', announcement.id)
+        .eq('status', announcement.status.value)
+        .eq('updated_at', announcement.updatedAt.toUtc().toIso8601String())
+        .select('id');
 
-    return sendAnnouncementNotification(announcementId);
+    if (updatedRows.length != 1) {
+      throw StateError(
+        'La publicación cambió o ya fue publicada. '
+        'Actualiza el listado antes de intentarlo nuevamente.',
+      );
+    }
+
+    return _notificationResultAfterSaved(announcement.id);
+  }
+
+  /// Requests safe deletion through the authorized Edge Function.
+  Future<Map<String, dynamic>> deleteUnpublishedDraft(
+    String publicationId,
+  ) async {
+    _requireAnnouncementManager();
+    _validateAnnouncementId(publicationId);
+
+    final response = await _supabaseClient.functions.invoke(
+      'delete-unpublished-draft',
+      body: {'publication_id': publicationId},
+    );
+
+    final data = response.data;
+
+    if (data is! Map) {
+      throw StateError(
+        'El servidor no devolvió un resultado válido de eliminación.',
+      );
+    }
+
+    final result = Map<String, dynamic>.from(data);
+
+    final matchesPublication = result['publication_id'] == publicationId;
+
+    final deletedNow = result['deleted'] == true;
+    final cleanupComplete = result['storage_cleanup_complete'] == true;
+    final retryRequired = result['retry_required'] == true;
+
+    if (!matchesPublication ||
+        (!deletedNow && !cleanupComplete && !retryRequired)) {
+      throw StateError(
+        'El servidor no confirmó un resultado válido '
+        'para este borrador.',
+      );
+    }
+
+    return result;
   }
 
   /// Archives an announcement.

@@ -50,11 +50,31 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
   };
 
   late final ClassSessionRepository _repository;
-  final ClassSessionReminderService _reminderService =
-      ClassSessionReminderService();
+  late final ClassSessionReminderService _reminderService =
+      ClassSessionReminderService(
+        userId: widget.account.userId,
+        coordinator: _appBloc.academicReminderCoordinator,
+        authRevision: _accountAuthRevision,
+      );
 
   late Future<List<ClassSession>> _sessionsFuture;
   bool _processing = false;
+
+  Future<List<ClassSession>>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    _pullToRefreshData = _sessionsFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
 
   @override
   void initState() {
@@ -273,7 +293,9 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
         child: FutureBuilder<List<ClassSession>>(
           future: _sessionsFuture,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !(snapshot.hasData &&
+                    identical(_sessionsFuture, _pullToRefreshData))) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -283,8 +305,8 @@ class _SubjectSessionsPageState extends State<SubjectSessionsPage> {
 
             final sessions = snapshot.data ?? const [];
 
-            return RefreshIndicator(
-              onRefresh: _refresh,
+            return RefreshIndicator.adaptive(
+              onRefresh: _pullToRefresh,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(

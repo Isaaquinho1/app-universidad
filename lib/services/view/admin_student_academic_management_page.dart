@@ -22,6 +22,8 @@ class _AdminStudentAcademicManagementPageState
 
   List<AdminStudentAcademicProfile> _students = const [];
   bool _isLoading = true;
+  int _loadGeneration = 0;
+  Future<void>? _pullRefreshFuture;
   String? _errorMessage;
 
   AppUserProfileRepository get _repository =>
@@ -42,13 +44,21 @@ class _AdminStudentAcademicManagementPageState
     super.dispose();
   }
 
-  Future<void> _loadStudents({String? query}) async {
+  Future<void> _pullToRefresh() {
+    return _pullRefreshFuture ??= _loadStudents(
+      query: _searchController.text,
+      showLoading: false,
+    ).whenComplete(() => _pullRefreshFuture = null);
+  }
+
+  Future<void> _loadStudents({String? query, bool showLoading = true}) async {
     if (!mounted) {
       return;
     }
 
+    final generation = ++_loadGeneration;
     setState(() {
-      _isLoading = true;
+      _isLoading = showLoading;
       _errorMessage = null;
     });
 
@@ -57,7 +67,7 @@ class _AdminStudentAcademicManagementPageState
         query: query,
       );
 
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
@@ -66,7 +76,7 @@ class _AdminStudentAcademicManagementPageState
         _isLoading = false;
       });
     } catch (_) {
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
@@ -217,8 +227,8 @@ class _AdminStudentAcademicManagementPageState
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => _loadStudents(query: _searchController.text),
+    return RefreshIndicator.adaptive(
+      onRefresh: _pullToRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(

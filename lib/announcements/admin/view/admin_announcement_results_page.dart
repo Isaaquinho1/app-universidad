@@ -32,6 +32,20 @@ class _AdminAnnouncementResultsPageState
   bool _isLoadingReminderPreview = false;
   bool _isSendingReminder = false;
 
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -458,7 +472,7 @@ class _AdminAnnouncementResultsPageState
             },
           ),
           IconButton(
-            onPressed: _refresh,
+            onPressed: _pullToRefresh,
             tooltip: 'Actualizar resultados',
             icon: const Icon(Icons.refresh),
           ),
@@ -468,7 +482,7 @@ class _AdminAnnouncementResultsPageState
         future: _dataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting &&
-              !snapshot.hasData) {
+                  !snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -489,8 +503,8 @@ class _AdminAnnouncementResultsPageState
           final notificationMetrics = data.notificationMetrics;
           final filteredRecipients = _filterRecipients(results.recipients);
 
-          return RefreshIndicator(
-            onRefresh: _refresh,
+          return RefreshIndicator.adaptive(
+            onRefresh: _pullToRefresh,
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(

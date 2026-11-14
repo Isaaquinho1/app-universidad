@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SCREEN_ORIENTATION_UNSPECIFIED: preserve system orientation on large screens. -->
+    <integer name="main_activity_orientation">-1</integer>
+</resources>

@@ -1,3 +1,6 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:conecta_itt/announcements/admin/models/announcement_navigation_result.dart';
+import 'package:conecta_itt/announcements/models/publication_expiration_policy.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -692,31 +695,45 @@ class _AdminAnnouncementCreatePageState
         featuredUntil: null,
         createdAt: existingAnnouncement?.createdAt ?? now,
         updatedAt: now,
+        contentVersion: existingAnnouncement?.contentVersion ?? 1,
         publishedAt:
             nextStatus == AnnouncementStatus.published
                 ? existingAnnouncement?.publishedAt ?? now
                 : null,
-        expiresAt: existingAnnouncement?.expiresAt,
+        expiresAt:
+            nextStatus == AnnouncementStatus.published &&
+                    existingAnnouncement?.status != AnnouncementStatus.published
+                ? existingAnnouncement?.expiresAt ??
+                    PublicationExpirationPolicy.defaultExpiration(
+                      contentType: _contentType,
+                      publishedAt: existingAnnouncement?.publishedAt ?? now,
+                    )
+                : existingAnnouncement?.expiresAt,
         attachmentUrls: existingAnnouncement?.attachmentUrls ?? const [],
       );
 
       final repository = context.read<AnnouncementRepository>();
 
       final wasPersisted = _isEditing;
-      late final String persistedId;
 
-      if (wasPersisted) {
-        await repository.updateAnnouncement(announcement);
-        persistedId = announcement.id;
-      } else {
-        persistedId = await repository.createAnnouncement(announcement);
-      }
+      final saveResult =
+          wasPersisted
+              ? await repository.updateAnnouncement(announcement)
+              : await repository.createAnnouncement(announcement);
+
+      final persistedId = saveResult.id;
 
       if (!mounted) {
         return;
       }
 
-      final persistedAnnouncement = announcement.copyWith(id: persistedId);
+      final persistedAnnouncement = announcement.copyWith(
+        id: persistedId,
+        contentVersion:
+            wasPersisted
+                ? announcement.contentVersion + 1
+                : announcement.contentVersion,
+      );
 
       setState(() {
         _persistedAnnouncement = persistedAnnouncement;
@@ -742,9 +759,49 @@ class _AdminAnnouncementCreatePageState
               ? 'Comunicado actualizado correctamente.'
               : 'Comunicado publicado correctamente.';
 
-      context.pop(successMessage);
+      final notification = saveResult.notification;
+
+      final hasNotificationIssue =
+          notification == null || notification['notification_issue'] == true;
+
+      final failedCount = notification?['failed_count'];
+      final failedTokens = failedCount is int ? failedCount : 0;
+
+      String warning = '';
+
+      if (hasNotificationIssue) {
+        warning =
+            ' Advertencia: los cambios se guardaron, pero no se pudo '
+            'confirmar el resultado de FCM. Revisa el despacho '
+            'antes de intentar reenviar.';
+      } else if (failedTokens > 0) {
+        warning =
+            ' Advertencia: FCM informó $failedTokens envío(s) '
+            'fallido(s). Consulta las métricas del despacho.';
+      }
+
+      context.pop(
+        AnnouncementNavigationResult(
+          message: '$successMessage$warning',
+          status:
+              warning.isEmpty
+                  ? AnnouncementNavigationStatus.success
+                  : AnnouncementNavigationStatus.notificationWarning,
+        ),
+      );
     } catch (error) {
       if (!mounted) {
+        return;
+      }
+
+      if (error is PostgrestException &&
+          error.message.contains('PUBLICATION_VERSION_CONFLICT')) {
+        _showMessage(
+          'Esta publicación fue modificada por otro administrador. '
+          'Tus cambios permanecen en el formulario, pero no se guardaron. '
+          'Copia los cambios que necesites conservar y vuelve a abrir '
+          'la publicación para revisar la versión más reciente.',
+        );
         return;
       }
 

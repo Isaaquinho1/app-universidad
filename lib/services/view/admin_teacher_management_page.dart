@@ -1,3 +1,4 @@
+import 'package:conecta_itt/common/widgets/conecta_time_picker.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
@@ -28,6 +29,37 @@ class _AdminTeacherManagementPageState
 
   late Future<List<InstitutionalSubject>> _subjectsFuture;
   late Future<List<TeacherAssignment>> _assignmentsFuture;
+
+  Future<List<InstitutionalSubject>>? _pullSubjectsData;
+  Future<void>? _pullSubjectsFuture;
+  Future<List<TeacherAssignment>>? _pullAssignmentsData;
+  Future<void>? _pullAssignmentsFuture;
+
+  Future<void> _pullSubjects() {
+    final pending = _pullSubjectsFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refreshSubjects();
+    _pullSubjectsData = _subjectsFuture;
+    return _pullSubjectsFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullSubjectsFuture = null);
+  }
+
+  Future<void> _pullAssignments() {
+    final pending = _pullAssignmentsFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refreshAssignments();
+    _pullAssignmentsData = _assignmentsFuture;
+    return _pullAssignmentsFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullAssignmentsFuture = null);
+  }
 
   @override
   void initState() {
@@ -276,7 +308,9 @@ class _AdminTeacherManagementPageState
     return FutureBuilder<List<InstitutionalSubject>>(
       future: _subjectsFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (snapshot.connectionState != ConnectionState.done &&
+            !(snapshot.hasData &&
+                identical(_subjectsFuture, _pullSubjectsData))) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -304,8 +338,8 @@ class _AdminTeacherManagementPageState
           );
         }
 
-        return RefreshIndicator(
-          onRefresh: _refreshSubjects,
+        return RefreshIndicator.adaptive(
+          onRefresh: _pullSubjects,
           child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.fromLTRB(
@@ -373,6 +407,7 @@ class _AdminTeacherManagementPageState
             0,
           ),
           child: TextField(
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             controller: _assignmentSearchController,
             textInputAction: TextInputAction.search,
             onSubmitted: (_) => _refreshAssignments(),
@@ -404,7 +439,9 @@ class _AdminTeacherManagementPageState
           child: FutureBuilder<List<TeacherAssignment>>(
             future: _assignmentsFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
+              if (snapshot.connectionState != ConnectionState.done &&
+                  !(snapshot.hasData &&
+                      identical(_assignmentsFuture, _pullAssignmentsData))) {
                 return const Center(child: CircularProgressIndicator());
               }
 
@@ -432,8 +469,8 @@ class _AdminTeacherManagementPageState
                 );
               }
 
-              return RefreshIndicator(
-                onRefresh: _refreshAssignments,
+              return RefreshIndicator.adaptive(
+                onRefresh: _pullAssignments,
                 child: ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.fromLTRB(
@@ -680,11 +717,14 @@ class _SubjectFormDialogState extends State<_SubjectFormDialog> {
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 controller: _nameController,
+                textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
@@ -699,7 +739,10 @@ class _SubjectFormDialogState extends State<_SubjectFormDialog> {
               ),
               const SizedBox(height: AppSpacing.md),
               TextFormField(
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 controller: _codeController,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                 textCapitalization: TextCapitalization.characters,
                 decoration: const InputDecoration(
                   labelText: 'Clave o código',
@@ -946,7 +989,10 @@ class _AssignmentFormSheetState extends State<_AssignmentFormSheet> {
                       children: [
                         Expanded(
                           child: TextField(
+                            onTapOutside:
+                                (_) => FocusScope.of(context).unfocus(),
                             controller: _teacherSearchController,
+                            textInputAction: TextInputAction.search,
                             decoration: const InputDecoration(
                               labelText: 'Buscar docente',
                               hintText: 'Nombre o correo',
@@ -1141,7 +1187,7 @@ class _SessionFormSheetState extends State<_SessionFormSheet> {
   }
 
   Future<void> _pickStart() async {
-    final value = await showTimePicker(
+    final value = await showConectaTimePicker(
       context: context,
       initialTime: _startsAt ?? const TimeOfDay(hour: 7, minute: 0),
     );
@@ -1154,7 +1200,7 @@ class _SessionFormSheetState extends State<_SessionFormSheet> {
   }
 
   Future<void> _pickEnd() async {
-    final value = await showTimePicker(
+    final value = await showConectaTimePicker(
       context: context,
       initialTime: _endsAt ?? const TimeOfDay(hour: 8, minute: 0),
     );
@@ -1222,6 +1268,7 @@ class _SessionFormSheetState extends State<_SessionFormSheet> {
         AppSpacing.lg + bottomInset,
       ),
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1287,7 +1334,9 @@ class _SessionFormSheetState extends State<_SessionFormSheet> {
             ),
             const SizedBox(height: AppSpacing.md),
             TextField(
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               controller: _buildingController,
+              textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
                 labelText: 'Edificio',
                 hintText: 'Opcional',
@@ -1296,7 +1345,10 @@ class _SessionFormSheetState extends State<_SessionFormSheet> {
             ),
             const SizedBox(height: AppSpacing.md),
             TextField(
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               controller: _roomController,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => FocusScope.of(context).unfocus(),
               decoration: const InputDecoration(
                 labelText: 'Aula',
                 hintText: 'Opcional',

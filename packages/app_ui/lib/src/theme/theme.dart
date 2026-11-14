@@ -11,6 +11,14 @@ class AppTheme {
   static const _smallRadius = 10.0;
   static const _buttonRadius = 12.0;
 
+  // Choose only the foreground; keep institutional surface/fill colors.
+  static Color _foregroundOn(Color background) {
+    final luminance = background.computeLuminance();
+    final whiteContrast = 1.05 / (luminance + 0.05);
+    // Preserve existing white labels wherever they already meet normal-text AA.
+    return whiteContrast >= 4.5 ? Colors.white : Colors.black;
+  }
+
   // Common component builders
   static OutlinedBorder defaultCardShape(AppColors colors) =>
       RoundedRectangleBorder(
@@ -72,7 +80,8 @@ class AppTheme {
       secondarySelectedColor: AppColors.light.surfaceHigh,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_smallRadius),),
+        borderRadius: BorderRadius.circular(_smallRadius),
+      ),
       labelStyle: AppTextStyle.body.copyWith(color: AppColors.light.active),
       secondaryLabelStyle:
           AppTextStyle.body.copyWith(color: AppColors.light.active),
@@ -105,7 +114,8 @@ class AppTheme {
       subtitleTextStyle:
           AppTextStyle.captionL.copyWith(color: AppColors.light.deactive),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_smallRadius),),
+        borderRadius: BorderRadius.circular(_smallRadius),
+      ),
       minLeadingWidth: 24,
       visualDensity: const VisualDensity(vertical: -1),
     ),
@@ -119,7 +129,8 @@ class AppTheme {
       contentTextStyle:
           AppTextStyle.bodyBold.copyWith(color: AppColors.light.active),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_defaultRadius),),
+        borderRadius: BorderRadius.circular(_defaultRadius),
+      ),
       insetPadding: const EdgeInsets.all(16),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
@@ -131,25 +142,28 @@ class AppTheme {
       secondary: AppColors.light.secondary,
       surface: AppColors.light.surface,
       error: AppColors.light.error,
-      onPrimary: AppColors.light.white,
-      onSecondary: AppColors.light.white,
+      onPrimary: _foregroundOn(AppColors.light.primary),
+      onSecondary: _foregroundOn(AppColors.light.secondary),
       onSurface: AppColors.light.onSurface,
-      onError: AppColors.light.white,
+      onError: _foregroundOn(AppColors.light.error),
       surfaceTint: Colors.transparent,
       tertiary: AppColors.light.accent,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStateProperty.all(AppColors.light.white),
+        foregroundColor: WidgetStateProperty.all(
+          _foregroundOn(AppColors.light.primary),
+        ),
         backgroundColor: WidgetStateProperty.all(AppColors.light.primary),
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(_buttonRadius),),
+            borderRadius: BorderRadius.circular(_buttonRadius),
+          ),
         ),
         textStyle: WidgetStateProperty.all(
           AppTextStyle.buttonS.copyWith(
-            color: AppColors.light.white,
+            color: _foregroundOn(AppColors.light.primary),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -175,11 +189,11 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
-        borderSide: BorderSide(color: AppColors.light.borderLight, width: 0.5),
+        borderSide: BorderSide(color: AppColors.light.deactive, width: 0.5),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
-        borderSide: BorderSide(color: AppColors.light.borderLight, width: 0.5),
+        borderSide: BorderSide(color: AppColors.light.deactive, width: 0.5),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
@@ -347,7 +361,8 @@ class AppTheme {
               : AppColors.light.deactive,
         ),
         side: WidgetStateProperty.all(
-            BorderSide(color: AppColors.light.borderLight),),
+          BorderSide(color: AppColors.light.borderLight),
+        ),
       ),
     ),
   );
@@ -393,7 +408,8 @@ class AppTheme {
       secondarySelectedColor: AppColors.dark.surfaceHigh,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_smallRadius),),
+        borderRadius: BorderRadius.circular(_smallRadius),
+      ),
       labelStyle: AppTextStyle.body.copyWith(color: AppColors.dark.active),
       secondaryLabelStyle:
           AppTextStyle.body.copyWith(color: AppColors.dark.active),
@@ -426,7 +442,8 @@ class AppTheme {
       subtitleTextStyle:
           AppTextStyle.captionL.copyWith(color: AppColors.dark.deactive),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_smallRadius),),
+        borderRadius: BorderRadius.circular(_smallRadius),
+      ),
       minLeadingWidth: 24,
       visualDensity: const VisualDensity(vertical: -1),
     ),
@@ -440,7 +457,8 @@ class AppTheme {
       contentTextStyle:
           AppTextStyle.bodyBold.copyWith(color: AppColors.dark.active),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_defaultRadius),),
+        borderRadius: BorderRadius.circular(_defaultRadius),
+      ),
       insetPadding: const EdgeInsets.all(16),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
@@ -452,25 +470,28 @@ class AppTheme {
       secondary: AppColors.dark.secondary,
       surface: AppColors.dark.surface,
       error: AppColors.dark.error,
-      onPrimary: AppColors.dark.white,
-      onSecondary: AppColors.dark.white,
+      onPrimary: _foregroundOn(AppColors.dark.primary),
+      onSecondary: _foregroundOn(AppColors.dark.secondary),
       onSurface: AppColors.dark.onSurface,
-      onError: AppColors.dark.white,
+      onError: _foregroundOn(AppColors.dark.error),
       surfaceTint: Colors.transparent,
       tertiary: AppColors.dark.accent,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStateProperty.all(AppColors.dark.white),
+        foregroundColor: WidgetStateProperty.all(
+          _foregroundOn(AppColors.dark.primary),
+        ),
         backgroundColor: WidgetStateProperty.all(AppColors.dark.primary),
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(_buttonRadius),),
+            borderRadius: BorderRadius.circular(_buttonRadius),
+          ),
         ),
         textStyle: WidgetStateProperty.all(
           AppTextStyle.buttonS.copyWith(
-            color: AppColors.dark.white,
+            color: _foregroundOn(AppColors.dark.primary),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -496,11 +517,11 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
-        borderSide: BorderSide(color: AppColors.dark.borderLight, width: 0.5),
+        borderSide: BorderSide(color: AppColors.dark.deactive, width: 0.5),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
-        borderSide: BorderSide(color: AppColors.dark.borderLight, width: 0.5),
+        borderSide: BorderSide(color: AppColors.dark.deactive, width: 0.5),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(_smallRadius),
@@ -668,7 +689,8 @@ class AppTheme {
               : AppColors.dark.deactive,
         ),
         side: WidgetStateProperty.all(
-            BorderSide(color: AppColors.dark.borderLight),),
+          BorderSide(color: AppColors.dark.borderLight),
+        ),
       ),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
@@ -679,7 +701,7 @@ class AppTheme {
     ),
     badgeTheme: BadgeThemeData(
       backgroundColor: AppColors.dark.error,
-      textColor: AppColors.dark.white,
+      textColor: _foregroundOn(AppColors.dark.error),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       textStyle: AppTextStyle.captionS.copyWith(fontWeight: FontWeight.w600),
     ),
@@ -746,25 +768,28 @@ class AppTheme {
         secondary: colors.secondary,
         surface: colors.surface,
         error: colors.error,
-        onPrimary: colors.white,
-        onSecondary: colors.white,
+        onPrimary: _foregroundOn(colors.primary),
+        onSecondary: _foregroundOn(colors.secondary),
         onSurface: colors.onSurface,
-        onError: colors.white,
+        onError: _foregroundOn(colors.error),
         surfaceTint: Colors.transparent,
         tertiary: colors.accent,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all(colors.white),
+          foregroundColor: WidgetStateProperty.all(
+            _foregroundOn(colors.primary),
+          ),
           backgroundColor: WidgetStateProperty.all(colors.primary),
           elevation: WidgetStateProperty.all(0),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_buttonRadius),),
+              borderRadius: BorderRadius.circular(_buttonRadius),
+            ),
           ),
           textStyle: WidgetStateProperty.all(
             AppTextStyle.buttonS.copyWith(
-              color: colors.white,
+              color: _foregroundOn(colors.primary),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -810,8 +835,11 @@ class AppTheme {
   }
 
   // Utility functions for common UI elements
-  static BoxDecoration cardDecoration(BuildContext context,
-      {bool isActive = false, Color? highlightColor,}) {
+  static BoxDecoration cardDecoration(
+    BuildContext context, {
+    bool isActive = false,
+    Color? highlightColor,
+  }) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final accentColor = highlightColor ?? colors.accent;
 
@@ -821,8 +849,11 @@ class AppTheme {
     );
   }
 
-  static BoxDecoration chipDecoration(BuildContext context,
-      {bool isSelected = false, Color? color,}) {
+  static BoxDecoration chipDecoration(
+    BuildContext context, {
+    bool isSelected = false,
+    Color? color,
+  }) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final chipColor = color ?? colors.primary;
 

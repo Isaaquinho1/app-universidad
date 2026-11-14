@@ -33,13 +33,47 @@ class AnnouncementNavigationConsumed extends AppEvent {
   const AnnouncementNavigationConsumed();
 }
 
-class AcademicTaskNotificationOpened extends AppEvent {
-  const AcademicTaskNotificationOpened(this.taskId);
+class ProfilePhotoReviewNotificationOpened extends AppEvent {
+  const ProfilePhotoReviewNotificationOpened({
+    required this.decision,
+    required this.userId,
+    required this.authRevision,
+  });
 
-  final String taskId;
+  final String decision;
+  final String userId;
+  final int authRevision;
 
   @override
-  List<Object?> get props => [taskId];
+  List<Object?> get props => [decision, userId, authRevision];
+}
+
+class ProfilePhotoReviewNavigationConsumed extends AppEvent {
+  const ProfilePhotoReviewNavigationConsumed({
+    required this.userId,
+    required this.authRevision,
+  });
+
+  final String userId;
+  final int authRevision;
+
+  @override
+  List<Object?> get props => [userId, authRevision];
+}
+
+class AcademicTaskNotificationOpened extends AppEvent {
+  const AcademicTaskNotificationOpened(
+    this.taskId, {
+    required this.userId,
+    required this.authRevision,
+  });
+
+  final String taskId;
+  final String userId;
+  final int authRevision;
+
+  @override
+  List<Object?> get props => [taskId, userId, authRevision];
 }
 
 class AcademicTaskNavigationConsumed extends AppEvent {
@@ -59,13 +93,17 @@ class ClassSessionNotificationOpened extends AppEvent {
   const ClassSessionNotificationOpened({
     required this.sessionId,
     required this.subjectId,
+    required this.userId,
+    required this.authRevision,
   });
 
   final String sessionId;
   final String subjectId;
+  final String userId;
+  final int authRevision;
 
   @override
-  List<Object?> get props => [sessionId, subjectId];
+  List<Object?> get props => [sessionId, subjectId, userId, authRevision];
 }
 
 class ClassSessionNavigationConsumed extends AppEvent {

@@ -1,9 +1,39 @@
+import 'package:conecta_itt/announcements/admin/models/announcement_navigation_result.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
+
+/// Diálogo compartido para resultados administrativos.
+class AdminAnnouncementResultDialog extends StatelessWidget {
+  const AdminAnnouncementResultDialog({
+    required this.title,
+    required this.message,
+    super.key,
+  });
+
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Aceptar'),
+        ),
+      ],
+    );
+  }
+}
+
+// Activar únicamente tras validar y desplegar la eliminación segura.
+const bool _draftDeletionEnabled = false;
 
 class AdminAnnouncementManagementPage extends StatefulWidget {
   const AdminAnnouncementManagementPage({super.key});
@@ -17,6 +47,7 @@ class _AdminAnnouncementManagementPageState
     extends State<AdminAnnouncementManagementPage> {
   AnnouncementStatus? _selectedStatus;
   bool _isProcessing = false;
+  int _adminListRevision = 0;
 
   Future<void> _openEdit(Announcement announcement) async {
     if (_isProcessing) {
@@ -26,17 +57,21 @@ class _AdminAnnouncementManagementPageState
     setState(() => _isProcessing = true);
 
     try {
-      final successMessage = await context.push<String>(
+      final navigationResult = await context.push<AnnouncementNavigationResult>(
         '/services/announcement-management/'
         '${announcement.id}/edit',
       );
 
-      if (!mounted || successMessage == null) {
+      if (!mounted || navigationResult == null) {
         return;
       }
 
       setState(() {});
-      await _showMessage(successMessage);
+
+      await _showMessage(
+        navigationResult.message,
+        title: navigationResult.title,
+      );
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
@@ -52,16 +87,20 @@ class _AdminAnnouncementManagementPageState
     setState(() => _isProcessing = true);
 
     try {
-      final successMessage = await context.push<String>(
+      final navigationResult = await context.push<AnnouncementNavigationResult>(
         '/services/announcement-management/create',
       );
 
-      if (!mounted || successMessage == null) {
+      if (!mounted || navigationResult == null) {
         return;
       }
 
       setState(() {});
-      await _showMessage(successMessage);
+
+      await _showMessage(
+        navigationResult.message,
+        title: navigationResult.title,
+      );
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
@@ -88,14 +127,141 @@ class _AdminAnnouncementManagementPageState
       return;
     }
 
-    await _runAction(
-      successMessage:
-          '${announcement.contentType.label} publicada correctamente.',
-      action:
-          () => context.read<AnnouncementRepository>().publishAnnouncement(
-            announcement.id,
-          ),
+    if (_isProcessing) {
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+
+    try {
+      final result = await context
+          .read<AnnouncementRepository>()
+          .publishAnnouncement(announcement);
+
+      if (!mounted) {
+        return;
+      }
+
+      final notificationIssue = result['notification_issue'] == true;
+      final failedCount = (result['failed_count'] as num?)?.toInt() ?? 0;
+      final sentCount = (result['sent_count'] as num?)?.toInt() ?? 0;
+
+      if (notificationIssue) {
+        await _showMessage(
+          '${announcement.contentType.label} publicada correctamente '
+          'en Supabase. Sin embargo, no se pudo confirmar el resultado '
+          'del envío de notificaciones. Revisa las métricas del despacho '
+          'antes de intentar cualquier reenvío.',
+          title: 'Publicación guardada con advertencia',
+        );
+      } else if (failedCount > 0) {
+        await _showMessage(
+          '${announcement.contentType.label} publicada correctamente. '
+          'FCM informó $sentCount envío(s) exitoso(s) y '
+          '$failedCount envío(s) fallido(s). '
+          'Consulta las métricas antes de intentar un reenvío.',
+          title: 'Publicación guardada con advertencias',
+        );
+      } else {
+        await _showMessage(
+          '${announcement.contentType.label} publicada correctamente. '
+          'El servicio de notificaciones terminó su procesamiento '
+          'sin reportar envíos fallidos.',
+        );
+      }
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      await _showMessage(
+        'No se pudo confirmar la publicación: $error '
+        'Actualiza el listado antes de intentar nuevamente.',
+        title: 'Publicación no confirmada',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
+  Future<void> _deleteDraft(Announcement announcement) async {
+    if (!_draftDeletionEnabled || _isProcessing) {
+      return;
+    }
+
+    if (announcement.status != AnnouncementStatus.draft ||
+        announcement.publishedAt != null) {
+      return;
+    }
+
+    final confirmed = await _confirmAction(
+      title: 'Eliminar borrador',
+      message:
+          '¿Eliminar definitivamente "${announcement.title}"? '
+          'Esta acción no se puede deshacer. '
+          'También se iniciará la limpieza de sus archivos asociados.',
+      confirmText: 'Eliminar borrador',
     );
+
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+
+    try {
+      final result = await context
+          .read<AnnouncementRepository>()
+          .deleteUnpublishedDraft(announcement.id);
+
+      if (!mounted) {
+        return;
+      }
+
+      final complete = result['storage_cleanup_complete'] == true;
+
+      setState(() => _adminListRevision++);
+
+      if (complete) {
+        final deletedNow = result['deleted'] == true;
+
+        await _showMessage(
+          deletedNow
+              ? 'Borrador eliminado y limpieza de archivos confirmada.'
+              : 'La limpieza de archivos de una eliminación anterior '
+                  'se completó correctamente.',
+          title: deletedNow ? 'Borrador eliminado' : 'Limpieza completada',
+        );
+      } else {
+        await _showMessage(
+          'La eliminación fue aceptada, pero quedan archivos '
+          'pendientes de limpieza. No repitas la operación '
+          'sin revisar el estado del servidor.',
+          title: 'Limpieza pendiente',
+        );
+      }
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      // El servidor pudo completar la eliminación antes de
+      // que el cliente perdiera la respuesta.
+      setState(() => _adminListRevision++);
+
+      await _showMessage(
+        'No se pudo confirmar la eliminación del borrador. '
+        'Consulta su estado antes de intentar nuevamente. '
+        'Detalle: $error',
+        title: 'Eliminación no confirmada',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
   }
 
   Future<void> _archive(Announcement announcement) async {
@@ -182,25 +348,18 @@ class _AdminAnnouncementManagementPageState
     return result ?? false;
   }
 
-  Future<void> _showMessage(String message) async {
+  Future<void> _showMessage(
+    String message, {
+    String title = 'Operación completada',
+  }) async {
     if (!mounted) {
       return;
     }
 
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Operación completada'),
-          content: Text(message),
-          actions: [
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Aceptar'),
-            ),
-          ],
-        );
-      },
+      builder:
+          (_) => AdminAnnouncementResultDialog(title: title, message: message),
     );
   }
 
@@ -269,6 +428,7 @@ class _AdminAnnouncementManagementPageState
             const Divider(height: 1),
             Expanded(
               child: StreamBuilder<List<Announcement>>(
+                key: ValueKey(_adminListRevision),
                 stream: context
                     .read<AnnouncementRepository>()
                     .watchAdminAnnouncements(status: _selectedStatus),
@@ -312,6 +472,8 @@ class _AdminAnnouncementManagementPageState
                         onEdit: () => _openEdit(announcement),
                         onPublish: () => _publish(announcement),
                         onArchive: () => _archive(announcement),
+                        onDeleteDraft: () => _deleteDraft(announcement),
+                        canDeleteDraft: _draftDeletionEnabled,
                       );
                     },
                   );
@@ -368,6 +530,8 @@ class _AnnouncementAdminCard extends StatelessWidget {
     required this.onEdit,
     required this.onPublish,
     required this.onArchive,
+    required this.onDeleteDraft,
+    required this.canDeleteDraft,
   });
 
   final Announcement announcement;
@@ -375,6 +539,8 @@ class _AnnouncementAdminCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onPublish;
   final VoidCallback onArchive;
+  final VoidCallback onDeleteDraft;
+  final bool canDeleteDraft;
 
   @override
   Widget build(BuildContext context) {
@@ -479,6 +645,25 @@ class _AnnouncementAdminCard extends StatelessWidget {
                   ),
               ],
             ),
+
+            if (announcement.status == AnnouncementStatus.draft) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Tooltip(
+                message:
+                    canDeleteDraft
+                        ? 'Eliminar este borrador definitivamente'
+                        : 'Disponible tras validar la seguridad del servidor',
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed:
+                        isProcessing || !canDeleteDraft ? null : onDeleteDraft,
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Eliminar borrador'),
+                  ),
+                ),
+              ),
+            ],
             if (announcement.isAnnouncement &&
                 (announcement.status == AnnouncementStatus.published ||
                     announcement.status == AnnouncementStatus.archived)) ...[

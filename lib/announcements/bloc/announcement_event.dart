@@ -8,11 +8,15 @@ sealed class AnnouncementEvent extends Equatable {
 }
 
 final class AnnouncementsStarted extends AnnouncementEvent {
-  const AnnouncementsStarted();
+  const AnnouncementsStarted({this.refreshCompletion});
+
+  final Completer<void>? refreshCompletion;
 }
 
 final class AnnouncementsChanged extends AnnouncementEvent {
-  const AnnouncementsChanged(this.announcements);
+  const AnnouncementsChanged(this.announcements, {this.refreshCompletion});
+
+  final Completer<void>? refreshCompletion;
 
   final List<Announcement> announcements;
 
@@ -21,7 +25,13 @@ final class AnnouncementsChanged extends AnnouncementEvent {
 }
 
 final class AnnouncementsFailed extends AnnouncementEvent {
-  const AnnouncementsFailed(this.error, this.stackTrace);
+  const AnnouncementsFailed(
+    this.error,
+    this.stackTrace, {
+    this.refreshCompletion,
+  });
+
+  final Completer<void>? refreshCompletion;
 
   final Object error;
   final StackTrace stackTrace;

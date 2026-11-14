@@ -14,7 +14,11 @@ class LabelledInput extends StatefulWidget {
     this.errorText,
     this.showPasswordToggle = false,
     this.autofillHints,
+    this.textInputAction,
   });
+
+  /// Uses Flutter's default focus traversal for next and dismissal for done.
+  final TextInputAction? textInputAction;
 
   final String label;
   final String? placeholder;
@@ -52,6 +56,11 @@ class _LabelledInputState extends State<LabelledInput> {
         TextField(
           controller: widget.controller,
           autofillHints: widget.autofillHints,
+          textInputAction: widget.textInputAction,
+          onSubmitted: widget.textInputAction == TextInputAction.done
+              ? (_) => FocusScope.of(context).unfocus()
+              : null,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           style: AppTextStyle.title.copyWith(
             color: colorScheme.onSurface,
           ),

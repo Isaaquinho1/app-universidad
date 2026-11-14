@@ -73,7 +73,7 @@ class AcademicTaskCard extends StatelessWidget {
         side: BorderSide(
           color:
               task.isOverdue
-                  ? const Color(0xFFC62828)
+                  ? Theme.of(context).colorScheme.error
                   : colors.deactive.withValues(alpha: 0.18),
           width: task.isOverdue ? 1.5 : 1,
         ),
@@ -203,7 +203,7 @@ class AcademicTaskCard extends StatelessWidget {
                           size: 17,
                           color:
                               task.isOverdue
-                                  ? const Color(0xFFC62828)
+                                  ? Theme.of(context).colorScheme.error
                                   : colors.deactive,
                         ),
                         const SizedBox(width: 5),
@@ -216,7 +216,7 @@ class AcademicTaskCard extends StatelessWidget {
                               fontSize: 12,
                               color:
                                   task.isOverdue
-                                      ? const Color(0xFFC62828)
+                                      ? Theme.of(context).colorScheme.error
                                       : colors.deactive,
                               fontWeight:
                                   task.isOverdue ? FontWeight.w700 : null,
@@ -313,6 +313,16 @@ class _TaskTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+    final background = Color.alphaBlend(
+      color.withValues(alpha: 0.12),
+      colors.background02,
+    );
+    final a = color.computeLuminance() + 0.05;
+    final b = background.computeLuminance() + 0.05;
+    final contrast = a > b ? a / b : b / a;
+    // Keep the colored tint, but use readable text/icons when its hue is faint.
+    final foreground = contrast >= 4.5 ? color : colors.active;
     return Container(
       constraints: const BoxConstraints(maxWidth: 190),
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
@@ -323,7 +333,7 @@ class _TaskTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: 14, color: foreground),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
@@ -333,7 +343,7 @@ class _TaskTag extends StatelessWidget {
               style: AppTextStyle.body.copyWith(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: color,
+                color: foreground,
               ),
             ),
           ),

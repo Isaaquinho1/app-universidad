@@ -208,7 +208,9 @@ class LocalNotificationService {
     required String body,
     required DateTime scheduledAt,
     required Map<String, dynamic> payload,
+    void Function()? ensureCurrent,
   }) async {
+    ensureCurrent?.call();
     if (kIsWeb) {
       return;
     }
@@ -232,6 +234,7 @@ class LocalNotificationService {
     }
 
     final exactAllowed = await canScheduleExactNotifications();
+    ensureCurrent?.call();
 
     const androidDetails = AndroidNotificationDetails(
       academicReminderChannelId,
@@ -257,6 +260,8 @@ class LocalNotificationService {
     );
 
     final localDate = scheduledAt.toLocal();
+
+    ensureCurrent?.call();
 
     await _plugin.zonedSchedule(
       id: id,
@@ -295,7 +300,9 @@ class LocalNotificationService {
     required int hour,
     required int minute,
     required Map<String, dynamic> payload,
+    void Function()? ensureCurrent,
   }) async {
+    ensureCurrent?.call();
     if (kIsWeb) {
       return;
     }
@@ -321,6 +328,7 @@ class LocalNotificationService {
     _initializeTimeZone();
 
     final exactAllowed = await canScheduleExactNotifications();
+    ensureCurrent?.call();
 
     const androidDetails = AndroidNotificationDetails(
       academicReminderChannelId,
@@ -350,6 +358,8 @@ class LocalNotificationService {
       hour: hour,
       minute: minute,
     );
+
+    ensureCurrent?.call();
 
     await _plugin.zonedSchedule(
       id: id,

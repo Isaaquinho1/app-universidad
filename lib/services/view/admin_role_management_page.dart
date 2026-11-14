@@ -19,6 +19,8 @@ class _AdminRoleManagementPageState extends State<AdminRoleManagementPage> {
 
   List<RoleManagementProfile> _profiles = const [];
   bool _isLoading = true;
+  int _loadGeneration = 0;
+  Future<void>? _pullRefreshFuture;
   String? _errorMessage;
   String? _updatingUserId;
 
@@ -40,13 +42,21 @@ class _AdminRoleManagementPageState extends State<AdminRoleManagementPage> {
     super.dispose();
   }
 
-  Future<void> _loadProfiles({String? query}) async {
+  Future<void> _pullToRefresh() {
+    return _pullRefreshFuture ??= _loadProfiles(
+      query: _searchController.text,
+      showLoading: false,
+    ).whenComplete(() => _pullRefreshFuture = null);
+  }
+
+  Future<void> _loadProfiles({String? query, bool showLoading = true}) async {
     if (!mounted) {
       return;
     }
 
+    final generation = ++_loadGeneration;
     setState(() {
-      _isLoading = true;
+      _isLoading = showLoading;
       _errorMessage = null;
     });
 
@@ -55,7 +65,7 @@ class _AdminRoleManagementPageState extends State<AdminRoleManagementPage> {
         query: query,
       );
 
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
@@ -64,7 +74,7 @@ class _AdminRoleManagementPageState extends State<AdminRoleManagementPage> {
         _isLoading = false;
       });
     } catch (_) {
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
@@ -336,8 +346,8 @@ class _AdminRoleManagementPageState extends State<AdminRoleManagementPage> {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => _loadProfiles(query: _searchController.text),
+    return RefreshIndicator.adaptive(
+      onRefresh: _pullToRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(

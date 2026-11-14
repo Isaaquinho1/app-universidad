@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/profile/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:conecta_itt/institutional_profile/services/profile_photo_review_badge_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -22,10 +25,51 @@ class _AdminProfilePhotoReviewPageState
   late Future<List<AppUserProfile>> _queueFuture;
   final Set<String> _processingProfileIds = <String>{};
 
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
     _queueFuture = _loadQueue();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final profile = context.read<AppBloc>().state.institutionalProfile;
+
+      if (profile == null || !profile.canReviewProfilePhotos) {
+        return;
+      }
+
+      final controller = ProfilePhotoReviewBadgeController.instance;
+
+      controller.bind(
+        userId: profile.uid,
+        repository: context.read<AdminProfilePhotoRepository>(),
+      );
+
+      unawaited(_markReviewNotificationsSeen());
+    });
+  }
+
+  Future<void> _markReviewNotificationsSeen() async {
+    try {
+      await ProfilePhotoReviewBadgeController.instance.markSeen();
+    } catch (error) {
+      debugPrint('Could not mark photo review notifications seen: $error');
+    }
   }
 
   Future<List<AppUserProfile>> _loadQueue() {
@@ -213,7 +257,7 @@ class _AdminProfilePhotoReviewPageState
         actions: [
           IconButton(
             tooltip: 'Actualizar',
-            onPressed: _refresh,
+            onPressed: _pullToRefresh,
             icon: const Icon(Icons.refresh_rounded),
           ),
         ],
@@ -250,8 +294,8 @@ class _AdminProfilePhotoReviewPageState
                     return _EmptyState(filter: _selectedFilter);
                   }
 
-                  return RefreshIndicator(
-                    onRefresh: _refresh,
+                  return RefreshIndicator.adaptive(
+                    onRefresh: _pullToRefresh,
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: const EdgeInsets.fromLTRB(

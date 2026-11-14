@@ -51,14 +51,14 @@ class RegisterForm extends StatelessWidget {
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Cuenta creada'),
+          title: const Text('Revisa tu correo institucional'),
           content: Text(
             isStaff
-                ? 'Revisa tu correo institucional para confirmar la cuenta. '
+                ? 'Si recibiste un correo de confirmación, abre el enlace para continuar. Si ya tienes una cuenta, inicia sesión o recupera tu contraseña. '
                     'Posteriormente, un administrador deberá validar tu acceso '
                     'como docente o personal administrativo.'
                 : state.availableGroups.isEmpty
-                ? 'Revisa tu correo institucional para confirmar la cuenta. '
+                ? 'Si recibiste un correo de confirmación, abre el enlace para continuar. Si ya tienes una cuenta, inicia sesión o recupera tu contraseña. '
                     'Tu carrera y semestre fueron registrados, pero deberás '
                     'seleccionar un grupo cuando exista uno disponible.'
                 : 'Si el correo todavía no tenía una cuenta, recibirás un '
@@ -371,6 +371,7 @@ class _GivenNamesInputState extends State<_GivenNamesInput> {
       key: const Key('registerForm_givenNamesInput'),
       controller: _controller,
       label: 'Nombre(s) *',
+      textInputAction: TextInputAction.next,
       placeholder: 'Uno o dos nombres',
       autofillHints: const [AutofillHints.givenName],
       onChanged: (value) {
@@ -410,6 +411,7 @@ class _FirstSurnameInputState extends State<_FirstSurnameInput> {
       key: const Key('registerForm_firstSurnameInput'),
       controller: _controller,
       label: 'Primer apellido *',
+      textInputAction: TextInputAction.next,
       placeholder: 'Apellido paterno',
       autofillHints: const [AutofillHints.familyName],
       onChanged: (value) {
@@ -449,6 +451,7 @@ class _SecondSurnameInputState extends State<_SecondSurnameInput> {
       key: const Key('registerForm_secondSurnameInput'),
       controller: _controller,
       label: 'Segundo apellido *',
+      textInputAction: TextInputAction.next,
       placeholder: 'Apellido materno',
       autofillHints: const [AutofillHints.familyName],
       onChanged: (value) {
@@ -486,6 +489,7 @@ class _EmailInputState extends State<_EmailInput> {
       key: const Key('registerForm_emailInput'),
       controller: _controller,
       label: 'Correo institucional',
+      textInputAction: TextInputAction.next,
       placeholder: 'l#########@tlalpan.tecnm.mx',
       keyboardType: TextInputType.emailAddress,
       autofillHints: const [
@@ -828,6 +832,7 @@ class _PasswordInputState extends State<_PasswordInput> {
       key: const Key('registerForm_passwordInput'),
       controller: _controller,
       label: 'Contraseña',
+      textInputAction: TextInputAction.next,
       placeholder: 'Crea una contraseña segura',
       obscureText: true,
       showPasswordToggle: true,
@@ -886,6 +891,7 @@ class _PasswordConfirmationInputState
       key: const Key('registerForm_passwordConfirmationInput'),
       controller: _controller,
       label: 'Confirmar contraseña',
+      textInputAction: TextInputAction.done,
       placeholder: 'Escribe nuevamente tu contraseña',
       obscureText: true,
       showPasswordToggle: true,

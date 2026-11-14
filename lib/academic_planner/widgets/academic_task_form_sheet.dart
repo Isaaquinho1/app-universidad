@@ -1,3 +1,4 @@
+import 'package:conecta_itt/common/widgets/conecta_time_picker.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/academic_planner/models/academic_subject.dart';
 import 'package:conecta_itt/academic_planner/models/academic_task.dart';
@@ -145,7 +146,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
             ? const TimeOfDay(hour: 23, minute: 59)
             : TimeOfDay.fromDateTime(_dueAt!);
 
-    final selectedTime = await showTimePicker(
+    final selectedTime = await showConectaTimePicker(
       context: context,
       initialTime: initialTime,
       helpText: 'Hora de entrega',
@@ -312,7 +313,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
       return;
     }
 
-    final selectedTime = await showTimePicker(
+    final selectedTime = await showConectaTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(safeInitial),
       helpText: 'Hora del recordatorio',
@@ -644,6 +645,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
           AppSpacing.lg + keyboardInset,
         ),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Column(
@@ -675,6 +677,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.xlg),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _titleController,
                   autofocus: !_isEditing,
                   textCapitalization: TextCapitalization.sentences,
@@ -701,6 +704,7 @@ class _AcademicTaskFormSheetState extends State<AcademicTaskFormSheet> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   controller: _descriptionController,
                   textCapitalization: TextCapitalization.sentences,
                   minLines: 3,

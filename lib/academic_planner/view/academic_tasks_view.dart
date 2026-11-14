@@ -17,6 +17,7 @@ import 'package:conecta_itt/academic_planner/view/academic_task_detail_page.dart
 import 'package:conecta_itt/academic_planner/view/task_categories_page.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_card.dart';
 import 'package:conecta_itt/academic_planner/widgets/academic_task_form_sheet.dart';
+import 'package:conecta_itt/academic_planner/widgets/academic_notice.dart';
 import 'package:conecta_itt/app/bloc/app_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,13 +45,20 @@ class AcademicTasksView extends StatefulWidget {
 }
 
 class _AcademicTasksViewState extends State<AcademicTasksView> {
+  late final AppBloc _appBloc;
+  late final int _accountAuthRevision;
+
   late final AcademicTaskRepository _taskRepository;
   late final AcademicSubtaskRepository _subtaskRepository;
   late final AcademicSubjectRepository _subjectRepository;
   late final TaskCategoryRepository _categoryRepository;
 
-  final AcademicTaskReminderService _reminderService =
-      AcademicTaskReminderService();
+  late final AcademicTaskReminderService _reminderService =
+      AcademicTaskReminderService(
+        userId: widget.account.userId,
+        coordinator: _appBloc.academicReminderCoordinator,
+        authRevision: _accountAuthRevision,
+      );
 
   late Future<_TaskViewData> _dataFuture;
   late final AcademicTaskAtomicSaveService _atomicSaveService =
@@ -61,9 +69,27 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
   bool _exactAlarmPromptShown = false;
   _TaskFilter _selectedFilter = _TaskFilter.pending;
 
+  Future<_TaskViewData>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    _pullToRefreshData = _dataFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
+    _appBloc = context.read<AppBloc>();
+    _accountAuthRevision = _appBloc.authRevision;
     _taskRepository = widget.account.tasks;
     _subtaskRepository = widget.account.subtasks;
     _subjectRepository = widget.account.subjects;
@@ -259,8 +285,6 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
     if (!mounted) return;
 
-    final messenger = ScaffoldMessenger.of(context);
-
     setState(() {
       _processing = true;
     });
@@ -292,13 +316,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
             if (!isCurrentAccount()) return;
 
             if (!notificationsGranted) {
-              messenger.showSnackBar(
-                const SnackBar(
-                  content: Text(
+              if (!mounted) return;
+              AcademicNotice.show(
+                context,
+                message:
                     'Activa las notificaciones de Conecta ITT '
                     'para recibir los recordatorios.',
-                  ),
-                ),
               );
             } else if (!_exactAlarmPromptShown) {
               final exactAllowed =
@@ -358,13 +381,12 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
       } catch (_) {
         if (!mounted || !isCurrentAccount()) return;
 
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text(
+        if (!mounted) return;
+        AcademicNotice.show(
+          context,
+          message:
               'La tarea se guardó, pero no fue posible programar '
               'su recordatorio.',
-            ),
-          ),
         );
       }
 
@@ -511,7 +533,9 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
     return FutureBuilder<_TaskViewData>(
       future: _dataFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !(snapshot.hasData &&
+                identical(_dataFuture, _pullToRefreshData))) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -532,8 +556,8 @@ class _AcademicTasksViewState extends State<AcademicTasksView> {
 
         return Stack(
           children: [
-            RefreshIndicator(
-              onRefresh: _refresh,
+            RefreshIndicator.adaptive(
+              onRefresh: _pullToRefresh,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(

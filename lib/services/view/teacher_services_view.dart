@@ -16,6 +16,22 @@ class _TeacherServicesViewState extends State<TeacherServicesView> {
 
   int _selectedSection = 0;
 
+  Future<List<TeacherAssignment>>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refresh();
+    _pullToRefreshData = _assignmentsFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +52,9 @@ class _TeacherServicesViewState extends State<TeacherServicesView> {
     return FutureBuilder<List<TeacherAssignment>>(
       future: _assignmentsFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (snapshot.connectionState != ConnectionState.done &&
+            !(snapshot.hasData &&
+                identical(_assignmentsFuture, _pullToRefreshData))) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -47,7 +65,7 @@ class _TeacherServicesViewState extends State<TeacherServicesView> {
             description:
                 'No se pudieron consultar tus asignaciones institucionales.',
             actionLabel: 'Reintentar',
-            onAction: _refresh,
+            onAction: _pullToRefresh,
           );
         }
 
@@ -61,7 +79,7 @@ class _TeacherServicesViewState extends State<TeacherServicesView> {
                 'No tienes materias o grupos asignados para el '
                 'periodo académico vigente.',
             actionLabel: 'Actualizar',
-            onAction: _refresh,
+            onAction: _pullToRefresh,
           );
         }
 
@@ -95,15 +113,15 @@ class _TeacherServicesViewState extends State<TeacherServicesView> {
                 children: [
                   _TeacherSubjectsView(
                     assignments: assignments,
-                    onRefresh: _refresh,
+                    onRefresh: _pullToRefresh,
                   ),
                   _TeacherGroupsView(
                     assignments: assignments,
-                    onRefresh: _refresh,
+                    onRefresh: _pullToRefresh,
                   ),
                   _TeacherScheduleView(
                     assignments: assignments,
-                    onRefresh: _refresh,
+                    onRefresh: _pullToRefresh,
                   ),
                 ],
               ),
@@ -193,7 +211,7 @@ class _TeacherSubjectsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: onRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -288,7 +306,7 @@ class _TeacherGroupsView extends StatelessWidget {
     final entries =
         groups.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: onRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -409,7 +427,7 @@ class _TeacherScheduleView extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: onRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -537,7 +555,7 @@ class _TeacherStateMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return RefreshIndicator(
+        return RefreshIndicator.adaptive(
           onRefresh: onAction,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),

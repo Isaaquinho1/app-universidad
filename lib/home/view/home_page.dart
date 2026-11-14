@@ -17,32 +17,30 @@ class _HomePageState extends State<HomePage> {
   bool _navigationScheduled = false;
 
   void _resolveNavigation(BuildContext context, HomeState state) {
-    if (_navigationScheduled) {
+    if (_navigationScheduled || state is AppInitial) {
       return;
     }
 
     _navigationScheduled = true;
 
-    if (state is AppOnboarding) {
-      context.replace('/onboarding');
-      _removeNativeSplashAfterNavigation();
-      return;
-    }
-
-    final appStatus = context.read<AppBloc>().state.status;
-
-    if (appStatus.isLoggedIn) {
-      context.go('/feed');
-    } else {
-      context.go('/welcome');
-    }
-
-    _removeNativeSplashAfterNavigation();
-  }
-
-  void _removeNativeSplashAfterNavigation() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FlutterNativeSplash.remove();
+      if (!mounted) {
+        FlutterNativeSplash.remove();
+        return;
+      }
+
+      try {
+        if (state is AppOnboarding) {
+          context.replace('/onboarding');
+        } else {
+          final appStatus = context.read<AppBloc>().state.status;
+          context.go(appStatus.isLoggedIn ? '/feed' : '/welcome');
+        }
+      } finally {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          FlutterNativeSplash.remove();
+        });
+      }
     });
   }
 
@@ -50,12 +48,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => HomeCubit()..checkOnboarding(),
-      child: BlocListener<HomeCubit, HomeState>(
-        listener: _resolveNavigation,
-        child: const ColoredBox(
-          color: Color(0xFF003B5C),
-          child: SizedBox.expand(),
-        ),
+      child: BlocBuilder<HomeCubit, HomeState>(
+        builder: (context, state) {
+          _resolveNavigation(context, state);
+
+          return const ColoredBox(
+            color: Color(0xFF003B5C),
+            child: SizedBox.expand(),
+          );
+        },
       ),
     );
   }

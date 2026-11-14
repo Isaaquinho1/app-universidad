@@ -466,6 +466,10 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
   Widget build(BuildContext context) {
     final profile = widget.profile;
     final status = _photoStatusPresentation(profile);
+    final photoActionColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.primary
+            : const Color(0xFF003B5C);
 
     return FutureBuilder<ProfilePhotoAllowance>(
       future: _allowanceFuture,
@@ -638,8 +642,8 @@ class _ProfilePhotoActionState extends State<_ProfilePhotoAction> {
                           ),
                   label: Text(buttonLabel),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF003B5C),
-                    side: const BorderSide(color: Color(0xFF003B5C)),
+                    foregroundColor: photoActionColor,
+                    side: BorderSide(color: photoActionColor),
                   ),
                 ),
               ),
@@ -1512,7 +1516,13 @@ class _QrUnavailableState extends StatelessWidget {
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 2),
-            TextButton(onPressed: onRetry, child: const Text('Renovar ahora')),
+            TextButton(
+              onPressed: onRetry,
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF003B5C),
+              ),
+              child: const Text('Renovar ahora'),
+            ),
           ],
         ],
       ),

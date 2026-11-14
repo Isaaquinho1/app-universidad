@@ -143,3 +143,16 @@ entrypoint = "./functions/send-announcement-notification/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/send-announcement-notification/*.html" ]
+
+
+[functions.delete-unpublished-draft]
+enabled = true
+verify_jwt = false
+import_map = "./functions/delete-unpublished-draft/deno.json"
+entrypoint = "./functions/delete-unpublished-draft/index.ts"
+
+[functions.send-profile-photo-review-notifications]
+enabled = true
+verify_jwt = false
+import_map = "./functions/send-profile-photo-review-notifications/deno.json"
+entrypoint = "./functions/send-profile-photo-review-notifications/index.ts"

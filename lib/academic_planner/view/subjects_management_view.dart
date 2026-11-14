@@ -36,6 +36,22 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
   bool _showArchived = false;
   bool _processingAction = false;
 
+  Future<List<AcademicSubject>>? _pullToRefreshData;
+  Future<void>? _pullToRefreshFuture;
+
+  Future<void> _pullToRefresh() {
+    final pending = _pullToRefreshFuture;
+    if (pending != null) return pending;
+
+    final refresh = _refreshSubjects();
+    _pullToRefreshData = _subjectsFuture;
+    return _pullToRefreshFuture = refresh
+        .onError((Object error, StackTrace stackTrace) {
+          // The FutureBuilder keeps the failure and its retry action visible.
+        })
+        .whenComplete(() => _pullToRefreshFuture = null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -257,12 +273,14 @@ class _SubjectsManagementViewState extends State<SubjectsManagementView> {
       ),
       body: SafeArea(
         bottom: false,
-        child: RefreshIndicator(
-          onRefresh: _refreshSubjects,
+        child: RefreshIndicator.adaptive(
+          onRefresh: _pullToRefresh,
           child: FutureBuilder<List<AcademicSubject>>(
             future: _subjectsFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  !(snapshot.hasData &&
+                      identical(_subjectsFuture, _pullToRefreshData))) {
                 return const _LoadingSubjects();
               }
 

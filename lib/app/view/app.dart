@@ -70,6 +70,11 @@ class App extends StatelessWidget {
                       appUserProfileRepository:
                           appScope.appUserProfileRepository,
                       user: _user,
+                      enableAcademicStartupReconciliation:
+                          const bool.fromEnvironment(
+                            'CONECTA_ITT_ACADEMIC_STARTUP_RECONCILIATION',
+                            defaultValue: false,
+                          ),
                     )..add(const AppOpened()),
               ),
               BlocProvider(
