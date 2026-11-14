@@ -1,5 +1,6 @@
 -- Conecta ITT: reportes de problemas
 -- REVISAR en un entorno seguro antes de aplicar a producción.
+BEGIN;
 
 create table if not exists public.problem_reports (
   id uuid primary key default gen_random_uuid(),
@@ -138,7 +139,7 @@ $$;
 
 revoke all on function public.review_problem_report(
   uuid, text, text
-) from public;
+) from public, anon;
 
 grant execute on function public.review_problem_report(
   uuid, text, text
@@ -146,3 +147,5 @@ grant execute on function public.review_problem_report(
 
 comment on function public.review_problem_report(uuid, text, text) is
   'Allows active institutional administrators to review problem reports without direct table update privileges.';
+
+COMMIT;
