@@ -289,7 +289,7 @@ revoke all on function public.update_announcement_with_targets(
   uuid,
   jsonb,
   jsonb
-) from public;
+) from public, anon;
 
 grant execute on function public.update_announcement_with_targets(
   uuid,
