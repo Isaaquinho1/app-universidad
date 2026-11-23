@@ -20,6 +20,8 @@ class LegalDocument {
 
   bool get isPrivacy => type == 'privacy';
 
+  bool get isIntegralNotice => type == 'integral_notice';
+
   bool get isDevelopment => status == 'development';
 
   factory LegalDocument.fromSupabase(Map<String, dynamic> row) {

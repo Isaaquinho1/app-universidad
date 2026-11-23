@@ -19,12 +19,15 @@ class RegisterState extends Equatable {
     this.careerId,
     this.semester,
     this.groupId,
+    this.staffDepartment = '',
+    this.staffPosition = '',
     this.availableGroups = const [],
     this.groupsStatus = AcademicGroupsStatus.initial,
     this.termsAccepted = false,
     this.legalDocuments = const [],
     this.legalDocumentsStatus = LegalDocumentsStatus.initial,
     this.errorMessage,
+    this.duplicateEmail,
   });
 
   final String givenNames;
@@ -47,6 +50,8 @@ class RegisterState extends Equatable {
   final String? careerId;
   final int? semester;
   final String? groupId;
+  final String staffDepartment;
+  final String staffPosition;
   final List<AcademicGroup> availableGroups;
   final AcademicGroupsStatus groupsStatus;
 
@@ -55,6 +60,7 @@ class RegisterState extends Equatable {
   final LegalDocumentsStatus legalDocumentsStatus;
 
   final String? errorMessage;
+  final String? duplicateEmail;
 
   bool get isStudent => emailType.isStudent;
 
@@ -84,10 +90,21 @@ class RegisterState extends Equatable {
     return null;
   }
 
+  LegalDocument? get integralNoticeDocument {
+    for (final document in legalDocuments) {
+      if (document.isIntegralNotice) {
+        return document;
+      }
+    }
+
+    return null;
+  }
+
   bool get legalDocumentsReady =>
       legalDocumentsStatus == LegalDocumentsStatus.success &&
       termsDocument != null &&
-      privacyDocument != null;
+      privacyDocument != null &&
+      integralNoticeDocument != null;
 
   RegisterState copyWith({
     String? givenNames,
@@ -107,6 +124,8 @@ class RegisterState extends Equatable {
     bool clearSemester = false,
     String? groupId,
     bool clearGroupId = false,
+    String? staffDepartment,
+    String? staffPosition,
     List<AcademicGroup>? availableGroups,
     AcademicGroupsStatus? groupsStatus,
     bool? termsAccepted,
@@ -114,6 +133,8 @@ class RegisterState extends Equatable {
     LegalDocumentsStatus? legalDocumentsStatus,
     String? errorMessage,
     bool clearErrorMessage = false,
+    String? duplicateEmail,
+    bool clearDuplicateEmail = false,
   }) {
     return RegisterState(
       givenNames: givenNames ?? this.givenNames,
@@ -130,6 +151,8 @@ class RegisterState extends Equatable {
       careerId: clearCareerId ? null : careerId ?? this.careerId,
       semester: clearSemester ? null : semester ?? this.semester,
       groupId: clearGroupId ? null : groupId ?? this.groupId,
+      staffDepartment: staffDepartment ?? this.staffDepartment,
+      staffPosition: staffPosition ?? this.staffPosition,
       availableGroups: availableGroups ?? this.availableGroups,
       groupsStatus: groupsStatus ?? this.groupsStatus,
       termsAccepted: termsAccepted ?? this.termsAccepted,
@@ -137,6 +160,8 @@ class RegisterState extends Equatable {
       legalDocumentsStatus: legalDocumentsStatus ?? this.legalDocumentsStatus,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+      duplicateEmail:
+          clearDuplicateEmail ? null : duplicateEmail ?? this.duplicateEmail,
     );
   }
 
@@ -155,11 +180,14 @@ class RegisterState extends Equatable {
     careerId,
     semester,
     groupId,
+    staffDepartment,
+    staffPosition,
     availableGroups,
     groupsStatus,
     termsAccepted,
     legalDocuments,
     legalDocumentsStatus,
     errorMessage,
+    duplicateEmail,
   ];
 }

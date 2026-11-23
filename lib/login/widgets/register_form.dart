@@ -1,3 +1,4 @@
+import 'legal_document_viewer.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/institutional_auth/institutional_auth.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
@@ -580,7 +581,14 @@ class _DynamicAccountFields extends StatelessWidget {
     if (state.isStaff) {
       return const Padding(
         padding: EdgeInsets.only(top: AppSpacing.lg),
-        child: _StaffApprovalNotice(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _StaffIdentityFields(),
+            SizedBox(height: AppSpacing.lg),
+            _StaffApprovalNotice(),
+          ],
+        ),
       );
     }
 
@@ -1041,16 +1049,34 @@ class _TermsAcceptance extends StatelessWidget {
                         height: 1.5,
                       ),
                     ),
-                    _LegalLink(document: terms),
+                    const _BundledLegalLink(
+                      title: 'Términos y Condiciones',
+                      assetPath: 'assets/legal/terms.txt',
+                    ),
                     const Text(
-                      ' y nuestra ',
+                      ' y nuestras ',
                       style: TextStyle(
                         color: Color(0xFF555A66),
                         fontSize: 13,
                         height: 1.5,
                       ),
                     ),
-                    _LegalLink(document: privacy),
+                    const _BundledLegalLink(
+                      title: 'Políticas de Privacidad',
+                      assetPath: 'assets/legal/privacy.txt',
+                    ),
+                    const Text(
+                      ', y confirmas haber consultado nuestro ',
+                      style: TextStyle(
+                        color: Color(0xFF555A66),
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
+                    ),
+                    const _BundledLegalLink(
+                      title: 'Aviso de Privacidad Integral',
+                      assetPath: 'assets/legal/integral_notice.txt',
+                    ),
                     const Text(
                       '.',
                       style: TextStyle(color: Color(0xFF555A66), fontSize: 13),
@@ -1066,77 +1092,32 @@ class _TermsAcceptance extends StatelessWidget {
   }
 }
 
-class _LegalLink extends StatelessWidget {
-  const _LegalLink({required this.document});
+class _BundledLegalLink extends StatelessWidget {
+  const _BundledLegalLink({required this.title, required this.assetPath});
 
-  final LegalDocument document;
+  final String title;
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(4),
       onTap: () {
-        showDialog<void>(
-          context: context,
-          builder:
-              (dialogContext) => AlertDialog(
-                title: Text(document.title),
-                content: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (document.isDevelopment) ...[
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF4D9),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Documento provisional para pruebas internas. '
-                            'Será sustituido por la versión institucional '
-                            'antes del lanzamiento.',
-                            style: TextStyle(
-                              color: Color(0xFF715314),
-                              height: 1.4,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                      ],
-                      Text(
-                        document.content,
-                        style: const TextStyle(height: 1.5),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'Versión: ${document.version}',
-                        style: const TextStyle(
-                          color: Color(0xFF747986),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                    },
-                    child: const Text('Cerrar'),
-                  ),
-                ],
-              ),
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder:
+                (_) => LegalDocumentViewer(title: title, assetPath: assetPath),
+          ),
         );
       },
       child: Text(
-        document.isTerms ? 'Términos de Servicio' : 'Política de Privacidad',
+        title,
         style: const TextStyle(
           color: Color(0xFF003B5C),
           fontSize: 13,
           fontWeight: FontWeight.w600,
           height: 1.5,
+          decoration: TextDecoration.underline,
         ),
       ),
     );
@@ -1155,6 +1136,11 @@ class _RegistrationPendingMessage extends StatelessWidget {
     }
 
     final message = switch (state) {
+      _
+          when state.duplicateEmail != null &&
+              state.duplicateEmail == state.email.normalizedValue =>
+        'Este correo ya está registrado. '
+            'Inicia sesión o recupera tu contraseña.',
       _ when state.givenNames.trim().length < 2 =>
         'Completa el campo Nombre(s).',
       _ when state.firstSurname.trim().length < 2 =>
@@ -1359,4 +1345,142 @@ InputDecoration _dropdownDecoration({
       borderSide: BorderSide(color: focusedBorderColor, width: 1.5),
     ),
   );
+}
+
+// Institutional identity supplied by the applicant.
+// This information is not proof of employment or authorization.
+class _StaffIdentityFields extends StatelessWidget {
+  const _StaffIdentityFields();
+
+  static const _departments = <String>[
+    'Servicios Escolares',
+    'División de Estudios Profesionales',
+    'Desarrollo Académico',
+    'Subdirección Académica',
+    'Subdirección de Servicios Administrativos',
+    'Subdirección de Planeación y Vinculación',
+    'Centro de Cómputo',
+    'Recursos Humanos',
+    'Recursos Financieros',
+    'Recursos Materiales y Servicios',
+    'Dirección',
+    'Gestión Tecnológica y Vinculación',
+  ];
+
+  static const _positions = <String>[
+    'Director(a)',
+    'Subdirector(a)',
+    'Jefe(a) de departamento',
+    'Coordinador(a)',
+    'Docente',
+    'Personal administrativo',
+    'Auxiliar administrativo',
+    'Responsable de área',
+    'Asistente administrativo',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<RegisterBloc>().state;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Información institucional',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Indica tu departamento y tu cargo. '
+          'Puedes elegir una sugerencia o escribir una opción diferente. '
+          'Esta información estará sujeta a validación.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        _StaffIdentityAutocomplete(
+          label: 'Área o departamento',
+          hint: 'Ej. Servicios Escolares',
+          value: state.staffDepartment,
+          suggestions: _departments,
+          onChanged: (value) {
+            context.read<RegisterBloc>().add(
+              RegisterStaffDepartmentChanged(value),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        _StaffIdentityAutocomplete(
+          label: 'Cargo institucional',
+          hint: 'Ej. Jefe de departamento',
+          value: state.staffPosition,
+          suggestions: _positions,
+          onChanged: (value) {
+            context.read<RegisterBloc>().add(
+              RegisterStaffPositionChanged(value),
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Ambos campos son obligatorios. '
+          'Declarar un cargo no concede permisos administrativos.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+}
+
+class _StaffIdentityAutocomplete extends StatelessWidget {
+  const _StaffIdentityAutocomplete({
+    required this.label,
+    required this.hint,
+    required this.value,
+    required this.suggestions,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String hint;
+  final String value;
+  final List<String> suggestions;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final length = value.trim().length;
+    final invalid = value.isNotEmpty && (length < 2 || length > 120);
+
+    return Autocomplete<String>(
+      initialValue: TextEditingValue(text: value),
+      optionsBuilder: (input) {
+        final query = input.text.trim().toLowerCase();
+
+        if (query.isEmpty) {
+          return suggestions;
+        }
+
+        return suggestions.where((item) => item.toLowerCase().contains(query));
+      },
+      onSelected: onChanged,
+      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        return TextField(
+          controller: controller,
+          focusNode: focusNode,
+          maxLength: 120,
+          textCapitalization: TextCapitalization.words,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            labelText: '$label *',
+            hintText: hint,
+            border: const OutlineInputBorder(),
+            errorText: invalid ? 'Escribe entre 2 y 120 caracteres.' : null,
+          ),
+        );
+      },
+    );
+  }
 }

@@ -37,12 +37,20 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     Map<String, dynamic>? data,
   }) async {
     try {
-      await _supabaseAuth.signUp(
+      final response = await _supabaseAuth.signUp(
         email: email,
         password: password,
         emailRedirectTo: emailRedirectTo,
         data: data,
       );
+
+      // Supabase puede devolver una identidad simulada cuando el
+      // correo ya existe y está habilitada la confirmación por email.
+      // No comunicar públicamente si esa cuenta existe.
+      if (response.user == null ||
+          (response.user!.identities?.isEmpty ?? false)) {
+        throw const AuthException('registration_unverified');
+      }
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(SignUpWithPasswordFailure(error), stackTrace);
     }

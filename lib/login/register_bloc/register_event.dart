@@ -70,6 +70,24 @@ class RegisterGroupChanged extends RegisterEvent {
   List<Object?> get props => [groupId];
 }
 
+class RegisterStaffDepartmentChanged extends RegisterEvent {
+  const RegisterStaffDepartmentChanged(this.department);
+
+  final String department;
+
+  @override
+  List<Object?> get props => [department];
+}
+
+class RegisterStaffPositionChanged extends RegisterEvent {
+  const RegisterStaffPositionChanged(this.position);
+
+  final String position;
+
+  @override
+  List<Object?> get props => [position];
+}
+
 class RegisterTermsAcceptanceChanged extends RegisterEvent {
   const RegisterTermsAcceptanceChanged(this.accepted);
 

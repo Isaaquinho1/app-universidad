@@ -1,0 +1,272 @@
+CONECTA-ITT
+
+   POLÍTICAS DE PRIVACIDAD
+
+  Plataforma Digital de Comunicación y
+          Servicios Estudiantiles
+
+    Tecnológico Nacional de México —
+          Campus Tlalpan
+
+
+
+
+
+Fecha de última actualización Noviembre de 2026
+
+CONECTA-ITT​                                                               1
+   POLÍTICAS DE PRIVACIDAD​                                                1
+1. Identidad y Domicilio del Responsable​                                        3
+2. Datos Personales que se Recaban​                                            4
+3. Finalidades del Tratamiento de los Datos​                                      5
+4. Transferencia de Datos​                                                     5
+5. Medidas de Seguridad​                                                      6
+6. Vigencia, Uso Autorizado y Suspensión de Cuentas​                             7
+7. Derechos ARCO (Acceso, Rectificación, Cancelación y Oposición)​                8
+8. Cambios al Aviso de Privacidad​                                              8
+
+En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión
+
+de los Particulares (LFPDPPP) y las normativas de protección de datos aplicables en
+
+México, el equipo desarrollador y la administración del Tecnológico Nacional de México
+
+Campus Tlalpan ponen a disposición de la comunidad estudiantil el presente Aviso de
+
+Privacidad.
+
+
+1. Identidad y Domicilio del Responsable
+
+
+El responsable del tratamiento y protección de sus datos personales es  el área
+
+académica y administrativa encargada de la operación de la aplicación CONECTA-ITT,
+
+con domicilio oficial en San Miguel Topilejo, Alcaldía Tlalpan, C.P. 14100, Ciudad de
+
+México.
+
+Para cualquier duda, aclaración, comentario o ejercicio de sus derechos en relación
+
+con la protección de sus datos personales, ponemos a su disposición los siguientes
+
+canales de comunicación oficiales:
+
+   ●​ Correo electrónico institucional de soporte / sistemas:
+     cyd_tlalpan@tecnm.mx​
+
+
+   ●​ Área administrativa responsable: Departamento de Sistemas y Computación /
+
+      Subdirección Académica del TecNM Campus Tlalpan.
+
+
+
+
+   ●​ Teléfono de contacto institucional: (55) 55 13 51 51
+
+
+
+
+   ●​ Medios físicos y ventanilla de atención: En las instalaciones del plantel ubicadas
+
+     en San Miguel Topilejo, Alcaldía Tlalpan, Ciudad de México, en horarios hábiles
+
+       escolares.
+
+2. Datos Personales que se Recaban
+
+
+Para garantizar el acceso exclusivo y seguro de la comunidad estudiantil, la Aplicación
+
+recaba y trata los siguientes datos personales y escolares:
+
+
+
+
+   ●​ Datos de Identificación y Escolarizados: Nombre completo, matrícula escolar,
+
+      carrera/semestre y grupo.
+
+
+
+
+   ●​ Datos de Contacto Institucional: Correo electrónico institucional del TecNM
+
+           .
+
+   ●​ Datos de autenticación: Credenciales de acceso  vinculadas  al correo y
+
+       matrícula institucional autorizados por la escuela.
+
+
+
+
+   ●​ Datos de  Perfil  Estudiantil:  Fotografía para  la credencial  digital  escolar,
+
+       horarios de clases seleccionados y configuraciones personalizadas dentro de la
+
+      app.
+
+
+
+
+   ●​ Información de Uso y Roles: Registro de perfil de usuario (asignado como
+
+      Alumno,  Administrador  o  Supervisor),  permisos  y  acciones  funcionales
+
+      asociadas a su rol para la gestión de avisos, noticias y directorio.
+
+3. Finalidades del Tratamiento de los Datos
+
+
+
+Los datos personales recabados serán utilizados estrictamente para las siguientes
+
+finalidades necesarias para la relación académica:
+
+
+
+
+   ●​ Autenticación y Seguridad:  Validar que  el acceso a  la plataforma esté
+
+       restringido exclusivamente a alumnos y personal autorizado mediante el correo y
+
+       matrícula institucional.
+
+
+
+
+   ●​ Gestión de Servicios Escolares: Proveer  la credencial  digital  estudiantil,
+
+       consultar el perfil escolar, visualizar el horario de clases personalizado y acceder
+
+        al directorio institucional actualizado.
+
+
+
+
+   ●​ Comunicación Institucional:  Facilitar un canal  oficial y directo de avisos,
+
+       noticias y notificaciones escolares para erradicar rezagos en la comunicación
+
+       interna de la escuela.
+
+
+
+
+   ●​ Control de Permisos  por  Roles:  Administrar  los accesos  y  funciones
+
+       diferenciadas según el perfil del usuario (Alumno, Administrador o Supervisor)
+
+      para el correcto funcionamiento de las herramientas de la comunidad.
+
+
+4. Transferencia de Datos
+
+Sus datos personales son de uso interno y estrictamente institucional para la operación
+
+de la comunidad estudiantil del TecNM Tlalpan. No se realizan transferencias de datos
+
+personales a terceros comerciales  ni externos, salvo aquellos requerimientos de
+
+carácter legal o solicitudes expresas de autoridades educativas competentes.
+
+En caso de reportarse un incidente de esta índole la cuenta será suspendida hasta
+
+nuevo aviso y el alumno responsable será sancionado.
+
+
+
+5. Medidas de Seguridad
+
+
+
+La Institución implementa medidas de seguridad administrativas, técnicas y físicas
+
+razonables para proteger sus datos personales contra daño, pérdida,  alteración,
+
+destrucción o el uso, acceso y tratamiento no autorizado, garantizando el resguardo
+
+seguro de la información en las bases de datos y servidores autorizados.
+
+
+
+
+Todo  lo anterior mencionado será supervisado, investigado y sancionado en caso de
+
+ser necesario, los alumnos no podrán hacer uso de la aplicación en caso de ser
+
+suspendido, ser dado de baja o haber concluido satisfactoriamente su formación en la
+
+institución.
+
+6. Vigencia, Uso Autorizado y Suspensión de
+Cuentas
+
+
+
+El acceso y uso de la aplicación CONECTA-ITT está estrictamente vinculado a la
+
+condición de activo dentro de la institución.
+
+
+
+
+   ●​ El uso de  la plataforma está sujeto a las normativas de conducta escolar.
+
+      Cualquier intento de vulneración de seguridad, suplantación de identidad o uso
+
+      indebido de  las herramientas administrativas por parte de un usuario será
+
+       investigado y sancionado conforme a  los reglamentos internos del TecNM
+
+       Tlalpan.
+
+
+
+
+   ●​ Las cuentas de usuario serán desactivadas o suspendidas de manera temporal
+
+     o definitiva en caso de baja escolar, suspensión temporal, o al haber concluido
+
+       satisfactoriamente la formación académica en la institución.
+
+7. Derechos ARCO (Acceso, Rectificación,
+Cancelación y Oposición)
+
+
+
+Usted tiene derecho en todo momento a conocer qué datos tenemos de su persona,
+
+para qué los utilizamos y las condiciones del uso que les damos (Acceso). Asimismo,
+
+es su derecho solicitar la corrección de su información personal en caso de estar
+
+desactualizada, inexacta o incompleta (Rectificación); que la eliminemos de nuestros
+
+registros cuando considere que la misma no está siendo utilizada adecuadamente
+
+(Cancelación),  así como oponerse  al uso de sus datos para  fines  específicos
+
+(Oposición).
+
+Para el ejercicio de cualquiera de los derechos ARCO, el usuario podrá presentar su
+
+solicitud formal ante el departamento administrativo o de sistemas correspondiente del
+
+TecNM Tlalpan.
+
+
+8. Cambios al Aviso de Privacidad
+
+
+
+El presente aviso de privacidad puede sufrir modificaciones, cambios o actualizaciones
+
+derivadas de nuevos requerimientos legales o de mejoras en la arquitectura de la
+
+Aplicación. Cualquier modificación sustancial será notificada a través de la propia
+
+Aplicación o mediante los canales de comunicación oficiales de la Institución.

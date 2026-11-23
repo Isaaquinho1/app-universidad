@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:conecta_itt/institutional_auth/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -14,20 +15,47 @@ class LegalDocumentRepository {
     );
 
     if (response is! List) {
-      return const [];
+      throw StateError('Catálogo legal no disponible.');
     }
 
-    return response
+    final documents = response
         .whereType<Map>()
         .map(
           (row) => LegalDocument.fromSupabase(Map<String, dynamic>.from(row)),
         )
-        .where(
-          (document) =>
-              document.id.isNotEmpty &&
-              document.version.isNotEmpty &&
-              (document.isTerms || document.isPrivacy),
-        )
         .toList(growable: false);
+
+    const assets = <String, String>{
+      'terms': 'assets/legal/terms.txt',
+      'privacy': 'assets/legal/privacy.txt',
+      'integral_notice': 'assets/legal/integral_notice.txt',
+    };
+
+    if (documents.length != assets.length ||
+        documents.map((document) => document.type).toSet().length !=
+            assets.length) {
+      throw StateError('Se requieren los tres documentos legales.');
+    }
+
+    for (final document in documents) {
+      final assetPath = assets[document.type];
+
+      if (assetPath == null ||
+          document.id.isEmpty ||
+          document.version.isEmpty ||
+          document.status != 'active') {
+        throw StateError('Documentos legales pendientes de publicación.');
+      }
+
+      final bundledContent = await rootBundle.loadString(assetPath);
+
+      if (bundledContent != document.content) {
+        throw StateError(
+          'El texto legal no coincide con la versión publicada.',
+        );
+      }
+    }
+
+    return documents;
   }
 }

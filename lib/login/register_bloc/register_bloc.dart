@@ -109,6 +109,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterCareerChanged>(_onCareerChanged);
     on<RegisterSemesterChanged>(_onSemesterChanged);
     on<RegisterGroupChanged>(_onGroupChanged);
+    on<RegisterStaffDepartmentChanged>(_onStaffDepartmentChanged);
+    on<RegisterStaffPositionChanged>(_onStaffPositionChanged);
     on<RegisterTermsAcceptanceChanged>(_onTermsAcceptanceChanged);
     on<RegisterPasswordChanged>(_onPasswordChanged);
     on<RegisterPasswordConfirmationChanged>(_onPasswordConfirmationChanged);
@@ -177,6 +179,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       state.copyWith(
         email: email,
         emailType: institutionalEmail.type,
+        staffDepartment:
+            institutionalEmail.type.isStaff ? state.staffDepartment : '',
+        staffPosition:
+            institutionalEmail.type.isStaff ? state.staffPosition : '',
         controlNumber: institutionalEmail.controlNumber,
         clearControlNumber: institutionalEmail.controlNumber == null,
         clearCareerId: changingToNonStudent,
@@ -190,6 +196,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                 : state.groupsStatus,
         status: FormzSubmissionStatus.initial,
         clearErrorMessage: true,
+        clearDuplicateEmail: true,
       ),
     );
   }
@@ -241,6 +248,34 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       state.copyWith(
         groupId: event.groupId,
         clearGroupId: event.groupId == null,
+        status: FormzSubmissionStatus.initial,
+        clearErrorMessage: true,
+      ),
+    );
+  }
+
+  void _onStaffDepartmentChanged(
+    RegisterStaffDepartmentChanged event,
+    Emitter<RegisterState> emit,
+  ) {
+    _emitValidated(
+      emit,
+      state.copyWith(
+        staffDepartment: event.department,
+        status: FormzSubmissionStatus.initial,
+        clearErrorMessage: true,
+      ),
+    );
+  }
+
+  void _onStaffPositionChanged(
+    RegisterStaffPositionChanged event,
+    Emitter<RegisterState> emit,
+  ) {
+    _emitValidated(
+      emit,
+      state.copyWith(
+        staffPosition: event.position,
         status: FormzSubmissionStatus.initial,
         clearErrorMessage: true,
       ),
@@ -410,8 +445,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     final termsDocument = submittedState.termsDocument;
     final privacyDocument = submittedState.privacyDocument;
+    final integralNoticeDocument = submittedState.integralNoticeDocument;
 
-    if (termsDocument == null || privacyDocument == null) {
+    if (termsDocument == null ||
+        privacyDocument == null ||
+        integralNoticeDocument == null) {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
@@ -440,6 +478,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           'privacyAccepted': true,
           'termsDocumentVersion': termsDocument.version,
           'privacyDocumentVersion': privacyDocument.version,
+          'integralNoticeAccepted': submittedState.termsAccepted,
+          'integralNoticeDocumentVersion': integralNoticeDocument.version,
           'legalAcceptedAt': legalAcceptedAt,
           if (institutionalEmail.controlNumber != null)
             'controlNumber': institutionalEmail.controlNumber,
@@ -453,6 +493,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           if (institutionalEmail.type.isStaff) ...{
             'profileCompleted': true,
             'staffApprovalPending': true,
+            'staffDepartment': submittedState.staffDepartment.trim(),
+            'staffPosition': submittedState.staffPosition.trim(),
           },
         },
       );
@@ -464,10 +506,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         ),
       );
     } on SignUpWithPasswordFailure catch (error, stackTrace) {
+      final message = _registrationErrorMessage(error);
+      final isDuplicate = message.startsWith(
+        'No pudimos confirmar el registro con este correo.',
+      );
+
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: _registrationErrorMessage(error),
+          valid: isDuplicate ? false : state.valid,
+          errorMessage: message,
+          duplicateEmail: isDuplicate ? email.normalizedValue : null,
+          clearDuplicateEmail: !isDuplicate,
         ),
       );
       addError(error, stackTrace);
@@ -521,6 +571,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   static bool _validateState(RegisterState state) {
+    if (state.duplicateEmail != null &&
+        state.duplicateEmail == state.email.normalizedValue) {
+      return false;
+    }
+
     final namesValid = _isValidNamePart(state.givenNames);
     final firstSurnameValid = _isValidNamePart(state.firstSurname);
     final secondSurnameValid = _isValidNamePart(state.secondSurname);
@@ -545,7 +600,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
 
     if (state.isStaff) {
-      return true;
+      final department = state.staffDepartment.trim();
+      final position = state.staffPosition.trim();
+
+      return department.length >= 2 &&
+          department.length <= 120 &&
+          position.length >= 2 &&
+          position.length <= 120;
     }
 
     if (!state.isStudent || state.careerId == null || state.semester == null) {
@@ -567,11 +628,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   static String _registrationErrorMessage(SignUpWithPasswordFailure failure) {
     final message = failure.error.toString().toLowerCase();
 
+    if (message.contains('registration_unverified')) {
+      return 'No pudimos confirmar la creación de la cuenta. '
+          'Si ya tienes una cuenta, inicia sesión o recupera '
+          'tu contraseña.';
+    }
+
     if (message.contains('already registered') ||
         message.contains('user already exists') ||
         message.contains('email already exists') ||
         message.contains('already been registered')) {
-      return 'Ya existe una cuenta asociada a este correo institucional. '
+      return 'No pudimos confirmar el registro con este correo. '
           'Inicia sesión o recupera tu contraseña.';
     }
 

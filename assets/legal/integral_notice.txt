@@ -1,0 +1,434 @@
+CONECTA-ITT
+
+         AVISO DE PRIVACIDAD INTEGRAL
+
+          Plataforma Digital de Comunicación y Servicios Estudiantiles
+
+              Tecnológico Nacional de México — Campus Tlalpan
+
+
+
+CAPÍTULO I. DISPOSICIONES GENERALES
+
+ARTÍCULO 1. Objeto del Aviso de Privacidad
+
+El presente Aviso de Privacidad Integral tiene como finalidad informar a los usuarios de
+
+la  plataforma CONECTA-ITT  sobre  la  recopilación,  utilización,  almacenamiento,
+
+conservación, protección y, en su caso, comunicación de sus datos personales.
+
+CONECTA-ITT es una aplicación móvil desarrollada como proyecto de residencia
+
+profesional, cuyo propósito es modernizar y centralizar la comunicación institucional,
+
+facilitando a  la comunidad educativa  el acceso a noticias, comunicados, horarios
+
+académicos, mapas escolares,  servicios  digitales y mecanismos de  identificación
+
+estudiantil.
+
+El tratamiento de datos personales deberá realizarse conforme a los principios de
+
+licitud, finalidad, lealtad, consentimiento cuando corresponda, calidad, proporcionalidad,
+
+información y responsabilidad previstos en la legislación aplicable.
+
+ARTÍCULO 2. Identidad y domicilio del responsable
+
+El responsable del tratamiento de datos personales será la persona física, moral o
+
+institución  pública  que  determine  las  finalidades  y  los medios  esenciales  del
+
+tratamiento.
+
+
+
+
+
+                                                                            1
+
+Para la operación institucional de CONECTA-ITT deberán completarse los siguientes
+
+datos:
+
+   ●​ Responsable: [DENOMINACIÓN OFICIAL POR CONFIRMAR].
+
+   ●​ Domicilio: Calle Tetenco 35 Tlalpan, México City.
+
+   ●​ Unidad responsable o de transparencia: Tecnológico Nacional de México.
+
+   ●​ Correo electrónico: cyd_tlalpan@tecnm.mx
+
+   ●​ Medio de atención:Instituto Tecnologico de Tlalpan.
+
+La titularidad de los derechos de autor del software no determina, por sí misma, la
+responsabilidad sobre el tratamiento de datos personales.
+
+CAPÍTULO II. DATOS PERSONALES Y FINALIDADES
+
+ARTÍCULO 3. Categorías de datos personales
+
+Para proporcionar las funcionalidades de CONECTA-ITT podrán tratarse los siguientes
+
+datos, de acuerdo con los servicios habilitados:
+
+I. Datos de identificación: nombre completo, fotografía, matrícula o identificador
+
+institucional y correo electrónico.
+
+II.  Datos  académicos:  carrera,  semestre,  grupo,  horario  escolar  y  condición
+
+institucional del usuario.
+
+III. Datos de acceso: identificador de cuenta, rol autorizado, estado de aprobación y
+
+datos técnicos necesarios para la autenticación.
+
+IV.  Datos  de  interacción:  reacciones  realizadas  a  noticias  y  comunicados
+
+institucionales.
+
+V. Datos de verificación: identificadores y estados asociados a la credencial digital y
+
+su código QR.
+
+No deberán recopilar datos que resulten innecesarios para las finalidades autorizadas.
+
+
+
+
+
+2
+
+ARTÍCULO 4. Finalidades primarias
+
+El tratamiento de los datos personales tendrá las siguientes finalidades:
+
+    1.​ Registrar y autenticar a los usuarios.
+
+    2.​ Verificar manualmente su pertenencia a la comunidad institucional.
+
+    3.​ Asignar y administrar permisos según el rol autorizado.
+
+    4.​ Proporcionar acceso a noticias, comunicados y convocatorias.
+
+    5.​ Permitir la consulta individual de horarios académicos.
+
+    6.​ Facilitar la ubicación de instalaciones escolares.
+
+    7.​ Mostrar información relativa a servicios y trámites.
+
+    8.​ Generar y verificar credenciales digitales.
+
+    9.​ Prevenir accesos no autorizados.
+
+   10.​Atender solicitudes relacionadas con la cuenta y los servicios.
+
+ARTÍCULO 5. Finalidades secundarias
+
+Cualquier  tratamiento  adicional, como encuestas no  indispensables,  estadísticas
+
+identificables o comunicaciones promocionales, deberá evaluarse por separado.
+
+Cuando corresponda, se proporcionarán mecanismos para que el titular pueda aceptar
+
+o rechazar  las  finalidades secundarias  sin que  ello afecte injustificadamente  los
+
+servicios esenciales.
+
+ARTÍCULO 6. Datos personales sensibles
+
+CONECTA-ITT no  contempla, como  parte de  sus  funcionalidades  descritas,  la
+
+recopilación de datos relativos a salud, creencias religiosas, orientación sexual u otras
+
+categorías de datos personales sensibles.
+
+Si  posteriormente se  incorporan  funcionalidades que requieran esta información,
+
+deberá realizarse una evaluación jurídica previa, actualizar  el aviso y cumplir los
+
+requisitos aplicables.
+
+
+
+
+
+3
+
+La fotografía de identificación no deberá utilizarse para reconocimiento biométrico sin
+
+una evaluación específica del tratamiento y sus obligaciones.
+
+CAPÍTULO III. REGISTRO Y VALIDACIÓN DE IDENTIDAD
+
+ARTÍCULO 7. Registro institucional
+
+El registro se realizará mediante los mecanismos de identificación establecidos por la
+
+plataforma.
+
+La dirección de correo institucional servirá como elemento inicial de identificación, pero
+
+no constituirá por sí sola prueba suficiente de la situación académica o laboral del
+
+solicitante.
+
+ARTÍCULO 8. Aprobación administrativa
+
+Debido a que CONECTA-ITT no cuenta con acceso directo a los registros oficiales de la
+
+institución, las solicitudes de registro estarán sujetas a verificación y aprobación por
+
+personal autorizado.
+
+Los  administradores deberán  utilizar  únicamente  la  información  necesaria  para
+
+comprobar la identidad y el rol correspondiente.
+
+ARTÍCULO 9. Exactitud y actualización
+
+Los usuarios deberán proporcionar información verídica y comunicar las modificaciones
+
+necesarias para mantener sus datos actualizados.
+
+La información incorrecta podrá ser sometida a revisión mediante procedimientos
+
+institucionales.
+
+
+
+
+
+4
+
+CAPÍTULO IV. CREDENCIAL DIGITAL
+
+ARTÍCULO 10. Finalidad
+
+La credencial digital permitirá identificar al usuario y consultar la validez de su condición
+
+institucional mediante mecanismos electrónicos.
+
+Su utilización como medio oficial de acceso físico al campus estará condicionada a la
+
+autorización expresa de la institución.
+
+ARTÍCULO 11. Protección de los datos de la credencial
+
+La credencial podrá contener los datos de identificación necesarios para su finalidad,
+
+tales como nombre, fotografía, matrícula, carrera y estado institucional.
+
+El código QR deberá  utilizar un mecanismo de  verificación que  evite exponer
+
+información personal innecesaria.
+
+ARTÍCULO 12. Acceso a la información de validación
+
+El personal  verificador únicamente podrá consultar los datos indispensables para
+
+determinar la validez de la credencial.
+
+La plataforma no deberá permitir el acceso indiscriminado a expedientes académicos,
+
+información privada o registros personales.
+
+
+
+
+
+5
+
+CAPÍTULO V. SEGURIDAD Y CONFIDENCIALIDAD
+
+ARTÍCULO 13. Medidas de seguridad
+
+El responsable deberá establecer medidas administrativas, físicas y técnicas para
+
+proteger los datos personales frente a pérdida, alteración, destrucción, divulgación o
+
+acceso no autorizado.
+
+Entre las medidas que deberán evaluarse e implementarse se encuentran:
+
+   ●​ Control de acceso basado en roles.
+
+   ●​ Restricción de consultas a datos personales.
+
+   ●​ Autenticación segura.
+
+   ●​ Protección de las comunicaciones.
+
+   ●​ Registro y revisión de operaciones administrativas.
+
+   ●​ Procedimientos de respuesta a incidentes.
+
+   ●​ Gestión de respaldos y recuperación.
+
+   ●​ Revocación de accesos cuando corresponda.
+
+ARTÍCULO 14. Confidencialidad
+
+Toda persona que tenga acceso autorizado a datos personales deberá mantener su
+
+confidencialidad y  utilizarlos exclusivamente para las funciones que le hayan sido
+
+asignadas.
+
+Esta obligación subsistirá en los términos legales y contractuales correspondientes,
+
+incluso cuando concluya su participación en la operación de la plataforma.
+
+ARTÍCULO 15. Incidentes de seguridad
+
+Cuando se detecte una posible vulneración de seguridad, los responsables deberán
+
+activar los procedimientos de evaluación, contención, documentación y atención del
+
+incidente.
+
+
+
+
+
+6
+
+Las  notificaciones a  las personas afectadas y a las autoridades competentes se
+
+realizarán cuando resulten exigibles conforme a la legislación aplicable.
+
+CAPÍTULO VI. ALMACENAMIENTO Y COMUNICACIÓN DE DATOS
+
+ARTÍCULO 16. Servicios tecnológicos
+
+CONECTA-ITT  utilizará  servicios  tecnológicos de almacenamiento  y  gestión de
+
+información cuya identificación contractual deberá confirmarse antes de la publicación
+
+definitiva de este aviso.
+
+El responsable deberá verificar las condiciones de tratamiento, alojamiento, seguridad y
+
+acceso del proveedor tecnológico.
+
+ARTÍCULO 17. Transferencias y remisiones
+
+La comunicación de datos personales a otras entidades se realizará únicamente
+
+cuando exista una finalidad legítima y se cumplan las disposiciones legales aplicables.
+
+Se  distinguirá  entre  las  transferencias a otros responsables y  las remisiones a
+
+proveedores que traten información por cuenta del responsable.
+
+Las transferencias que requieran consentimiento deberán sujetarse  al mecanismo
+
+correspondiente.
+
+ARTÍCULO 18. Conservación de información
+
+Los datos personales se conservarán durante el tiempo necesario para cumplir las
+
+finalidades autorizadas y las obligaciones legales aplicables.
+
+Los periodos concretos de conservación deberán establecerse mediante una política
+
+institucional documentada.
+
+Cuando  proceda,   la  información  deberá  bloquearse  o  suprimirse  mediante
+
+procedimientos seguros.
+
+
+
+
+7
+
+CAPÍTULO VII. DERECHOS DE LOS TITULARES
+
+ARTÍCULO 19. Derechos ARCO
+
+Las personas titulares podrán ejercer sus derechos de:
+
+   ●​ Acceso: conocer los datos personales tratados y las condiciones de su
+
+       tratamiento.
+
+   ●​ Rectificación: solicitar la corrección de datos inexactos o incompletos.
+
+   ●​ Cancelación: solicitar la cancelación de información cuando legalmente
+
+      proceda.
+
+   ●​ Oposición: oponerse a determinados tratamientos conforme a las disposiciones
+
+       aplicables.
+
+ARTÍCULO 20. Procedimiento de ejercicio
+
+Las solicitudes deberán presentarse ante la unidad, departamento o medio designado
+
+por el responsable.
+
+Canal de recepción: [PENDIENTE].
+
+Datos de contacto: [PENDIENTE].
+
+Procedimiento de identificación: [PENDIENTE].
+
+Plazos y medios de respuesta: los previstos en el régimen jurídico aplicable.
+
+No podrán exigirse requisitos adicionales que restrinjan injustificadamente el ejercicio
+
+de estos derechos.
+
+ARTÍCULO 21. Limitación del tratamiento y consentimiento
+
+Cuando legalmente proceda, los titulares podrán solicitar la limitación de determinados
+
+usos de su información o revocar el consentimiento previamente otorgado.
+
+La procedencia y los efectos de estas solicitudes dependerán de la base jurídica que
+
+sustente el tratamiento.
+
+
+8
+
+CAPÍTULO VIII. MODIFICACIONES Y VIGENCIA
+
+ARTÍCULO 22. Actualizaciones
+
+El presente Aviso de Privacidad podrá modificarse cuando existan cambios normativos,
+
+administrativos,  tecnológicos o  funcionales que  afecten  el  tratamiento de datos
+
+personales.
+
+Las modificaciones deberán comunicarse mediante los medios oficiales que establezca
+
+el responsable.
+
+ARTÍCULO 23. Disponibilidad
+
+El Aviso de Privacidad Integral deberá mantenerse disponible para su consulta dentro
+
+de CONECTA-ITT, especialmente durante el registro de usuarios y desde una sección
+
+permanente de privacidad.
+
+ARTÍCULO 24. Entrada en vigor
+
+El presente aviso entrará en vigor únicamente cuando se complete la información
+
+pendiente, se determine  el responsable del tratamiento y sea aprobado por  las
+
+personas o autoridades competentes.
+
+
+
+
+
+9
