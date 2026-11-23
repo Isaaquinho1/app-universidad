@@ -21,7 +21,12 @@ abstract final class InstitutionalCareers {
     name: 'Ingeniería Electrónica',
   );
 
-  static const values = <InstitutionalCareer>[itic, igem, ielc];
+  static const ladm = InstitutionalCareer(
+    id: 'ladm-2010-234',
+    name: 'Licenciatura en Administración',
+  );
+
+  static const values = <InstitutionalCareer>[itic, igem, ielc, ladm];
 
   static String labelFor(String id) {
     for (final career in values) {
