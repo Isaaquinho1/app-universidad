@@ -4,7 +4,6 @@ import 'package:conecta_itt/l10n/l10n.dart';
 import 'package:conecta_itt/services/services.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'dart:async';
 import 'package:conecta_itt/app/app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,23 +51,15 @@ class _ServicesViewState extends State<ServicesView>
   late final PageController _pageController;
   late final PageController _bannersPageController;
   Timer? _autoScrollTimer;
-  Timer? _resumeScrollTimer;
-  bool _isUserInteracting = false;
   bool _isScreenInFocus = true;
 
-  final List<String> _categories = [
-    "Campus",
-    "Servicios digitales · Próximamente",
-  ];
+  final List<String> _categories = ["Campus", "Servicios digitales"];
   int _selectedIndex = 0;
   int _currentBannerIndex = 0;
 
   late List<ImportantServiceModel> _importantServices;
   late List<CommunityModel> _communities;
   late List<BannerModel> _banners;
-  late List<ServiceTileModel> _mainServices;
-  late List<HorizontalServiceModel> _studentLifeServices;
-  late List<WideServiceModel> _usefulServices;
 
   @override
   void initState() {
@@ -90,17 +81,11 @@ class _ServicesViewState extends State<ServicesView>
     final important = ServicesConfig.getImportantServices(context);
     final communities = ServicesConfig.getCommunities(context);
     final banners = ServicesConfig.getBanners(context);
-    final mainServices = ServicesConfig.getMainServices(context);
-    final studentLife = ServicesConfig.getStudentLifeServices(context);
-    final useful = ServicesConfig.getUsefulServices(context);
 
     // Assign without using final to avoid LateInitializationError on rebuilds
     _importantServices = important;
     _communities = communities;
     _banners = banners;
-    _mainServices = mainServices;
-    _studentLifeServices = studentLife;
-    _usefulServices = useful;
   }
 
   @override
@@ -126,7 +111,7 @@ class _ServicesViewState extends State<ServicesView>
   void _startAutoScroll() {
     _autoScrollTimer?.cancel();
     _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!mounted || _isUserInteracting || !_isScreenInFocus) return;
+      if (!mounted || !_isScreenInFocus) return;
 
       if (_banners.isEmpty) return;
 
@@ -152,18 +137,6 @@ class _ServicesViewState extends State<ServicesView>
     _autoScrollTimer = null;
   }
 
-  void _pauseAutoScroll() {
-    _isUserInteracting = true;
-    _resumeScrollTimer?.cancel();
-    _resumeScrollTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        setState(() {
-          _isUserInteracting = false;
-        });
-      }
-    });
-  }
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -171,24 +144,10 @@ class _ServicesViewState extends State<ServicesView>
     _bannersPageController.dispose();
     _pageController.dispose();
     _stopAutoScroll();
-    _resumeScrollTimer?.cancel();
     super.dispose();
   }
 
   void _onCategorySelected(int index) {
-    if (index == 1) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Servicios digitales estará disponible próximamente.',
-            ),
-          ),
-        );
-      return;
-    }
-
     if (_selectedIndex == index) return;
 
     setState(() {
@@ -468,173 +427,95 @@ class _ServicesViewState extends State<ServicesView>
   Widget _buildDigitalUniversityTab() {
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.only(
-        top: AppSpacing.md,
-        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.xlg,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xlg + MediaQuery.paddingOf(context).bottom,
       ),
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 202,
-              child: GestureDetector(
-                onTap: _pauseAutoScroll,
-                onPanDown: (_) => _pauseAutoScroll(),
-                child: PageView.builder(
-                  controller: _bannersPageController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _banners.length,
-                  itemBuilder: (context, index) {
-                    final banner = _banners[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                      ),
-                      child: VerticalBanner(
-                        title: banner.title,
-                        description: banner.description ?? '',
-                        iconData: banner.iconData,
-                        color: banner.color,
-                        action: banner.action,
-                        onTap:
-                            () =>
-                                ServiceUtils.navigateToService(context, banner),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _banners.length,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        index == _currentBannerIndex
-                            ? Theme.of(context).extension<AppColors>()!.primary
-                            : Theme.of(context)
-                                .extension<AppColors>()!
-                                .deactive
-                                .withValues(alpha: 0.3),
-                  ),
-                ),
-              ),
-            ),
-          ],
+        Text(
+          'Servicios digitales',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacing.xlg),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: const SectionHeader(title: 'Servicios principales'),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: LayoutGrid(
-            autoPlacement: AutoPlacement.rowDense,
-            columnSizes: List.filled(4, 1.fr),
-            rowSizes: List.generate(
-              (_mainServices.length / 4).ceil(),
-              (_) => auto,
-            ),
-            columnGap: AppSpacing.md,
-            rowGap: AppSpacing.sm,
-            children:
-                _mainServices
-                    .map(
-                      (service) => ServiceTile(
-                        title: service.title,
-                        iconData: service.iconData,
-                        color: service.color,
-                        onTap:
-                            () => ServiceUtils.navigateToService(
-                              context,
-                              service,
-                            ),
-                      ),
-                    )
-                    .toList(),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Consulta los recursos institucionales del campus.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xlg),
-              child: const SectionHeader(title: 'Vida estudiantil'),
+        Card(
+          elevation: 0,
+          color: Theme.of(context).colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                child: Icon(
+                  Icons.contact_phone_rounded,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+              title: const Text(
+                'Directorio institucional',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              subtitle: const Padding(
+                padding: EdgeInsets.only(top: AppSpacing.xs),
+                child: Text(
+                  'Consulta las áreas administrativas, '
+                  'responsables y correos de contacto del campus.',
+                ),
+              ),
+              trailing: const Icon(Icons.open_in_new_rounded),
+              onTap: () async {
+                try {
+                  final opened = await launchUrlString(
+                    'https://tlalpan.tecnm.mx/directorio',
+                    mode: LaunchMode.externalApplication,
+                  );
+                  if (opened) return;
+                } catch (_) {
+                  // Present a friendly message if the browser cannot open.
+                }
+
+                if (!mounted) return;
+
+                await showDialog<void>(
+                  context: context,
+                  builder:
+                      (dialogContext) => AlertDialog(
+                        title: const Text('Directorio no disponible'),
+                        content: const Text(
+                          'No fue posible abrir el directorio oficial. '
+                          'Comprueba tu conexión a internet e inténtalo '
+                          'nuevamente.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            child: const Text('Entendido'),
+                          ),
+                        ],
+                      ),
+                );
+              },
             ),
-            const SizedBox(height: AppSpacing.md),
-            _buildHorizontalCardsList(),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.xlg),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SectionHeader(title: 'Útil'),
-              const SizedBox(height: AppSpacing.lg),
-              _buildWideCardsList(),
-            ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHorizontalCardsList() {
-    return SizedBox(
-      height: 140,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-        itemCount: _studentLifeServices.length,
-        itemBuilder: (context, index) {
-          final service = _studentLifeServices[index];
-          return HorizontalServiceCard(
-            title: service.title,
-            description: service.description ?? '',
-            iconData: service.iconData,
-            color: service.color,
-            onTap: () => ServiceUtils.navigateToService(context, service),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildWideCardsList() {
-    return Column(
-      children:
-          _usefulServices.asMap().entries.map((entry) {
-            final index = entry.key;
-            final service = entry.value;
-
-            return Column(
-              children: [
-                WideServiceCard(
-                  title: service.title,
-                  description: service.description ?? '',
-                  iconData: service.iconData,
-                  color: service.color,
-                  onTap: () => ServiceUtils.navigateToService(context, service),
-                ),
-                if (index < _usefulServices.length - 1)
-                  const SizedBox(height: AppSpacing.sm),
-              ],
-            );
-          }).toList(),
     );
   }
 }

@@ -173,7 +173,7 @@ class ServicesConfig {
             'Consulta áreas administrativas y datos de contacto del campus.',
         iconData: Icons.contact_phone_rounded,
         color: colors.colorful01,
-        url: _campusBaseUrl,
+        url: 'https://tlalpan.tecnm.mx/directorio',
       ),
       WideServiceModel(
         title: 'Convocatoria nuevo ingreso',
