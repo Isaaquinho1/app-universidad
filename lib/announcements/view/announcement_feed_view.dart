@@ -1300,7 +1300,7 @@ class _FeaturedBadge extends StatelessWidget {
     return _FeedBadge(
       label: 'Destacada',
       icon: Icons.star_rounded,
-      backgroundColor: Colors.amber.shade800,
+      backgroundColor: const Color(0xFF8D5000),
       foregroundColor: Colors.white,
     );
   }
@@ -1368,7 +1368,7 @@ class _ReceiptBadge extends StatelessWidget {
             ? (
               'Editado',
               Icons.edit_notifications_outlined,
-              Colors.orange.shade700,
+              const Color(0xFF9A4100),
               Colors.white,
               Colors.transparent,
             )
@@ -1391,13 +1391,15 @@ class _ReceiptBadge extends StatelessWidget {
                 'Leído',
                 Icons.done_all,
                 theme.colorScheme.surface,
-                Colors.blue.shade700,
+                theme.brightness == Brightness.dark
+                    ? Colors.blue.shade200
+                    : Colors.blue.shade700,
                 Colors.blue.shade200,
               ),
               AnnouncementReceiptStatus.confirmed => (
                 'Confirmado',
                 Icons.verified_outlined,
-                Colors.green.shade700,
+                Colors.green.shade800,
                 Colors.white,
                 Colors.transparent,
               ),
@@ -1463,7 +1465,7 @@ class _PriorityBadge extends StatelessWidget {
       ),
       AnnouncementPriority.high => (
         'Importante',
-        Colors.amber.shade900,
+        const Color(0xFF8D5000),
         Colors.white,
         Colors.transparent,
       ),

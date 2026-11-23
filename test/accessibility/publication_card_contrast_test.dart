@@ -194,7 +194,7 @@ void main() {
           expect(find.text('Comunidad'), findsOneWidget);
           expect(
             _background(tester.element(find.text('Destacada'))),
-            Colors.amber.shade800,
+            const Color(0xFF8D5000),
           );
         }
         if (scenario == 'pdf') {
@@ -210,7 +210,13 @@ void main() {
           expect(cover.height, closeTo(143, 0.01));
         }
         final card = tester.widget<Card>(find.byType(Card));
-        expect(card.color, theme.colorScheme.surface);
+        expect(
+          card.color,
+          dark
+              ? (theme.extension<AppColors>()?.surfaceHigh ??
+                  theme.colorScheme.surfaceContainerHigh)
+              : theme.colorScheme.surface,
+        );
         if (!dark) {
           expect(card.color, Colors.white);
           expect(
@@ -294,10 +300,13 @@ void main() {
       expect(fillByStatus['Nuevo'], theme.colorScheme.primaryContainer);
       expect(fillByStatus['Visto'], theme.colorScheme.secondaryContainer);
       expect(fillByStatus['Leído'], theme.colorScheme.surface);
-      expect(fillByStatus['Editado'], Colors.orange.shade700);
-      expect(fillByStatus['Confirmado'], Colors.green.shade700);
+      expect(fillByStatus['Editado'], const Color(0xFF9A4100));
+      expect(fillByStatus['Confirmado'], Colors.green.shade800);
       expect(fillByStatus['Confirmado'], isNot(fillByStatus['Editado']));
-      expect(fillByPriority[AnnouncementPriority.high], Colors.amber.shade900);
+      expect(
+        fillByPriority[AnnouncementPriority.high],
+        const Color(0xFF8D5000),
+      );
       expect(fillByPriority[AnnouncementPriority.urgent], Colors.red.shade700);
       expect(
         fillByPriority[AnnouncementPriority.high],
