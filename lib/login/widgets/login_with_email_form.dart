@@ -1,9 +1,39 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/login/login.dart';
+
+void _showLoginNotice(BuildContext context, String message) {
+  final messenger = ScaffoldMessenger.maybeOf(context);
+
+  if (messenger != null) {
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+    return;
+  }
+
+  showCupertinoDialog<void>(
+    context: context,
+    builder: (dialogContext) {
+      return CupertinoAlertDialog(
+        title: const Text('Conecta ITT'),
+        content: Text(message),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: const Text('Entendido'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 class LoginWithEmailForm extends StatelessWidget {
   const LoginWithEmailForm({super.key});
@@ -83,9 +113,7 @@ class LoginWithEmailForm extends StatelessWidget {
         }
 
         if (state.biometricMessage != null) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(state.biometricMessage!)));
+          _showLoginNotice(context, state.biometricMessage!);
         }
 
         if (state.status.isSuccess) {
@@ -94,15 +122,10 @@ class LoginWithEmailForm extends StatelessWidget {
         }
 
         if (state.status.isFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.errorMessage ?? 'No fue posible iniciar sesión.',
-                ),
-              ),
-            );
+          _showLoginNotice(
+            context,
+            state.errorMessage ?? 'No fue posible iniciar sesión.',
+          );
         }
       },
       child: const _LoginContent(),
