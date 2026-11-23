@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/repositories/admin_profile_photo_repository.dart';
 import 'package:conecta_itt/institutional_profile/services/profile_photo_review_badge_controller.dart';
+import 'package:conecta_itt/institutional_profile/repositories/student_profile_photo_repository.dart';
+import 'package:conecta_itt/institutional_profile/services/student_photo_approval_badge_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:conecta_itt/navigation/view/scaffold_navigation_shell.dart';
@@ -52,6 +54,17 @@ class _AnimatedBottomNavigationBarState
       );
     } else {
       badge.unbind();
+    }
+
+    final studentBadge = StudentPhotoApprovalBadgeController.instance;
+
+    if (profile != null && profile.isStudent) {
+      studentBadge.bind(
+        userId: profile.uid,
+        repository: context.read<StudentProfilePhotoRepository>(),
+      );
+    } else {
+      studentBadge.unbind();
     }
   }
 
@@ -163,53 +176,82 @@ class AppBottomNavigationBar extends StatelessWidget {
                       SizedBox(
                         width: 48,
                         height: 30,
-                        child: ValueListenableBuilder<int>(
+                        child: ValueListenableBuilder<bool>(
                           valueListenable:
-                              ProfilePhotoReviewBadgeController
+                              StudentPhotoApprovalBadgeController
                                   .instance
-                                  .unseenCount,
-                          builder: (context, count, _) {
-                            return Stack(
-                              clipBehavior: Clip.none,
-                              alignment: Alignment.center,
-                              children: [
-                                Icon(
-                                  _icons[i],
-                                  size: 23,
-                                  color: selected ? _blue : inactiveColor,
-                                ),
-                                if (i == 2 && count > 0)
-                                  Positioned(
-                                    top: -5,
-                                    right: -3,
-                                    child: Container(
-                                      constraints: const BoxConstraints(
-                                        minWidth: 20,
-                                        minHeight: 20,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 5,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFDC2626),
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        count > 99 ? '99+' : '$count',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.1,
-                                        ),
-                                      ),
+                                  .hasUnseenApproval,
+                          builder: (context, studentUnseen, _) {
+                            return ValueListenableBuilder<int>(
+                              valueListenable:
+                                  ProfilePhotoReviewBadgeController
+                                      .instance
+                                      .unseenCount,
+                              builder: (context, count, _) {
+                                return Stack(
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      _icons[i],
+                                      size: 23,
+                                      color: selected ? _blue : inactiveColor,
                                     ),
-                                  ),
-                              ],
+
+                                    // Existing administrative counter.
+                                    if (i == 2 && count > 0)
+                                      Positioned(
+                                        top: -5,
+                                        right: -3,
+                                        child: Container(
+                                          constraints: const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFDC2626),
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            count > 99 ? '99+' : '$count',
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                    // Student: approved photo not yet viewed.
+                                    if (i == 3 && studentUnseen)
+                                      Positioned(
+                                        top: -2,
+                                        right: 3,
+                                        child: Container(
+                                          width: 11,
+                                          height: 11,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFDC2626),
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: surfaceColor,
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
                             );
                           },
                         ),
