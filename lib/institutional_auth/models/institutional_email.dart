@@ -14,7 +14,7 @@ class InstitutionalEmail {
   );
 
   static final RegExp _campusStaffPattern = RegExp(
-    r'^[a-z]+(?:[._-][a-z]+)+@tlalpan\.tecnm\.mx$',
+    r'^[a-z0-9]+(?:[._-][a-z0-9]+)*@tlalpan\.tecnm\.mx$',
     caseSensitive: false,
   );
 
