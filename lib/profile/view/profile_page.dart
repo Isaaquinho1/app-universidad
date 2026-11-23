@@ -2,7 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/constants/institutional_careers.dart';
 import 'package:conecta_itt/login/login.dart';
+import 'package:conecta_itt/institutional_profile/services/student_photo_approval_badge_controller.dart';
 import 'package:conecta_itt/profile/widgets/widgets.dart';
+import 'package:conecta_itt/profile/widgets/academic_history_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -78,11 +80,47 @@ class _AuthenticatedProfile extends StatelessWidget {
           SettingsSection(
             title: 'Información académica',
             children: [
-              SettingsItem(
-                text: 'Identificación digital',
-                icon: const Icon(Icons.badge_rounded),
-                onPressed: () => context.go('/profile/student-id'),
-                trailing: const Icon(Icons.chevron_right),
+              ValueListenableBuilder<bool>(
+                valueListenable:
+                    StudentPhotoApprovalBadgeController
+                        .instance
+                        .hasUnseenApproval,
+                builder: (context, hasUnseenApproval, _) {
+                  return SettingsItem(
+                    text: 'Identificación digital',
+                    icon: const Icon(Icons.badge_rounded),
+                    onPressed: () => context.go('/profile/student-id'),
+                    trailing: SizedBox(
+                      width: 34,
+                      height: 32,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          const Icon(Icons.chevron_right),
+                          if (hasUnseenApproval)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                width: 11,
+                                height: 11,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDC2626),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    width: 1.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               const Divider(height: 24, thickness: 0.5),
               _ProfileDataRow(
@@ -114,6 +152,19 @@ class _AuthenticatedProfile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.xlg),
+          if (const bool.fromEnvironment(
+            'CONECTA_ITT_ACADEMIC_HISTORY_ENABLED',
+            defaultValue: false,
+          ))
+            AcademicHistorySection(
+              key: ValueKey(appState.user.id),
+              userId: appState.user.id,
+            ),
+          if (const bool.fromEnvironment(
+            'CONECTA_ITT_ACADEMIC_HISTORY_ENABLED',
+            defaultValue: false,
+          ))
+            const SizedBox(height: AppSpacing.xlg),
         ] else if (profile != null) ...[
           SettingsSection(
             title: 'Información institucional',

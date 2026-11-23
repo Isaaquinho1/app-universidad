@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:conecta_itt/institutional_profile/services/student_photo_approval_badge_controller.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
@@ -28,6 +30,7 @@ class _StudentIdPageState extends State<StudentIdPage>
   int _selectedSide = 0;
   bool _brightnessEnabled = false;
   bool _studentAuthorized = false;
+  bool _acknowledgingPhoto = false;
 
   @override
   void initState() {
@@ -52,6 +55,58 @@ class _StudentIdPageState extends State<StudentIdPage>
       unawaited(_enableMaximumBrightness());
     } else {
       unawaited(_restoreBrightness());
+    }
+  }
+
+  Future<void> _acknowledgeLoadedPhoto(
+    String photoPath,
+    DateTime reviewedAt,
+  ) async {
+    if (!StudentPhotoApprovalBadgeController.enabled ||
+        _acknowledgingPhoto ||
+        !mounted) {
+      return;
+    }
+
+    final currentState = context.read<AppBloc>().state;
+    final profile = currentState.institutionalProfile;
+
+    if (!currentState.status.isLoggedIn ||
+        profile == null ||
+        !profile.isStudent ||
+        !profile.active ||
+        !profile.isProfilePhotoApproved ||
+        profile.uid != currentState.user.id ||
+        profile.photoPath?.trim() != photoPath ||
+        profile.photoReviewedAt != reviewedAt) {
+      return;
+    }
+
+    _acknowledgingPhoto = true;
+
+    try {
+      final confirmed = await context
+          .read<StudentProfilePhotoRepository>()
+          .markApprovedPhotoSeen(photoPath: photoPath, reviewedAt: reviewedAt);
+
+      if (!mounted || !confirmed) {
+        return;
+      }
+
+      final latestState = context.read<AppBloc>().state;
+      final latestProfile = latestState.institutionalProfile;
+
+      if (latestState.status.isLoggedIn &&
+          latestState.user.id == currentState.user.id &&
+          latestProfile?.uid == profile.uid &&
+          latestProfile?.photoPath?.trim() == photoPath &&
+          latestProfile?.photoReviewedAt == reviewedAt) {
+        await StudentPhotoApprovalBadgeController.instance.refresh();
+      }
+    } catch (error) {
+      debugPrint('Photo approval acknowledgement failed: $error');
+    } finally {
+      _acknowledgingPhoto = false;
     }
   }
 
@@ -169,7 +224,12 @@ class _StudentIdPageState extends State<StudentIdPage>
                     onPageChanged:
                         (index) => setState(() => _selectedSide = index),
                     children: [
-                      _StudentIdFront(profile: profile),
+                      _StudentIdFront(
+                        profile: profile,
+                        onApprovedPhotoLoaded: (path, reviewedAt) {
+                          unawaited(_acknowledgeLoadedPhoto(path, reviewedAt));
+                        },
+                      ),
                       _StudentIdBack(profile: profile),
                     ],
                   ),
@@ -911,9 +971,14 @@ Future<bool> _previewAndConfirmPhoto(
 }
 
 class _StudentIdFront extends StatelessWidget {
-  const _StudentIdFront({required this.profile});
+  const _StudentIdFront({
+    required this.profile,
+    required this.onApprovedPhotoLoaded,
+  });
 
   final AppUserProfile profile;
+  final void Function(String photoPath, DateTime reviewedAt)
+  onApprovedPhotoLoaded;
 
   @override
   Widget build(BuildContext context) {
@@ -1001,6 +1066,7 @@ class _StudentIdFront extends StatelessWidget {
                   const SizedBox(height: 20),
                   StudentProfilePhoto(
                     profile: profile,
+                    onApprovedPhotoLoaded: onApprovedPhotoLoaded,
                     initials: _initials(displayName),
                     width: 142,
                     height: 172,

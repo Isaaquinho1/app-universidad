@@ -10,3 +10,5 @@ export 'institutional_subject.dart';
 export 'teacher_assignment.dart';
 export 'teacher_assignment_session.dart';
 export 'teacher_profile_summary.dart';
+export 'student_academic_period_assignment.dart';
+export 'admin_academic_group_offering.dart';

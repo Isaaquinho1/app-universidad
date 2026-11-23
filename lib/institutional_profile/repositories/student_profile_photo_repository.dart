@@ -32,6 +32,37 @@ class StudentProfilePhotoRepository {
   static const outputHeight = 1500;
   static const outputJpegQuality = 88;
 
+  /// True when the student's latest approved photo is not yet acknowledged.
+  Future<bool> hasUnseenApprovedPhoto() async {
+    final response = await _supabaseClient.rpc('get_own_photo_approval_unseen');
+
+    if (response is! bool) {
+      throw StateError('Invalid photo approval badge response.');
+    }
+
+    return response;
+  }
+
+  /// Acknowledges the latest approved photo after viewing the credential.
+  Future<bool> markApprovedPhotoSeen({
+    required String photoPath,
+    required DateTime reviewedAt,
+  }) async {
+    final response = await _supabaseClient.rpc(
+      'mark_own_photo_approval_seen',
+      params: {
+        'p_expected_photo_path': photoPath,
+        'p_expected_reviewed_at': reviewedAt.toUtc().toIso8601String(),
+      },
+    );
+
+    if (response is! bool) {
+      throw StateError('Invalid photo approval acknowledgement.');
+    }
+
+    return response;
+  }
+
   /// Selects, crops and normalizes one institutional photograph.
   ///
   /// Every successful result is a portrait JPEG in 4:5 proportion with
@@ -40,9 +71,10 @@ class StudentProfilePhotoRepository {
     required StudentProfilePhotoSource source,
   }) async {
     final pickedFile = await _imagePicker.pickImage(
-      source: source == StudentProfilePhotoSource.camera
-          ? ImageSource.camera
-          : ImageSource.gallery,
+      source:
+          source == StudentProfilePhotoSource.camera
+              ? ImageSource.camera
+              : ImageSource.gallery,
       imageQuality: 100,
       requestFullMetadata: false,
     );

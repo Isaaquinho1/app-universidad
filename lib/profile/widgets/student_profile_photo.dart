@@ -14,6 +14,7 @@ class StudentProfilePhoto extends StatefulWidget {
     required this.height,
     required this.borderRadius,
     this.initialsStyle,
+    this.onApprovedPhotoLoaded,
     super.key,
   });
 
@@ -24,12 +25,17 @@ class StudentProfilePhoto extends StatefulWidget {
   final BorderRadius borderRadius;
   final TextStyle? initialsStyle;
 
+  /// Informa cuando se decodifica la fotografía aprobada.
+  final void Function(String photoPath, DateTime reviewedAt)?
+  onApprovedPhotoLoaded;
+
   @override
   State<StudentProfilePhoto> createState() => _StudentProfilePhotoState();
 }
 
 class _StudentProfilePhotoState extends State<StudentProfilePhoto> {
   Future<String>? _signedUrlFuture;
+  String? _reportedApprovalKey;
 
   @override
   void initState() {
@@ -41,8 +47,14 @@ class _StudentProfilePhotoState extends State<StudentProfilePhoto> {
   void didUpdateWidget(StudentProfilePhoto oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.profile.photoPath != widget.profile.photoPath) {
-      _loadSignedUrl();
+    if (oldWidget.profile.photoPath != widget.profile.photoPath ||
+        oldWidget.profile.photoReviewedAt != widget.profile.photoReviewedAt ||
+        oldWidget.profile.photoStatus != widget.profile.photoStatus) {
+      _reportedApprovalKey = null;
+
+      if (oldWidget.profile.photoPath != widget.profile.photoPath) {
+        _loadSignedUrl();
+      }
     }
   }
 
@@ -57,6 +69,44 @@ class _StudentProfilePhotoState extends State<StudentProfilePhoto> {
     _signedUrlFuture = context
         .read<StudentProfilePhotoRepository>()
         .createSignedUrl(photoPath, expiresInSeconds: 3600);
+  }
+
+  void _reportApprovedPhotoAfterFrame() {
+    final profile = widget.profile;
+    final path = profile.photoPath?.trim();
+    final reviewedAt = profile.photoReviewedAt;
+
+    if (!profile.isProfilePhotoApproved ||
+        path == null ||
+        path.isEmpty ||
+        reviewedAt == null ||
+        widget.onApprovedPhotoLoaded == null) {
+      return;
+    }
+
+    final key = '$path|${reviewedAt.microsecondsSinceEpoch}';
+
+    if (_reportedApprovalKey == key) {
+      return;
+    }
+
+    _reportedApprovalKey = key;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _reportedApprovalKey != key) {
+        return;
+      }
+
+      final current = widget.profile;
+
+      if (!current.isProfilePhotoApproved ||
+          current.photoPath?.trim() != path ||
+          current.photoReviewedAt != reviewedAt) {
+        return;
+      }
+
+      widget.onApprovedPhotoLoaded?.call(path, reviewedAt);
+    });
   }
 
   @override
@@ -107,7 +157,18 @@ class _StudentProfilePhotoState extends State<StudentProfilePhoto> {
                     height: widget.height,
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
-                    gaplessPlayback: true,
+                    gaplessPlayback: false,
+                    frameBuilder: (
+                      context,
+                      child,
+                      frame,
+                      wasSynchronouslyLoaded,
+                    ) {
+                      if (frame != null) {
+                        _reportApprovedPhotoAfterFrame();
+                      }
+                      return child;
+                    },
                     errorBuilder:
                         (context, error, stackTrace) => _InitialsFallback(
                           initials: widget.initials,
