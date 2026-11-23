@@ -195,7 +195,7 @@ class AppUserProfileRepository {
     final normalizedQuery = query?.trim();
 
     final response = await _supabaseClient.rpc(
-      'search_role_management_profiles',
+      'search_role_management_profiles_with_staff_identity',
       params: {
         'p_query':
             normalizedQuery == null || normalizedQuery.isEmpty

@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/services/view/admin_academic_group_offerings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -153,6 +154,52 @@ class _AdminStudentAcademicManagementPageState
         bottom: false,
         child: Column(
           children: [
+            if (const bool.fromEnvironment(
+              'CONECTA_ITT_ADMIN_GROUP_OFFERINGS_ENABLED',
+              defaultValue: false,
+            ))
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  AppSpacing.sm,
+                ),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.sm,
+                    ),
+                    leading: const Icon(Icons.groups_outlined),
+                    title: const Text(
+                      'Grupos y ofertas',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text(
+                      'Consultar grupos por periodo, carrera y semestre',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () {
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute<void>(
+                          builder:
+                              (_) => const AdminAcademicGroupOfferingsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,

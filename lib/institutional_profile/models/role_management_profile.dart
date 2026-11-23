@@ -11,6 +11,8 @@ class RoleManagementProfile {
     this.email,
     this.displayName,
     this.controlNumber,
+    this.staffDepartmentDeclared,
+    this.staffPositionDeclared,
     this.createdAt,
   });
 
@@ -24,6 +26,8 @@ class RoleManagementProfile {
       staffApprovalPending: row['staff_approval_pending'] as bool? ?? false,
       active: row['active'] as bool? ?? true,
       controlNumber: row['control_number'] as String?,
+      staffDepartmentDeclared: row['staff_department_declared'] as String?,
+      staffPositionDeclared: row['staff_position_declared'] as String?,
       createdAt: _readDateTime(row['created_at']),
     );
   }
@@ -36,6 +40,10 @@ class RoleManagementProfile {
   final bool staffApprovalPending;
   final bool active;
   final String? controlNumber;
+
+  /// Self-declared institutional information, not verified.
+  final String? staffDepartmentDeclared;
+  final String? staffPositionDeclared;
   final DateTime? createdAt;
 
   /// Existing superAdmin accounts are intentionally immutable in the

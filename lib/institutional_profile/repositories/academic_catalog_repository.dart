@@ -18,8 +18,21 @@ class AcademicCatalogRepository {
       return const [];
     }
 
+    // Transition flag:
+    // false = existing registration catalog (production-compatible).
+    // true  = groups offered for the current academic period.
+    //
+    // Never silently fall back when the new RPC returns an error:
+    // doing so could expose groups outside the approved offering.
+    const usePeriodOfferings = bool.fromEnvironment(
+      'CONECTA_ITT_PERIOD_GROUP_OFFERINGS',
+      defaultValue: false,
+    );
+
     final response = await _supabaseClient.rpc(
-      'get_registration_academic_groups',
+      usePeriodOfferings
+          ? 'get_registration_offered_groups'
+          : 'get_registration_academic_groups',
       params: {'p_career_id': normalizedCareerId, 'p_semester': semester},
     );
 

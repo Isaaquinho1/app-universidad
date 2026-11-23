@@ -460,6 +460,11 @@ class _RoleManagementCard extends StatelessWidget {
                       ),
                     ],
                     const SizedBox(height: AppSpacing.sm),
+                    if (profile.isStaffAccount) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      _StaffDeclaredIdentity(profile: profile),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
                     Wrap(
                       spacing: AppSpacing.xs,
                       runSpacing: AppSpacing.xs,
@@ -504,6 +509,46 @@ class _RoleManagementCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _StaffDeclaredIdentity extends StatelessWidget {
+  const _StaffDeclaredIdentity({required this.profile});
+
+  final RoleManagementProfile profile;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.onSurfaceVariant;
+
+    final department = profile.staffDepartmentDeclared?.trim();
+    final position = profile.staffPositionDeclared?.trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Información institucional declarada',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          'Departamento: '
+          '${department == null || department.isEmpty ? "No declarado" : department}',
+          style: theme.textTheme.bodySmall?.copyWith(color: color),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          'Cargo: '
+          '${position == null || position.isEmpty ? "No declarado" : position}',
+          style: theme.textTheme.bodySmall?.copyWith(color: color),
+        ),
+      ],
     );
   }
 }
