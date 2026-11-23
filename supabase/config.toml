@@ -156,3 +156,9 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/send-profile-photo-review-notifications/deno.json"
 entrypoint = "./functions/send-profile-photo-review-notifications/index.ts"
+
+[functions.cleanup-publication-assets]
+enabled = true
+verify_jwt = false
+import_map = "./functions/cleanup-publication-assets/deno.json"
+entrypoint = "./functions/cleanup-publication-assets/index.ts"

@@ -32,8 +32,8 @@ export default {
       return respond({ error: "Method not allowed." }, 405);
     }
 
-    const { data: authData, error: authError } =
-      await ctx.supabase.auth.getUser();
+    const { data: authData, error: authError } = await ctx.supabase.auth
+      .getUser();
 
     if (authError || !authData.user?.id) {
       return respond({ error: "Authentication required." }, 401);
@@ -41,12 +41,11 @@ export default {
 
     const userId = authData.user.id;
 
-    const { data: profile, error: profileError } =
-      await ctx.supabase
-        .from("profiles")
-        .select("role, active")
-        .eq("id", userId)
-        .maybeSingle();
+    const { data: profile, error: profileError } = await ctx.supabase
+      .from("profiles")
+      .select("role, active, staff_approval_pending")
+      .eq("id", userId)
+      .maybeSingle();
 
     if (profileError) {
       return respond(
@@ -62,6 +61,13 @@ export default {
     ) {
       return respond(
         { error: "Administrator permissions are required." },
+        403,
+      );
+    }
+
+    if (profile.staff_approval_pending !== false) {
+      return respond(
+        { error: "Institutional staff approval is required." },
         403,
       );
     }
@@ -87,14 +93,15 @@ export default {
     // The user-scoped RPC enforces all database deletion conditions.
     let deletedNow = false;
 
-    const { data: deletion, error: deletionError } =
-      await ctx.supabase.rpc("delete_unpublished_draft", {
+    const { data: deletion, error: deletionError } = await ctx.supabase.rpc(
+      "delete_unpublished_draft",
+      {
         p_publication_id: publicationId,
-      });
+      },
+    );
 
     if (deletionError) {
-      const previouslyDeleted =
-        deletionError.code === "P0002" &&
+      const previouslyDeleted = deletionError.code === "P0002" &&
         deletionError.message.includes("Publication not found");
 
       // Only an already-deleted publication may resume cleanup.
@@ -118,11 +125,10 @@ export default {
 
     // A missing publication may only resume a recorded cleanup.
     if (!deletedNow) {
-      const { count, error: historyError } =
-        await ctx.supabaseAdmin
-          .from("draft_publication_storage_cleanup")
-          .select("id", { count: "exact", head: true })
-          .eq("publication_id", publicationId);
+      const { count, error: historyError } = await ctx.supabaseAdmin
+        .from("draft_publication_storage_cleanup")
+        .select("id", { count: "exact", head: true })
+        .eq("publication_id", publicationId);
 
       if (historyError) {
         return respond({
@@ -140,14 +146,13 @@ export default {
     }
 
     // PostgreSQL atomically reserves each object for one worker.
-    const { data: claimed, error: claimError } =
-      await ctx.supabaseAdmin.rpc(
-        "claim_draft_storage_cleanup",
-        {
-          p_publication_id: publicationId,
-          p_limit: batchLimit,
-        },
-      );
+    const { data: claimed, error: claimError } = await ctx.supabaseAdmin.rpc(
+      "claim_draft_storage_cleanup",
+      {
+        p_publication_id: publicationId,
+        p_limit: batchLimit,
+      },
+    );
 
     if (claimError) {
       return respond({
@@ -173,10 +178,9 @@ export default {
         errorMessage = "Invalid managed Storage reference.";
       } else {
         try {
-          const { error: storageError } =
-            await ctx.supabaseAdmin.storage
-              .from(managedBucket)
-              .remove([item.storage_path]);
+          const { error: storageError } = await ctx.supabaseAdmin.storage
+            .from(managedBucket)
+            .remove([item.storage_path]);
 
           if (storageError) {
             errorMessage = storageError.message;
@@ -193,8 +197,8 @@ export default {
         continue;
       }
 
-      const { data: finished, error: finishError } =
-        await ctx.supabaseAdmin.rpc(
+      const { data: finished, error: finishError } = await ctx.supabaseAdmin
+        .rpc(
           "finish_draft_storage_cleanup",
           {
             p_id: item.id,
@@ -218,12 +222,11 @@ export default {
     }
 
     // Include files reserved by another concurrent request.
-    const { count: remaining, error: remainingError } =
-      await ctx.supabaseAdmin
-        .from("draft_publication_storage_cleanup")
-        .select("id", { count: "exact", head: true })
-        .eq("publication_id", publicationId)
-        .neq("status", "completed");
+    const { count: remaining, error: remainingError } = await ctx.supabaseAdmin
+      .from("draft_publication_storage_cleanup")
+      .select("id", { count: "exact", head: true })
+      .eq("publication_id", publicationId)
+      .neq("status", "completed");
 
     if (remainingError) {
       return respond({
