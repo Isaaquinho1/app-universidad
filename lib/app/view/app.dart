@@ -126,7 +126,7 @@ class _AppViewState extends State<_AppView> {
                   (context) => AdaptiveTheme(
                     light: lightTheme,
                     dark: darkTheme,
-                    initial: AdaptiveThemeMode.dark,
+                    initial: AdaptiveThemeMode.light,
                     builder: (theme, darkTheme) {
                       _configureSystemUI(theme);
 
