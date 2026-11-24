@@ -15,6 +15,7 @@ class LabelledInput extends StatefulWidget {
     this.showPasswordToggle = false,
     this.autofillHints,
     this.textInputAction,
+    this.subtlePlaceholder = false,
   });
 
   /// Uses Flutter's default focus traversal for next and dismissal for done.
@@ -30,6 +31,9 @@ class LabelledInput extends StatefulWidget {
   final String? errorText;
   final bool showPasswordToggle;
   final Iterable<String>? autofillHints;
+
+  /// Uses a quieter, theme-aware placeholder in registration forms.
+  final bool subtlePlaceholder;
 
   @override
   State<LabelledInput> createState() => _LabelledInputState();
@@ -97,9 +101,16 @@ class _LabelledInputState extends State<LabelledInput> {
                       )
                     : null,
             hintText: widget.placeholder,
-            hintStyle: AppTextStyle.titleM.copyWith(
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
-            ),
+            hintStyle: widget.subtlePlaceholder
+                ? AppTextStyle.titleS.copyWith(
+                    color: theme.brightness == Brightness.dark
+                        ? const Color(0xFF929AA5)
+                        : const Color(0xFF858C96),
+                    fontWeight: FontWeight.w400,
+                  )
+                : AppTextStyle.titleM.copyWith(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+                  ),
             errorText: widget.errorText,
             errorStyle: AppTextStyle.captionL.copyWith(
               color: colorScheme.error,

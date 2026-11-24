@@ -387,6 +387,7 @@ class _EmailInputState extends State<_EmailInput> {
 
     return LabelledInput(
       key: const Key('loginWithEmailForm_emailInput_textField'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Correo institucional',
       textInputAction: TextInputAction.next,
@@ -426,6 +427,7 @@ class _PasswordInputState extends State<_PasswordInput> {
 
     return LabelledInput(
       key: const Key('loginWithEmailForm_passwordInput_textField'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Contraseña',
       textInputAction: TextInputAction.done,
@@ -648,7 +650,7 @@ class _InstitutionalAccessNotice extends StatelessWidget {
           Expanded(
             child: Text(
               'Se aceptan cuentas @tlalpan.tecnm.mx y cuentas '
-              'autorizadas @tecnm.mx.',
+              'autorizadas @tecnm.mx',
               style: TextStyle(
                 color: Color(0xFF495473),
                 fontSize: 12.5,

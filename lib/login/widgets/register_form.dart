@@ -137,8 +137,6 @@ class _RegisterContent extends StatelessWidget {
                     const _RegistrationPendingMessage(),
                     const SizedBox(height: AppSpacing.md),
                     const _BackToLoginButton(),
-                    const SizedBox(height: AppSpacing.lg),
-                    const _SecurityNotice(),
                   ],
                 ),
               ),
@@ -370,6 +368,7 @@ class _GivenNamesInputState extends State<_GivenNamesInput> {
 
     return LabelledInput(
       key: const Key('registerForm_givenNamesInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Nombre(s) *',
       textInputAction: TextInputAction.next,
@@ -410,6 +409,7 @@ class _FirstSurnameInputState extends State<_FirstSurnameInput> {
 
     return LabelledInput(
       key: const Key('registerForm_firstSurnameInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Primer apellido *',
       textInputAction: TextInputAction.next,
@@ -450,6 +450,7 @@ class _SecondSurnameInputState extends State<_SecondSurnameInput> {
 
     return LabelledInput(
       key: const Key('registerForm_secondSurnameInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Segundo apellido *',
       textInputAction: TextInputAction.next,
@@ -488,6 +489,7 @@ class _EmailInputState extends State<_EmailInput> {
 
     return LabelledInput(
       key: const Key('registerForm_emailInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Correo institucional',
       textInputAction: TextInputAction.next,
@@ -838,6 +840,7 @@ class _PasswordInputState extends State<_PasswordInput> {
 
     return LabelledInput(
       key: const Key('registerForm_passwordInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Contraseña',
       textInputAction: TextInputAction.next,
@@ -897,6 +900,7 @@ class _PasswordConfirmationInputState
 
     return LabelledInput(
       key: const Key('registerForm_passwordConfirmationInput'),
+      subtlePlaceholder: true,
       controller: _controller,
       label: 'Confirmar contraseña',
       textInputAction: TextInputAction.done,
@@ -1261,40 +1265,6 @@ class _BackToLoginButton extends StatelessWidget {
         ).pushReplacement<void, void>(LoginWithEmailPage.route());
       },
       child: const Text('Ya tengo una cuenta'),
-    );
-  }
-}
-
-class _SecurityNotice extends StatelessWidget {
-  const _SecurityNotice();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8F1F5),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: const Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.security_outlined, size: 20, color: Color(0xFF075578)),
-          SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              'Los permisos institucionales se administran de forma segura. '
-              'Ninguna cuenta puede asignarse por sí misma privilegios de '
-              'docente, administrador o superadministrador.',
-              style: TextStyle(
-                color: Color(0xFF495473),
-                fontSize: 12.5,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
