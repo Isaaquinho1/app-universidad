@@ -9,6 +9,7 @@ import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/navigation/navigation.dart';
+import 'package:conecta_itt/splash/widgets/initial_splash_overlay.dart';
 import 'package:flutter/services.dart';
 import 'package:conecta_itt/analytics/bloc/analytics_bloc.dart';
 
@@ -174,19 +175,10 @@ class _AppViewState extends State<_AppView> {
                                       buildWhen:
                                           (previous, current) =>
                                               previous.status !=
-                                                  current.status &&
-                                              (previous.status ==
-                                                      AppStatus
-                                                          .switchingAccount ||
-                                                  current.status ==
-                                                      AppStatus
-                                                          .switchingAccount ||
-                                                  previous.status ==
-                                                      AppStatus
-                                                          .profileLoadFailed ||
-                                                  current.status ==
-                                                      AppStatus
-                                                          .profileLoadFailed),
+                                                  current.status ||
+                                              previous.hasInstitutionalProfile !=
+                                                  current
+                                                      .hasInstitutionalProfile,
                                       builder: (context, state) {
                                         final loading =
                                             state.status ==
@@ -195,59 +187,69 @@ class _AppViewState extends State<_AppView> {
                                             state.status ==
                                             AppStatus.profileLoadFailed;
 
-                                        return Stack(
-                                          children: [
-                                            child!,
-                                            if (loading || failed)
-                                              Positioned.fill(
-                                                child: Material(
-                                                  color:
-                                                      theme
-                                                          .scaffoldBackgroundColor,
-                                                  child: Center(
-                                                    child:
-                                                        loading
-                                                            ? const CircularProgressIndicator()
-                                                            : Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    24,
-                                                                  ),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  const Text(
-                                                                    'No se pudo cargar tu perfil institucional.',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 16,
-                                                                  ),
-                                                                  ElevatedButton(
-                                                                    onPressed: () {
-                                                                      context
-                                                                          .read<
-                                                                            AppBloc
-                                                                          >()
-                                                                          .add(
-                                                                            const AppProfileRetryRequested(),
-                                                                          );
-                                                                    },
-                                                                    child: const Text(
-                                                                      'Reintentar',
+                                        return InitialSplashOverlay(
+                                          ready:
+                                              state.status ==
+                                                  AppStatus.unauthenticated ||
+                                              failed ||
+                                              (state.status.isLoggedIn &&
+                                                  state
+                                                      .hasInstitutionalProfile),
+                                          child: Stack(
+                                            children: [
+                                              child!,
+                                              if (loading || failed)
+                                                Positioned.fill(
+                                                  child: Material(
+                                                    color:
+                                                        theme
+                                                            .scaffoldBackgroundColor,
+                                                    child: Center(
+                                                      child:
+                                                          loading
+                                                              ? const CircularProgressIndicator()
+                                                              : Padding(
+                                                                padding:
+                                                                    const EdgeInsets.all(
+                                                                      24,
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                child: Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    const Text(
+                                                                      'No se pudo cargar tu perfil institucional.',
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height:
+                                                                          16,
+                                                                    ),
+                                                                    ElevatedButton(
+                                                                      onPressed: () {
+                                                                        context
+                                                                            .read<
+                                                                              AppBloc
+                                                                            >()
+                                                                            .add(
+                                                                              const AppProfileRetryRequested(),
+                                                                            );
+                                                                      },
+                                                                      child: const Text(
+                                                                        'Reintentar',
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),

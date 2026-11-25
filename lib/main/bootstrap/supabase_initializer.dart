@@ -33,7 +33,8 @@ class SupabaseInitializer implements AsyncLifecycle {
 
   @override
   Future<void> dispose() async {
-    await Supabase.instance.client.auth.signOut();
+    // Scope rollback also disposes initializers after a startup failure.
+    // Keep the persisted session available for the next startup attempt.
     await Supabase.instance.dispose();
   }
 }

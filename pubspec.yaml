@@ -171,7 +171,7 @@ flutter_launcher_icons:
   image_path: "assets/branding/conecta_itt_app_icon.png"
   remove_alpha_ios: true
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/branding/conecta_itt_adaptive_foreground.png"
+  adaptive_icon_foreground: "assets/branding/conecta_itt_app_icon.png"
 
 flutter:
   uses-material-design: true
@@ -180,6 +180,7 @@ flutter:
   assets:
     - shorebird.yaml
     - assets/branding/
+    - assets/branding/institutional/
     - assets/campus/
     - assets/legal/
 

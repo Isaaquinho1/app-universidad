@@ -1,20 +1,17 @@
+# Android resource regeneration:
+#   dart run flutter_native_splash:create
+#   python3 tool/generate_android_splash.py
+# The final step restores proportional Android <=11 composition and the
+# Android 12+ transparent vector. iOS is maintained in LaunchScreen.storyboard.
 flutter_native_splash:
-  color: "#003B5C"
-  color_dark: "#003B5C"
-
-  image: assets/branding/conecta_itt_logo_clean.png
-  image_dark: assets/branding/conecta_itt_logo_clean.png
-
+  color: "#123E67"
+  color_dark: "#123E67"
   android: true
   ios: false
   web: false
-
-  android_gravity: center
   fullscreen: false
-
   android_12:
-    color: "#003B5C"
-    color_dark: "#003B5C"
-
-    image: assets/branding/conecta_itt_splash_android12.png
-    image_dark: assets/branding/conecta_itt_splash_android12.png
+    color: "#123E67"
+    color_dark: "#123E67"
+    image: assets/branding/institutional/android_splash_transparent.png
+    image_dark: assets/branding/institutional/android_splash_transparent.png

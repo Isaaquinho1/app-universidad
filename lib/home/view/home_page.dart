@@ -2,10 +2,10 @@ import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/home/cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:conecta_itt/splash/widgets/institutional_startup_splash.dart';
 import 'package:go_router/go_router.dart';
 
-/// Resolves the initial route while the native splash remains visible.
+/// Resolves onboarding while preserving the institutional first Flutter frame.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -24,22 +24,17 @@ class _HomePageState extends State<HomePage> {
     _navigationScheduled = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        FlutterNativeSplash.remove();
-        return;
-      }
+      if (!mounted) return;
 
-      try {
-        if (state is AppOnboarding) {
-          context.replace('/onboarding');
-        } else {
-          final appStatus = context.read<AppBloc>().state.status;
-          context.go(appStatus.isLoggedIn ? '/feed' : '/welcome');
-        }
-      } finally {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          FlutterNativeSplash.remove();
-        });
+      // A push or deep link may already have selected its destination.
+      final router = GoRouter.of(context);
+      if (router.routeInformationProvider.value.uri.path != '/home') return;
+
+      if (state is AppOnboarding) {
+        context.replace('/onboarding');
+      } else {
+        final appStatus = context.read<AppBloc>().state.status;
+        context.go(appStatus.isLoggedIn ? '/feed' : '/welcome');
       }
     });
   }
@@ -52,10 +47,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context, state) {
           _resolveNavigation(context, state);
 
-          return const ColoredBox(
-            color: Color(0xFF003B5C),
-            child: SizedBox.expand(),
-          );
+          return const InstitutionalStartupSplash();
         },
       ),
     );

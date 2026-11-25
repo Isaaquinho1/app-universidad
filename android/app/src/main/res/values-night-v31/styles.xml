@@ -4,10 +4,15 @@
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowFullscreen">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="android:windowSplashScreenBackground">#003B5C</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/android12splash</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">default</item>
+        <item name="android:windowSplashScreenBackground">@color/institutional_launch_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/institutional_launch_icon</item>
+        <item name="android:statusBarColor">@color/institutional_launch_background</item>
+        <item name="android:navigationBarColor">@color/institutional_launch_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowBackground">@color/institutional_launch_background</item>
     </style>
     <!-- Theme applied to the Android Window as soon as the process has started.
          This theme determines the color of the Android Window while your
@@ -16,6 +21,6 @@
          
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowBackground">@color/institutional_launch_background</item>
     </style>
 </resources>

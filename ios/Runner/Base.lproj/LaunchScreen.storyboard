@@ -49,15 +49,10 @@
                                 contentMode="scaleAspectFit"
                                 horizontalHuggingPriority="251"
                                 verticalHuggingPriority="251"
-                                image="LaunchLogo"
+                                image="InstitutionalLaunch"
                                 translatesAutoresizingMaskIntoConstraints="NO"
                                 id="logo-conecta-itt">
-                                <rect
-                                    key="frame"
-                                    x="97.5"
-                                    y="327"
-                                    width="198"
-                                    height="198"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide
@@ -65,35 +60,17 @@
                             id="safe-area-conecta"/>
                         <color
                             key="backgroundColor"
-                            red="0.0"
-                            green="0.2313725490"
-                            blue="0.3607843137"
+                            red="0.0705882353"
+                            green="0.2431372549"
+                            blue="0.4039215686"
                             alpha="1"
                             colorSpace="custom"
                             customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint
-                                firstItem="logo-conecta-itt"
-                                firstAttribute="centerX"
-                                secondItem="Ze5-6b-2t3"
-                                secondAttribute="centerX"
-                                id="logo-center-x"/>
-                            <constraint
-                                firstItem="logo-conecta-itt"
-                                firstAttribute="centerY"
-                                secondItem="Ze5-6b-2t3"
-                                secondAttribute="centerY"
-                                id="logo-center-y"/>
-                            <constraint
-                                firstItem="logo-conecta-itt"
-                                firstAttribute="width"
-                                constant="198"
-                                id="logo-width"/>
-                            <constraint
-                                firstItem="logo-conecta-itt"
-                                firstAttribute="height"
-                                constant="198"
-                                id="logo-height"/>
+                            <constraint firstItem="logo-conecta-itt" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="institutional-leading"/>
+                            <constraint firstItem="logo-conecta-itt" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="institutional-top"/>
+                            <constraint firstItem="logo-conecta-itt" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="institutional-trailing"/>
+                            <constraint firstItem="logo-conecta-itt" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="institutional-bottom"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -107,6 +84,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchLogo" width="198" height="198"/>
+        <image name="InstitutionalLaunch" width="946" height="2048"/>
     </resources>
 </document>
