@@ -1,3 +1,5 @@
+import 'package:conecta_itt/feed/models/campus_context_time.dart';
+
 class CampusWeather {
   const CampusWeather({
     required this.temperatureCelsius,
@@ -69,7 +71,26 @@ class CampusWeather {
     return '${dailyHighCelsius.round()} °C';
   }
 
-  String contextualSummary(DateTime now) {
+  /// A no-data message never infers conditions from the selected photograph.
+  static String unavailableSummary(DateTime now, {bool isLoading = false}) {
+    final closure = CampusWeekendPolicy.closureMessage(now);
+    if (closure != null) {
+      final status =
+          isLoading
+              ? 'Consultando el clima de los alrededores...'
+              : 'El clima no está disponible por el momento.';
+      return '$closure $status';
+    }
+    return isLoading
+        ? 'Consultando el clima del campus...'
+        : 'El clima del campus no está disponible por el momento.';
+  }
+
+  String contextualSummary(DateTime instant) {
+    final now = CampusContextTime.inMexicoCity(instant);
+    final closure = CampusWeekendPolicy.closureMessage(now);
+    if (closure != null) return '$closure ${_weekendSummary(now)}';
+
     final hour = now.hour;
     final temperature = temperatureCelsius.round();
 
@@ -320,5 +341,78 @@ class CampusWeather {
 
     return 'El campus ya cerró por hoy. '
         'La noche se mantiene tranquila en los alrededores.';
+  }
+
+  String _weekendSummary(DateTime now) {
+    final moment = switch (now.hour) {
+      < 5 => 'Madrugada',
+      < 12 => 'Mañana',
+      < 20 => 'Tarde',
+      _ => 'Noche',
+    };
+    final temperature = temperatureCelsius.round();
+    final isNight = now.hour < 5 || now.hour >= 20;
+
+    if (isHeavyRain) {
+      return '$moment con lluvia intensa; si sales, lleva paraguas e impermeable.';
+    }
+    if (precipitationMillimeters >= 0.3) {
+      return '$moment con algo de lluvia; si sales, lleva paraguas.';
+    }
+    final rainCode = switch (weatherCode) {
+      51 ||
+      53 ||
+      55 ||
+      56 ||
+      57 ||
+      61 ||
+      63 ||
+      65 ||
+      66 ||
+      67 ||
+      80 ||
+      81 ||
+      82 ||
+      95 ||
+      96 ||
+      99 => true,
+      _ => false,
+    };
+    if (rainCode) {
+      return '$moment con posibilidad de lluvia; considera llevar paraguas.';
+    }
+    if (isFoggy) {
+      return '$moment con niebla; si sales, abrígate y toma precauciones.';
+    }
+    if (temperatureCelsius <= 7) {
+      return '$moment muy fría, con $temperature °C; si sales, abrígate bien.';
+    }
+    if (temperatureCelsius <= 10) {
+      return '$moment fría, con $temperature °C; si sales, lleva algo abrigador.';
+    }
+    if (temperatureCelsius >= 31) {
+      final advice =
+          isNight ? 'mantente hidratado.' : 'hidrátate y busca sombra.';
+      return '$moment muy calurosa, con $temperature °C; $advice';
+    }
+    if (temperatureCelsius >= 28) {
+      return '$moment calurosa, con $temperature °C; usa ropa ligera e hidrátate.';
+    }
+    if (temperatureCelsius < 16 && isCloudy) {
+      return '$moment fresca y nublada; algo abrigador puede venirte bien.';
+    }
+    if (temperatureCelsius < 16) {
+      return '$moment fresca; si sales, lleva algo abrigador.';
+    }
+    if (isCloudy) {
+      return '$moment nublada; una chamarra ligera puede venirte bien.';
+    }
+    if (cloudCoverPercent < 30) {
+      if (isNight) {
+        return '$moment despejada; si sales, considera una chamarra ligera.';
+      }
+      return '$moment despejada; si sales, lleva ropa ligera y mantente hidratado.';
+    }
+    return '$moment con condiciones agradables en los alrededores.';
   }
 }

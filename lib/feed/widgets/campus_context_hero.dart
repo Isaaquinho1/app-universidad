@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:conecta_itt/feed/models/campus_context_time.dart';
 import 'package:conecta_itt/feed/models/campus_weather.dart';
 import 'package:conecta_itt/feed/services/campus_weather_service.dart';
 
@@ -19,9 +20,18 @@ enum _CampusHeroScene {
 }
 
 class CampusContextHero extends StatefulWidget {
-  const CampusContextHero({this.refreshToken = 0, super.key});
+  const CampusContextHero({
+    this.refreshToken = 0,
+    this.now,
+    this.weatherService,
+    super.key,
+  });
 
   final int refreshToken;
+
+  /// Optional dependencies keep time and weather deterministic in widget tests.
+  final DateTime Function()? now;
+  final CampusWeatherService? weatherService;
 
   @override
   State<CampusContextHero> createState() => _CampusContextHeroState();
@@ -29,7 +39,7 @@ class CampusContextHero extends StatefulWidget {
 
 class _CampusContextHeroState extends State<CampusContextHero>
     with WidgetsBindingObserver {
-  final CampusWeatherService _weatherService = CampusWeatherService();
+  late final CampusWeatherService _weatherService;
 
   CampusWeather? _weather;
   Timer? _weatherRefreshTimer;
@@ -38,6 +48,7 @@ class _CampusContextHeroState extends State<CampusContextHero>
   @override
   void initState() {
     super.initState();
+    _weatherService = widget.weatherService ?? CampusWeatherService();
     WidgetsBinding.instance.addObserver(this);
     _loadWeather();
     _startWeatherRefreshTimer();
@@ -83,20 +94,22 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
     _isLoadingWeather = true;
 
+    CampusWeather? weather;
     try {
-      final weather = await _weatherService.getCurrentWeather(
+      weather = await _weatherService.getCurrentWeather(
         forceRefresh: forceRefresh,
       );
-
-      if (!mounted || weather == null) {
-        return;
-      }
-
-      setState(() {
-        _weather = weather;
-      });
     } finally {
-      _isLoadingWeather = false;
+      if (mounted) {
+        setState(() {
+          // The service already falls back to its cache. Keep the last known
+          // weather when no data is available, and rebuild date-only messages.
+          _weather = weather ?? _weather;
+          _isLoadingWeather = false;
+        });
+      } else {
+        _isLoadingWeather = false;
+      }
     }
   }
 
@@ -109,7 +122,9 @@ class _CampusContextHeroState extends State<CampusContextHero>
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
+    final now = CampusContextTime.inMexicoCity(
+      widget.now?.call() ?? CampusContextTime.now(),
+    );
     final scene = _sceneForContext(now, _weather);
     final useLightText = switch (scene) {
       _CampusHeroScene.earlyMorning ||
@@ -120,14 +135,14 @@ class _CampusContextHeroState extends State<CampusContextHero>
       _ => false,
     };
     final baseAlignment = _imageAlignmentForContext(now, _weather);
-    // BLOQUE_13_11C
     final heroAlignment = Alignment(
       baseAlignment.x,
-      (baseAlignment.y - 0.72).clamp(-1.0, 1.0),
+      (baseAlignment.y - 0.72).clamp(-1.0, 1.0).toDouble(),
     );
+    final message =
+        _weather?.contextualSummary(now) ??
+        CampusWeather.unavailableSummary(now, isLoading: _isLoadingWeather);
 
-    // BLOQUE_13_7C
-    // BLOQUE_13_10A_APLICADO
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -137,130 +152,149 @@ class _CampusContextHeroState extends State<CampusContextHero>
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
-        child: SizedBox(
-          height: 238,
-          width: double.infinity,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(
-                _assetForContext(now, _weather),
-                fit: BoxFit.cover,
-                alignment: heroAlignment,
-              ),
-              // BLOQUE_13_11B
-              // Contraste suave para los textos sobre las fotografías.
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    stops: const [0.0, 0.55, 1.0],
-                    colors:
-                        useLightText
-                            ? [
-                              Colors.black.withValues(alpha: 0.48),
-                              Colors.black.withValues(alpha: 0.12),
-                              Colors.transparent,
-                            ]
-                            : [
-                              Colors.white.withValues(alpha: 0.76),
-                              Colors.white.withValues(alpha: 0.22),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final horizontalPadding =
+                (width * 0.06).clamp(16.0, 24.0).toDouble();
+            final safePadding = MediaQuery.paddingOf(context);
+            final availableWidth =
+                width - safePadding.horizontal - horizontalPadding * 2;
+            final textScale =
+                MediaQuery.textScalerOf(context).scale(12.5) / 12.5;
+            // Leave the building visible at normal sizes, and give larger type
+            // the full available line width instead of shrinking or truncating.
+            final textWidth =
+                width < 360 || textScale > 1.3
+                    ? availableWidth
+                    : availableWidth * 0.82;
+            final textEnd =
+                (safePadding.left + horizontalPadding + textWidth) / width;
+            final foreground =
+                useLightText ? Colors.white : const Color(0xFF27334E);
+            const bottomFade = 32.0;
+
+            return ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 238),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      _assetForContext(now, _weather),
+                      fit: BoxFit.cover,
+                      alignment: heroAlignment,
+                      excludeFromSemantics: true,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: ShaderMask(
+                        // Fade only below the text: the content reserves this
+                        // padding even when accessibility type grows the hero.
+                        blendMode: BlendMode.dstIn,
+                        shaderCallback: (rect) {
+                          final fadeStart =
+                              ((rect.height - bottomFade) / rect.height)
+                                  .clamp(0.0, 1.0)
+                                  .toDouble();
+                          return LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: const [
+                              Colors.white,
+                              Colors.white,
                               Colors.transparent,
                             ],
-                  ),
-                ),
-              ),
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 34, 20, 6),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 262),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'CONECTA ITT',
-                            style: TextStyle(
-                              fontSize: 11,
-                              letterSpacing: 3.0,
-                              fontWeight: FontWeight.w700,
-                              color:
-                                  useLightText
-                                      ? Colors.white
-                                      : Color(0xFF27334E),
-                              shadows:
-                                  useLightText
-                                      ? const [
-                                        Shadow(
-                                          color: Colors.black54,
-                                          blurRadius: 8,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ]
-                                      : null,
+                            stops: [0.0, fadeStart, 1.0],
+                          ).createShader(rect);
+                        },
+                        child: DecoratedBox(
+                          key: const ValueKey('campus-hero-scrim'),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              stops: [0.0, textEnd, 1.0],
+                              colors: [
+                                if (useLightText) ...[
+                                  const Color(0xA807182B),
+                                  const Color(0xA807182B),
+                                  const Color(0x0007182B),
+                                ] else ...[
+                                  const Color(0xBDFFFFFF),
+                                  const Color(0xBDFFFFFF),
+                                  const Color(0x00FFFFFF),
+                                ],
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 22),
-                          Text(
-                            'Publicaciones',
-                            style: TextStyle(
-                              fontSize: 29,
-                              height: 1.05,
-                              letterSpacing: -1.1,
-                              fontWeight: FontWeight.w800,
-                              color:
-                                  useLightText
-                                      ? Colors.white
-                                      : Color(0xFF111827),
-                              shadows:
-                                  useLightText
-                                      ? const [
-                                        Shadow(
-                                          color: Colors.black54,
-                                          blurRadius: 8,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ]
-                                      : null,
-                            ),
-                          ),
-                          const SizedBox(height: 7),
-                          Text(
-                            _weather?.contextualSummary(now) ??
-                                'Consultando el clima del campus...',
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              height: 1.32,
-                              fontWeight: FontWeight.w400,
-                              color:
-                                  useLightText
-                                      ? Colors.white
-                                      : Color(0xFF384253),
-                              shadows:
-                                  useLightText
-                                      ? const [
-                                        Shadow(
-                                          color: Colors.black54,
-                                          blurRadius: 8,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ]
-                                      : null,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        14,
+                        horizontalPadding,
+                        bottomFade,
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        heightFactor: 1,
+                        child: SizedBox(
+                          width: textWidth,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'CONECTA ITT',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  height: 1.2,
+                                  letterSpacing: 3.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: foreground,
+                                ),
+                              ),
+                              const SizedBox(height: 7),
+                              Text(
+                                'Publicaciones',
+                                style: TextStyle(
+                                  fontSize: 29,
+                                  height: 1.08,
+                                  letterSpacing: -1.1,
+                                  fontWeight: FontWeight.w800,
+                                  color:
+                                      useLightText
+                                          ? Colors.white
+                                          : const Color(0xFF111827),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                message,
+                                key: const ValueKey('campus-hero-message'),
+                                style: TextStyle(
+                                  fontSize: 12.5,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w400,
+                                  color: foreground,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
