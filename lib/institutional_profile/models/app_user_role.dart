@@ -32,8 +32,20 @@ enum AppUserRole {
   /// Whether this role can validate digital student identifications.
   bool get canValidateStudentIds => canAccessAdministration;
 
-  /// Whether this role can manage institutional student academics.
+  /// Whether this role can access student academic management.
+  ///
+  /// Admin and SuperAdmin may consult student academic profiles.
   bool get canManageStudentAcademics => canAccessAdministration;
+
+  /// Whether this role can modify student academic identity.
+  ///
+  /// Only SuperAdmin may modify career, semester and group.
+  bool get canEditStudentAcademics => this == AppUserRole.superAdmin;
+
+  /// Whether this role can administer academic groups and offerings.
+  ///
+  /// Reserved exclusively for SuperAdmin.
+  bool get canManageAcademicOfferings => this == AppUserRole.superAdmin;
 
   /// Whether this role can manage institutional teaching structures.
   bool get canManageTeaching => canAccessAdministration;

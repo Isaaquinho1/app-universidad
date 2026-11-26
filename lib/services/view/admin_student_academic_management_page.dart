@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:conecta_itt/app/app.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
-import 'package:conecta_itt/services/view/admin_academic_group_offerings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -101,6 +100,13 @@ class _AdminStudentAcademicManagementPageState
   }
 
   Future<void> _openEditor(AdminStudentAcademicProfile student) async {
+    final profile = context.read<AppBloc>().state.institutionalProfile;
+
+    if (profile == null ||
+        !profile.canEditStudentAcademics ||
+        !student.active) {
+      return;
+    }
     final changed = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
@@ -154,52 +160,6 @@ class _AdminStudentAcademicManagementPageState
         bottom: false,
         child: Column(
           children: [
-            if (const bool.fromEnvironment(
-              'CONECTA_ITT_ADMIN_GROUP_OFFERINGS_ENABLED',
-              defaultValue: false,
-            ))
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg,
-                  AppSpacing.md,
-                  AppSpacing.lg,
-                  AppSpacing.sm,
-                ),
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.outlineVariant,
-                    ),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
-                    ),
-                    leading: const Icon(Icons.groups_outlined),
-                    title: const Text(
-                      'Grupos y ofertas',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: const Text(
-                      'Consultar grupos por periodo, carrera y semestre',
-                    ),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () {
-                      Navigator.of(context).push<void>(
-                        MaterialPageRoute<void>(
-                          builder:
-                              (_) => const AdminAcademicGroupOfferingsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,
@@ -290,9 +250,18 @@ class _AdminStudentAcademicManagementPageState
         itemBuilder: (context, index) {
           final student = _students[index];
 
+          final canEdit =
+              context
+                  .watch<AppBloc>()
+                  .state
+                  .institutionalProfile
+                  ?.canEditStudentAcademics ??
+              false;
+
           return _StudentAcademicCard(
             student: student,
-            onTap: student.active ? () => _openEditor(student) : null,
+            onTap:
+                student.active && canEdit ? () => _openEditor(student) : null,
           );
         },
       ),
@@ -400,7 +369,7 @@ class _StudentAcademicCard extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Icon(
-                student.active
+                onTap != null
                     ? Icons.chevron_right_rounded
                     : Icons.lock_outline_rounded,
                 color: colorScheme.onSurfaceVariant,
@@ -470,6 +439,14 @@ class _AcademicProfileEditorState extends State<_AcademicProfileEditor> {
 
   bool get _canSave => _hasChanges && _formValid && !_saving;
 
+  bool get _hasEditPermission =>
+      context
+          .read<AppBloc>()
+          .state
+          .institutionalProfile
+          ?.canEditStudentAcademics ??
+      false;
+
   Future<void> _loadGroups({bool preserveCurrentGroup = false}) async {
     final careerId = _careerId;
     final semester = _semester;
@@ -527,7 +504,7 @@ class _AcademicProfileEditorState extends State<_AcademicProfileEditor> {
   }
 
   Future<void> _save() async {
-    if (!_canSave) {
+    if (!_canSave || !_hasEditPermission) {
       return;
     }
 
@@ -561,7 +538,7 @@ class _AcademicProfileEditorState extends State<_AcademicProfileEditor> {
           ),
     );
 
-    if (confirmed != true || !mounted) {
+    if (confirmed != true || !mounted || !_hasEditPermission) {
       return;
     }
 

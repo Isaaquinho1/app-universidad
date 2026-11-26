@@ -60,7 +60,16 @@ class AppUserProfile {
 
   bool get canValidateStudentIds => role.canValidateStudentIds;
 
-  bool get canManageStudentAcademics => role.canManageStudentAcademics;
+  /// Access to student academic consultation.
+  bool get canManageStudentAcademics =>
+      active && role.canManageStudentAcademics;
+
+  /// Exclusive permission to modify student academic identity.
+  bool get canEditStudentAcademics => active && role.canEditStudentAcademics;
+
+  /// Exclusive permission to administer groups and academic offerings.
+  bool get canManageAcademicOfferings =>
+      active && role.canManageAcademicOfferings;
 
   bool get canManageTeaching => role.canManageTeaching;
 

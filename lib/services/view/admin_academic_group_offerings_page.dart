@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Read-only administrative view of academic group offerings.
+/// SuperAdmin management of academic groups and period offerings.
 ///
-/// Mutations are intentionally excluded from this initial screen.
+/// Authorization is enforced in Flutter and independently in Supabase.
 class AdminAcademicGroupOfferingsPage extends StatefulWidget {
   const AdminAcademicGroupOfferingsPage({super.key});
 
@@ -41,7 +41,23 @@ class _AdminAcademicGroupOfferingsPageState
     _offerings = _fetch();
   }
 
+  bool get _hasAcademicOfferingsPermission {
+    final appState = context.read<AppBloc>().state;
+    final profile = appState.institutionalProfile;
+    final authenticatedId = Supabase.instance.client.auth.currentUser?.id;
+
+    return profile != null &&
+        profile.canManageAcademicOfferings &&
+        authenticatedId != null &&
+        authenticatedId == appState.user.id &&
+        authenticatedId == profile.uid;
+  }
+
   Future<List<AdminAcademicGroupOffering>> _fetch() {
+    if (!_hasAcademicOfferingsPermission) {
+      return Future.value(const <AdminAcademicGroupOffering>[]);
+    }
+
     return _repository.fetchOfferings(
       periodCode: _periodCode,
       careerId: _careerId.isEmpty ? null : _careerId,
@@ -92,14 +108,7 @@ class _AdminAcademicGroupOfferingsPageState
 
     // La comprobacion visual no sustituye a PostgreSQL.
     // Se vuelve a comprobar la sesion antes de escribir.
-    final appState = context.read<AppBloc>().state;
-    final profile = appState.institutionalProfile;
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-
-    if (profile == null ||
-        !profile.canManageStudentAcademics ||
-        userId == null ||
-        userId != appState.user.id) {
+    if (!_hasAcademicOfferingsPermission) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -199,14 +208,7 @@ class _AdminAcademicGroupOfferingsPageState
       return;
     }
 
-    final appState = context.read<AppBloc>().state;
-    final profile = appState.institutionalProfile;
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-
-    if (profile == null ||
-        !profile.canManageStudentAcademics ||
-        userId == null ||
-        userId != appState.user.id) {
+    if (!_hasAcademicOfferingsPermission) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -378,14 +380,7 @@ class _AdminAcademicGroupOfferingsPageState
       return;
     }
 
-    final appState = context.read<AppBloc>().state;
-    final profile = appState.institutionalProfile;
-    final authenticatedId = Supabase.instance.client.auth.currentUser?.id;
-
-    if (profile == null ||
-        !profile.canManageStudentAcademics ||
-        authenticatedId == null ||
-        authenticatedId != appState.user.id) {
+    if (!_hasAcademicOfferingsPermission) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No tienes permisos administrativos vigentes.'),
@@ -421,7 +416,8 @@ class _AdminAcademicGroupOfferingsPageState
     if (!mounted ||
         finalConfirmation != true ||
         _creatingGroup ||
-        _busyGroupId != null) {
+        _busyGroupId != null ||
+        !_hasAcademicOfferingsPermission) {
       return;
     }
 
@@ -505,9 +501,10 @@ class _AdminAcademicGroupOfferingsPageState
 
     final authorized =
         profile != null &&
-        profile.canManageStudentAcademics &&
+        profile.canManageAcademicOfferings &&
         authenticatedId != null &&
-        authenticatedId == appState.user.id;
+        authenticatedId == appState.user.id &&
+        authenticatedId == profile.uid;
 
     if (!authorized) {
       return Scaffold(
@@ -516,8 +513,8 @@ class _AdminAcademicGroupOfferingsPageState
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Text(
-              'No tienes permisos para consultar ofertas '
-              'académicas administrativas.',
+              'Esta herramienta está reservada exclusivamente '
+              'para el superadministrador.',
               textAlign: TextAlign.center,
             ),
           ),

@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
 import 'package:conecta_itt/institutional_profile/services/profile_photo_review_badge_controller.dart';
+import 'package:conecta_itt/services/view/admin_academic_group_offerings_page.dart';
 
 const _titleStyle = TextStyle(
   fontSize: 26.5,
@@ -337,12 +338,29 @@ class _ServicesViewState extends State<ServicesView>
             ),
           ),
           const SizedBox(height: AppSpacing.md),
+
           _AdministrativeServiceTile(
             icon: Icons.manage_accounts_outlined,
             title: 'Gestión de usuarios y roles',
             description: 'Consulta cuentas y administra roles institucionales.',
             onTap: () => context.go('/services/role-management'),
           ),
+          if (profile.canManageAcademicOfferings) ...[
+            const SizedBox(height: AppSpacing.md),
+            _AdministrativeServiceTile(
+              icon: Icons.groups_outlined,
+              title: 'Grupos y ofertas académicas',
+              description:
+                  'Administra grupos y ofertas por periodo, carrera y semestre.',
+              onTap: () {
+                Navigator.of(context).push<void>(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const AdminAcademicGroupOfferingsPage(),
+                  ),
+                );
+              },
+            ),
+          ],
         ],
       ],
     );
