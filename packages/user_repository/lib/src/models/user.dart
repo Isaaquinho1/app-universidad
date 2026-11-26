@@ -11,26 +11,25 @@ class User extends AuthenticationUser {
     super.name,
     super.photo,
     super.isNewUser,
+    super.isPasswordRecovery,
   });
 
   /// Converts [AuthenticationUser] to [User].
   factory User.fromAuthenticationUser({
     required AuthenticationUser authenticationUser,
-  }) =>
-      User(
-        email: authenticationUser.email,
-        id: authenticationUser.id,
-        name: authenticationUser.name,
-        photo: authenticationUser.photo,
-        isNewUser: authenticationUser.isNewUser,
-      );
+  }) => User(
+    email: authenticationUser.email,
+    id: authenticationUser.id,
+    name: authenticationUser.name,
+    photo: authenticationUser.photo,
+    isNewUser: authenticationUser.isNewUser,
+    isPasswordRecovery: authenticationUser.isPasswordRecovery,
+  );
 
   /// Whether the current user is anonymous.
   @override
   bool get isAnonymous => this == anonymous;
 
   /// Anonymous user which represents an unauthenticated user.
-  static const User anonymous = User(
-    id: '',
-  );
+  static const User anonymous = User(id: '');
 }

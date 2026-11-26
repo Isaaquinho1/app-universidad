@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app_links/app_links.dart';
 
 /// {@template deep_link_client}
@@ -7,25 +5,13 @@ import 'package:app_links/app_links.dart';
 /// {@endtemplate}
 class DeepLinkClient {
   /// {@macro deep_link_client}
-  DeepLinkClient({AppLinks? appLinks}) : _appLinks = appLinks ?? AppLinks() {
-    _appLinks.uriLinkStream.first.then((uri) {
-      if (!_initialLinkCompleter.isCompleted) {
-        _initialLinkCompleter.complete(uri);
-      }
-    }).catchError((Object error, StackTrace stackTrace) {
-      if (!_initialLinkCompleter.isCompleted) {
-        _initialLinkCompleter.completeError(error, stackTrace);
-      }
-    });
-  }
-  final AppLinks _appLinks;
-  final Completer<Uri?> _initialLinkCompleter = Completer<Uri?>();
+  DeepLinkClient({AppLinks? appLinks}) : _appLinks = appLinks ?? AppLinks();
 
-  /// A stream of deep links that are received while the app is running.
+  final AppLinks _appLinks;
+
+  /// A stream of deep links received while the app is running.
   Stream<Uri> get deepLinkStream => _appLinks.uriLinkStream;
 
-  /// Return the initial link that was used to open the app.
-  Future<Uri?> getInitialLink() async {
-    return _initialLinkCompleter.future;
-  }
+  /// Returns the initial link, or null when launched normally.
+  Future<Uri?> getInitialLink() => _appLinks.getInitialLink();
 }

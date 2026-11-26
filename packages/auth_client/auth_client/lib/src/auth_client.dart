@@ -35,6 +35,12 @@ class SendPasswordResetEmailFailure extends AuthenticationException {
   const SendPasswordResetEmailFailure(super.error);
 }
 
+/// Thrown when updating the user's password fails.
+class UpdatePasswordFailure extends AuthenticationException {
+  /// Creates an [UpdatePasswordFailure].
+  const UpdatePasswordFailure(super.error);
+}
+
 /// Thrown when resending a signup confirmation email fails.
 class ResendSignUpConfirmationFailure extends AuthenticationException {
   /// Creates a [ResendSignUpConfirmationFailure].
@@ -105,6 +111,9 @@ abstract class AuthenticationClient {
     required String email,
     String? redirectTo,
   });
+
+  /// Updates the password of the authenticated user.
+  Future<void> updatePassword({required String password});
 
   /// Resends the signup confirmation email.
   Future<void> resendSignUpConfirmation({

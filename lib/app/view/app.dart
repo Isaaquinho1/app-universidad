@@ -21,6 +21,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:conecta_itt/di/app_scope.dart';
+import 'package:conecta_itt/login/services/supabase_password_recovery_service.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
@@ -37,6 +38,9 @@ class App extends StatelessWidget {
           providers: [
             RepositoryProvider.value(value: appScope.analyticsRepository),
             RepositoryProvider.value(value: appScope.userRepository),
+            RepositoryProvider<SupabasePasswordRecoveryService>.value(
+              value: appScope.passwordRecoveryService,
+            ),
             RepositoryProvider<AppUserProfileRepository>.value(
               value: appScope.appUserProfileRepository,
             ),

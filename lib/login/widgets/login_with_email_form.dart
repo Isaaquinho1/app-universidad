@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:conecta_itt/login/login.dart';
+import 'package:conecta_itt/login/view/password_recovery_page.dart';
 
 void _showLoginNotice(BuildContext context, String message) {
   final messenger = ScaffoldMessenger.maybeOf(context);
@@ -425,23 +426,32 @@ class _PasswordInputState extends State<_PasswordInput> {
   Widget build(BuildContext context) {
     final password = context.select((LoginBloc bloc) => bloc.state.password);
 
-    return LabelledInput(
-      key: const Key('loginWithEmailForm_passwordInput_textField'),
-      subtlePlaceholder: true,
-      controller: _controller,
-      label: 'Contraseña',
-      textInputAction: TextInputAction.done,
-      placeholder: 'Ingresa tu contraseña',
-      obscureText: true,
-      showPasswordToggle: true,
-      autofillHints: const [AutofillHints.password],
-      onChanged: (value) {
-        context.read<LoginBloc>().add(LoginPasswordChanged(value));
+    return BlocListener<LoginBloc, LoginState>(
+      listenWhen:
+          (previous, current) =>
+              previous.password != current.password &&
+              current.password.value.isEmpty,
+      listener: (context, state) {
+        _controller.clear();
       },
-      errorText:
-          password.isPure || password.isValid
-              ? null
-              : 'La contraseña debe tener al menos 8 caracteres.',
+      child: LabelledInput(
+        key: const Key('loginWithEmailForm_passwordInput_textField'),
+        subtlePlaceholder: true,
+        controller: _controller,
+        label: 'Contraseña',
+        textInputAction: TextInputAction.done,
+        placeholder: 'Ingresa tu contraseña',
+        obscureText: true,
+        showPasswordToggle: true,
+        autofillHints: const [AutofillHints.password],
+        onChanged: (value) {
+          context.read<LoginBloc>().add(LoginPasswordChanged(value));
+        },
+        errorText:
+            password.isPure || password.isValid
+                ? null
+                : 'La contraseña debe tener al menos 8 caracteres.',
+      ),
     );
   }
 
@@ -506,17 +516,36 @@ class _RememberAndForgotRowState extends State<_RememberAndForgotRow> {
         const Spacer(),
         TextButton(
           key: const Key('loginWithEmailForm_forgotPasswordButton'),
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'La recuperación de contraseña se habilitará enseguida.',
-                  ),
-                ),
-              );
-          },
+          onPressed:
+              context.watch<LoginBloc>().state.status.isInProgress ||
+                      context.watch<LoginBloc>().state.biometricAuthenticating
+                  ? null
+                  : () async {
+                    final loginBloc = context.read<LoginBloc>();
+
+                    if (!loginBloc.beginPasswordRecovery()) {
+                      return;
+                    }
+
+                    final email = loginBloc.state.email.normalizedValue;
+
+                    try {
+                      FocusScope.of(context).unfocus();
+
+                      final completed = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute<bool>(
+                          builder:
+                              (_) => PasswordRecoveryPage(initialEmail: email),
+                        ),
+                      );
+
+                      if (completed == true && !loginBloc.isClosed) {
+                        loginBloc.add(const LoginPasswordChanged(''));
+                      }
+                    } finally {
+                      loginBloc.endPasswordRecovery();
+                    }
+                  },
           child: const Text('¿Olvidaste tu contraseña?'),
         ),
       ],

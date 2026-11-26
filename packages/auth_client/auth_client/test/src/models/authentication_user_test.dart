@@ -5,6 +5,30 @@ import 'package:test/test.dart';
 
 void main() {
   group('AuthenticationUser', () {
+    test('password recovery is disabled by default', () {
+      const user = AuthenticationUser(id: 'test-id');
+
+      expect(user.isPasswordRecovery, isFalse);
+    });
+
+    test('supports password recovery sessions', () {
+      const user = AuthenticationUser(id: 'test-id', isPasswordRecovery: true);
+
+      expect(user.isPasswordRecovery, isTrue);
+      expect(user.isAnonymous, isFalse);
+    });
+
+    test('distinguishes recovery from normal sessions', () {
+      const normalUser = AuthenticationUser(id: 'test-id');
+
+      const recoveryUser = AuthenticationUser(
+        id: 'test-id',
+        isPasswordRecovery: true,
+      );
+
+      expect(normalUser, isNot(equals(recoveryUser)));
+    });
+
     test('supports value equality', () {
       final userA = AuthenticationUser(id: 'A');
       final secondUserA = AuthenticationUser(id: 'A');
@@ -32,7 +56,17 @@ void main() {
         isNewUser: false,
       );
 
-      expect(user.props, equals(['test@example.com', 'test-id', 'Test User', 'https://example.com/photo.jpg', false]));
+      expect(
+        user.props,
+        equals([
+          'test@example.com',
+          'test-id',
+          'Test User',
+          'https://example.com/photo.jpg',
+          false,
+          false,
+        ]),
+      );
     });
   });
 }

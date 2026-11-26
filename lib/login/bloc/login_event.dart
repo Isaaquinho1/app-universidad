@@ -37,7 +37,12 @@ class LoginSubmitted extends LoginEvent with AnalyticsEventMixin {
 }
 
 class LoginBiometricAvailabilityRequested extends LoginEvent {
-  const LoginBiometricAvailabilityRequested();
+  const LoginBiometricAvailabilityRequested({this.autoAuthenticate = true});
+
+  final bool autoAuthenticate;
+
+  @override
+  List<Object?> get props => [autoAuthenticate];
 }
 
 class LoginBiometricSubmitted extends LoginEvent with AnalyticsEventMixin {

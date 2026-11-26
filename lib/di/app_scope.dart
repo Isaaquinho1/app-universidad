@@ -6,6 +6,9 @@ import 'package:persistent_storage/persistent_storage.dart';
 import 'package:conecta_itt/announcements/announcements.dart';
 import 'package:conecta_itt/common/utils/logger.dart';
 import 'package:conecta_itt/institutional_profile/institutional_profile.dart';
+import 'package:conecta_itt/login/services/password_recovery_storage.dart';
+import 'package:conecta_itt/login/services/password_recovery_session_controller.dart';
+import 'package:conecta_itt/login/services/supabase_password_recovery_service.dart';
 import 'package:conecta_itt/main/bootstrap/bloc_observer_initializer.dart';
 import 'package:conecta_itt/main/bootstrap/firebase_initializer.dart';
 import 'package:conecta_itt/main/bootstrap/supabase_initializer.dart';
@@ -89,6 +92,22 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
     () => SupabaseAuthenticationClient(
       tokenStorage: _tokenStorageDep.get,
       supabaseAuth: _supabaseClientDep.get.auth,
+    ),
+  );
+
+  // Password recovery
+  late final _passwordRecoveryStorageDep = dep(() => PasswordRecoveryStorage());
+
+  late final _passwordRecoveryControllerDep = dep(
+    () => PasswordRecoverySessionController(
+      storage: _passwordRecoveryStorageDep.get,
+    ),
+  );
+
+  late final _passwordRecoveryServiceDep = dep(
+    () => SupabasePasswordRecoveryService(
+      auth: _supabaseInitializerDep.get.recoveryClient.auth,
+      controller: _passwordRecoveryControllerDep.get,
     ),
   );
 
@@ -179,6 +198,11 @@ class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
   PublicationAssetRepository get publicationAssetRepository =>
       _publicationAssetRepositoryDep.get;
+
+  /// Shared password recovery service for the application.
+  SupabasePasswordRecoveryService get passwordRecoveryService =>
+      _passwordRecoveryServiceDep.get;
+
   @override
   SupabaseClient get supabaseClient => _supabaseClientDep.get;
 }

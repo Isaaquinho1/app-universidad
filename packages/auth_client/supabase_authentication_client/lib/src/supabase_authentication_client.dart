@@ -25,7 +25,16 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
         return AuthenticationUser.anonymous;
       }
 
-      return session.user.toAuthenticationUser;
+      final user = session.user;
+
+      return AuthenticationUser(
+        id: user.id,
+        email: user.email,
+        name: user.userMetadata?['name'] as String?,
+        photo: user.userMetadata?['avatar_url'] as String?,
+        isNewUser: user.createdAt == user.lastSignInAt,
+        isPasswordRecovery: data.event == AuthChangeEvent.passwordRecovery,
+      );
     });
   }
 
@@ -80,6 +89,24 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
         SendPasswordResetEmailFailure(error),
         stackTrace,
       );
+    }
+  }
+
+  @override
+  Future<void> updatePassword({required String password}) async {
+    try {
+      if (_supabaseAuth.currentSession == null ||
+          _supabaseAuth.currentUser == null) {
+        throw const AuthException('password_update_requires_session');
+      }
+
+      if (password.length < 8) {
+        throw ArgumentError('La contraseña debe tener al menos 8 caracteres.');
+      }
+
+      await _supabaseAuth.updateUser(UserAttributes(password: password));
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(UpdatePasswordFailure(error), stackTrace);
     }
   }
 
@@ -180,17 +207,5 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     }
 
     await _tokenStorage.saveToken(user.id);
-  }
-}
-
-extension on User {
-  AuthenticationUser get toAuthenticationUser {
-    return AuthenticationUser(
-      id: id,
-      email: email,
-      name: userMetadata?['name'] as String?,
-      photo: userMetadata?['avatar_url'] as String?,
-      isNewUser: createdAt == lastSignInAt,
-    );
   }
 }

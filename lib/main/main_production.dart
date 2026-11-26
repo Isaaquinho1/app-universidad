@@ -14,6 +14,14 @@ void main() async {
       throw Exception('Failed to initialize AppScope');
     }
 
+    // Recovery cleanup must not prevent ordinary authentication.
+    try {
+      await scope.passwordRecoveryService.initializeRecoveryContext();
+    } catch (_) {
+      // The recovery service remains unavailable until cleanup succeeds.
+      // Do not expose recovery credentials in startup diagnostics.
+    }
+
     final user = await scope.userRepository.user.first;
     return ScopeProvider(holder: holder, child: App(user: user));
   });

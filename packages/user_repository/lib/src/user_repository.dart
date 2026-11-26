@@ -140,6 +140,17 @@ class UserRepository {
     }
   }
 
+  /// Updates the password of the authenticated user.
+  Future<void> updatePassword({required String password}) async {
+    try {
+      await _authenticationClient.updatePassword(password: password);
+    } on UpdatePasswordFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(UpdatePasswordFailure(error), stackTrace);
+    }
+  }
+
   /// Resends the signup confirmation email.
   Future<void> resendSignUpConfirmation({required String email}) async {
     try {

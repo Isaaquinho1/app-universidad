@@ -69,6 +69,38 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository _userRepository;
   final BiometricLoginService _biometricLoginService;
 
+  bool _passwordRecoveryActive = false;
+  int _biometricAvailabilityRevision = 0;
+
+  /// Prevents login operations while password recovery is open.
+  bool beginPasswordRecovery() {
+    if (isClosed ||
+        _passwordRecoveryActive ||
+        state.status.isInProgress ||
+        state.status.isSuccess ||
+        state.biometricAuthenticating ||
+        state.biometricEnrollmentPending) {
+      return false;
+    }
+
+    _passwordRecoveryActive = true;
+    _biometricAvailabilityRevision++;
+
+    return true;
+  }
+
+  /// Releases the recovery lock without triggering automatic login.
+  void endPasswordRecovery() {
+    if (!_passwordRecoveryActive) return;
+
+    _passwordRecoveryActive = false;
+    _biometricAvailabilityRevision++;
+
+    if (!isClosed) {
+      add(const LoginBiometricAvailabilityRequested(autoAuthenticate: false));
+    }
+  }
+
   void _onEmailChanged(LoginEmailChanged event, Emitter<LoginState> emit) {
     final email = Email.dirty(event.email);
 
@@ -109,6 +141,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginSubmitted event,
     Emitter<LoginState> emit,
   ) async {
+    if (_passwordRecoveryActive ||
+        state.status.isInProgress ||
+        state.biometricAuthenticating ||
+        state.biometricEnrollmentPending) {
+      return;
+    }
+
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final valid = Formz.validate([email, password]);
@@ -181,10 +220,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginBiometricAvailabilityRequested event,
     Emitter<LoginState> emit,
   ) async {
+    if (_passwordRecoveryActive ||
+        state.biometricAuthenticating ||
+        state.status.isInProgress) {
+      return;
+    }
+
+    final revision = ++_biometricAvailabilityRevision;
+
     final biometricType = await _biometricLoginService.getAvailableType();
     final hasSavedCredentials =
         biometricType != BiometricLoginType.none &&
         await _biometricLoginService.hasSavedCredentials();
+
+    if (emit.isDone ||
+        isClosed ||
+        _passwordRecoveryActive ||
+        revision != _biometricAvailabilityRevision ||
+        state.biometricAuthenticating ||
+        state.status.isInProgress) {
+      return;
+    }
 
     emit(
       state.copyWith(
@@ -196,7 +252,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ),
     );
 
-    if (hasSavedCredentials) {
+    if (hasSavedCredentials &&
+        event.autoAuthenticate &&
+        !_passwordRecoveryActive &&
+        state.status.isInitial &&
+        !state.biometricEnrollmentPending &&
+        !isClosed) {
       add(const LoginBiometricSubmitted());
     }
   }
@@ -205,7 +266,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginBiometricSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    if (!state.canUseBiometricLogin) {
+    if (_passwordRecoveryActive ||
+        state.status.isSuccess ||
+        state.biometricEnrollmentPending ||
+        !state.canUseBiometricLogin) {
       return;
     }
 
@@ -303,6 +367,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginBiometricEnrollmentAccepted event,
     Emitter<LoginState> emit,
   ) async {
+    if (_passwordRecoveryActive ||
+        state.biometricAuthenticating ||
+        state.status.isInProgress) {
+      return;
+    }
+
     if (!state.biometricEnrollmentPending ||
         !state.biometricAvailable ||
         state.email.normalizedValue.isEmpty ||
@@ -385,6 +455,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     SendEmailLinkSubmitted event,
     Emitter<LoginState> emit,
   ) async {
+    if (_passwordRecoveryActive ||
+        state.status.isInProgress ||
+        state.biometricAuthenticating) {
+      return;
+    }
+
     final email = Email.dirty(state.email.value);
 
     if (!email.isValid) {

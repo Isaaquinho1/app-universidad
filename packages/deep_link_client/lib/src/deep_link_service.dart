@@ -25,16 +25,18 @@ class DeepLinkClientFailure with EquatableMixin implements Exception {
 /// {@endtemplate}
 class DeepLinkService {
   /// {@macro deep_link_service}
-  DeepLinkService({
-    required DeepLinkClient deepLinkClient,
-  })  : _deepLinkClient = deepLinkClient,
-        _deepLinkSubject = BehaviorSubject<Uri>() {
+  DeepLinkService({required DeepLinkClient deepLinkClient})
+    : _deepLinkClient = deepLinkClient,
+      _deepLinkSubject = BehaviorSubject<Uri>() {
+    _deepLinkClient.deepLinkStream.listen(_onAppLink, onError: _handleError);
     unawaited(_getInitialLink());
-    _deepLinkClient.deepLinkStream.listen(_onAppLink).onError(_handleError);
   }
 
   final DeepLinkClient _deepLinkClient;
   final BehaviorSubject<Uri> _deepLinkSubject;
+
+  bool _receivedStreamLink = false;
+  Uri? _initialLinkAwaitingStream;
 
   /// Provides a stream of URIs intercepted by the app. Will emit the latest
   /// received value (if any) as first.
@@ -43,8 +45,9 @@ class DeepLinkService {
   Future<void> _getInitialLink() async {
     try {
       final deepLink = await _deepLinkClient.getInitialLink();
-      if (deepLink != null) {
-        _onAppLink(deepLink);
+      if (deepLink != null && !_receivedStreamLink) {
+        _initialLinkAwaitingStream = deepLink;
+        _deepLinkSubject.add(deepLink);
       }
     } catch (error, stackTrace) {
       _handleError(error, stackTrace);
@@ -52,6 +55,16 @@ class DeepLinkService {
   }
 
   void _onAppLink(Uri deepLink) {
+    final isFirstStreamLink = !_receivedStreamLink;
+    _receivedStreamLink = true;
+
+    final initialLink = _initialLinkAwaitingStream;
+    _initialLinkAwaitingStream = null;
+
+    if (isFirstStreamLink && initialLink == deepLink) {
+      return;
+    }
+
     _deepLinkSubject.add(deepLink);
   }
 
